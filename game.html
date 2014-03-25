@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	</style>
+    <script src="scripts/constants.js"></script>
+    <script src="scripts/images.js"></script>
+    <script src="scripts/input.js"></script>
+    <script src="scripts/util.js"></script>
+    <script src="scripts/bullet.js"></script>
+    <script src="scripts/enemy.js"></script>
+    <script src="scripts/dragon.js"></script>
+    <script src="scripts/punchBoss.js"></script>
+    <script src="scripts/fireBoss.js"></script>
+    <script src="scripts/heavyBoss.js"></script>
+    <script src="scripts/player.js"></script>
+    <script src="scripts/drop.js"></script>
+    <script src="scripts/gameScreen.js"></script>
+    <script src="scripts/menus.js"></script>
+    <script src="scripts/game.js"></script>
+	<style>
+	
+		@font-face {
+			font-family: Flipbash;
+			src: url('fonts/Flipbash.ttf');
+		}
+        
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+	
+		#game {
+            width: 100%;
+            height: 100%;
+		}
+        
+	</style>
+	
+</head>
+<body onmousemove=UpdateMouse() onmousedown=MouseDown() onmouseup=MouseUp()>
+    <!--
+	<header onmousedown="return false">            
+		<hgroup id="logo">
+			<img src="frameImgs/title.png"/>
+		</hgroup>
+	</header>
+	-->
+    
+    <div id="game" onmousedown="return false">
+        <canvas id="granama" style="cursor: none" ></canvas>
+    </div>
+    <div id="measure" style="position:absolute; visibility:hidden; height:auto; width:auto;"></div>
+    <!--<p id="debug" style="color: black">Running...</p>-->
+</body>
+</html>
