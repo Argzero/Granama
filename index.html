@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-	</style>
     <script src="scripts/constants.js"></script>
     <script src="scripts/images.js"></script>
     <script src="scripts/input.js"></script>
@@ -13,20 +12,19 @@
     <script src="scripts/fireBoss.js"></script>
     <script src="scripts/heavyBoss.js"></script>
     <script src="scripts/player.js"></script>
+    <script src="scripts/drone.js"></script>
+    <script src="scripts/bossPlayer.js"></script>
     <script src="scripts/drop.js"></script>
     <script src="scripts/gameScreen.js"></script>
+    <script src="scripts/bossRush.js"></script>
     <script src="scripts/menus.js"></script>
     <script src="scripts/game.js"></script>
 	<style>
 	
 		@font-face {
-            font-family: 'Flipbash';
-            src: url('flipbash.eot');
-            src: url('flipbash.eot?#iefix') format('embedded-opentype'),
-                 url('flipbash.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
+			font-family: Flipbash;
+			src: url('fonts/Flipbash.ttf');
+		}
         
         * {
             margin: 0;
@@ -47,7 +45,7 @@
 	</style>
 	
 </head>
-<body onmousemove=UpdateMouse() onmousedown=MouseDown() onmouseup=MouseUp()>
+<body onmousedown=MouseDown() onmouseup=MouseUp()>
     <!--
 	<header onmousedown="return false">            
 		<hgroup id="logo">

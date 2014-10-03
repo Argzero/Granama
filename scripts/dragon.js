@@ -6,17 +6,17 @@ function DragonBoss(x, y) {
     this.y = y;
     this.c = 0;
     this.s = 1;
-    this.health = BOSS_DATA[34] * screen.bossHealthMultiplier;
-    this.speed = BOSS_DATA[35] + BOSS_SPEED_SCALE * (screen.bossCount > 5 ? 5 : screen.bossCount);
+    this.health = BOSS_DATA[34] * gameScreen.bossHealthMultiplier;
+    this.speed = BOSS_DATA[35] + gameScreen.bossSpeedBonus;
     this.tailLength = BOSS_DATA[36];
     this.tailOffset = Math.round(BOSS_DATA[37] / (this.speed / 3));
     this.tailSpace = Math.round(BOSS_DATA[38] / (this.speed / 3));
     this.tailEnd = Math.round(BOSS_DATA[39] / (this.speed / 3));
     this.gunRate = BOSS_DATA[40];
-    this.gunDmg = BOSS_DATA[41] * screen.bossDmgMultiplier;
+    this.gunDmg = BOSS_DATA[41] * gameScreen.bossDmgMultiplier;
     this.gunRange = BOSS_DATA[42];
     this.turretRate = BOSS_DATA[43];
-    this.turretDmg = BOSS_DATA[44] * screen.bossDmgMultiplier;
+    this.turretDmg = BOSS_DATA[44] * gameScreen.bossDmgMultiplier;
     this.turretRange = BOSS_DATA[45];
     this.gunCd = this.gunRate;
     this.turretCd = this.turretRate;
@@ -50,15 +50,15 @@ function DragonBoss(x, y) {
         this.index = (this.index + 1) % this.maxIndex;
     
         // Turn towards the player
-        var a = Math.atan((player.y - this.y) / (this.x - screen.player.x));
-        if (this.x < screen.player.x) {
+        var a = Math.atan((player.y - this.y) / (this.x - gameScreen.player.x));
+        if (this.x < gameScreen.player.x) {
             a = -HALF_PI - a;
         }
         else {
             a = HALF_PI - a;
         }
-        var dx = screen.player.x - this.x;
-        var dy = screen.player.y - this.y;
+        var dx = gameScreen.player.x - this.x;
+        var dy = gameScreen.player.y - this.y;
         var dot = this.s * dx + -this.c * dy;
         if (dot > 0) {
             while (a > this.angle) {
@@ -111,8 +111,8 @@ function DragonBoss(x, y) {
         if (this.gunCd <= 0) {
             var bdx = this.gun.width / 2 + this.sprite.width / 2 + 30;
             var bdy = this.gun.height - this.sprite.height / 2;
-            screen.bullets[screen.bullets.length] = new Bullet(this.x + this.s * bdx + this.c * bdy, this.y + bdy * this.s - this.c * bdx, BULLET_SPEED * this.c, BULLET_SPEED * this.s, this.gunDmg, this.gunRange);
-            screen.bullets[screen.bullets.length] = new Bullet(this.x - this.s * bdx + this.c * bdy, this.y + bdy * this.s + this.c * bdx, BULLET_SPEED * this.c, BULLET_SPEED * this.s, this.gunDmg, this.gunRange);
+            gameScreen.bullets[gameScreen.bullets.length] = new Bullet(this.x + this.s * bdx + this.c * bdy, this.y + bdy * this.s - this.c * bdx, BULLET_SPEED * this.c, BULLET_SPEED * this.s, this.gunDmg, this.gunRange);
+            gameScreen.bullets[gameScreen.bullets.length] = new Bullet(this.x - this.s * bdx + this.c * bdy, this.y + bdy * this.s + this.c * bdx, BULLET_SPEED * this.c, BULLET_SPEED * this.s, this.gunDmg, this.gunRange);
             this.gunCd = this.gunRate;
         }
         else {
@@ -138,7 +138,7 @@ function DragonBoss(x, y) {
                 //Projectile(x, y, velX, velY, angle, damage, range, pierce, name) 
                 var tcos = Math.cos(a);
                 var tsin = Math.sin(a);
-                screen.bullets[screen.bullets.length] = new Projectile(segX - tsin * this.turret.height / 2, segY + tcos * this.turret.height / 2, BULLET_SPEED * -tsin, BULLET_SPEED * tcos, a, this.turretDmg, this.turretRange, true, "bossLaser");
+                gameScreen.bullets[gameScreen.bullets.length] = new Projectile(segX - tsin * this.turret.height / 2, segY + tcos * this.turret.height / 2, BULLET_SPEED * -tsin, BULLET_SPEED * tcos, a, this.turretDmg, this.turretRange, true, "bossLaser");
             }
             this.turretCd = this.turretRate;
         }
@@ -147,7 +147,7 @@ function DragonBoss(x, y) {
         }
     }
     
-    // Draws the enemy to the screen
+    // Draws the enemy to the gameScreen
     // canvas - context of the canvas to draw to
     this.Draw = Draw;
     function Draw(canvas) {
@@ -163,7 +163,7 @@ function DragonBoss(x, y) {
             canvas.translate(this.orientations[j * 3 + this.ox], this.orientations[j * 3 + this.oy]);
             canvas.rotate(this.orientations[j * 3 + this.oa]);
             canvas.drawImage(this.end, -this.end.width / 2, -this.end.height / 2);
-            canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - screen.scrollX, -screen.scrollY);
+            canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX, -gameScreen.scrollY);
             for (var i = this.tailLength - 2; i >= 0; i--) {
                 j = (this.index - i * this.tailSpace - this.tailOffset + this.maxIndex) % this.maxIndex;
                 var segX = this.orientations[j * 3 + this.ox];
@@ -174,8 +174,8 @@ function DragonBoss(x, y) {
                 canvas.translate(segX, segY);
                 canvas.rotate(this.orientations[j * 3 + this.oa]);
                 canvas.drawImage(this.segment, -this.segment.width / 2, -this.segment.height / 2);
-                canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - screen.scrollX + segX, segY - screen.scrollY);
-                a = Math.atan((screen.player.y - segY) / (segX - screen.player.x));
+                canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX + segX, segY - gameScreen.scrollY);
+                a = Math.atan((gameScreen.player.y - segY) / (segX - gameScreen.player.x));
                 if (segX < player.x) {
                     a = -HALF_PI - a;
                 }
@@ -184,9 +184,9 @@ function DragonBoss(x, y) {
                 }
                 canvas.rotate(a);
                 canvas.drawImage(this.turret, -this.turret.width / 2, -this.turret.height / 2);
-                canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - screen.scrollX, -screen.scrollY);
+                canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX, -gameScreen.scrollY);
             }
-            canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - screen.scrollX, -screen.scrollY);
+            canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX, -gameScreen.scrollY);
         }
         
         // Orientation
@@ -205,7 +205,7 @@ function DragonBoss(x, y) {
         
         
         // Health bar
-        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - screen.scrollX + this.x - this.sprite.width / 2, -screen.scrollY + this.y - this.sprite.height / 2);
+        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX + this.x - this.sprite.width / 2, -gameScreen.scrollY + this.y - this.sprite.height / 2);
         if (this.health < this.maxHealth) {
             var greenWidth = this.sprite.width * this.health / this.maxHealth;
             canvas.fillStyle = "#00FF00";
@@ -214,7 +214,7 @@ function DragonBoss(x, y) {
             canvas.fillRect(greenWidth, -10, this.sprite.width - greenWidth, 5);
         }
         
-        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - screen.scrollX, -screen.scrollY);
+        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX, -gameScreen.scrollY);
     }
     
     // Gets the horizontal coordinate of the left side of the enemy

@@ -1,6 +1,6 @@
 var
 
-screen = new LoadingScreen(),
+gameScreen,
 bodyElement,
 pageScrollX = 0,
 pageScrollY = 0,
@@ -8,12 +8,13 @@ canvas,
 parent,
 element,
 tile,
+player,
 escDown = true,
 cursor;
 
 // Set up the game when the page loads
 window.onload = function() {
-
+    
     // Load data
 	parent = document.querySelector("#game");
 	element = document.querySelector("#granama");
@@ -24,19 +25,32 @@ window.onload = function() {
     turrets = new Array();
     enemies = new Array();
     drops = new Array();
-    cursor = GetImage("cursor");
-    tile = GetImage("tile");
+    tile = GetImage("tile", function() {
+        
+        // Set up the initial gameScreen
+        cursor = GetImage("cursor");
+        gameScreen = new LoadingScreen();
+        //gameScreen = new TitleScreen();
+    });
     
     window.onresize = ResizeCanvas;
     ResizeCanvas();
-
+    
     // Game loop
-    setInterval(function() {
-		if (screen.Update) {
-            screen.Update();
+    window.setInterval(function() {
+        window.scrollTo(0, 0);
+        if (gameScreen && gameScreen.Draw) {
+    		if (gameScreen.Update) {
+                gameScreen.Update();
+            }
+            gameScreen.Draw();
         }
-        screen.Draw();
     }, 1000 / GAME_FPS);
+}
+
+window.onmousewheel = document.onmousewheel = function(e) {
+	e.preventDefault();
+	e.returnValue = false;
 }
 
 // Resizes the canvas to the body size

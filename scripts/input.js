@@ -18,10 +18,20 @@ document.addEventListener('keyup', function(event) {
 });
 
 // Updates the mouse according to the client mouse position
-function UpdateMouse() {
-    mx = window.event.clientX;
-    my = window.event.clientY;
-}
+document.addEventListener('mousemove', function(event) {
+    
+    // Firefox/Chrome
+    if (event) {
+        mx = event.clientX;
+        my = event.clientY;
+    }
+    
+    // IE
+    else {
+        mx = window.event.clientX;
+        my = window.event.clientY;
+    }
+});
 
 // Tells when the mouse button is no longer pressed
 function MouseUp() {

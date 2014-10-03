@@ -6,17 +6,17 @@ function HeavyBoss(x, y) {
     this.y = y;
     this.c = 0;
     this.s = 1;
-    this.health = BOSS_DATA[0] * screen.bossHealthMultiplier;
+    this.health = BOSS_DATA[0] * gameScreen.bossHealthMultiplier;
 	this.gunRange = BOSS_DATA[1];
     this.gunRate = BOSS_DATA[2];
-	this.gunDmg = BOSS_DATA[3] * screen.bossDmgMultiplier;
+	this.gunDmg = BOSS_DATA[3] * gameScreen.bossDmgMultiplier;
 	this.rocketRange = BOSS_DATA[4];
 	this.rocketRate = BOSS_DATA[5];
-	this.rocketDmg = BOSS_DATA[6] * screen.bossDmgMultiplier;
+	this.rocketDmg = BOSS_DATA[6] * gameScreen.bossDmgMultiplier;
 	this.mineRate = BOSS_DATA[7];
-	this.mineDmg = BOSS_DATA[8] * screen.bossDmgMultiplier;
+	this.mineDmg = BOSS_DATA[8] * gameScreen.bossDmgMultiplier;
 	this.mineLifespan = BOSS_DATA[9];
-	this.speed = BOSS_DATA[10] + BOSS_SPEED_SCALE * (screen.bossCount > 5 ? 5 : screen.bossCount);
+	this.speed = BOSS_DATA[10] + gameScreen.bossSpeedBonus;
     this.maxHealth = this.health;
     this.gunCd = this.gunRate;
 	this.rocketCd = this.rocketRate;
@@ -29,11 +29,12 @@ function HeavyBoss(x, y) {
     // Updates the enemy
     this.Update = Update;
     function Update() {
-    
+        
         // Turn towards the player
         var dx = player.x - this.x;
         var dy = player.y - this.y;
         var dot = this.s * dx + -this.c * dy;
+        
         if (dot > 0) {
             this.angle -= this.speed / 100.0;
         }
@@ -52,7 +53,8 @@ function HeavyBoss(x, y) {
         this.s = Math.cos(this.angle);
         
         // Move the enemy to their preferred range
-        var dSq = Sq(this.x - screen.player.x) + Sq(this.y - screen.player.y);
+        var dSq = Sq(this.x - player.x) + Sq(this.y - player.y);
+        console.log(player.x + ", " + player.y + ", " + dSq + ", " + this.gunRange + ", " + this.speed);
         if (dSq - Sq(this.gunRange + this.speed) > 0) {
             this.x += m * this.c * this.speed;
             this.y += m * this.s * this.speed;
@@ -63,14 +65,14 @@ function HeavyBoss(x, y) {
         }
         
         // Firing bullets
-        if (DistanceSq(this.x, this.y, screen.player.x, screen.player.y) < Sq(this.gunRange + this.speed) && this.gunCd <= 0 && m == 1) {
+        if (DistanceSq(this.x, this.y, gameScreen.player.x, gameScreen.player.y) < Sq(this.gunRange + this.speed) && this.gunCd <= 0 && m == 1) {
 			var dir = this.gunSide ? 1 : -1;
 			this.gunSide = !this.gunSide;
 			var angle = Rand(21) - 10;
 			var velX = RotateX(this.c * BULLET_SPEED, this.s * BULLET_SPEED, angle);
 			var velY = RotateY(this.c * BULLET_SPEED, this.s * BULLET_SPEED, angle);
 			var bullet = new Bullet(this.x + this.c * this.sprite.width / 2 - 60 * dir * this.s, this.y + this.s * this.sprite.width / 2 + 60 * dir * this.c, velX, velY, this.gunDmg, this.gunRange * 1.5);
-			screen.bullets[screen.bullets.length] = bullet;
+			gameScreen.bullets[gameScreen.bullets.length] = bullet;
             this.gunCd = this.gunRate;
         }
         else if (this.gunCd > 0) {
@@ -78,11 +80,11 @@ function HeavyBoss(x, y) {
         }
 		
 		// Firing Rockets
-		if (DistanceSq(this.x, this.y, screen.player.x, screen.player.y) < Sq(this.rocketRange + this.speed) && this.rocketCd <= 0 && m == 1) {
+		if (DistanceSq(this.x, this.y, gameScreen.player.x, gameScreen.player.y) < Sq(this.rocketRange + this.speed) && this.rocketCd <= 0 && m == 1) {
 			var dir = this.rocketSide ? 1 : -1;
 			this.rocketSide = !this.rocketSide;
 			var bullet = NewRocket(this.x + this.c * this.sprite.width / 2 - 50 * dir * this.s - 80 * this.c, this.y + this.s * this.sprite.width / 2 + 50 * dir * this.c - 80 * this.s, 2 * this.c * BULLET_SPEED, 2 * this.s * BULLET_SPEED, this.angle, this.rocketDmg, this.rocketRange * 1.5);
-			screen.bullets[screen.bullets.length] = bullet;
+			gameScreen.bullets[gameScreen.bullets.length] = bullet;
             this.rocketCd = this.rocketRate;
         }
         else if (this.rocketCd > 0) {
@@ -92,14 +94,14 @@ function HeavyBoss(x, y) {
 		// Laying mines
 		if (this.mineCd <= 0) {
 			var mine = new Mine(this.x - 75 * this.c, this.y - 75 * this.s, this.mineDmg, "boss");
-			screen.mines[screen.mines.length] = mine;
+			gameScreen.mines[gameScreen.mines.length] = mine;
 			mine.lifespan = this.mineLifespan;
 			this.mineCd = this.mineRate;
 		}
 		else {
 			this.mineCd--;
 		}
-        
+		
         // Limit the enemy to the map
         if (this.XMin() < 0) {
             this.x += -this.XMin();
@@ -115,7 +117,7 @@ function HeavyBoss(x, y) {
         }
     }
     
-    // Draws the enemy to the screen
+    // Draws the enemy to the gameScreen
     // canvas - context of the canvas to draw to
     this.Draw = Draw;
     function Draw(canvas) {
@@ -138,7 +140,7 @@ function HeavyBoss(x, y) {
         // Sprite
         canvas.drawImage(this.sprite, 0, 0);
         
-        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - screen.scrollX, -screen.scrollY);
+        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX, -gameScreen.scrollY);
     }
     
     // Gets the horizontal coordinate of the left side of the enemy

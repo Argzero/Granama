@@ -6,17 +6,17 @@ function PunchBoss(x, y) {
     this.y = y;
     this.c = 0;
     this.s = 1;
-    this.health = BOSS_DATA[23] * screen.bossHealthMultiplier;
-    this.speed = BOSS_DATA[24] + BOSS_SPEED_SCALE * (screen.bossCount > 5 ? 5 : screen.bossCount);
+    this.health = BOSS_DATA[23] * gameScreen.bossHealthMultiplier;
+    this.speed = BOSS_DATA[24] + gameScreen.bossSpeedBonus;
     this.punchRange = BOSS_DATA[25];
     this.punchRate = BOSS_DATA[26];
-    this.punchDmg = BOSS_DATA[27] * screen.bossDmgMultiplier;
+    this.punchDmg = BOSS_DATA[27] * gameScreen.bossDmgMultiplier;
     this.punchSpeed = BOSS_DATA[28];
     this.punchDelay = BOSS_DATA[29];
     this.laserRange = BOSS_DATA[30];
     this.laserRate = BOSS_DATA[31];
     this.laserRound = BOSS_DATA[32];
-    this.laserDmg = BOSS_DATA[33] * screen.bossDmgMultiplier;
+    this.laserDmg = BOSS_DATA[33] * gameScreen.bossDmgMultiplier;
     this.punchCd = this.punchRate;
     this.punchSide = true;
     this.leftFist = true;
@@ -63,7 +63,7 @@ function PunchBoss(x, y) {
         this.s = Math.cos(this.angle);
         
         // Move the enemy to their preferred range
-        var dSq = Sq(this.x - screen.player.x) + Sq(this.y - screen.player.y);
+        var dSq = Sq(this.x - gameScreen.player.x) + Sq(this.y - gameScreen.player.y);
         if (dSq - Sq(this.punchRange + this.speed) > 0) {
             this.x += m * this.c * this.speed;
             this.y += m * this.s * this.speed;
@@ -74,7 +74,7 @@ function PunchBoss(x, y) {
         }
         
         // Firing lasers
-        if (DistanceSq(this.x, this.y, screen.player.x, screen.player.y) < Sq(this.laserRange + this.speed) && this.laserCd <= 0 && m == 1) {
+        if (DistanceSq(this.x, this.y, gameScreen.player.x, gameScreen.player.y) < Sq(this.laserRange + this.speed) && this.laserCd <= 0 && m == 1) {
             this.laserClip = this.laserRound;
             this.laserCd = this.laserRate;
         }
@@ -84,13 +84,13 @@ function PunchBoss(x, y) {
         if (this.laserClip > 0) {
             var laser = NewLaser(this.x + this.c * 75, this.y + this.s * 75, BULLET_SPEED * this.c, BULLET_SPEED * this.s, this.angle, this.laserDmg, this.laserRange * 1.5);
             laser.sprite = GetImage("bossLaser");
-            screen.bullets[screen.bullets.length] = laser;
+            gameScreen.bullets[gameScreen.bullets.length] = laser;
             this.laserClip--;
         }
         
         // Fists
         // x, y, velX, velY, angle, damage, range, boss, speed, delay, side
-        if (DistanceSq(this.x, this.y, screen.player.x, screen.player.y) < Sq(this.punchRange + this.speed) && this.punchCd <= 0 && m == 1) {
+        if (DistanceSq(this.x, this.y, gameScreen.player.x, gameScreen.player.y) < Sq(this.punchRange + this.speed) && this.punchCd <= 0 && m == 1) {
             this.punchCd = this.punchRate;
             
             // Determine the side to launch from
@@ -113,7 +113,7 @@ function PunchBoss(x, y) {
             
             // Launch the fist
             var fist = new Fist(this.x + tx * this.s, this.y - tx * this.c, this.punchSpeed * this.c, this.punchSpeed * this.s, this.angle, this.punchDmg, this.punchRange * 1.5, this, this.punchSpeed, this.punchDelay, side, tx);
-            screen.bullets[screen.bullets.length] = fist;
+            gameScreen.bullets[gameScreen.bullets.length] = fist;
         }
         else if (this.punchCd > 0) {
             this.punchCd--;
@@ -134,7 +134,7 @@ function PunchBoss(x, y) {
         }
     }
     
-    // Draws the enemy to the screen
+    // Draws the enemy to the gameScreen
     // canvas - context of the canvas to draw to
     this.Draw = Draw;
     function Draw(canvas) {
@@ -166,7 +166,7 @@ function PunchBoss(x, y) {
         // Sprite
         canvas.drawImage(this.sprite, 0, 0);
         
-        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - screen.scrollX, -screen.scrollY);
+        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX, -gameScreen.scrollY);
     }
     
     // Gets the horizontal coordinate of the left side of the enemy

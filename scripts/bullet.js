@@ -93,7 +93,7 @@ function Fist(x, y, velX, velY, angle, damage, range, boss, speed, delay, side, 
         canvas.translate(this.x, this.y);
         canvas.rotate(this.angle);
         canvas.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
-        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH -screen.scrollX, -screen.scrollY);
+        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH -gameScreen.scrollX, -gameScreen.scrollY);
     }
     
     // Gets the horizontal coordinate of the left side of the laser
@@ -144,7 +144,7 @@ function Turret(x, y, damage, health) {
     function Update() {
     
         // Update the turret's angle
-        var a = Math.atan((screen.player.y - this.y) / (this.x - screen.player.x));
+        var a = Math.atan((gameScreen.player.y - this.y) / (this.x - gameScreen.player.x));
         if (this.x < player.x) {
             this.angle = -HALF_PI - a;
         }
@@ -155,9 +155,9 @@ function Turret(x, y, damage, health) {
         var s = Math.cos(this.angle);
         
         // Fire if in range
-        if (this.attackCd <= 0 && DistanceSq(this.x, this.y, screen.player.x, screen.player.y) < Sq(this.range) && screen.player.health > 0) {
+        if (this.attackCd <= 0 && DistanceSq(this.x, this.y, gameScreen.player.x, gameScreen.player.y) < Sq(this.range) && gameScreen.player.health > 0) {
             var bullet = new Bullet(this.x + c * this.sprite.height / 2, this.y + s * this.sprite.height / 2, c * BULLET_SPEED, s * BULLET_SPEED, this.damage, this.range * 1.5);
-            screen.bullets[screen.bullets.length] = bullet;
+            gameScreen.bullets[gameScreen.bullets.length] = bullet;
             this.attackCd = this.attackRate;
         }
         else if (this.attackCd > 0) {
@@ -183,7 +183,7 @@ function Turret(x, y, damage, health) {
         canvas.drawImage(this.base, -this.base.width / 2, -this.base.height / 2);
         canvas.rotate(this.angle);
         canvas.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
-        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - screen.scrollX, -screen.scrollY);
+        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX, -gameScreen.scrollY);
     }
 }
 
@@ -216,9 +216,9 @@ function Mine(x, y, damage, type) {
             return;
         }
         this.exploded = true;
-        screen.explosions[screen.explosions.length] = new Explosion(this.x, this.y, this.sprite.width / 100);
-        if (DistanceSq(this.x, this.y, screen.player.x, screen.player.y) < Sq(MINE_RADIUS)) {
-            screen.player.Damage(this.damage);
+        gameScreen.explosions[gameScreen.explosions.length] = new Explosion(this.x, this.y, this.sprite.width / 100);
+        if (DistanceSq(this.x, this.y, gameScreen.player.x, gameScreen.player.y) < Sq(MINE_RADIUS)) {
+            gameScreen.player.Damage(this.damage);
         }
     }
     
@@ -270,7 +270,7 @@ function Fire(x, y, velX, velY, angle, damage, range) {
         canvas.translate(this.x, this.y);
         canvas.rotate(this.angle);
         canvas.drawImage(this.sprite, -this.sprite.width * this.scale / 2, -this.sprite.height * this.scale / 2, this.sprite.width * this.scale, this.sprite.height * this.scale);
-        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - screen.scrollX, -screen.scrollY);
+        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX, -gameScreen.scrollY);
     }
     
     // Gets the horizontal coordinate of the left side of the fire
@@ -372,7 +372,7 @@ function Projectile(x, y, velX, velY, angle, damage, range, pierce, name) {
         canvas.translate(this.x, this.y);
         canvas.rotate(this.angle);
         canvas.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
-        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - screen.scrollX, -screen.scrollY);
+        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX, -gameScreen.scrollY);
     }
     
     // Gets the horizontal coordinate of the left side of the laser
@@ -407,7 +407,8 @@ function Projectile(x, y, velX, velY, angle, damage, range, pierce, name) {
 //   velY - vertical velocity
 // damage - damage to deal per frame
 //  range - range the fire is allowed to travel
-function Bullet(x, y, velX, velY, damage, range) {
+//  enemy - enemy that fired the bullet
+function Bullet(x, y, velX, velY, damage, range, enemy) {
     this.x = x;
     this.y = y;
     this.ox = x;
@@ -419,6 +420,7 @@ function Bullet(x, y, velX, velY, damage, range) {
     this.damage = damage;
     this.sprite = GetImage("bullet");
     this.scale = 1;
+    this.enemy = enemy;
     
     // Updates the bullet's position
     this.Update = Update;
@@ -456,5 +458,122 @@ function Bullet(x, y, velX, velY, damage, range) {
     this.YMax = YMax;
     function YMax() {
         return this.y + this.sprite.height * this.scale / 2;
+    }
+}
+
+// A bullet object
+//      x - initial horizontal coordinate
+//      y - initial vertical coordinate
+//   velX - horizontal velocity
+//   velY - vertical velocity
+// damage - damage to deal per frame
+//  range - range the fire is allowed to travel
+//  enemy - enemy that fired the bullet
+function Reflection(x, y, velX, velY, damage, enemy) {
+    this.x = x;
+    this.y = y;
+    this.ox = x;
+    this.oy = y;
+    this.pierce = false;
+    this.velX = velX;
+    this.velY = velY;
+    this.range = 99999;
+    this.damage = damage;
+    this.sprite = GetImage("abilityReflect");
+    this.scale = 1;
+    this.enemy = enemy;
+    
+    // Updates the bullet's position
+    this.Update = Update;
+    function Update() {
+        
+        // Remove the bullet if the enemy is dead
+        if (this.enemy.health <= 0) {
+            this.x = -99999;
+            this.y = -99999;
+        }
+        
+        this.x += this.velX;
+        this.y += this.velY;
+        
+        // Turn towards the enemy
+        var dx = this.enemy.x - this.x;
+        var dy = this.enemy.y - this.y;
+        var dot = this.velY * dx + -this.velX * dy;
+        var angle;
+        if (dot > 0) {
+            angle = -0.1;
+        }
+        else {
+            angle = 0.1;
+        }
+        var c = Math.cos(angle);
+        var s = Math.sin(angle);
+        
+        var tx = this.velX * c - this.velY * s;
+        var ty = this.velX * s + this.velY * c;
+        this.velX = tx;
+        this.velY = ty;
+    }
+    
+    // Draws the bullet
+    // canvas - context of the canvas to draw to
+    this.Draw = Draw;
+    function Draw(canvas) {
+        canvas.drawImage(this.sprite, this.x - this.sprite.width / 2, this.y - this.sprite.height / 2);
+    }
+    
+    // Gets the horizontal coordinate of the left side of the bullet
+    this.XMin = XMin;
+    function XMin() {
+        return this.x - this.sprite.height * this.scale / 2;
+    }
+    
+    // Gets the horizontal coordinate of the right side of the bullet
+    this.XMax = XMax;
+    function XMax() {
+        return this.x + this.sprite.height * this.scale / 2;
+    }
+    
+    // Gets the vertical coordinate of the top of the bullet
+    this.YMin = YMin;
+    function YMin() {
+        return this.y - this.sprite.height * this.scale / 2;
+    }
+    
+    // Gets the vertical coordinate of the bottom of the bullet
+    this.YMax = YMax;
+    function YMax() {
+        return this.y + this.sprite.height * this.scale / 2;
+    }
+}
+
+// A bullet object
+//      x - initial horizontal coordinate
+//      y - initial vertical coordinate
+//   velX - horizontal velocity
+//   velY - vertical velocity
+// damage - damage to deal per frame
+//  range - range the fire is allowed to travel
+//  enemy - enemy that fired the bullet
+function Plus(x, y, velX, velY) {
+    this.x = x;
+    this.y = y;
+    this.velX = velX;
+    this.velY = velY;
+    this.sprite = GetImage("abilityPlus");
+    
+    // Updates the bullet's position
+    this.Update = Update;
+    function Update() {
+        this.x += this.velX;
+        this.y += this.velY;
+    }
+    
+    // Draws the bullet
+    // canvas - context of the canvas to draw to
+    this.Draw = Draw;
+    function Draw(canvas) {
+        canvas.drawImage(this.sprite, this.x - this.sprite.width / 2, this.y - this.sprite.height / 2);
     }
 }

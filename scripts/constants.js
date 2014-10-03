@@ -31,30 +31,46 @@ TURRET_HEALTH = 0.2,
 TURRET_RATE = 15,
 TURRET_RANGE = 500,
 
+// Ability names
+BLINK = 'Blink',
+OVERDRIVE = 'Overdrive',
+TELEPORT = 'Teleport',
+WAVEBURST = 'Wave Burst',
+BREAKERBLASTER = 'KO Cannon',
+DECIMATION = 'Decimation',
+STASIS = 'Stasis',
+REFLECTOR = 'Reflector',
+RECHARGER = 'Recharger',
+
 //Ability Cooldowns
 //Speed
-BLINK_CD = 600;
-OVERDRIVE_CD = 150;
-TELEPORT_CD = 2100;
+BLINK_CD = 300,
+OVERDRIVE_CD = 600,
+TELEPORT_CD = 600,
 //Power
-WAVEBURST_CD = 600;
-BREAKERBLASTER_CD = 1200;
-DECIMATION_CD = 2100;
-//Defence
-STASIS_CD = 1200;
-REFLECTOR_CD = 3000;
-RECHARGER_CD = 2400;
+WAVEBURST_CD = 600,
+BREAKERBLASTER_CD = 600,
+DECIMATION_CD = 1500,
+//Defense
+STASIS_CD = 1200,
+REFLECTOR_CD = 900,
+RECHARGER_CD = 1500,
 
 //Ability Durations (where applicable)
-OVERDRIVE_DURATION = 300;
-BREAKERBLASTER_DURATION = 120;
-DECIMATION_DURATION = 420;
-WAVEBURST_DURATION = 60;
-STASIS_DURATION = 180;
-REFLECTOR_DURATION = 240;
+OVERDRIVE_DURATION = 300,
+BREAKERBLASTER_DURATION = 120,
+DECIMATION_DURATION = 420,
+WAVEBURST_DURATION = 120,
+STASIS_DURATION = 180,
+REFLECTOR_DURATION = 240,
+TELEPORT_DURATION = 1800,
+BREAKERBLASTER_DURATION = 120,
 
-BLINK_DISTANCE = 300;
-DIAG_DISTANCE = BLINK_DISTANCE * (1 / 1.4142);
+// Other ability values
+BLINK_DISTANCE = 300,
+STASIS_REGEN = 0.5,
+STASIS_REDUCTION = 0.1,
+REFLECT_AMOUNT = 1,
 
 // Animation
 GAME_FPS = 60,
@@ -95,18 +111,18 @@ ENEMY_SPEED = 7,
 ENEMY_SPEED_SCALE = 8,
 ENEMY_DATA = new Array(
 //  Name            | Dmg | Range | Atk Rate | HP | Chance | Attack Type    | Speed | Speed Scale
-    "LightRanged",    1,    200,    20,        20,  90,      ATTACK_BULLET,   2.5,    0.2,
-    "LightArtillery", 1,    400,    45,        10,  60,      ATTACK_BULLET,   2,      0.1,
-    "LightBomber",    3,    400,    90,        15,  30,      ATTACK_MINES,    2.5,    0.3,
-    "LightMelee",     2,    50,     30,        35,  15,      ATTACK_MELEE,    3.5,    0.6,
-    "HeavyRanged",    1,    250,    15,        30,  45,      ATTACK_BULLET,   2,      0.2,
-    "HeavyArtillery", 2,    400,    35,        20,  30,      ATTACK_BULLET,   1.5,    0.1,
-    "HeavyBomber",    5,    500,    90,        20,  15,      ATTACK_MINES,    2.5,    0.3,
-    "HeavyMelee",     3,    50,     40,        45,  15,      ATTACK_MELEE,    3,      0.5,
+    "LightRanged",    1,    200,    20,        20,  90,      ATTACK_BULLET,   2.5,    0.4,
+    "LightArtillery", 1,    400,    45,        10,  60,      ATTACK_BULLET,   2,      0.3,
+    "LightBomber",    3,    400,    90,        15,  30,      ATTACK_MINES,    2.5,    0.5,
+    "LightMelee",     2,    50,     30,        35,  15,      ATTACK_MELEE,    3.5,    0.7,
+    "HeavyRanged",    1,    250,    15,        30,  45,      ATTACK_BULLET,   2,      0.4,
+    "HeavyArtillery", 2,    400,    35,        20,  30,      ATTACK_BULLET,   1.5,    0.3,
+    "HeavyBomber",    5,    500,    90,        20,  15,      ATTACK_MINES,    2.5,    0.5,
+    "HeavyMelee",     3,    50,     40,        45,  15,      ATTACK_MELEE,    3,      0.6,
 // [-- Mini Bosses -------------------------------------------------------------------------------] 
-    "Turret",         1,    600,    600,       120, 1,       ATTACK_TURRET,   2.5,    0.3,
-    "Railer",         0.1,  550,    60,        80,  1,       ATTACK_RAIL,     2,      0.2,
-    "Paladin",        4,    300,    60,        100, 1,       ATTACK_HAMMER,   3,      0.4
+    "Turret",         1,    550,    600,       120, 1,       ATTACK_TURRET,   2,      0.3,
+    "Railer",         0.1,  550,    60,        80,  1,       ATTACK_RAIL,     2,      0.4,
+    "Paladin",        4,    300,    60,        100, 1,       ATTACK_HAMMER,   3,      0.5
 ),
 
 BOSS_SPEED_SCALE = 0.4;
@@ -115,6 +131,7 @@ BOSS_FIRE = 1,
 BOSS_PUNCH = 2,
 BOSS_DRAGON = 999,
 BOSS_COUNT = 3,
+BOSS_RUSH_DRAGON = 3,
 BOSS_DATA = new Array(
 
 // Heavy Boss
@@ -125,7 +142,7 @@ BOSS_DATA = new Array(
 // Fire Boss
 //          | Flamethrower                     | Rocket                                               |            | Tail           
 //  HP (11) | Range (12) | Rate (13) | Dmg(14) | Range (15) | Rate (16) | Round Delay (17) | Dmg (18) | Speed (19) | Offset (20) | length (21) | Base (22)
-    120,      200,         3,          0.03,     500,         180,        20,                4,         3,           15,           5,            25,
+    120,      200,         3,          0.02,     500,         180,        20,                4,         3,           15,           5,            25,
     
 // Punch Boss
 //                       | Punches                                                        | Laser
@@ -147,6 +164,16 @@ HEALTH = "Health",
 DAMAGE = "Damage",
 HEAL = "Heal",
 SPEED = "Speed",
+
+// Drop IDs
+LASER_ID = 0,
+SHIELD_ID = 1,
+FLAME_ID = 2,
+SPREAD_ID = 3,
+HEALTH_ID = 4,
+DAMAGE_ID = 5,
+HEAL_ID = 6,
+SPEED_ID = 7,
 
 // Drop data
 DROP_COUNT = 8,

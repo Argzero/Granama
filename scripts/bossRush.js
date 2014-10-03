@@ -1,13 +1,15 @@
-function GameScreen(player, damageScale, healthScale, speedScale) {
+var MAX_BOSS_INTERVAL = 40;
+var BOSS_SPAWN_INTERVAL = 180;
+
+function BossRush(player) {
 
     this.scrollX = 0;
     this.scrollY = 0;
     this.score = 0;
     this.healCount = 0;
-    this.bossCount = 0;
-    this.dmgScale = damageScale;
-    this.hpScale = healthScale;
-    this.spdScale = speedScale;
+    this.dmgScale = 1;
+    this.hpScale = 1;
+    this.spdScale = 1;
     
     this.damageOverlay = GetImage("damage");
     this.healthTop = GetImage("healthTop");
@@ -25,7 +27,6 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
     this.imgHealth = GetImage("iconHealth");
     this.imgHeal = GetImage("iconHeal");
     this.pauseOverlay = GetImage("pause");
-    this.imgAbility = GetImage('ability' + player.ability);
     this.explosions = new Array();
     this.explosion = new Array(
         GetImage("EX1"), 
@@ -39,18 +40,20 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
         GetImage("EX9"),
         GetImage("EX10")
     );
+    this.droneImgs = [
+        GetImage('droneAssaulter'),
+        GetImage('droneHealer'),
+        GetImage('droneShielder')
+    ];
     
     this.damageAlpha;
     this.bossActive = false;
     this.paused = false;
     this.dragonActive = false;
-    this.bossScore = BOSS_SPAWN_BASE;
-    this.bossIncrement = BOSS_SPAWN_BASE;
-    this.healthMultiplier = 1.0;
-    this.minibossMultiplier = 1.0;
     this.bossHealthMultiplier = 1.0;
-    this.damageMultiplier = 1.0;
     this.bossDmgMultiplier = 1.0;
+    this.bossSpeedBonus = 0;
+    this.bossCount = 0;
     this.playerDamage = 1.0;
     this.spawnCd = SPAWN_RATE;
     this.bullets = new Array();
@@ -60,7 +63,6 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
     this.drops = new Array();
     this.music;
     this.player = player;
-    this.bossSpeedBonus = 0.0;
     
     // Update function
     this.Update = Update;
@@ -118,8 +120,9 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
         canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH, 0);
 
         // Draw the background
+        var i;
         if (tile && tile.width) {
-            for (var i = 0; i < WINDOW_WIDTH / tile.width + 1; i++) {
+            for (i = 0; i < WINDOW_WIDTH / tile.width + 1; i++) {
                 var x = i * tile.width - this.scrollX % tile.width;
                 for (var j = 0; j < WINDOW_HEIGHT / tile.height + 1; j++) {
                     canvas.drawImage(tile, x, j * tile.height - this.scrollY % tile.height);
@@ -131,25 +134,18 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
         canvas.translate(-this.scrollX, -this.scrollY);
         
         // Drops
-        for (var i = 0; i < this.drops.length; i++) {
+        for (i = 0; i < this.drops.length; i++) {
             this.drops[i].Draw(canvas);
         }
         
         // Mines
-        for (var i = 0; i < this.mines.length; i++) {
+        for (i = 0; i < this.mines.length; i++) {
             this.mines[i].Draw(canvas);
         }
         
         // Turrets
-        for (var i = 0; i < this.turrets.length; i++) {
+        for (i = 0; i < this.turrets.length; i++) {
             this.turrets[i].Draw(canvas);
-        }
-        
-        // Enemies
-        if (!this.dragonActive) {
-            for (var i = 0; i < this.enemies.length; i++) {
-                this.enemies[i].Draw(canvas);
-            }
         }
         
         // Player
@@ -157,18 +153,18 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
             this.player.Draw(canvas);
         }
         
-        // Dragon
-        if (this.dragonActive) {
-            this.enemies[0].Draw(canvas);
+        // Enemies
+        for (i = 0; i < this.enemies.length; i++) {
+            this.enemies[i].Draw(canvas);
         }
         
         // Enemy bullets
-        for (var i = 0; i < this.bullets.length; i++) {
+        for (i = 0; i < this.bullets.length; i++) {
             this.bullets[i].Draw(canvas);
         }
         
         // Explosions
-        for (var i = 0; i < this.explosions.length; i++) {
+        for (i = 0; i < this.explosions.length; i++) {
             this.explosions[i].Draw(canvas);
             if (this.explosions[i].frame >= 10) {
                 this.explosions.splice(i, 1);
@@ -314,51 +310,33 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
                     }
                 }
                 
-                this.dragonActive = false;
-                
-                // Bosses apply extra effects
-                if (this.bossActive) {
-                
-                    // Extra drops from bosses
-                    for (var n = 0; n < BOSS_DROPS; n++) {
-                        var xOffset = RotateX(40, 0, n * 360 / BOSS_DROPS);
-                        var yOffset = RotateY(40, 0, n * 360 / BOSS_DROPS);
-                        rand = Rand(100);
-                        total = 0;
-                        for (var o = 0; o < DROP_COUNT; o++) {
-                            total += DROPS[o * DROP_VALUE_COUNT + DROP_CHANCE];
-                            if (total > rand) {
-                                this.drops[this.drops.length] = new Drop(this.enemies[i].x + xOffset, this.enemies[i].y + yOffset, DROPS[o * DROP_VALUE_COUNT + DROP_TYPE]);
-                                break;
-                            }
+                // Extra drops from bosses
+                for (var n = 0; n < BOSS_DROPS; n++) {
+                    var xOffset = RotateX(40, 0, n * 360 / BOSS_DROPS);
+                    var yOffset = RotateY(40, 0, n * 360 / BOSS_DROPS);
+                    rand = Rand(100);
+                    total = 0;
+                    for (var o = 0; o < DROP_COUNT; o++) {
+                        total += DROPS[o * DROP_VALUE_COUNT + DROP_CHANCE];
+                        if (total > rand) {
+                            this.drops[this.drops.length] = new Drop(this.enemies[i].x + xOffset, this.enemies[i].y + yOffset, DROPS[o * DROP_VALUE_COUNT + DROP_TYPE]);
+                            break;
                         }
                     }
-                    
-                    this.bossIncrement += BOSS_SPAWN_SCALE;
-                    this.bossScore += this.bossIncrement;
-                    
-                    // Power up enemies when a boss is defeated
-                    this.damageMultiplier = ((this.bossCount + 1) / 2) * (this.bossCount + 2);
-                    this.bossDmgMultiplier = this.damageMultiplier * (1 + this.score / 1000);
-                    this.bossSpeedBonus = BOSS_SPEED_SCALE * (this.bossCount > 5 ? 5 : this.bossCount);
-                    if (this.bossCount > 4) {
-                        this.healthMultiplier = Math.pow(2, 2 + 0.5 * this.bossCount);
-                        this.minibossMultiplier = Math.pow(2, 3 + 0.75 * this.bossCount);
-                        this.bossHealthMultiplier = Math.pow(2, 4 + this.bossCount);
-                    }
-                    else {
-                        this.healthMultiplier = Math.pow(2, this.bossCount);
-                        this.minibossMultiplier = Math.pow(2, this.bossCount * 1.5);
-                        this.bossHealthMultiplier = Math.pow(2, this.bossCount * 2 + (this.bossCount > 3 ? 2 : 1));
-                        
-                    }
-                    
-                    this.explosions[this.explosions.length] = new Explosion(this.enemies[i].x, this.enemies[i].y, this.enemies[i].sprite.width / 150);
                 }
                 
-                else {
-                    this.explosions[this.explosions.length] = new Explosion(this.enemies[i].x, this.enemies[i].y, this.enemies[i].sprite.width / 150);
+                // Power up enemies when a boss is defeated
+                this.bossCount++;
+                this.bossDmgMultiplier = ((this.score / 8 + 1) / 2) * (this.score / 8 + 2);
+                this.bossSpeedBonus = this.bossSpeedBonus = BOSS_SPEED_SCALE * (this.bossCount > 40 ? 5 : this.bossCount / 8);
+                if (this.bossCount > 32) {
+                    this.bossHealthMultiplier = Math.pow(2, 4 + this.score / 8);
                 }
+                else {
+                    this.bossHealthMultiplier = Math.pow(2, this.score / 4 + (this.score > 24 ? 2 : 1));
+                }
+                
+                this.explosions[this.explosions.length] = new Explosion(this.enemies[i].x, this.enemies[i].y, this.enemies[i].sprite.width / 150);
             
                 // Remove the enemy
                 this.enemies.splice(i, 1);
@@ -455,20 +433,16 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
         canvas.fillStyle = "#000000";
         canvas.fillRect(0, 0, UI_WIDTH, WINDOW_HEIGHT);
         
-        // Skill Cooldown
-        canvas.drawImage(this.imgAbility, 10, 60 - UI_WIDTH / 2, UI_WIDTH - 20, UI_WIDTH - 20);
-        if (player.abilityActive) {
-            canvas.fillStyle = '#00FF00';
-            canvas.font = '30px Flipbash';
-            var cd = Math.ceil((player.abilityDur - player.currentAbilityDur) / 60);
-            canvas.fillText(cd, (UI_WIDTH - StringWidth(cd, canvas.font)) / 2, 65);
+        // Drone countdown
+        canvas.fillStyle = '#FFFFFF';
+        canvas.font = '30px Flipbash';
+        if (player.drones.length < 6) {
+            var droneImg = this.droneImgs[player.drones.length % 3];
+            canvas.drawImage(droneImg, (UI_WIDTH - droneImg.width) / 2, 55 - droneImg.height / 2);
+            var left = player.droneTarget - player.droneCounter;
+            canvas.fillText(left, (UI_WIDTH - StringWidth(left, canvas.font)) / 2, 65);
         }
-        else if (player.currentAbilityCd > 0) {
-            canvas.fillStyle = '#FFFFFF';
-            canvas.font = '30px Flipbash';
-            var cd = Math.ceil(player.currentAbilityCd / 60);
-            canvas.fillText(cd, (UI_WIDTH - StringWidth(cd, canvas.font)) / 2, 65);
-        }
+        else canvas.fillText("MAX", (UI_WIDTH - StringWidth("MAX", canvas.font)) / 2, 65);
         
         // Top and bottom images
         canvas.drawImage(this.healthTop, 0, 110);
@@ -522,18 +496,11 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
         canvas.fillStyle = "#00FF00"
         canvas.fillText(this.score, (SIDEBAR_WIDTH - StringWidth(this.score, canvas.font)) / 2, 100);
         
-        // Boss countdown
-        canvas.fillStyle = "#FFFFFF";
-        canvas.fillText("Boss", SIDEBAR_WIDTH / 2 - StringWidth("Boss", canvas.font) / 2, 160);
-        canvas.fillRect(5, 165, SIDEBAR_WIDTH - 10, 2);
-        canvas.fillStyle = "#00FF00"
-        canvas.fillText(this.bossScore, (SIDEBAR_WIDTH - StringWidth(this.bossScore, canvas.font)) / 2, 210);
-        
         canvas.font = "30px Flipbash";
         
-        var space = element.height - 220;
+        var space = element.height - 110;
         var margin = Math.floor((space - 4 * 120) / 5);
-        var extra = Math.floor((space - 480 - margin * 5) / 2) + 220;
+        var extra = Math.floor((space - 480 - margin * 5) / 2) + 110;
         var interval = 120 + margin;
         
         // Laser upgrades
@@ -622,16 +589,10 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
     this.SpawnEnemies = SpawnEnemies
     function SpawnEnemies() {
         var x, y;
-
-        // Boss was defeated
-        if (this.bossActive && this.enemies.length == 0) {
-            this.bossActive = false;
-        }
         
-        // Boss spawning
-        else if (!this.bossActive && this.score == this.bossScore) {
-            this.bossActive = true;
-            
+        if (this.spawnCd <= 0 && this.enemies.length < Math.floor(1 + this.score / MAX_BOSS_INTERVAL)) {
+            this.spawnCd = BOSS_SPAWN_INTERVAL;
+
             // Spawn boss
             if (this.player.x < GAME_WIDTH / 2) {
                 x = GAME_WIDTH - 500;
@@ -646,9 +607,7 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
                 y = 500;
             }
             
-            var adjustedCount = this.bossCount - Math.floor(this.bossCount / (2 * BOSS_COUNT + 1));
-            var bossId = this.bossCount % (2 * BOSS_COUNT + 1) == (2 * BOSS_COUNT) ? BOSS_DRAGON : adjustedCount % BOSS_COUNT;
-            this.bossCount++;
+            var bossId = (this.score + this.enemies.length) % 4;
             if (bossId == BOSS_HEAVY) {
                 this.enemies[this.enemies.length] = new HeavyBoss(x, y);
             }
@@ -658,65 +617,11 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
             else if (bossId == BOSS_PUNCH) {
                 this.enemies[this.enemies.length] = new PunchBoss(x, y);
             }
-            else if (bossId == BOSS_DRAGON) {
+            else if (bossId == BOSS_RUSH_DRAGON) {
                 this.enemies[this.enemies.length] = new DragonBoss(x, y);
-                this.dragonActive = true;
             }
         }
-
-        // Don't spawn enemies if there are too many or one has just spawned
-        if (!this.bossActive && this.spawnCd <= 0 && this.enemies.length < MAX_ENEMIES && this.enemies.length + this.score < this.bossScore) {
-            var dir = Math.random();
-            
-            // Get a random type
-            var r = Rand(300);
-            if (this.bossCount >= 3) {
-                r = Rand(303);
-            }
-            var total = 0;
-            var type = -1;
-            for (var i = 0; i < ENEMY_DATA.length / ENEMY_VALUE_COUNT; i++) {
-                total += ENEMY_DATA[i * ENEMY_VALUE_COUNT + ENEMY_CHANCE];
-                if (total > r) {
-                    type = i * ENEMY_VALUE_COUNT;
-                    break;
-                }
-            }
-            if (type == -1) {
-                return;
-            }
-            
-            // Get a spawn point off of the gameScreen
-            x = Rand(GAME_WIDTH - 200 + 100);
-            y = Rand(GAME_HEIGHT - 200 + 100);
-            while (!OffScreen(x, y, 100)) {
-                x = Rand(GAME_WIDTH - 200 + 100);
-                y = Rand(GAME_HEIGHT - 200 + 100);
-            }
-            
-            // Testing boss stuff
-            //this.enemies[this.enemies.length] = new PunchBoss(x, y);
-            //this.enemies[this.enemies.length] = new FireBoss(x, y);
-            //this.enemies[this.enemies.length] = new DragonBoss(x, y);
-            //this.dragonActive = true;
-            
-            // Spawn the enemy
-            this.enemies[this.enemies.length] = new Enemy(x, y,
-                    ENEMY_DATA[type + ENEMY_TYPE], 
-                    ENEMY_DATA[type + ENEMY_RANGE], 
-                    ENEMY_DATA[type + ENEMY_ATTACK_RATE], 
-                    ENEMY_DATA[type + ENEMY_HEALTH] * (type >= MINIBOSS_START ? this.minibossMultiplier : this.healthMultiplier),
-                    ENEMY_DATA[type + ENEMY_DAMAGE] * this.damageMultiplier,
-                    Rand(this.bossCount + 1),
-                    ENEMY_DATA[type + ENEMY_ATTACK],
-                    ENEMY_DATA[type + ENEMY_SPEED] + ENEMY_DATA[type + ENEMY_SPEED_SCALE] * (this.bossCount > 5 ? 5 : this.bossCount));
-            
-            // Apply the cooldown
-            this.spawnCd = SPAWN_RATE - SPAWN_SCALE * this.score;
-        }
-        else if (this.spawnCd > 0) {
-            this.spawnCd--;
-        }
+        else if (this.spawnCd > 0) this.spawnCd--;
     }
 
     // Updates the music depending on the state of the game

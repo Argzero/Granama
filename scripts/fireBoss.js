@@ -6,15 +6,15 @@ function FireBoss(x, y) {
     this.y = y;
     this.c = 0;
     this.s = 1;
-    this.health = BOSS_DATA[11] * screen.bossHealthMultiplier;
+    this.health = BOSS_DATA[11] * gameScreen.bossHealthMultiplier;
     this.flameRange = BOSS_DATA[12];
     this.flameRate = BOSS_DATA[13];
-    this.flameDmg = BOSS_DATA[14] * screen.bossDmgMultiplier;
+    this.flameDmg = BOSS_DATA[14] * gameScreen.bossDmgMultiplier;
     this.rocketRange = BOSS_DATA[15];
     this.rocketRate = BOSS_DATA[16];
     this.rocketRound = BOSS_DATA[17];
-    this.rocketDmg = BOSS_DATA[18] * screen.bossDmgMultiplier;
-    this.speed = BOSS_DATA[19] + BOSS_SPEED_SCALE * (screen.bossCount > 5 ? 5 : screen.bossCount);
+    this.rocketDmg = BOSS_DATA[18] * gameScreen.bossDmgMultiplier;
+    this.speed = BOSS_DATA[19] + gameScreen.bossSpeedBonus;
     this.tailOffset = Math.round(BOSS_DATA[20] / (this.speed / 3));
     this.tailLength = Math.round(BOSS_DATA[21] / (this.speed / 3));
     this.tailBase = Math.round(BOSS_DATA[22] / (this.speed / 3));
@@ -39,7 +39,7 @@ function FireBoss(x, y) {
     function Update() {
     
         // Update the orientation array
-        var dSq = Sq(this.x - screen.player.x) + Sq(this.y - screen.player.y);
+        var dSq = Sq(this.x - gameScreen.player.x) + Sq(this.y - gameScreen.player.y);
         var far = dSq - Sq(this.flameRange + this.speed) > 0;
         var close = dSq - Sq(this.flameRange - this.speed) < 0;
         if (far || close) {
@@ -81,7 +81,7 @@ function FireBoss(x, y) {
         }
         
         // Firing Rockets
-		if (DistanceSq(this.x, this.y, screen.player.x, screen.player.y) < Sq(this.rocketRange + this.speed) && this.rocketCd <= 0 && m == 1) {
+		if (DistanceSq(this.x, this.y, gameScreen.player.x, gameScreen.player.y) < Sq(this.rocketRange + this.speed) && this.rocketCd <= 0 && m == 1) {
             this.rocketShot = 2;
             this.rocketDelay = 0;
             this.rocketCd = this.rocketRate;
@@ -97,7 +97,7 @@ function FireBoss(x, y) {
                 var xPos = this.x + offset + this.s * offset;
                 var yPos = this.y + offset - this.c * offset;
                 var rocket = NewRocket(this.x + offset + this.s * offset, this.y + offset - this.c * offset, 1.5 * this.c * BULLET_SPEED, 1.5 * this.s * BULLET_SPEED, this.angle, this.rocketDmg, this.rocketRange * 1.5);
-                screen.bullets[screen.bullets.length] = rocket;
+                gameScreen.bullets[gameScreen.bullets.length] = rocket;
             }
             else {
                 this.rocketDelay--;
@@ -105,7 +105,7 @@ function FireBoss(x, y) {
         }
         
         // Flamethrower
-        if (DistanceSq(this.x, this.y, screen.player.x, screen.player.y) < Sq(this.flameRange + this.speed) && this.flameCd <= 0 && m == 1) {
+        if (DistanceSq(this.x, this.y, gameScreen.player.x, gameScreen.player.y) < Sq(this.flameRange + this.speed) && this.flameCd <= 0 && m == 1) {
             var xOffset1 = 40 * this.c - 60 * this.s;
             var yOffset1 = 40 * this.s + 60 * this.c;
             var xOffset2 = 40 * this.c + 60 * this.s;
@@ -113,10 +113,10 @@ function FireBoss(x, y) {
             var img = GetImage("bossFlame");
             var fire = new Fire(this.x + xOffset1, this.y + yOffset1, BULLET_SPEED * this.c, BULLET_SPEED * this.s, this.angle, this.flameDmg, this.flameRange * 1.5);
             fire.sprite = img;
-            screen.bullets[screen.bullets.length] = fire;
+            gameScreen.bullets[gameScreen.bullets.length] = fire;
             fire = new Fire(this.x + xOffset2, this.y + yOffset2, BULLET_SPEED * this.c, BULLET_SPEED * this.s, this.angle, this.flameDmg, this.flameRange * 1.5);
             fire.sprite = img;
-            screen.bullets[screen.bullets.length] = fire;
+            gameScreen.bullets[gameScreen.bullets.length] = fire;
             this.flameCd = this.flameRate;
         }
         else if (this.flameCd > 0) {
@@ -138,7 +138,7 @@ function FireBoss(x, y) {
         }
     }
     
-    // Draws the enemy to the screen
+    // Draws the enemy to the gameScreen
     // canvas - context of the canvas to draw to
     this.Draw = Draw;
     function Draw(canvas) {
@@ -151,13 +151,13 @@ function FireBoss(x, y) {
                 canvas.translate(this.orientations[j * 3 + this.ox], this.orientations[j * 3 + this.oy]);
                 canvas.rotate(this.orientations[j * 3 + this.oa]);
                 canvas.drawImage(this.tailMid, -this.tailMid.width / 2, -this.tailMid.height / 2);
-                canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - screen.scrollX, -screen.scrollY);
+                canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX, -gameScreen.scrollY);
             }
             j = this.index % this.maxIndex;
             canvas.translate(this.orientations[j * 3 + this.ox], this.orientations[j * 3 + this.oy]);
             canvas.rotate(this.orientations[j * 3 + this.oa]);
             canvas.drawImage(this.tailEnd, -this.tailEnd.width / 2, -this.tailEnd.height / 2);
-            canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - screen.scrollX, -screen.scrollY);
+            canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX, -gameScreen.scrollY);
         }
         
         canvas.translate(this.x - this.sprite.width / 2, this.y - this.sprite.height / 2);
@@ -179,7 +179,7 @@ function FireBoss(x, y) {
         // Sprite
         canvas.drawImage(this.sprite, 0, 0);
         
-        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - screen.scrollX, -screen.scrollY);
+        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX, -gameScreen.scrollY);
     }
     
     // Gets the horizontal coordinate of the left side of the enemy

@@ -8,25 +8,25 @@ function StringWidth(s, font) {
     return measure.clientWidth + 1;
 }
 
-// Checks if a bullet is within the screen
+// Checks if a bullet is within the gameScreen
 // bullet - bullet to check for
 function WithinScreen(bullet) {
-    if (bullet.XMax() - screen.scrollX < 0) return false;
-    if (bullet.XMin() - screen.scrollX > WINDOW_WIDTH) return false;
-    if (bullet.YMax() - screen.scrollY < 0) return false;
-    if (bullet.YMin() - screen.scrollY > WINDOW_HEIGHT) return false;
+    if (bullet.XMax() - gameScreen.scrollX < 0) return false;
+    if (bullet.XMin() - gameScreen.scrollX > WINDOW_WIDTH) return false;
+    if (bullet.YMax() - gameScreen.scrollY < 0) return false;
+    if (bullet.YMin() - gameScreen.scrollY > WINDOW_HEIGHT) return false;
     return true;
 }
 
-// Checks if the point is off the screen using the given padding
+// Checks if the point is off the gameScreen using the given padding
 //       x - horizontal coordinate
 //       y - vertical coordinate
-// padding - amount to be off the screen by
+// padding - amount to be off the gameScreen by
 function OffScreen(x, y, padding) {
-	if (x - screen.scrollX < -padding) return true;
-	if (x - screen.scrollX > WINDOW_WIDTH + padding) return true;
-	if (y - screen.scrollY < -padding) return true;
-	if (y - screen.scrollY > WINDOW_HEIGHT + padding) return true;
+	if (x - gameScreen.scrollX < -padding) return true;
+	if (x - gameScreen.scrollX > WINDOW_WIDTH + padding) return true;
+	if (y - gameScreen.scrollY < -padding) return true;
+	if (y - gameScreen.scrollY > WINDOW_HEIGHT + padding) return true;
 	return false;
 }
 
@@ -67,7 +67,7 @@ function Spread(bullet, factor, c, s) {
 	var velX = bullet.velX * c - bullet.velY * s * factor;
 	var velY = bullet.velX * s * factor + bullet.velY * c;
 	
-	return new Bullet(bullet.x, bullet.y, velX, velY, bullet.damage, bullet.range);
+	return new Bullet(bullet.x, bullet.y, velX, velY, bullet.damage, bullet.range, bullet.enemy);
 }
 
 // Spreads a laser by the given factor
@@ -91,7 +91,9 @@ function SpreadLaser(laser, factor, angle, c, s) {
     var velX = laser.velX * c - laser.velY * s * factor;
 	var velY = laser.velX * s * factor + laser.velY * c;
 	
-	return NewLaser(laser.x, laser.y, velX, velY, laser.angle + angle * factor, laser.damage, laser.range);
+	var result = NewLaser(laser.x, laser.y, velX, velY, laser.angle + angle * factor, laser.damage, laser.range);
+	result.sprite = laser.sprite;
+	return result;
 }
 
 // Rotates the x, y pair by the given integer value and returns the x coordinate
@@ -248,11 +250,11 @@ function GetSpreadAngle(robot) {
 function FireBullet(enemy) {
 
     // Normal bullet
-    var bullet = new Bullet(enemy.x + enemy.c * enemy.sprite.width / 2, enemy.y + enemy.s * enemy.sprite.width / 2, enemy.c * BULLET_SPEED, enemy.s * BULLET_SPEED, enemy.damage, enemy.range * 1.5);
-    screen.bullets[screen.bullets.length] = bullet;
+    var bullet = new Bullet(enemy.x + enemy.c * enemy.sprite.width / 2, enemy.y + enemy.s * enemy.sprite.width / 2, enemy.c * BULLET_SPEED, enemy.s * BULLET_SPEED, enemy.damage, enemy.range * 1.5, enemy);
+    gameScreen.bullets[gameScreen.bullets.length] = bullet;
     
     // Spread shots
-	SpreadShots(enemy, bullet, screen.bullets);
+	SpreadShots(enemy, bullet, gameScreen.bullets);
 }
 
 // Fires a hammer from the given enemy
@@ -260,8 +262,19 @@ function FireHammer(enemy) {
 	
 	// Hammer
 	var hammer = NewHammer(enemy.x, enemy.y, enemy.c * BULLET_SPEED, enemy.s * BULLET_SPEED, enemy.angle, enemy.damage, enemy.range * 1.5);
-	screen.bullets[screen.bullets.length] = hammer;
+	gameScreen.bullets[gameScreen.bullets.length] = hammer;
 	
 	// Spread shots
-	SpreadHammers(enemy, hammer, screen.bullets);
+	SpreadHammers(enemy, hammer, gameScreen.bullets);
+}
+
+// Gets the angle from the first point to the second point
+function GetAngle(x1, y1, x2, y2) {
+    var a = Math.atan((y2 - y1) / (x1 - x2));
+    if (x1 < x2) {
+        return -HALF_PI - a;
+    }
+    else {
+        return HALF_PI - a;
+    }
 }

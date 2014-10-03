@@ -40,8 +40,8 @@ function Enemy(x, y, type, range, attackCd, health, damage, spread, attack, spee
         // Move away from other enemies
         if (enemies.length > 0) {
             for (var i = 0; i < enemies.length; i++) {
-                if (DistanceSq(this.x, this.y, screen.enemies[i].x, screen.enemies[i].y) < Sq(this.sprite.width) && DistanceSq(this.x, this.y, screen.enemies[i].x, screen.enemies[i].y) > 0) {
-                    if (this.s * (screen.enemies[i].x - this.x) - this.c * (screen.enemies[i].y - this.y) > 0) {
+                if (DistanceSq(this.x, this.y, gameScreen.enemies[i].x, gameScreen.enemies[i].y) < Sq(this.sprite.width) && DistanceSq(this.x, this.y, gameScreen.enemies[i].x, gameScreen.enemies[i].y) > 0) {
+                    if (this.s * (gameScreen.enemies[i].x - this.x) - this.c * (gameScreen.enemies[i].y - this.y) > 0) {
                         this.x -= this.speed * this.s / 2;
                         this.y += this.speed * this.c / 2;
                         break;
@@ -76,8 +76,8 @@ function Enemy(x, y, type, range, attackCd, health, damage, spread, attack, spee
     function MoveNormal() {
     
         // Turn towards the player
-        var dx = screen.player.x - this.x;
-        var dy = screen.player.y - this.y;
+        var dx = gameScreen.player.x - this.x;
+        var dy = gameScreen.player.y - this.y;
         var dot = this.s * dx + -this.c * dy;
         if (dot > 0) {
             this.angle -= this.speed / 100.0;
@@ -97,7 +97,7 @@ function Enemy(x, y, type, range, attackCd, health, damage, spread, attack, spee
         this.s = Math.cos(this.angle);
         
         // Move the enemy to their preferred range
-        var dSq = Sq(this.x - screen.player.x) + Sq(this.y - screen.player.y);
+        var dSq = Sq(this.x - gameScreen.player.x) + Sq(this.y - gameScreen.player.y);
         if (dSq - Sq(this.range + this.speed) > 0) {
             this.x += m * this.c * this.speed;
             this.y += m * this.s * this.speed;
@@ -107,7 +107,7 @@ function Enemy(x, y, type, range, attackCd, health, damage, spread, attack, spee
             this.y -= m * this.s * this.speed;
         }
         
-        var inRange = DistanceSq(this.x, this.y, screen.player.x, screen.player.y) < Sq(this.range + this.speed) && m == 1;
+        var inRange = DistanceSq(this.x, this.y, gameScreen.player.x, gameScreen.player.y) < Sq(this.range + this.speed) && m == 1;
         
         // Railgun
         if (this.attack == ATTACK_RAIL) {
@@ -115,7 +115,7 @@ function Enemy(x, y, type, range, attackCd, health, damage, spread, attack, spee
                 this.cd--;
                 if (this.cd < 0) {
                     var laser = new Projectile(this.x + this.c * this.sprite.height / 2, this.y + this.s * this.sprite.height / 2, this.c * BULLET_SPEED, this.s * BULLET_SPEED, this.angle, this.damage, this.range * 1.5, true, "bossLaser");
-                    screen.bullets[screen.bullets.length] = laser;
+                    gameScreen.bullets[gameScreen.bullets.length] = laser;
                     if (this.cd < -120) {
                         this.cd = this.attackCd;
                     }
@@ -132,7 +132,7 @@ function Enemy(x, y, type, range, attackCd, health, damage, spread, attack, spee
                 FireBullet(this);
             }
             else if (this.attack == ATTACK_MELEE) {
-                screen.player.Damage(this.damage);
+                gameScreen.player.Damage(this.damage, this);
             }
 			else if (attack == ATTACK_HAMMER) {
 				FireHammer(this);
@@ -150,13 +150,13 @@ function Enemy(x, y, type, range, attackCd, health, damage, spread, attack, spee
     function MoveMines() {
     
         // Move normally if not in the preferred range
-        var ds = DistanceSq(this.x, this.y, screen.player.x, screen.player.y);
+        var ds = DistanceSq(this.x, this.y, gameScreen.player.x, gameScreen.player.y);
         var tooFar = ds > Sq(this.range + 100);
         var tooClose = ds < Sq(this.range - 100);
     
         // Turn towards the player
-        var dx = screen.player.x - this.x;
-        var dy = screen.player.y - this.y;
+        var dx = gameScreen.player.x - this.x;
+        var dy = gameScreen.player.y - this.y;
         var d1 = this.s * dx + -this.c * dy;
         var d2 = this.c * dx + this.s * dy;
         
@@ -197,10 +197,10 @@ function Enemy(x, y, type, range, attackCd, health, damage, spread, attack, spee
         // Drop mines
         if (!tooFar && this.cd <= 0) {
             if (this.attack == ATTACK_MINES) {
-                screen.mines[screen.mines.length] = new Mine(this.x, this.y, this.damage, this.type);
+                gameScreen.mines[gameScreen.mines.length] = new Mine(this.x, this.y, this.damage, this.type);
             }
             else if (this.attack == ATTACK_TURRET) {
-                screen.turrets[screen.turrets.length] = new Turret(this.x, this.y, this.damage, this.maxHealth * TURRET_HEALTH);
+                gameScreen.turrets[gameScreen.turrets.length] = new Turret(this.x, this.y, this.damage, this.maxHealth * TURRET_HEALTH);
             }
             this.cd = this.attackCd;
         }
@@ -209,7 +209,7 @@ function Enemy(x, y, type, range, attackCd, health, damage, spread, attack, spee
         }
     }
     
-    // Draws the enemy to the screen
+    // Draws the enemy to the gameScreen
     // canvas - context of the canvas to draw to
     this.Draw = Draw;
     function Draw(canvas) {
@@ -232,7 +232,7 @@ function Enemy(x, y, type, range, attackCd, health, damage, spread, attack, spee
         // Sprite
         canvas.drawImage(this.sprite, 0, 0);
         
-        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - screen.scrollX, -screen.scrollY);
+        canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX, -gameScreen.scrollY);
     }
     
     // Gets the horizontal coordinate of the left side of the enemy
@@ -270,7 +270,7 @@ function Explosion(x, y, size) {
     // Draws the explosion
     this.Draw = Draw;
     function Draw(canvas) {
-        var img = screen.explosion[Math.floor(this.frame)];
+        var img = gameScreen.explosion[Math.floor(this.frame)];
         canvas.drawImage(img, this.x - img.width * this.size / 2, this.y - img.height * this.size / 2, this.size * img.width, this.size * img.height);
         this.frame += 0.4;
     }
