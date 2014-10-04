@@ -353,6 +353,8 @@ function Projectile(x, y, velX, velY, angle, damage, range, pierce, name) {
     this.velX = velX;
     this.velY = velY;
     this.angle = angle;
+    this.cos = Math.cos(angle);
+    this.sin = Math.sin(angle);
     this.range = range;
     this.damage = damage;
     this.sprite = GetImage(name);
@@ -370,7 +372,7 @@ function Projectile(x, y, velX, velY, angle, damage, range, pierce, name) {
     this.Draw = Draw;
     function Draw(canvas) {
         canvas.translate(this.x, this.y);
-        canvas.rotate(this.angle);
+        canvas.transform(this.cos, this.sin, -this.sin, this.cos, 0, 0);
         canvas.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
         canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX, -gameScreen.scrollY);
     }

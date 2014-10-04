@@ -379,37 +379,37 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
         for (var i = 0; i < this.drops.length; i++) {
             if (BulletCollides(this.drops[i], this.player)) {
                 if (this.drops[i].type == SPREAD_SHOT) {
-                    if (this.player.spread * 2 < MAX_DROPS) {
-                        this.player.spread += 0.5;
+                    if (this.player.upgrades[SPREAD_ID] * 2 < MAX_DROPS) {
+                        this.player.upgrades[SPREAD_ID] += 0.5;
                     }
-                    if (this.player.spread * 2 >= MAX_DROPS) {
+                    if (this.player.upgrades[SPREAD_ID] * 2 >= MAX_DROPS) {
                         DROPS[DROP_DAMAGE * DROP_VALUE_COUNT + DROP_CHANCE] += DROPS[DROP_SPREAD * DROP_VALUE_COUNT + DROP_CHANCE];
                         DROPS[DROP_SPREAD * DROP_VALUE_COUNT + DROP_CHANCE] = 0;
                     }
                 }
                 else if (this.drops[i].type == LASER) {
-                    if (this.player.laser < MAX_DROPS) {
-                        this.player.laser++;
+                    if (this.player.upgrades[LASER_ID] < MAX_DROPS) {
+                        this.player.upgrades[LASER_ID]++;
                     }
-                    if (this.player.laser >= MAX_DROPS) {
+                    if (this.player.upgrades[LASER_ID] >= MAX_DROPS) {
                         DROPS[DROP_DAMAGE * DROP_VALUE_COUNT + DROP_CHANCE] += DROPS[DROP_LASER * DROP_VALUE_COUNT + DROP_CHANCE];
                         DROPS[DROP_LASER * DROP_VALUE_COUNT + DROP_CHANCE] = 0;
                     }
                 }
                 else if (this.drops[i].type == FLAMETHROWER) {
-                    if (this.player.flamethrower < MAX_DROPS) {
-                        this.player.flamethrower++;
+                    if (this.player.upgrades[FLAME_ID] < MAX_DROPS) {
+                        this.player.upgrades[FLAME_ID]++;
                     }
-                    if (this.player.flamethrower >= MAX_DROPS) {
+                    if (this.player.upgrades[FLAME_ID] >= MAX_DROPS) {
                         DROPS[DROP_DAMAGE * DROP_VALUE_COUNT + DROP_CHANCE] += DROPS[DROP_FLAMETHROWER * DROP_VALUE_COUNT + DROP_CHANCE];
                         DROPS[DROP_FLAMETHROWER * DROP_VALUE_COUNT + DROP_CHANCE] = 0;
                     }
                 }
                 else if (this.drops[i].type == SHIELD) {
-                    if (this.player.shield < MAX_DROPS) {
-                        this.player.shield++;
+                    if (this.player.upgrades[SHIELD_ID] < MAX_DROPS) {
+                        this.player.upgrades[SHIELD_ID]++;
                     }
-                    if (this.player.shield >= MAX_DROPS) {
+                    if (this.player.upgrades[SHIELD_ID] >= MAX_DROPS) {
                         DROPS[DROP_HEALTH * DROP_VALUE_COUNT + DROP_CHANCE] += DROPS[DROP_SHIELD * DROP_VALUE_COUNT + DROP_CHANCE];
                         DROPS[DROP_SHIELD * DROP_VALUE_COUNT + DROP_CHANCE] = 0;
                     }
@@ -417,20 +417,24 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
                 else if (this.drops[i].type == HEALTH) {
                     this.player.maxHealth += HEALTH_UP * this.hpScale;
                     this.player.health += HEALTH_UP * this.hpScale;
+                    this.player.upgrades[HEALTH_ID]++;
                 }
                 else if (this.drops[i].type == HEAL) {
                     this.player.health += HEAL_PERCENT * this.player.maxHealth / 100;
                     if (this.player.health > this.player.maxHealth) {
                         this.player.health = this.player.maxHealth;
+                        this.player.upgrades[HEAL_ID]++;
                     }
                     this.healCount++;
                 }
                 else if (this.drops[i].type == DAMAGE) {
                     this.playerDamage += DAMAGE_UP * this.dmgScale;
+                    this.player.upgrades[DAMAGE_ID]++;
                 }
                 else if (this.drops[i].type == SPEED) {
                     if (this.player.speed < PLAYER_SPEED + SPEED_UP * MAX_DROPS * this.spdScale) {
                         this.player.speed += SPEED_UP * this.spdScale;
+                        this.player.upgrades[SPEED_ID]++;
                     }
                     if (this.player.speed >= PLAYER_SPEED + SPEED_UP * MAX_DROPS * this.spdScale) {
                         DROPS[DROP_HEALTH * DROP_VALUE_COUNT + DROP_CHANCE] += DROPS[DROP_SPEED * DROP_VALUE_COUNT + DROP_CHANCE];
@@ -457,16 +461,16 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
         
         // Skill Cooldown
         canvas.drawImage(this.imgAbility, 10, 60 - UI_WIDTH / 2, UI_WIDTH - 20, UI_WIDTH - 20);
-        if (player.abilityActive) {
+        if (player.skillDuration > 0) {
             canvas.fillStyle = '#00FF00';
             canvas.font = '30px Flipbash';
-            var cd = Math.ceil((player.abilityDur - player.currentAbilityDur) / 60);
+            var cd = Math.ceil(player.skillDuration / 60);
             canvas.fillText(cd, (UI_WIDTH - StringWidth(cd, canvas.font)) / 2, 65);
         }
-        else if (player.currentAbilityCd > 0) {
+        else if (player.skillCd > 0) {
             canvas.fillStyle = '#FFFFFF';
             canvas.font = '30px Flipbash';
-            var cd = Math.ceil(player.currentAbilityCd / 60);
+            var cd = Math.ceil(player.skillCd / 60);
             canvas.fillText(cd, (UI_WIDTH - StringWidth(cd, canvas.font)) / 2, 65);
         }
         
@@ -537,7 +541,7 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
         var interval = 120 + margin;
         
         // Laser upgrades
-        var lasers = this.player.laser;
+        var lasers = this.player.upgrades[LASER_ID];
         if (lasers >= MAX_DROPS) {
             lasers = "Max";
         }
@@ -545,7 +549,7 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
         canvas.fillText(lasers, 50 - StringWidth(lasers, canvas.font) / 2, margin + extra + 110);
         
         // Spread upgrades
-        var spread = Math.round(2 * this.player.spread);
+        var spread = Math.round(2 * this.player.upgrades[SPREAD_ID]);
         if (spread >= MAX_DROPS) {
             spread = "Max";
         }
@@ -553,7 +557,7 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
         canvas.fillText(spread, 150 - StringWidth(spread, canvas.font) / 2, margin + extra + 110);
         
         // Flamethrower upgrades
-        var flamethrower = this.player.flamethrower;
+        var flamethrower = this.player.upgrades[FLAME_ID];
         if (flamethrower >= MAX_DROPS) {
             flamethrower = "Max";
         }
@@ -561,7 +565,7 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
         canvas.fillText(flamethrower, 50 - StringWidth(flamethrower, canvas.font) / 2, margin + extra + interval + 110);
         
         // Shield upgrade
-        var shield = this.player.shield;
+        var shield = this.player.upgrades[SHIELD_ID];
         if (shield >= MAX_DROPS) {
             shield = "Max";
         }
@@ -569,12 +573,12 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
         canvas.fillText(shield, 150 - StringWidth(shield, canvas.font) / 2, margin + extra + interval + 110);
         
         // Damage upgrade
-        var damage = Math.round((this.playerDamage - 1) / DAMAGE_UP);
+        var damage = this.player.upgrades[DAMAGE_ID];
         canvas.drawImage(this.imgDamage, 10, margin + extra + 2 * interval);
         canvas.fillText(damage, 50 - StringWidth(damage, canvas.font) / 2, margin + extra + 2 * interval + 110);
         
         // Speed upgrade
-        var speed = Math.round((this.player.speed - PLAYER_SPEED) / (SPEED_UP * this.spdScale));
+        var speed = this.player.upgrades[SPEED_ID];
         if (speed >= MAX_DROPS) {
             speed = "Max";
         }
@@ -582,13 +586,14 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
         canvas.fillText(speed, 150 - StringWidth(speed, canvas.font) / 2, margin + extra + 2 * interval + 110);
         
         // Health upgrade
-        var health = Math.round((this.player.maxHealth - PLAYER_HEALTH) / HEALTH_UP);
+        var health = this.player.upgrades[HEALTH_ID];
         canvas.drawImage(this.imgHealth, 10, margin + extra + 3 * interval);
         canvas.fillText(health, 50 - StringWidth(health, canvas.font) / 2, margin + extra + 3 * interval + 110);
         
         // Heal
+        var heals = this.player.upgrades[HEAL_ID];
         canvas.drawImage(this.imgHeal, 110, margin + extra + 3 * interval);
-        canvas.fillText(this.healCount, 150 - StringWidth(this.healCount, canvas.font) / 2, margin + extra + 3 * interval + 110);
+        canvas.fillText(heals, 150 - StringWidth(heals, canvas.font) / 2, margin + extra + 3 * interval + 110);
     }
     
     // Applies scrolling to the game

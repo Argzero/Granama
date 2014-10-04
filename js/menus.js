@@ -563,7 +563,7 @@ function AbilityScreen() {
     }
 }
 */
-
+/*
 // The character selection gameScreen of the game
 function SelectScreen() {
 
@@ -758,3 +758,4 @@ function SkillScreen(playerType, choice1, choice2, choice3, fx, fy, sx, sy) {
         canvas.drawImage(cursor, cx - cursor.width / 2, cy - cursor.height / 2);
     }
 }
+*/

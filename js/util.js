@@ -10,11 +10,11 @@ function StringWidth(s, font) {
 
 // Checks if a bullet is within the gameScreen
 // bullet - bullet to check for
-function WithinScreen(bullet) {
-    if (bullet.XMax() - gameScreen.scrollX < 0) return false;
-    if (bullet.XMin() - gameScreen.scrollX > WINDOW_WIDTH) return false;
-    if (bullet.YMax() - gameScreen.scrollY < 0) return false;
-    if (bullet.YMin() - gameScreen.scrollY > WINDOW_HEIGHT) return false;
+function WithinScreen(obj) {
+    if (XMax(obj) - gameScreen.scrollX < 0) return false;
+    if (XMin(obj) - gameScreen.scrollX > WINDOW_WIDTH) return false;
+    if (YMax(obj) - gameScreen.scrollY < 0) return false;
+    if (YMin(obj) - gameScreen.scrollY > WINDOW_HEIGHT) return false;
     return true;
 }
 
@@ -170,15 +170,15 @@ function SpreadHammers(robot, hammer, array) {
 // robot - robot to fire the spread shot for
 // laser - initial fired laser
 // array - list to add the lasers to
-function SpreadLaserShots(robot, laser, array) {
+function SpreadLaserShots(robot, laser, array, amount) {
 
     var l = laser;
     var r = laser;
-    var c = GetSpreadCos(robot);
-    var s = GetSpreadSin(robot);
-    var a = GetSpreadAngle(robot);
+    var c = GetSpreadCos(amount);
+    var s = GetSpreadSin(amount);
+    var a = GetSpreadAngle(amount);
     
-    for (var i = 0; i < robot.spread && i < 90; i++) {
+    for (var i = 0; i < amount && i < 90; i++) {
         l = SpreadLaser(l, 1, a, c, s);
         r = SpreadLaser(r, -1, a, c, s);
         array[array.length] = l;
@@ -187,18 +187,18 @@ function SpreadLaserShots(robot, laser, array) {
 }
 
 // Retrieves the cosine of the angle for the spread shot of the robot
-// robot - robot to retrieve the value for
-function GetSpreadCos(robot) {
-    if (robot.spread > 29) {
+// amount - spread of the bullets
+function GetSpreadCos(amount) {
+    if (amount > 29) {
         return COS_1;
     }
-	else if (robot.spread > 17) {
+	else if (amount > 17) {
 		return COS_3;
 	}
-    else if (robot.spread > 8) {
+    else if (amount > 8) {
         return COS_5;
     }
-    else if (robot.spread > 5) {
+    else if (amount > 5) {
         return COS_10;
     }
     else {
@@ -207,18 +207,18 @@ function GetSpreadCos(robot) {
 }
 
 // Retrieves the sine of the angle for the spread shot of the robot
-// robot - robot to retrieve the value for
-function GetSpreadSin(robot) {
-    if (robot.spread > 29) {
+// spread - spread of the bullets
+function GetSpreadSin(spread) {
+    if (spread > 29) {
         return SIN_1;
     }
-	else if (robot.spread > 17) {
+	else if (spread > 17) {
 		return SIN_3;
 	}
-    else if (robot.spread > 8) {
+    else if (spread > 8) {
         return SIN_5;
     }
-    else if (robot.spread > 5) {
+    else if (spread > 5) {
         return SIN_10;
     }
     else {
@@ -227,18 +227,18 @@ function GetSpreadSin(robot) {
 }
 
 // Retrieves the value of the angle in radians for the spread shot of the robot
-// robot - robot to retrieve the value for
-function GetSpreadAngle(robot) {
-    if (robot.spread > 29) {
+// amount - Spread of the bullets
+function GetSpreadAngle(amount) {
+    if (amount > 29) {
 		return Math.PI / 180;
 	}
-	else if (robot.spread > 17) {
+	else if (amount > 17) {
         return Math.PI / 60;
     }
-    else if (robot.spread > 8) {
+    else if (amount > 8) {
         return Math.PI / 36;
     }
-    else if (robot.spread > 5) {
+    else if (amount > 5) {
         return Math.PI / 18;
     }
     else {
@@ -277,4 +277,29 @@ function GetAngle(x1, y1, x2, y2) {
     else {
         return HALF_PI - a;
     }
+}
+
+// Resets the transform of the canvas to the game's scroll position
+function ResetTransform(canvas) {
+    canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX, -gameScreen.scrollY);
+}
+
+// Lower X bound for a game object
+function XMin(obj) {
+    return obj.x - obj.sprite.width / 2;
+}
+
+// Upper X bound for a game object
+function XMax(obj) {
+    return obj.x + obj.sprite.width / 2;
+}
+
+// Lower Y bound for a game object
+function YMin(obj) {
+    return obj.y - obj.sprite.height / 2;
+}
+
+// Upper Y bound for a game object
+function YMax(obj) {
+    return obj.y + obj.sprite.height / 2; 
 }

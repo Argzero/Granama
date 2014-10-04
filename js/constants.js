@@ -42,6 +42,19 @@ STASIS = 'Stasis',
 REFLECTOR = 'Reflector',
 RECHARGER = 'Recharger',
 
+// Ability methods
+SKILL_METHODS = {
+    BLINK: SkillBlink,
+    OVERDRIVE: SkillOverdrive,
+    TELEPORT: SkillTeleport,
+    WAVEBURST: SkillWaveburst,
+    BREAKERBLASTER: SkillBreakerblaster,
+    DECIMATION: SkillDecimation,
+    STASIS: SkillStasis,
+    REFLECTOR: SkillReflector,
+    RECHARGER: SkillRecharger
+},
+
 //Ability Cooldowns
 //Speed
 BLINK_CD = 300,
@@ -167,13 +180,13 @@ SPEED = "Speed",
 
 // Drop IDs
 LASER_ID = 0,
-SHIELD_ID = 1,
+SPREAD_ID = 1,
 FLAME_ID = 2,
-SPREAD_ID = 3,
-HEALTH_ID = 4,
-DAMAGE_ID = 5,
-HEAL_ID = 6,
-SPEED_ID = 7,
+SHIELD_ID = 3,
+DAMAGE_ID = 4,
+SPEED_ID = 5,
+HEALTH_ID = 6,
+HEAL_ID = 7,
 
 // Drop data
 DROP_COUNT = 8,

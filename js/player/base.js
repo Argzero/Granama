@@ -1,16 +1,17 @@
-function BasePlayer(x, y) {
+function BasePlayer() {
 	return {
 	
 		// Events
 		onDamaged: undefined,
 		onUpdate: undefined,
 		onDraw: undefined,
+        onFire: undefined,
 	
 		// Fields
-		x: x,
-		y: y,
+		x: GAME_WIDTH / 2,
+		y: GAME_HEIGHT / 2,
 		skillCd: 0,
-		skillActive: false,
+        skillDuration: 0,
 		angle: 0,
 		shield: 0,
 		shieldCd: SHIELD_RATE,
@@ -21,7 +22,10 @@ function BasePlayer(x, y) {
 		health: PLAYER_HEALTH,
 		maxHealth: PLAYER_HEALTH,
 		bullets: [],
-		upgrades: [0, 0, 0, 0, 0, 0, 0, 0],
+		upgrades: [100, 100, 0, 0, 0, 0, 0, 0],
+        mPower: 1,
+        mSpeed: 1,
+        mHealth: 1,
 		
 		// Damages the player using an optional damage source
 		Damage: function(amount, damager) {
@@ -47,10 +51,10 @@ function BasePlayer(x, y) {
 			if (amount) {
 				this.health -= amount;
 			}
-		}
+		},
 		
 		// Updates the player
-		Update: function() {
+		UpdateBase: function() {
 	
 			// Shield regeneration
 			if (this.upgrades[SHIELD_ID] > 0) {
@@ -79,15 +83,21 @@ function BasePlayer(x, y) {
 			
 			// Update event
 			var speed = this.speed;
-			if (this.onUpdate) {
-				speed = this.onUpdate();
-				if (!speed) {
-					return;
-				}
+			if (this.onMove) {
+				var result = this.onMove(speed);
+				if (result !== undefined) {
+                    speed = result;
+                }
+                if (!speed) {
+                    return;
+                }
 			}
 			
 			//Player's ability
-			if (this.skillCd > 0 && this.skillActive == false)
+            if (this.skillDuration > 0) {
+                this.skillDuration--;
+            }
+			else if (this.skillCd > 0 && this.skillDuration == 0)
 			{
 				this.skillCd--;
 			}
@@ -100,8 +110,8 @@ function BasePlayer(x, y) {
 			else {
 				this.angle = HALF_PI - a;
 			}
-			this.cos = c;
-			this.sin = s;
+			this.cos = -Math.sin(this.angle);
+			this.sin = Math.cos(this.angle);
 			
 			// Movement
 			var hor = KeyPressed(KEY_D) != KeyPressed(KEY_A);
@@ -121,32 +131,40 @@ function BasePlayer(x, y) {
 			}
 			
 			// Bounding
-			if (this.XMin() < 0) {
-				this.x += -this.XMin();
+			if (XMin(this) < 0) {
+				this.x += -XMin(this);
 			}
-			if (this.XMax() > GAME_WIDTH) {
-				this.x -= this.XMax() - GAME_WIDTH;
+			if (XMax(this) > GAME_WIDTH) {
+				this.x -= XMax(this) - GAME_WIDTH;
 			}
-			if (this.YMin() < 0) {
-				this.y += -this.YMin();
+			if (YMin(this) < 0) {
+				this.y += -YMin(this);
 			}
-			if (this.YMax() > GAME_HEIGHT) {
-				this.y -= this.YMax() - GAME_HEIGHT;
+			if (YMax(this) > GAME_HEIGHT) {
+				this.y -= YMax(this) - GAME_HEIGHT;
 			}
-		}
+		},
 		
 		// Draws the player and its bullets
-		Draw: function(canvas) {
+		DrawBase: function(canvas) {
 		
 			// Draw bullets
+            var start = new Date().getTime();
 			for (var i = 0; i < this.bullets.length; i++) {
 				this.bullets[i].Draw(canvas);
 			}
+            console.log("Bullets: " + this.bullets.length);
+            console.log("Draw time: " + (new Date().getTime() - start));
 			
 			// Draw event
 			if (this.onDraw) {
 				this.onDraw();
 			}
-		}
+		},
+        
+        // Checks whether or not a skill is being cast
+        IsSkillCast: function() {
+            return KeyPressed(KEY_SPACE) && this.skillCd <= 0 && this.skillDuration == 0;
+        }
 	}
 }
