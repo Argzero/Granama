@@ -25,10 +25,32 @@ function Enemy(x, y, type, range, attackCd, health, damage, spread, attack, spee
     this.speed = speed;
     this.attack = attack;
     this.sprite = GetImage("enemy" + type);
+	this.knockback = { x: 0, y: 0 };
+	
+	// Knocks back the enemy
+	this.Knockback = function(x, y) {
+		this.knockback.x = x;
+		this.knockback.y = y;
+	};
     
     // Updates the enemy
-    this.Update = Update;
-    function Update() {
+    this.Update = function() {
+	
+		// Apply knockback
+		if (this.knockback.x || this.knockback.y) {
+			var dx = this.knockback.x;
+			var dy = this.knockback.y;
+			var l = Distance(0, 0, dx, dy);
+			if (l < KNOCKBACK_SPEED) l = KNOCKBACK_SPEED;
+			dx *= KNOCKBACK_SPEED / l;
+			dy *= KNOCKBACK_SPEED / l;
+			this.knockback.x -= dx;
+			this.knockback.y -= dy;
+			this.x += dx;
+			this.y += dy;
+			console.log("Knockback = (" + this.knockback.x + ", " + this.knockback.y + ")");
+			return;
+		}
     
         if (this.attack == ATTACK_MINES || this.attack == ATTACK_TURRET) {
             this.MoveMines();
@@ -68,12 +90,11 @@ function Enemy(x, y, type, range, attackCd, health, damage, spread, attack, spee
         if (this.YMax() > GAME_HEIGHT) {
             this.y -= this.YMax() - GAME_HEIGHT;
         }
-    }
+    };
     
     // Normal movement for enemies
     // Moves towards or away from the player to the preferred range while turning towards them
-    this.MoveNormal = MoveNormal;
-    function MoveNormal() {
+    this.MoveNormal = function() {
     
         // Turn towards the player
         var dx = gameScreen.player.x - this.x;
@@ -142,12 +163,11 @@ function Enemy(x, y, type, range, attackCd, health, damage, spread, attack, spee
         else if (this.cd > 0) {
             this.cd--;
         }
-    }
+    };
     
     // Movement for mine layers
     // Circles around the player in a more flexible preferred range
-    this.MoveMines = MoveMines;
-    function MoveMines() {
+    this.MoveMines = function() {
     
         // Move normally if not in the preferred range
         var ds = DistanceSq(this.x, this.y, gameScreen.player.x, gameScreen.player.y);
@@ -207,12 +227,11 @@ function Enemy(x, y, type, range, attackCd, health, damage, spread, attack, spee
         else if (this.cd > 0) {
             this.cd--;
         }
-    }
+    };
     
     // Draws the enemy to the gameScreen
     // canvas - context of the canvas to draw to
-    this.Draw = Draw;
-    function Draw(canvas) {
+    this.Draw = function(canvas) {
         canvas.translate(this.x - this.sprite.width / 2, this.y - this.sprite.height / 2);
         
         // Health bar
@@ -233,7 +252,7 @@ function Enemy(x, y, type, range, attackCd, health, damage, spread, attack, spee
         canvas.drawImage(this.sprite, 0, 0);
         
         canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX, -gameScreen.scrollY);
-    }
+    };
     
     // Gets the horizontal coordinate of the left side of the enemy
     this.XMin = XMin;

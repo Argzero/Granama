@@ -166,12 +166,9 @@ function BasePlayer(sprite) {
             ResetTransform(canvas);
         
 			// Draw bullets
-            var start = new Date().getTime();
 			for (i = 0; i < this.bullets.length; i++) {
 				this.bullets[i].Draw(canvas);
 			}
-            console.log("Bullets: " + this.bullets.length);
-            console.log("Draw time: " + (new Date().getTime() - start));
 			
 			// Draw event
 			if (this.onDraw) {
