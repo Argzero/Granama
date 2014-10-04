@@ -129,12 +129,11 @@ function SpreadShots(robot, bullet, array) {
     // Spread shots
     var l = bullet;
     var r = bullet;
-    var c = GetSpreadCos(robot);
-    var s = GetSpreadSin(robot);
+    var d = GetSpreadData(robot);
     
     for (var i = 0; i < robot.spread; i++) {
-        l = Spread(l, 1, c, s);
-        r = Spread(r, -1, c, s);
+        l = Spread(l, 1, d.c, d.s);
+        r = Spread(r, -1, d.c, d.s);
         array[array.length] = l;
         array[array.length] = r;
     }
@@ -174,75 +173,33 @@ function SpreadLaserShots(robot, laser, array, amount) {
 
     var l = laser;
     var r = laser;
-    var c = GetSpreadCos(amount);
-    var s = GetSpreadSin(amount);
-    var a = GetSpreadAngle(amount);
+    var d = GetSpreadData(amount);
     
     for (var i = 0; i < amount && i < 90; i++) {
-        l = SpreadLaser(l, 1, a, c, s);
-        r = SpreadLaser(r, -1, a, c, s);
+        l = SpreadLaser(l, 1, d.a, d.c, d.s);
+        r = SpreadLaser(r, -1, d.a, d.c, d.s);
         array[array.length] = l;
         array[array.length] = r;
     }
 }
 
-// Retrieves the cosine of the angle for the spread shot of the robot
-// amount - spread of the bullets
-function GetSpreadCos(amount) {
-    if (amount > 29) {
-        return COS_1;
-    }
-	else if (amount > 17) {
-		return COS_3;
-	}
-    else if (amount > 8) {
-        return COS_5;
-    }
-    else if (amount > 5) {
-        return COS_10;
-    }
-    else {
-        return COS_15;
-    }
-}
-
-// Retrieves the sine of the angle for the spread shot of the robot
-// spread - spread of the bullets
-function GetSpreadSin(spread) {
-    if (spread > 29) {
-        return SIN_1;
-    }
-	else if (spread > 17) {
-		return SIN_3;
-	}
-    else if (spread > 8) {
-        return SIN_5;
-    }
-    else if (spread > 5) {
-        return SIN_10;
-    }
-    else {
-        return SIN_15;
-    }
-}
-
 // Retrieves the value of the angle in radians for the spread shot of the robot
 // amount - Spread of the bullets
-function GetSpreadAngle(amount) {
+function GetSpreadData(amount) {
     if (amount > 29) {
-		return Math.PI / 180;
+		return { a: Math.PI / 180, s: SIN_1, c: COS_1 };
 	}
 	else if (amount > 17) {
-        return Math.PI / 60;
+        return { a: Math.PI / 60, s: SIN_3, c: COS_3 };
     }
     else if (amount > 8) {
-        return Math.PI / 36;
+        return { a: Math.PI / 36, s: SIN_5, c: COS_5 };
     }
     else if (amount > 5) {
-        return Math.PI / 18;
+        return { a: Math.PI / 18, s: SIN_10, c: COS_10 };
     }
     else {
-        return Math.PI / 12;
+        return { a: Math.PI / 12, s: SIN_15, c: COS_15 };
     }
 }
 

@@ -23,7 +23,7 @@ function BasePlayer(sprite) {
 		maxHealth: PLAYER_HEALTH,
 		bullets: [],
         drawObjects: [{ sprite: sprite, xOffset: -sprite.width / 2, yOffset: -sprite.height / 2 }],
-		upgrades: [100, 100, 0, 0, 0, 0, 0, 0],
+		upgrades: [0, 0, 0, 0, 0, 0, 0, 0],
         mPower: 1,
         mSpeed: 1,
         mHealth: 1,
