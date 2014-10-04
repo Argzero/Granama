@@ -1,16 +1,35 @@
 function PlayerPowerType() {
-    var p = BasePlayer();
+    var p = BasePlayer(GetImage('pPowerBody'));
     
     // Weapon cooldowns
     p.fireCd = 0;
     p.laserCd = 0;
     
     // Sprites
-    p.sprite = GetImage('pPowerBody');
-    p.laserSprite = GetImage('pPowerLaser');
-    p.spreadSprite = GetImage('pPowerSpread');
-    p.shieldSprite = GetImage('pPowerShield');
-    p.flamethrowerSprite = GetImage('pPowerFlame');
+    p.drawObjects.push({ 
+        sprite: GetImage('pPowerLaser'), 
+        xOffset: -10, 
+        yOffset: -30,
+        condition: function() { return this.upgrades[SPREAD_ID] == 0; }.bind(p)
+    });
+    p.drawObjects.push({ 
+        sprite: GetImage('pPowerSpread'), 
+        xOffset: -20.5,
+        yOffset: -30,
+        condition: function() { return this.upgrades[SPREAD_ID] > 0; }.bind(p)
+    });
+    p.drawObjects.push({
+        sprite: GetImage('pPowerShield'),
+        xOffset: -11,
+        yOffset: -20,
+        condition: function() { return this.upgrades[SHIELD_ID] > 0; }.bind(p)
+    });
+    p.drawObjects.push({
+        sprite: GetImage('pPowerFlame'),
+        xOffset: -40,
+        yOffset: -20,
+        condition: function() { return this.upgrades[FLAME_ID] > 0; }.bind(p)
+    });
     
     // Updates the player
     p.Update = function() {
@@ -75,44 +94,6 @@ function PlayerPowerType() {
         else if (this.laserCd > 0) {
             this.laserCd--;
         }
-    };
-    
-    // Draws the player to the canvas
-    p.Draw = function(canvas) {
-    
-        // Transform the canvas to match the player orientation
-        canvas.translate(this.x, this.y);
-        canvas.transform(this.sin, -this.cos, this.cos, this.sin, 0, 0);
-        canvas.translate(-this.sprite.width / 2, -this.sprite.height / 2);
-        
-        // Draw the sprite
-        canvas.drawImage(this.sprite, 0, 0);
-        
-        // Draw the shield
-        if (this.upgrades[SHIELD_ID] > 0) {
-            canvas.drawImage(this.shieldSprite, 14, 9);
-        }
-        
-        // Draw the flamethrower
-        if (this.upgrades[FLAME_ID] > 0) {
-            canvas.drawImage(this.flamethrowerSprite, -15, 9);
-        }
-        
-        // Draw the laser gun
-        var gun;
-        if (this.spread) {
-            gun = this.spreadSprite;
-        }
-        else {
-            gun = this.laserSprite;
-        }
-        canvas.drawImage(gun, this.sprite.width / 2 - gun.width / 2, -5);
-        
-        // Restore the transform
-        ResetTransform(canvas);
-    
-        // Draw bullets and skills
-        this.DrawBase(canvas);
     };
     
     return p;

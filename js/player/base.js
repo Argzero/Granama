@@ -1,4 +1,4 @@
-function BasePlayer() {
+function BasePlayer(sprite) {
 	return {
 	
 		// Events
@@ -17,11 +17,12 @@ function BasePlayer() {
 		shieldCd: SHIELD_RATE,
 		cos: 0,
 		sin: 1,
-		sprite: undefined,
+		sprite: sprite,
 		speed: PLAYER_SPEED,
 		health: PLAYER_HEALTH,
 		maxHealth: PLAYER_HEALTH,
 		bullets: [],
+        drawObjects: [{ sprite: sprite, xOffset: -sprite.width / 2, yOffset: -sprite.height / 2 }],
 		upgrades: [100, 100, 0, 0, 0, 0, 0, 0],
         mPower: 1,
         mSpeed: 1,
@@ -146,11 +147,27 @@ function BasePlayer() {
 		},
 		
 		// Draws the player and its bullets
-		DrawBase: function(canvas) {
+		Draw: function(canvas) {
+        
+            // Transform the canvas to match the player orientation
+            canvas.translate(this.x, this.y);
+            canvas.transform(this.sin, -this.cos, this.cos, this.sin, 0, 0);
+        
+            // Draw various parts of the player
+            var i;
+            for (i = 0; i < this.drawObjects.length; i++) {
+                var obj = this.drawObjects[i];
+                if (!obj.condition || obj.condition()) {
+                    canvas.drawImage(obj.sprite, obj.xOffset, obj.yOffset);
+                }
+            }
 		
+            // Restore the transform
+            ResetTransform(canvas);
+        
 			// Draw bullets
             var start = new Date().getTime();
-			for (var i = 0; i < this.bullets.length; i++) {
+			for (i = 0; i < this.bullets.length; i++) {
 				this.bullets[i].Draw(canvas);
 			}
             console.log("Bullets: " + this.bullets.length);
