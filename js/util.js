@@ -1,3 +1,11 @@
+// Clones an object entirely
+function Clone(obj) {
+    var clone = { };
+    for (var field in obj) {
+        clone[field] = obj[field];
+    }
+}
+
 // A vector representation with helpful methods
 function Vector(x, y) {
     return {
