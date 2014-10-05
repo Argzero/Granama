@@ -43,7 +43,7 @@ var vectorMethods = {
         var dx = this.x - vector.x;
         var dy = this.y - vector.y;
         return dx * dx + dy * dy;
-    }
+    },
     
     // Length of the vector
     Length: function() {
@@ -75,7 +75,7 @@ var vectorMethods = {
     },
     
     // Sets the length of the vector
-    SetLength(length) {
+    SetLength: function(length) {
         var l = this.Length();
         this.x *= length / l;
         this.y *= length / l;

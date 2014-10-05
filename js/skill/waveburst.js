@@ -14,12 +14,24 @@ function SkillWaveburst(player) {
                 var cos = -Math.sin(this.angle + this.waveAngle);
                 var sin = Math.cos(this.angle + this.waveAngle);
                 this.waveAngle += Math.PI / 60;
-                var spacing = (this.sprite.height / 2 + 25 + BULLET_SPEED * i / 5);
-                var laser = NewLaser(this.x + cos * spacing, this.y + sin * spacing, cos * BULLET_SPEED, sin * BULLET_SPEED, this.angle + this.waveAngle, LASER_DAMAGE, LASER_RANGE * 2);
+                var laser = ProjectileBase(
+                    GetImage('abilityLaser'),
+                    this,
+                    0,
+                    54 + BULLET_SPEED * i / 5, 
+                    cos * BULLET_SPEED, 
+                    sin * BULLET_SPEED, 
+                    this.angle + this.waveAngle, 
+                    LASER_DAMAGE, 
+                    LASER_RANGE * 2,
+                    true,
+                    true
+                );
+                /*
                 laser.x += laser.velX * i / 5;
                 laser.y += laser.velY * i / 5;
-                laser.sprite = GetImage('abilityLaser');
-                this.bullets[this.bullets.length] = laser;
+                */
+                this.bullets.push(laser);
             }
         }
     }

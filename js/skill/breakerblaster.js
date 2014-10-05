@@ -9,9 +9,21 @@ function SkillBreakerblaster(player) {
         
         // Active skill effects
         if (this.skillDuration > 0) {
-            var laser = NewLaser(this.x + this.cos * (this.sprite.height / 2 + 25), this.y + this.sin * (this.sprite.height / 2 + 25), this.cos * BULLET_SPEED, this.sin * BULLET_SPEED, this.angle, LASER_DAMAGE * 2, LASER_RANGE * 2);
-            laser.sprite = GetImage('abilityCannon');
-			this.bullets[this.bullets.length] = laser;
+            sprite, source, x, y, velX, velY, angle, damage, range, pierce, offScreen
+            var laser = ProjectileBase(
+                GetImage('abilityCannon'),
+                this,
+                0,
+                54, 
+                this.cos * BULLET_SPEED, 
+                this.sin * BULLET_SPEED, 
+                this.angle, 
+                LASER_DAMAGE * 2, 
+                LASER_RANGE * 2,
+                true,
+                true
+            );
+			this.bullets.push(laser);
         }
     }
 }

@@ -10,7 +10,6 @@ element,
 tile,
 player,
 escDown = true,
-shouldDraw = true,
 cursor;
 
 // Set up the game when the page loads
@@ -47,10 +46,7 @@ window.onload = function() {
     		if (gameScreen.Update) {
                 gameScreen.Update();
             }
-            if (shouldDraw) {
-                gameScreen.Draw();
-            }
-            shouldDraw = !shouldDraw;
+            gameScreen.Draw();
         }
     }, 1000 / GAME_FPS);
 }

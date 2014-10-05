@@ -65,18 +65,19 @@ function PlayerPowerType() {
         if (fireUps > 0 && this.fireCd <= 0 && KeyPressed(KEY_LMB)) {
             this.fireCd = FIRE_CD;
 			var range = fireUps * FLAME_UP + FIRE_RANGE;
-            var fire = new Fire(
-                this.x - 30 * this.sin + 20 * this.cos + this.cos * this.sprite.width / 2, 
-                this.y + 30 * this.cos + 20 * this.sin + this.sin * this.sprite.width / 2, 
+            var fire = FireProjectile(
+                m2 > 1 ? GetImage('abilityFire') : GetImage('fire'),
+                this,
+                30, 
+                45, 
                 this.cos * BULLET_SPEED, 
                 this.sin * BULLET_SPEED, 
                 this.angle, 
                 FIRE_DAMAGE * m * m2, 
-                range
+                range,
+                true,
+                false
             );
-            if (m2 > 1) {
-			    fire.sprite = GetImage('abilityFire');
-			}
             this.bullets[this.bullets.length] = fire;
         }
         else if (this.fireCd > 0) {
@@ -86,22 +87,24 @@ function PlayerPowerType() {
         // Lasers
         if (this.laserCd <= 0 && KeyPressed(KEY_LMB)) {
 			this.laserCd = 60 / (LASER_APS + this.upgrades[LASER_ID] * LASER_UP);
-			var laser = NewLaser(
-                this.x + this.cos * (this.sprite.height / 2 + 25), 
-                this.y + this.sin * (this.sprite.height / 2 + 25), 
+			var laser = ProjectileBase(
+                m2 > 1 ? GetImage('abilityLaser') : GetImage('laser'),
+                this,
+                0, 
+                54, 
                 this.cos * BULLET_SPEED, 
                 this.sin * BULLET_SPEED, 
                 this.angle, 
                 LASER_DAMAGE * m * m2, 
-                LASER_RANGE
+                LASER_RANGE,
+                true,
+                false
             );
-			if (m2 > 1) {
-			    laser.sprite = GetImage('abilityLaser');
-			}
-			this.bullets[this.bullets.length] = laser;
+			this.bullets.push(laser);
 			
+            // Spread shot
 			if (this.upgrades[SPREAD_ID] > 0) {                    
-				SpreadLaserShots(this, laser, this.bullets, this.upgrades[SPREAD_ID] / 2);
+                laser.Spread(this.upgrades[SPREAD_ID] / 2, this.bullets);
 			}
         }
         else if (this.laserCd > 0) {

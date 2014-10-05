@@ -89,7 +89,7 @@ function BasePlayer(sprite, drops) {
 					i--;
 				}
 				this.bullets[i].Update();
-				if (DistanceSq(this.bullets[i].ox, this.bullets[i].oy, this.bullets[i].x, this.bullets[i].y) > Sq(this.bullets[i].range) || !WithinScreen(this.bullets[i])) {
+				if (this.bullets[i].expired) {
 					this.bullets.splice(i, 1);
 					i--;
 				}

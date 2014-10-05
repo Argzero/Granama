@@ -38,10 +38,18 @@ function SkillOverdrive(player) {
                 }
                 
                 if (velX != 0 || velY != 0) {
-                    var range = 200;
-                    var fire = new Fire(this.x, this.y, velX, velY, oppositeAngle, FIRE_DAMAGE, range);
-                    fire.sprite = GetImage('abilityFire');
-                    this.bullets[this.bullets.length] = fire;
+                    var fire = FireProjectile(
+                        GetImage('abilityFire'),
+                        this,
+                        0,
+                        0, 
+                        velX, 
+                        velY, 
+                        oppositeAngle, 
+                        FIRE_DAMAGE, 
+                        200
+                    );
+                    this.bullets.push(fire);
                 }
             }
             
