@@ -40,6 +40,7 @@ function ProjectileBase(sprite, source, x, y, velX, velY, angle, damage, range, 
 function FireProjectile(sprite, source, x, y, velX, velY, angle, damage, range) {
     var projectile = ProjectileBase(sprite, source, x, y, velX, velY, angle, damage, range, true, false);
     projectile.ApplyUpdate = projectileFunctions.ScaleFire;
+    projectile.ApplyUpdate();
     return projectile;
 }
 
@@ -140,7 +141,7 @@ var projectileFunctions = {
                 proj.cos = Math.cos(proj.angle);
                 proj.sin = Math.sin(proj.angle);
                 vel[j * 2] = proj.velX;
-                vel[j * 2 + 1] = proj.vely;
+                vel[j * 2 + 1] = proj.velY;
                 array.push(proj);
             }
         }

@@ -68,7 +68,7 @@ function PlayerPowerType() {
             var fire = FireProjectile(
                 m2 > 1 ? GetImage('abilityFire') : GetImage('fire'),
                 this,
-                30, 
+                -30, 
                 45, 
                 this.cos * BULLET_SPEED, 
                 this.sin * BULLET_SPEED, 

@@ -57,7 +57,9 @@ function BasePlayer(sprite, drops) {
         
         // Updates the player's max health
         UpdateHealth: function() {
-            this.maxHealth = PLAYER_HEALTH + this.upgrades[HEALTH_ID] * HEALTH_UP;
+            var maxBonus = PLAYER_HEALTH + this.upgrades[HEALTH_ID] * HEALTH_UP - this.maxHealth;
+            this.maxHealth += maxBonus;
+            this.health += maxBonus;
         },
         
         // Retrieves the damage multiplier for the player

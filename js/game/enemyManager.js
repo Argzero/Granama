@@ -6,8 +6,12 @@ function EnemyManager(screen) {
     this.bossIncrement = BOSS_SPAWN_BASE;
     this.bossCount = 0;
     
-    // Spawn counter
+    // Spawn data
     this.spawnCd = SPAWN_RATE;
+    this.spawnWeight = 0;
+    for (var i = 0; i < SPAWN_DATA.length; i += 2) {
+        this.spawnWeight += SPAWN_DATA[i];
+    }
     
     // Game objects
     this.enemies = new Array();
@@ -36,7 +40,14 @@ function EnemyManager(screen) {
         for (var i = 0; i < this.bullets.length; i++) {
             this.bullets[i].Draw(canvas);
         }
-    }
+    };
+    
+    // Updates the enemies in the game
+    this.UpdateEnemies = function() {
+        for (var i = 0; i < this.enemies.length; i++) {
+            this.enemies[i].Update();
+        }
+    };
     
     // Updates the bullets for enemies
     this.UpdateBullets = function() {
@@ -53,16 +64,11 @@ function EnemyManager(screen) {
             // bullets expired by themselves
             if (this.bullets[i].expired) {
                 this.bullets.splice(i, 1);
-            }
-            
-            // Remove bullets when they are not visible
-            else if (!this.bullets[i].actualDamage && (DistanceSq(this.bullets[i].ox, this.bullets[i].oy, this.bullets[i].x, this.bullets[i].y) > Sq(this.bullets[i].range) || !WithinScreen(this.bullets[i]))) {
-                this.bullets.splice(i, 1);
                 i--;
             }
             
             // See if the bullet hit the player
-            else if (this.player.health > 0 && BulletCollides(this.bullets[i], screen.player) && this.bullets[i].damage > 0) {
+            else if (screen.player.health > 0 && BulletCollides(this.bullets[i], screen.player) && this.bullets[i].damage > 0) {
                 if (this.bullets[i].enemy) {
                     screen.player.Damage(this.bullets[i].damage, this.bullets[i].enemy);
                 }
@@ -119,7 +125,7 @@ function EnemyManager(screen) {
                 }
                 
                 // Create an explosion
-                screen.explosions[this.explosions.length] = new Explosion(this.enemies[i].x, this.enemies[i].y, this.enemies[i].sprite.width / 150);
+                screen.explosions.push(new Explosion(this.enemies[i].x, this.enemies[i].y, this.enemies[i].sprite.width / 150));
             
                 // Remove the enemy
                 this.enemies.splice(i, 1);
@@ -136,7 +142,7 @@ function EnemyManager(screen) {
         var x, y;
         
         // Boss spawning
-        else if (this.bossStatus == ACTIVE_NONE && screen.score == this.bossScore) {
+        if (this.bossStatus == ACTIVE_NONE && screen.score == this.bossScore) {
             this.bossStatus = ACTIVE_BOSS;
             
             // Get the position
@@ -146,7 +152,7 @@ function EnemyManager(screen) {
             else {
                 x = 500;
             }
-            if (this.screen.y < GAME_HEIGHT / 2) {
+            if (screen.player.y < GAME_HEIGHT / 2) {
                 y = GAME_HEIGHT - 500;
             }
             else {
@@ -175,24 +181,6 @@ function EnemyManager(screen) {
         if (this.bossStatus == ACTIVE_NONE && this.spawnCd <= 0 && this.enemies.length < MAX_ENEMIES && this.enemies.length + screen.score < this.bossScore) {
             var dir = Math.random();
             
-            // Get a random type
-            var r = Rand(300);
-            if (this.bossCount >= 3) {
-                r = Rand(303);
-            }
-            var total = 0;
-            var type = -1;
-            for (var i = 0; i < ENEMY_DATA.length / ENEMY_VALUE_COUNT; i++) {
-                total += ENEMY_DATA[i * ENEMY_VALUE_COUNT + ENEMY_CHANCE];
-                if (total > r) {
-                    type = i * ENEMY_VALUE_COUNT;
-                    break;
-                }
-            }
-            if (type == -1) {
-                return;
-            }
-            
             // Get a spawn point off of the gameScreen
             x = Rand(GAME_WIDTH - 200 + 100);
             y = Rand(GAME_HEIGHT - 200 + 100);
@@ -201,17 +189,26 @@ function EnemyManager(screen) {
                 y = Rand(GAME_HEIGHT - 200 + 100);
             }
             
+            // Get a random type
+            var r = Rand(this.spawnWeight - 3);
+            if (this.bossCount >= 3) {
+                r = Rand(this.spawnWeight);
+            }
+            var total = 0;
+            var enemy;
+            for (var i = 0; i < SPAWN_DATA.length; i += 2) {
+                total += SPAWN_DATA[i];
+                if (total > r) {
+                    enemy = SPAWN_DATA[i + 1](x, y);
+                    break;
+                }
+            }
+            if (!enemy) {
+                return;
+            }
+            
             // Spawn the enemy
-            this.enemies.push(new Enemy(x, y,
-                    ENEMY_DATA[type + ENEMY_TYPE], 
-                    ENEMY_DATA[type + ENEMY_RANGE], 
-                    ENEMY_DATA[type + ENEMY_ATTACK_RATE], 
-                    ENEMY_DATA[type + ENEMY_HEALTH] * (type >= MINIBOSS_START ? this.minibossMultiplier : this.healthMultiplier),
-                    ENEMY_DATA[type + ENEMY_DAMAGE],
-                    Rand(this.bossCount + 1),
-                    ENEMY_DATA[type + ENEMY_ATTACK],
-                    ENEMY_DATA[type + ENEMY_SPEED] + ENEMY_DATA[type + ENEMY_SPEED_SCALE] * (this.bossCount > 5 ? 5 : this.bossCount)
-            ));
+            this.enemies.push(enemy);
             
             // Apply the cooldown
             this.spawnCd = SPAWN_RATE - SPAWN_SCALE * screen.score;

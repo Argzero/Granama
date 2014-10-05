@@ -46,6 +46,8 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
     this.drops = new Array();
     this.music;
     this.player = player;
+    this.dropManager = new DropManager(this);
+    this.enemyManager = new EnemyManager(this);
     this.ui = new UIManager(this);
     
     // Update function
@@ -81,19 +83,24 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
         // Players and enemies don't need to update if the game is over
         if (this.player.health > 0) {
             this.player.Update();
+            this.enemyManager.UpdateEnemies();
+            /*
             for (var i = 0; i < this.enemies.length; i++) {
                 this.enemies[i].Update();
             }
+            */
         }
         else if (this.player.bullets.length++) {
             this.player.bullets.splice(0, this.player.bullets.length);
         }
         
         this.UpdateBullets();
-        this.CollectDrops();
+        //this.CollectDrops();
+        this.dropManager.Update();
         
         this.ApplyScrolling();
-        this.SpawnEnemies();
+        //this.SpawnEnemies();
+        this.enemyManager.CheckSpawns();
     }
 
     // Update function
@@ -116,6 +123,7 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
         // Apply scroll offsets
         canvas.translate(-this.scrollX, -this.scrollY);
         
+        /*
         // Drops
         for (var i = 0; i < this.drops.length; i++) {
             this.drops[i].Draw(canvas);
@@ -137,12 +145,18 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
                 this.enemies[i].Draw(canvas);
             }
         }
+        */
+        
+        this.dropManager.Draw();
         
         // Player
         if (this.player.health > 0) {
             this.player.Draw(canvas);
         }
         
+        this.enemyManager.Draw();
+        
+        /*
         // Dragon
         if (this.dragonActive) {
             this.enemies[0].Draw(canvas);
@@ -152,6 +166,7 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
         for (var i = 0; i < this.bullets.length; i++) {
             this.bullets[i].Draw(canvas);
         }
+        */
         
         // Explosions
         for (var i = 0; i < this.explosions.length; i++) {
@@ -192,6 +207,9 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
     this.UpdateBullets = UpdateBullets;
     function UpdateBullets() {
 
+        this.enemyManager.UpdateBullets();
+    
+        /*
         // Update turrets
         for (var i = 0; i < this.turrets.length; i++) {
             this.turrets[i].Update();
@@ -241,6 +259,7 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
                 i--;
             }
         }
+        */
         
         // Done if the player is dead
         if (this.player.health <= 0) {
@@ -270,11 +289,11 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
             }
             
             // Regular enemy collision
-            for (var j = 0; j < this.enemies.length; j++) {
+            for (var j = 0; j < this.enemyManager.enemies.length; j++) {
             
                 // See if the bullet hit the enemy
-                if (BulletCollides(this.player.bullets[i], this.enemies[j])) {
-                    this.enemies[j].health -= this.player.bullets[i].damage * this.playerDamage;
+                if (BulletCollides(this.player.bullets[i], this.enemyManager.enemies[j])) {
+                    this.enemyManager.enemies[j].health -= this.player.bullets[i].damage * this.playerDamage;
                     
                     // If the bullet is not a piercing bullet, remove it
                     if (!this.player.bullets[i].pierce) {
@@ -286,6 +305,8 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
             }
         }
         
+        this.enemyManager.CheckDeaths();
+        /*
         // Check if enemies died
         for (var i = 0; i < this.enemies.length; i++) {
             if (this.enemies[i].health <= 0) {
@@ -358,6 +379,7 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
                 }
             }
         }
+        */
     }
 
     // Collects the drops on the ground

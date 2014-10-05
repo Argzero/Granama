@@ -4,6 +4,7 @@ function Clone(obj) {
     for (var field in obj) {
         clone[field] = obj[field];
     }
+    return clone;
 }
 
 // A vector representation with helpful methods
@@ -51,7 +52,7 @@ var vectorMethods = {
     },
     
     // Squared length of the vector
-    LenghtSq: function() {
+    LengthSq: function() {
         return this.x * this.x + this.y * this.y;
     },
     

@@ -142,6 +142,14 @@ ENEMY_DATA = new Array(
     "Railer",         0.1,  550,    60,        80,  1,       ATTACK_RAIL,     2,      0.4,
     "Paladin",        4,    300,    60,        100, 1,       ATTACK_HAMMER,   3,      0.5
 ),
+SPAWN_DATA = [
+    90, LightRangedEnemy,
+    45, HeavyRangedEnemy,
+    60, LightArtilleryEnemy,
+    30, HeavyArtilleryEnemy,
+    15, LightMeleeEnemy,
+    15, HeavyMeleeEnemy
+],
 
 BOSS_SPEED_SCALE = 0.4;
 BOSS_HEAVY = 0,

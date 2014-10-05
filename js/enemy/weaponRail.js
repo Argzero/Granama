@@ -19,18 +19,21 @@ function EnemyWeaponRail() {
         
         // Fire when charged up
         if (this.railCd < 0) {
-            var laser = new Projectile(
-                this.x + this.cos * this.sprite.height / 2, 
-                this.y + this.sin * this.sprite.height / 2, 
+            sprite, source, x, y, velX, velY, angle, damage, range, pierce, offScreen
+            var laser = ProjectileBase(
+                GetImage('bossLaser'),
+                this,
+                0,
+                this.sprite.height / 2, 
                 this.cos * BULLET_SPEED, 
                 this.sin * BULLET_SPEED, 
                 this.angle, 
                 this.railDamage, 
                 this.railRange * 1.5, 
                 true, 
-                "bossLaser"
+                true
             );
-            gameScreen.enemyManager.bullets[gameScreen.bullets.length] = laser;
+            gameScreen.enemyManager.bullets,push(laser);
             
             // "Overheating" resets the charge countdown
             if (this.railCd < -this.railDuration) {

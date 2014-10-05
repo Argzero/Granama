@@ -84,7 +84,7 @@ function UIManager(screen) {
         var margin = Math.floor((space - blocks * this.healthBlue.height) / (blocks + 1));
         var extra = Math.floor((space - blocks * this.healthBlue.height - margin * (blocks + 1)) / 2) + 110;
         var percent = 100 * screen.player.health / screen.player.maxHealth;
-        var shield = 100 * screen.player.currentShield / (screen.player.maxHealth * SHIELD_MAX);
+        var shield = 100 * screen.player.shield / (screen.player.maxHealth * SHIELD_MAX);
         
         // Draw each health box individually
         for (var i = 0; i < blocks; i++) {

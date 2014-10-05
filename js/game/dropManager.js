@@ -15,9 +15,9 @@ function DropManager(screen) {
             
                 // Health pack special case
                 if (this.drops[i].type == HEAL) {
-                    this.player.health += HEAL_PERCENT * this.player.maxHealth / 100;
-                    if (this.player.health > this.player.maxHealth) {
-                        this.player.health = this.player.maxHealth;
+                    screen.player.health += HEAL_PERCENT * screen.player.maxHealth / 100;
+                    if (screen.player.health > screen.player.maxHealth) {
+                        screen.player.health = screen.player.maxHealth;
                     }
                 }
                 
@@ -25,12 +25,12 @@ function DropManager(screen) {
                 var id = this.drops[i].id;
                 var dataId = id * DROP_VALUES;
                 var max = screen.player.drops[dataId + DROP_MAX];
-                if (screen.player.ups[id] < max) {
-                    screen.player.ups[id]++;
+                if (max == -1 || screen.player.upgrades[id] < max) {
+                    screen.player.upgrades[id]++;
                 }
                 
                 // Switch to the backup upgrade when maxed out
-                if (screen.player.ups[id] >= max) {
+                if (max > 0 && screen.player.upgrades[id] >= max) {
                     var backupId = screen.player.drops[dataId + DROP_BACKUP] * DROP_VALUES;
                     screen.player.drops[backupId + DROP_CHANCE] += screen.player.drops[dataId + DROP_CHANCE];
                     screen.player.drops[dataId + DROP_CHANCE] = 0;
@@ -53,7 +53,7 @@ function DropManager(screen) {
         for (var k = 0; k < DROP_COUNT; k++) {
             total += drops[k * DROP_VALUES + DROP_CHANCE];
             if (total > rand) {
-                this.drops.push(new Drop(x, y, drops[k * DROP_VALUE_COUNT + DROP_TYPE], k));
+                this.drops.push(new Drop(x, y, drops[k * DROP_VALUES + DROP_TYPE], k));
                 return true;
             }
         }

@@ -13,6 +13,7 @@ function EnemyBase(sprite, x, y, health, speed, range) {
         maxHealth: health,
         sprite: sprite,
         knockback: Vector(0, 0),
+        range: range,
         
         // Components to be set for specific enemy types
         ApplyWeapons: undefined,
@@ -82,16 +83,16 @@ var enemyFunctions = {
         
         // Limit the enemy to the map
         if (XMin(this) < 0) {
-            this.x += -this.XMin();
+            this.x += -XMin(this);
         }
         if (XMax(this) > GAME_WIDTH) {
-            this.x -= this.XMax() - GAME_WIDTH;
+            this.x -= XMax(this) - GAME_WIDTH;
         }
         if (YMin(this) < 0) {
-            this.y += -this.YMin();
+            this.y += -YMin(this);
         }
         if (YMax(this) > GAME_HEIGHT) {
-            this.y -= this.YMax() - GAME_HEIGHT;
+            this.y -= YMax(this) - GAME_HEIGHT;
         }
     },
     
