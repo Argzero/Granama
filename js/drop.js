@@ -2,10 +2,11 @@
 //    x - horizontal coordinate of the drop
 //    y - vertical coordinate of the drop
 // type - name of the type of the drop
-function Drop(x, y, type) {
+function Drop(x, y, type, id) {
     this.type = type;
     this.x = x;
     this.y = y;
+    this.id = id;
     this.scale = 1;
     this.sprite = new Image();
     this.sprite.src = "images/upgrade" + type + ".png";

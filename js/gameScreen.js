@@ -10,22 +10,7 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
     this.spdScale = speedScale;
     
     this.damageOverlay = GetImage("damage");
-    this.healthTop = GetImage("healthTop");
-    this.healthBottom = GetImage("healthBottom");
-    this.healthRed = GetImage("healthr");
-    this.healthGreen = GetImage("healthg");
-    this.healthYellow = GetImage("healthy");
-    this.healthBlue = GetImage("healthb");
-    this.imgLaser = GetImage("iconLaser");
-    this.imgFire = GetImage("iconFlamethrower");
-    this.imgShield = GetImage("iconShield");
-    this.imgSpread = GetImage("iconSpread");
-    this.imgDamage = GetImage("iconDamage");
-    this.imgSpeed = GetImage("iconSpeed");
-    this.imgHealth = GetImage("iconHealth");
-    this.imgHeal = GetImage("iconHeal");
     this.pauseOverlay = GetImage("pause");
-    this.imgAbility = GetImage('ability' + player.ability);
     this.explosions = new Array();
     this.explosion = new Array(
         GetImage("EX1"), 
@@ -41,8 +26,8 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
     );
     
     this.damageAlpha;
-    this.bossActive = false;
     this.paused = false;
+    this.bossActive = false;
     this.dragonActive = false;
     this.bossScore = BOSS_SPAWN_BASE;
     this.bossIncrement = BOSS_SPAWN_BASE;
@@ -51,16 +36,17 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
     this.bossHealthMultiplier = 1.0;
     this.damageMultiplier = 1.0;
     this.bossDmgMultiplier = 1.0;
-    this.playerDamage = 1.0;
+    this.bossSpeedBonus = 0.0;
     this.spawnCd = SPAWN_RATE;
-    this.bullets = new Array();
     this.mines = new Array();
     this.turrets = new Array();
     this.enemies = new Array();
+    this.bullets = new Array();
+    this.playerDamage = 1.0;
     this.drops = new Array();
     this.music;
     this.player = player;
-    this.bossSpeedBonus = 0.0;
+    this.ui = new UIManager(this);
     
     // Update function
     this.Update = Update;
@@ -194,8 +180,9 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
             canvas.drawImage(this.pauseOverlay, SIDEBAR_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
         }
         
-        this.DrawHealthBar();
-        this.DrawSideBar();
+        this.ui.DrawStatBar();
+        this.ui.DrawHealthBar();
+        this.ui.DrawSkillInfo();
         
         // Draw the cursor
         canvas.drawImage(cursor, mx - element.offsetLeft + pageScrollX - cursor.width / 2, my - element.offsetTop + pageScrollY - cursor.height / 2);
@@ -446,154 +433,6 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
                 i--;
             }
         }
-    }
-
-    // Draws the health bar
-    this.DrawHealthBar = DrawHealthBar;
-    function DrawHealthBar() {
-
-        // Move to the sidebar location
-        canvas.translate(WINDOW_WIDTH + SIDEBAR_WIDTH, 0);
-        
-        // Background
-        canvas.fillStyle = "#000000";
-        canvas.fillRect(0, 0, UI_WIDTH, WINDOW_HEIGHT);
-        
-        // Skill Cooldown
-        canvas.drawImage(this.imgAbility, 10, 60 - UI_WIDTH / 2, UI_WIDTH - 20, UI_WIDTH - 20);
-        if (player.skillDuration > 0) {
-            canvas.fillStyle = '#00FF00';
-            canvas.font = '30px Flipbash';
-            var cd = Math.ceil(player.skillDuration / 60);
-            canvas.fillText(cd, (UI_WIDTH - StringWidth(cd, canvas.font)) / 2, 65);
-        }
-        else if (player.skillCd > 0) {
-            canvas.fillStyle = '#FFFFFF';
-            canvas.font = '30px Flipbash';
-            var cd = Math.ceil(player.skillCd / 60);
-            canvas.fillText(cd, (UI_WIDTH - StringWidth(cd, canvas.font)) / 2, 65);
-        }
-        
-        // Top and bottom images
-        canvas.drawImage(this.healthTop, 0, 110);
-        canvas.drawImage(this.healthBottom, 0, element.height - this.healthBottom.height);
-       
-        // Get measurements
-        var space = element.height - this.healthTop.height - this.healthBottom.height - 110;
-        var blocks = Math.floor(space / (this.healthBlue.height + 4));
-        if (blocks < 1) {
-            blocks = 1;
-        }
-        var margin = Math.floor((space - blocks * this.healthBlue.height) / (blocks + 1));
-        var extra = Math.floor((space - blocks * this.healthBlue.height - margin * (blocks + 1)) / 2) + 110;
-        var percent = 100 * this.player.health / this.player.maxHealth;
-        var shield = 100 * this.player.currentShield / (this.player.maxHealth * SHIELD_MAX);
-        
-        // Draw each health box individually
-        for (var i = 0; i < blocks; i++) {
-            var y = this.healthTop.height + extra + margin + (this.healthBlue.height + margin) * i;
-            if (shield * blocks > 100 * (blocks - 1 - i)) {
-                canvas.drawImage(this.healthBlue, 0, y);
-            }
-            else if (percent > 99 - i * 33 / blocks) {
-                canvas.drawImage(this.healthGreen, 0, y);
-            }
-            else if (percent > 66 - i * 33 / blocks) {
-                canvas.drawImage(this.healthYellow, 0, y);
-            }
-            else if (percent > 33 - i * 33 / blocks && percent > 0) {
-                canvas.drawImage(this.healthRed, 0, y);
-            }
-        }
-        
-        canvas.setTransform(1, 0, 0, 1, 0, 0);
-    }
-
-    // Draws the sidebar with the upgrades
-    this.DrawSideBar = DrawSideBar;
-    function DrawSideBar() {
-
-        // Background
-        canvas.fillStyle = "#000000";
-        canvas.fillRect(0, 0, SIDEBAR_WIDTH, WINDOW_HEIGHT);
-
-        // Score
-        //canvas.drawImage(scoreTitle, 20, 0);
-        canvas.font = "50px Flipbash";
-        canvas.fillStyle = "#FFFFFF";
-        canvas.fillText("Kills", SIDEBAR_WIDTH / 2 - StringWidth("Kills", canvas.font) / 2, 50);
-        canvas.fillRect(5, 55, SIDEBAR_WIDTH - 10, 2);
-        canvas.fillStyle = "#00FF00"
-        canvas.fillText(this.score, (SIDEBAR_WIDTH - StringWidth(this.score, canvas.font)) / 2, 100);
-        
-        // Boss countdown
-        canvas.fillStyle = "#FFFFFF";
-        canvas.fillText("Boss", SIDEBAR_WIDTH / 2 - StringWidth("Boss", canvas.font) / 2, 160);
-        canvas.fillRect(5, 165, SIDEBAR_WIDTH - 10, 2);
-        canvas.fillStyle = "#00FF00"
-        canvas.fillText(this.bossScore, (SIDEBAR_WIDTH - StringWidth(this.bossScore, canvas.font)) / 2, 210);
-        
-        canvas.font = "30px Flipbash";
-        
-        var space = element.height - 220;
-        var margin = Math.floor((space - 4 * 120) / 5);
-        var extra = Math.floor((space - 480 - margin * 5) / 2) + 220;
-        var interval = 120 + margin;
-        
-        // Laser upgrades
-        var lasers = this.player.upgrades[LASER_ID];
-        if (lasers >= MAX_DROPS) {
-            lasers = "Max";
-        }
-        canvas.drawImage(this.imgLaser, 10, margin + extra);
-        canvas.fillText(lasers, 50 - StringWidth(lasers, canvas.font) / 2, margin + extra + 110);
-        
-        // Spread upgrades
-        var spread = Math.round(2 * this.player.upgrades[SPREAD_ID]);
-        if (spread >= MAX_DROPS) {
-            spread = "Max";
-        }
-        canvas.drawImage(this.imgSpread, 110, margin + extra);
-        canvas.fillText(spread, 150 - StringWidth(spread, canvas.font) / 2, margin + extra + 110);
-        
-        // Flamethrower upgrades
-        var flamethrower = this.player.upgrades[FLAME_ID];
-        if (flamethrower >= MAX_DROPS) {
-            flamethrower = "Max";
-        }
-        canvas.drawImage(this.imgFire, 10, margin + extra + interval);
-        canvas.fillText(flamethrower, 50 - StringWidth(flamethrower, canvas.font) / 2, margin + extra + interval + 110);
-        
-        // Shield upgrade
-        var shield = this.player.upgrades[SHIELD_ID];
-        if (shield >= MAX_DROPS) {
-            shield = "Max";
-        }
-        canvas.drawImage(this.imgShield, 110, margin + extra + interval);
-        canvas.fillText(shield, 150 - StringWidth(shield, canvas.font) / 2, margin + extra + interval + 110);
-        
-        // Damage upgrade
-        var damage = this.player.upgrades[DAMAGE_ID];
-        canvas.drawImage(this.imgDamage, 10, margin + extra + 2 * interval);
-        canvas.fillText(damage, 50 - StringWidth(damage, canvas.font) / 2, margin + extra + 2 * interval + 110);
-        
-        // Speed upgrade
-        var speed = this.player.upgrades[SPEED_ID];
-        if (speed >= MAX_DROPS) {
-            speed = "Max";
-        }
-        canvas.drawImage(this.imgSpeed, 110, margin + extra + 2 * interval);
-        canvas.fillText(speed, 150 - StringWidth(speed, canvas.font) / 2, margin + extra + 2 * interval + 110);
-        
-        // Health upgrade
-        var health = this.player.upgrades[HEALTH_ID];
-        canvas.drawImage(this.imgHealth, 10, margin + extra + 3 * interval);
-        canvas.fillText(health, 50 - StringWidth(health, canvas.font) / 2, margin + extra + 3 * interval + 110);
-        
-        // Heal
-        var heals = this.player.upgrades[HEAL_ID];
-        canvas.drawImage(this.imgHeal, 110, margin + extra + 3 * interval);
-        canvas.fillText(heals, 150 - StringWidth(heals, canvas.font) / 2, margin + extra + 3 * interval + 110);
     }
     
     // Applies scrolling to the game

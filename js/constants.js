@@ -101,6 +101,11 @@ ATTACK_HAMMER = 3,
 ATTACK_TURRET = 4,
 ATTACK_RAIL = 5,
 
+// Boss statuses
+ACTIVE_NONE = 0,
+ACTIVE_BOSS = 1,
+ACTIVE_DRAGON = 2,
+
 // Spawning
 // Normal base rate
 BOSS_SPAWN_BASE = 50,
@@ -142,8 +147,8 @@ BOSS_SPEED_SCALE = 0.4;
 BOSS_HEAVY = 0,
 BOSS_FIRE = 1,
 BOSS_PUNCH = 2,
-BOSS_DRAGON = 999,
-BOSS_COUNT = 3,
+BOSS_DRAGON = 3,
+BOSS_COUNT = 4,
 BOSS_RUSH_DRAGON = 3,
 BOSS_DATA = new Array(
 
@@ -169,14 +174,28 @@ BOSS_DATA = new Array(
 ),
 
 // Drop names (Do not modify these values)
-LASER = "Laser",
+// General
 SHIELD = "Shield",
-FLAMETHROWER = "Flamethrower",
-SPREAD_SHOT = "Spread",
 HEALTH = "Health",
 DAMAGE = "Damage",
 HEAL = "Heal",
 SPEED = "Speed",
+// Speed 
+COOLDOWN = "Cooldown",
+SHOTGUN = "Shotgun",
+SLOW = "Slow",
+// Power
+LASER = "Laser",
+FLAMETHROWER = "Flamethrower",
+SPREAD_SHOT = "Spread",
+// Defense
+MINIGUN = "Minigun",
+EXPLOSION = "Explosion",
+KNOCKBACK = "Knockback",
+// Knight
+ARROW = "Arrow",
+SLASH_ARC = "Slash",
+LIFESTEAL = "Lifesteal",
 
 // Drop IDs
 LASER_ID = 0,
@@ -192,8 +211,8 @@ SLOW_ID = 2,
 KNOCKBACK_ID = 2,
 LIFESTEAL_ID = 2,
 SHIELD_ID = 3,
-DAMAGE_ID = 4,
-SPEED_ID = 5,
+SPEED_ID = 4,
+DAMAGE_ID = 5,
 HEALTH_ID = 6,
 HEAL_ID = 7,
 
@@ -201,8 +220,11 @@ HEAL_ID = 7,
 DROP_COUNT = 8,
 BOSS_DROPS = 6,
 DROP_VALUE_COUNT = 2,
+DROP_VALUES = 4,
 DROP_CHANCE = 0,
 DROP_TYPE = 1,
+DROP_MAX = 2,
+DROP_BACKUP = 3,
 DROP_LASER = 0,
 DROP_SPREAD = 1,
 DROP_FLAMETHROWER = 2,
@@ -213,10 +235,10 @@ DROP_SPEED = 6,
 DROP_HEAL = 7,
 DROPS = new Array (
 //  Drop Chance | Drop Type
-    10,           LASER,
-    5,            SPREAD_SHOT,
-    10,           FLAMETHROWER,
-    10,            SHIELD,
+    10,           LASER,     
+    5,            SPREAD_SHOT, 
+    10,           FLAMETHROWER, 
+    10,           SHIELD,
 	10,           HEALTH,
 	10,           DAMAGE,
 	10,           SPEED,

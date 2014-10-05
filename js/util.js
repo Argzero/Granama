@@ -1,15 +1,87 @@
-// Measures the width of the string using the given font
-//    s - string to measure
-// font - font to measure the string with
-function StringWidth(s, font) {
-    var measure = document.getElementById("measure");
-    measure.style.font = font;
-    measure.innerHTML = s;
-    return measure.clientWidth + 1;
+// A vector representation with helpful methods
+function Vector(x, y) {
+    return {
+        x: x,
+        y: y,
+        Dot: vectorMethods.Dot,
+        Distance: vectorMethods.Distance,
+        DistanceSq: vectorMethods.DistanceSq,
+        Length: vectorMethods.Length,
+        LengthSq: vectorMethods.LengthSq,
+        Rotate: vectorMethods.Rotate,
+        Set: vectorMethods.Set,
+        Add: vectorMethods.Add,
+        SetLength: vectorMethods.SetLength
+    };
 }
 
-// Checks if a bullet is within the gameScreen
-// bullet - bullet to check for
+// Functions used in the vector representation
+var vectorMethods = {
+
+    // Dot product between two vectors
+    Dot: function(vector) {
+        return this.x * vector.x + this.y * vector.y;
+    },
+    
+    // Distance between two vectors
+    Distance: function(vector) {
+        var dx = this.x - vector.x;
+        var dy = this.y - vector.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    },
+    
+    // Squared distance between two vectors
+    DistanceSq: function(vector) {
+        var dx = this.x - vector.x;
+        var dy = this.y - vector.y;
+        return dx * dx + dy * dy;
+    }
+    
+    // Length of the vector
+    Length: function() {
+        return Math.sqrt(this.x * this.x + this.y * this.y);
+    },
+    
+    // Squared length of the vector
+    LenghtSq: function() {
+        return this.x * this.x + this.y * this.y;
+    },
+    
+    // Rotates the vector using the cos/sin values
+    Rotate: function(cos, sin) {
+        var tx = this.x * cos - this.y * sin;
+        this.y = this.x * sin + this.y * cos;
+        this.x = tx;
+    },
+    
+    // Sets the components of the vector
+    Set: function(x, y) {
+        this.x = x;
+        this.y = y;
+    },
+    
+    // Adds to the components of the vector
+    Add: function(x, y) {
+        this.x += x;
+        this.y += y;
+    },
+    
+    // Sets the length of the vector
+    SetLength(length) {
+        var l = this.Length();
+        this.x *= length / l;
+        this.y *= length / l;
+    }
+};
+
+// Measures the width of the string using the active canvas font
+// str - string to measure
+function StringWidth(str) {
+    return canvas.measureText(str).width;
+}
+
+// Checks if an object is within the game screen
+// obj - object to check for
 function WithinScreen(obj) {
     if (XMax(obj) - gameScreen.scrollX < 0) return false;
     if (XMin(obj) - gameScreen.scrollX > WINDOW_WIDTH) return false;
@@ -18,11 +90,12 @@ function WithinScreen(obj) {
     return true;
 }
 
-// Checks if the point is off the gameScreen using the given padding
+// Checks if the point is off the game screen using the given padding
 //       x - horizontal coordinate
 //       y - vertical coordinate
-// padding - amount to be off the gameScreen by
+// padding - amount to be off the gameScreen by (0 by default)
 function OffScreen(x, y, padding) {
+    if (padding === undefined) padding = 0;
 	if (x - gameScreen.scrollX < -padding) return true;
 	if (x - gameScreen.scrollX > WINDOW_WIDTH + padding) return true;
 	if (y - gameScreen.scrollY < -padding) return true;

@@ -1,4 +1,4 @@
-function BasePlayer(sprite) {
+function BasePlayer(sprite, drops) {
 	return {
 	
 		// Events
@@ -10,7 +10,8 @@ function BasePlayer(sprite) {
 		// Fields
 		x: GAME_WIDTH / 2,
 		y: GAME_HEIGHT / 2,
-		skillCd: 0,
+		drops: drops,
+        skillCd: 0,
         skillDuration: 0,
 		angle: 0,
 		shield: 0,
@@ -53,10 +54,22 @@ function BasePlayer(sprite) {
 				this.health -= amount;
 			}
 		},
+        
+        // Updates the player's max health
+        UpdateHealth: function() {
+            this.maxHealth = PLAYER_HEALTH + this.upgrades[HEALTH_ID] * HEALTH_UP;
+        },
+        
+        // Retrieves the damage multiplier for the player
+        GetDamageMultiplier: function() {
+            return 1 + this.upgrades[DAMAGE_ID] * DAMAGE_UP;
+        },
 		
 		// Updates the player
 		UpdateBase: function() {
-	
+        
+            this.UpdateHealth();
+        
 			// Shield regeneration
 			if (this.upgrades[SHIELD_ID] > 0) {
 				this.shieldCd--;

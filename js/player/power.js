@@ -1,5 +1,17 @@
 function PlayerPowerType() {
-    var p = BasePlayer(GetImage('pPowerBody'));
+    var p = BasePlayer(
+        GetImage('pPowerBody'),
+        [ // Drop Chance | Drop type | Max | Backup Drop
+            6,           LASER,        50,   5,
+            6,           SPREAD_SHOT,  50,   5,
+            6,           FLAMETHROWER, 50,   5,
+            6,           SHIELD,       50,   6,
+            6,           SPEED,        50,   6,
+            10,          DAMAGE,       -1,   5,
+            10,          HEALTH,       -1,   6,
+            10,          HEAL,         -1,   7
+        ]
+    );
     
     // Weapon cooldowns
     p.fireCd = 0;
@@ -36,7 +48,8 @@ function PlayerPowerType() {
         this.UpdateBase();
         
         // Get damage multiplier
-        var m = 1;
+        var m = this.GetDamageMultiplier();
+        var m2 = 1;
         if (this.onFire) {
             var temp = this.onFire();
             if (temp !== undefined) {
@@ -58,10 +71,10 @@ function PlayerPowerType() {
                 this.cos * BULLET_SPEED, 
                 this.sin * BULLET_SPEED, 
                 this.angle, 
-                FIRE_DAMAGE * m, 
+                FIRE_DAMAGE * m * m2, 
                 range
             );
-            if (m > 1) {
+            if (m2 > 1) {
 			    fire.sprite = GetImage('abilityFire');
 			}
             this.bullets[this.bullets.length] = fire;
@@ -79,16 +92,16 @@ function PlayerPowerType() {
                 this.cos * BULLET_SPEED, 
                 this.sin * BULLET_SPEED, 
                 this.angle, 
-                LASER_DAMAGE * m, 
+                LASER_DAMAGE * m * m2, 
                 LASER_RANGE
             );
-			if (m > 1) {
+			if (m2 > 1) {
 			    laser.sprite = GetImage('abilityLaser');
 			}
 			this.bullets[this.bullets.length] = laser;
 			
 			if (this.upgrades[SPREAD_ID] > 0) {                    
-				SpreadLaserShots(this, laser, this.bullets, this.upgrades[SPREAD_ID]);
+				SpreadLaserShots(this, laser, this.bullets, this.upgrades[SPREAD_ID] / 2);
 			}
         }
         else if (this.laserCd > 0) {
