@@ -140,8 +140,7 @@ function Turret(x, y, damage, health) {
     this.angle = 0;
     
     // Updates the turret
-    this.Update = Update;
-    function Update() {
+    this.Update = function() {
     
         // Update the turret's angle
         var a = Math.atan((gameScreen.player.y - this.y) / (this.x - gameScreen.player.x));
@@ -163,12 +162,11 @@ function Turret(x, y, damage, health) {
         else if (this.attackCd > 0) {
             this.attackCd--;
         }
-    }
+    };
     
     // Draws the turret
     // canvas - context of the canvas to draw to
-    this.Draw = Draw;
-    function Draw(canvas) {
+    this.Draw = function(canvas) {
         canvas.translate(this.x, this.y);
         
         // Health bar
@@ -184,7 +182,12 @@ function Turret(x, y, damage, health) {
         canvas.rotate(this.angle);
         canvas.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
         canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX, -gameScreen.scrollY);
-    }
+    };
+	
+	// Damages the turret
+	this.Damage = function(amount, source) {
+		this.health -= amount;
+	};
 }
 
 // A mine that can be placed that blows up on contact or after a certain amount of time

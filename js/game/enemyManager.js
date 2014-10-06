@@ -2,7 +2,7 @@ function EnemyManager(screen) {
 
     // Boss data
     this.bossStatus = ACTIVE_NONE;
-    this.bossScore = 0;//BOSS_SPAWN_BASE;
+    this.bossScore = BOSS_SPAWN_BASE;
     this.bossIncrement = BOSS_SPAWN_BASE;
     this.bossCount = 0;
     
@@ -69,12 +69,7 @@ function EnemyManager(screen) {
             
             // See if the bullet hit the player
             else if (screen.player.health > 0 && BulletCollides(this.bullets[i], screen.player) && this.bullets[i].damage > 0) {
-                if (this.bullets[i].enemy) {
-                    screen.player.Damage(this.bullets[i].damage, this.bullets[i].enemy);
-                }
-                else {
-                    screen.player.Damage(this.bullets[i].damage);
-                }
+                this.bullets[i].Hit(screen.player);
                 if (!this.bullets[i].pierce) {
                     this.bullets.splice(i, 1);
                     i--;

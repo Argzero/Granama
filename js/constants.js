@@ -155,6 +155,8 @@ SPAWN_DATA = [
     1, PaladinEnemy
 ],
 BOSS_SPAWNS = [
+	HeavyBoss,
+	FireBoss,
     PunchBoss
 ],
 

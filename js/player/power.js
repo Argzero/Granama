@@ -13,11 +13,6 @@ function PlayerPowerType() {
         ]
     );
     
-    // Weapon cooldowns
-    p.fireCd = 0;
-    p.laserData = { cd: 0, range: LASER_RANGE, list: p.bullets, dx: 0, dy: 54, pierce: true };
-    p.FireLasers = EnemyWeaponGun;
-    
     // Sprites
     p.drawObjects.push({ 
         sprite: GetImage('pPowerLaser'), 
@@ -43,6 +38,12 @@ function PlayerPowerType() {
         yOffset: -20,
         condition: function() { return this.upgrades[FLAME_ID] > 0; }.bind(p)
     });
+	
+	// Weapon data
+	p.fireData = { cd: 0, list: p.bullets, dx: -30, dy: 45, rate: FIRE_CD };
+    p.laserData = { cd: 0, range: LASER_RANGE, list: p.bullets, dx: 0, dy: 54, pierce: true };
+	p.ShootFire = EnemyWeaponFire;
+    p.FireLasers = EnemyWeaponGun;
     
     // Updates the player
     p.Update = function() {
@@ -62,28 +63,13 @@ function PlayerPowerType() {
         }
         
         // Flamethrower
-        var fireUps = this.upgrades[FLAME_ID];
-        if (fireUps > 0 && this.fireCd <= 0 && KeyPressed(KEY_LMB)) {
-            this.fireCd = FIRE_CD;
-			var range = fireUps * FLAME_UP + FIRE_RANGE;
-            var fire = FireProjectile(
-                m2 > 1 ? GetImage('abilityFire') : GetImage('fire'),
-                this,
-                -30, 
-                45, 
-                this.cos * BULLET_SPEED, 
-                this.sin * BULLET_SPEED, 
-                this.angle, 
-                FIRE_DAMAGE * m * m2, 
-                range,
-                true,
-                false
-            );
-            this.bullets[this.bullets.length] = fire;
-        }
-        else if (this.fireCd > 0) {
-            this.fireCd--;
-        }
+		var fireUps = this.upgrades[FLAME_ID];
+		if (fireUps > 0) {
+			this.fireData.sprite = m2 > 1 ? GetImage('abilityFire') : GetImage('fire');
+			this.fireData.damage = FIRE_DAMAGE * m * m2;
+			this.fireData.range = fireUps * FLAME_UP + FIRE_RANGE;
+			this.ShootFire(this.fireData);
+		}
         
         // Lasers
         this.laserData.sprite = m2 > 1 ? GetImage('abilityLaser') : GetImage('laser');

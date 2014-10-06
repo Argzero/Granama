@@ -32,7 +32,8 @@ function ProjectileBase(sprite, source, x, y, velX, velY, angle, damage, range, 
         Update: projectileFunctions.Update,
         Draw: projectileFunctions.Draw,
         Collides: projectileFunctions.Collides,
-        Spread: projectileFunctions.Spread
+        Spread: projectileFunctions.Spread,
+		Hit: projectileFunctions.Hit
     };
 }
 
@@ -50,6 +51,16 @@ function ReflectionProjectile(source, x, y, velX, velY, damage, target) {
     projectile.target = target;
     projectile.ApplyUpdate = projectileFunctions.UpdateHoming;
     return projectile;
+}
+
+// Rocket projectile with knockback and AOE damage
+function RocketProjectile(sprite, source, x, y, velX, velY, angle, damage, range, radius, knockback, lists) {
+	var projectile = ProjectileBase(sprite, source, x, y, velX, velY, angle, damage, range, false, false);
+	projectile.Hit = projectileFunctions.RocketHit;
+	projectile.radius = radius;
+	projectile.lists = lists;
+	projectile.knockback = knockback;
+	return projectile;
 }
 
 // Boss fist projectile
@@ -160,6 +171,11 @@ var projectileFunctions = {
             }
         }
     },
+	
+	// Hits the target robot, damaging it
+	Hit: function(target) {
+		target.Damage(this.damage, this.source);
+	},
     
     // Scales fire projectiles on update
     ScaleFire: function() {
@@ -243,5 +259,23 @@ var projectileFunctions = {
             this.returning = true;
             this.damage = 0;
         }
-    }
+    },
+	
+	// Hits a target as a rocket, knocking back and damaging nearby units
+	RocketHit: function(target) {
+		for (var l = 0; l < this.lists.length; l++) {
+			var list = this.lists[l];
+			for (var i = 0; i < list.length; i++) {
+				var target = list[i];
+				if (DistanceSq(target.x, target.y, this.x, this.y) < Sq(this.radius)) {
+					if (target.Knockback) {
+						var dir = Vector(target.x - this.x, target.y - this.y);
+						dir.SetLength(this.knockback);
+						target.Knockback(dir.x, dir.y);
+					}
+					target.Damage(this.damage, this.source);
+				}
+			}
+		}
+	}
 };

@@ -1,6 +1,5 @@
 // Base functionality for enemies
 function EnemyBase(sprite, x, y, health, speed, range) {
-    var temp = enemyFunctions;
     return {
     
         // Fields
@@ -23,11 +22,12 @@ function EnemyBase(sprite, x, y, health, speed, range) {
         ApplySprite: undefined,
         
         // Functions
-        AddWeapon: temp.AddWeapon,
-        Knockback: temp.Knockback,
-        Update: temp.Update,
-        Draw: temp.Draw,
-        IsInRange: temp.IsInRange
+        AddWeapon: enemyFunctions.AddWeapon,
+        Knockback: enemyFunctions.Knockback,
+        Update: enemyFunctions.Update,
+        Draw: enemyFunctions.Draw,
+        IsInRange: enemyFunctions.IsInRange,
+		Damage: enemyFunctions.Damage
     };
 };
 
@@ -115,15 +115,6 @@ var enemyFunctions = {
             this.ApplyDraw();
         }
     
-        // Health bar
-        if (this.health < this.maxHealth) {
-            var greenWidth = this.sprite.width * this.health / this.maxHealth;
-            canvas.fillStyle = "#00FF00";
-            canvas.fillRect(0, -10, greenWidth, 5);
-            canvas.fillStyle = "#FF0000";
-            canvas.fillRect(greenWidth, -10, this.sprite.width - greenWidth, 5);
-        }
-        
         // Orientation
         canvas.translate(this.sprite.width / 2, this.sprite.height / 2);
         canvas.rotate(this.angle);
@@ -136,6 +127,19 @@ var enemyFunctions = {
         if (this.ApplySprite) {
             this.ApplySprite();
         }
+		
+		// Restore the transform for the health bar
+		ResetTransform(canvas);
+		canvas.translate(this.x - this.sprite.width / 2, this.y - this.sprite.height / 2);
+		
+		// Health bar
+        if (this.health < this.maxHealth) {
+            var greenWidth = this.sprite.width * this.health / this.maxHealth;
+            canvas.fillStyle = "#00FF00";
+            canvas.fillRect(0, -10, greenWidth, 5);
+            canvas.fillStyle = "#FF0000";
+            canvas.fillRect(greenWidth, -10, this.sprite.width - greenWidth, 5);
+        }
         
         // Reset the canvas transform
         ResetTransform(canvas);
@@ -146,5 +150,10 @@ var enemyFunctions = {
         var dx = gameScreen.player.x - this.x;
         var dy = gameScreen.player.y - this.y;
         return dx * dx + dy * dy < Sq(range + this.speed) && this.cos * dx + this.sin * dy >= 0;
-    }
+    },
+	
+	// Damages the enemy
+	Damage: function(amount, source) {
+		this.health -= amount;
+	}
 };

@@ -37,7 +37,7 @@ function UIManager(screen) {
         canvas.fillText("Boss", SIDEBAR_WIDTH / 2 - StringWidth("Boss", canvas.font) / 2, 160);
         canvas.fillRect(5, 165, SIDEBAR_WIDTH - 10, 2);
         canvas.fillStyle = "#00FF00"
-        canvas.fillText(screen.bossScore, (SIDEBAR_WIDTH - StringWidth(screen.bossScore, canvas.font)) / 2, 210);
+        canvas.fillText(screen.enemyManager.bossScore, (SIDEBAR_WIDTH - StringWidth(screen.enemyManager.bossScore, canvas.font)) / 2, 210);
         
         canvas.font = "30px Flipbash";
         

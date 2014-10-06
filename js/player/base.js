@@ -34,7 +34,10 @@ function BasePlayer(sprite, drops) {
 			
 			// Damage event
 			if (this.onDamaged) {
-				amount = this.onDamaged(amount, damager);
+				var result = this.onDamaged(amount, damager);
+				if (result !== undefined) {
+					amount = result;
+				}
 			}
 			
 			// Deduct shield damage
