@@ -52,6 +52,20 @@ function ReflectionProjectile(source, x, y, velX, velY, damage, target) {
     return projectile;
 }
 
+// Boss fist projectile
+function FistProjectile(source, x, y, velX, velY, angle, damage, range, delay, side) {
+    var projectile = ProjectileBase(GetImage('fist' + side), source, x, y, velX, velY, angle, damage, 99999, true, true);
+    projectile.speed = Distance(0, 0, velX, velY);
+    projectile.delay = delay;
+    projectile.fistRange = range;
+    projectile.side = side;
+    projectile.tx = x;
+    projectile.ApplyUpdate = projectileFunctions.UpdateFist;
+    projectile.returning = false;
+    projectile.actualDamage = damage;
+    return projectile;
+}
+
 // Functions for bullets
 var projectileFunctions = {
 
@@ -178,5 +192,56 @@ var projectileFunctions = {
         var ty = this.velX * s + this.velY * c;
         this.velX = tx;
         this.velY = ty;
+    },
+    
+    // Fist projectile behavior
+    UpdateFist: function() {
+    
+        // Change the velocity when returning
+        if (this.returning) {
+        
+            // If actually returning, move back towards the boss
+            if (this.delay <= 0) {
+                
+                // If the boss is dead on the way back, remove the fist
+                if (this.source.health <= 0) {
+                    this.expired = true;
+                    return;
+                }
+            
+                // Otherwise move towards the boss
+                this.damage = this.actualDamage;
+                dx = this.source.x - this.x + this.tx * this.source.sin;
+                dy = this.source.y - this.y - this.tx * this.source.cos;
+                m = this.speed / Math.sqrt(Sq(dx) + Sq(dy));
+                this.velX = dx * m;
+                this.velY = dy * m;
+            }
+            
+            // Otherwise just sit still and wait
+            else {
+                this.delay--;
+                this.velX = 0;
+                this.velY = 0;
+            }
+        }
+        
+        // Move the fist
+        this.x += this.velX;
+        this.y += this.velY;
+        
+        // When returning, reattach to the boss if close by
+        if (this.returning) {
+            if (DistanceSq(this.x, this.y, this.source.x, this.source.y) < 10000) {
+                this.expired = true;
+                this.source[this.side + 'Fist'] = true;
+            }
+        }
+        
+        // Mark as returning when reaching the fist's range
+        else if (DistanceSq(this.x + this.velX, this.y + this.velY, this.ox, this.oy) >= Sq(this.fistRange)) {
+            this.returning = true;
+            this.damage = 0;
+        }
     }
 };

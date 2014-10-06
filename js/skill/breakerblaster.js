@@ -9,7 +9,6 @@ function SkillBreakerblaster(player) {
         
         // Active skill effects
         if (this.skillDuration > 0) {
-            sprite, source, x, y, velX, velY, angle, damage, range, pierce, offScreen
             var laser = ProjectileBase(
                 GetImage('abilityCannon'),
                 this,

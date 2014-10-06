@@ -1,5 +1,6 @@
 // Base functionality for enemies
 function EnemyBase(sprite, x, y, health, speed, range) {
+    var temp = enemyFunctions;
     return {
     
         // Fields
@@ -14,20 +15,21 @@ function EnemyBase(sprite, x, y, health, speed, range) {
         sprite: sprite,
         knockback: Vector(0, 0),
         range: range,
+        weapons: [],
         
         // Components to be set for specific enemy types
-        ApplyWeapons: undefined,
         ApplyMove: undefined,
         ApplyDraw: undefined,
         ApplySprite: undefined,
         
         // Functions
-        Knockback: enemyFunctions.Knockback,
-        Update: enemyFunctions.Update,
-        Draw: enemyFunctions.Draw,
-        IsInRange: enemyFunctions.IsInRange
+        AddWeapon: temp.AddWeapon,
+        Knockback: temp.Knockback,
+        Update: temp.Update,
+        Draw: temp.Draw,
+        IsInRange: temp.IsInRange
     };
-}
+};
 
 // Functions for enemy objects
 var enemyFunctions = {
@@ -35,6 +37,14 @@ var enemyFunctions = {
     // Knocks back the enemy the given distance
     Knockback: function(x, y) {
         this.knockback.Set(x, y);
+    },
+    
+    // Adds a weapon to the enemy
+    AddWeapon: function(method, data) {
+        data.method = method.bind(this);
+        data.list = gameScreen.enemyManager.bullets;
+        data.cd = 0;
+        this.weapons.push(data);
     },
     
     // Updates the enemy
@@ -53,8 +63,8 @@ var enemyFunctions = {
         }
         
         // Apply weapons
-        if (this.ApplyWeapons) {
-            this.ApplyWeapons();
+        for (var i = 0; i < this.weapons.length; i++) {
+            this.weapons[i].method(this.weapons[i]);;
         }
         
         // Apply movement

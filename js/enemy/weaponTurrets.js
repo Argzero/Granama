@@ -1,28 +1,23 @@
 // Drops mines behind the enemy as they move which blow up on contact or
 // after a short duration, damaging the player if they're nearby
 //
-// Requires these fields to be set:
-//   turretRange - range to start laying turrets from
-//  turretDamage - damage dealt by the turrets
-//   turretSpeed - the delay between placing turrets
-//  turretHealth - health of the turrets placed
-function EnemyWeaponTurrets() {
-
-    // Initialize mine cooldown
-    if (this.turretCd === undefined) {
-        this.turretCd = 0;
-    }
+// Required data values:
+//   range - range to start laying turrets from
+//  damage - damage dealt by the turrets
+//    rate - the delay between placing turrets
+//  health - health of the turrets placed
+function EnemyWeaponTurrets(data) {
 
     // See if it's in range while ignoring the direction being faced
     var ds = DistanceSq(this.x, this.y, gameScreen.player.x, gameScreen.player.y);
-    var inRange = ds <= Sq(this.turretRange);
+    var inRange = ds <= Sq(data.range);
         
     // Drop mines
-    if (inRange && this.turretCd <= 0) {
-        gameScreen.enemyManager.turrets.push(new Turret(this.x, this.y, this.turretDamage, this.turretHealth));
-        this.cd = this.attackCd;
+    if (inRange && data.cd <= 0) {
+        gameScreen.enemyManager.turrets.push(new Turret(this.x, this.y, data.damage, data.health));
+        data.cd = data.rate;
     }
-    else if (this.turretCd > 0) {
-        this.turretCd--;
+    else if (data.cd > 0) {
+        data.cd--;
     }
 }

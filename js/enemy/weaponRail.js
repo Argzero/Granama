@@ -1,25 +1,19 @@
 // A rail gun weapon for an enemy that fires a stream of lasers after charging up
 //
 // Requires these fields to be set:
-//      railRange - range of the rail gun
-//     railDamage - damage of the rail gun
-//   railDuration - how long the railgun fires before overheating
-//      railSpeed - how long it takes the rail gun to charge up
-//  railDischarge - how quickly the rail gun discharges when not able to fire
-function EnemyWeaponRail() {
-
-    // Initialize rail cooldown
-    if (this.railCd === undefined) {
-        this.railCd = 0;
-    }
+//      range - range of the rail gun
+//     damage - damage of the rail gun
+//   duration - how long the railgun fires before overheating
+//       rate - how long it takes the rail gun to charge up
+//  discharge - how quickly the rail gun discharges when not able to fire
+function EnemyWeaponRail(data) {
 
     // Charge up when in range
-    if (this.IsInRange(this.railRange) || this.railCd < 0) {
-        this.railCd--;
+    if (this.IsInRange(data.range) || data.cd < 0) {
+        data.cd--;
         
         // Fire when charged up
-        if (this.railCd < 0) {
-            sprite, source, x, y, velX, velY, angle, damage, range, pierce, offScreen
+        if (data.cd < 0) {
             var laser = ProjectileBase(
                 GetImage('bossLaser'),
                 this,
@@ -28,22 +22,22 @@ function EnemyWeaponRail() {
                 this.cos * BULLET_SPEED, 
                 this.sin * BULLET_SPEED, 
                 this.angle, 
-                this.railDamage, 
-                this.railRange * 1.5, 
+                data.damage, 
+                data.range * 1.5, 
                 true, 
                 true
             );
-            gameScreen.enemyManager.bullets,push(laser);
+            gameScreen.enemyManager.bullets.push(laser);
             
             // "Overheating" resets the charge countdown
-            if (this.railCd < -this.railDuration) {
-                this.railCd = this.railSpeed;
+            if (data.cd < -data.duration) {
+                data.cd = data.rate;
             }
         }
     }
     
     // Discharge when unable to attack
-    else if (this.railCd <= this.railSpeed) {
-        this.railCd += this.railDischarge;
+    else if (data.cd <= data.rate) {
+        data.cd += data.discharge;
     }
 }

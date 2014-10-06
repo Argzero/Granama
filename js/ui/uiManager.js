@@ -52,7 +52,8 @@ function UIManager(screen) {
             for (var j = 0; j < 2; j++) {
                 var index = i * 2 + j;
                 var ups = screen.player.upgrades[index];
-                if (ups >= screen.player.drops[index * DROP_VALUES + DROP_MAX]) {
+                var max = screen.player.drops[index * DROP_VALUES + DROP_MAX];
+                if (max > 0 && ups >= max) {
                     ups = "Max";
                 }
                 canvas.drawImage(this.upIcons[index], 10 + 100 * j, margin + extra + interval * i);

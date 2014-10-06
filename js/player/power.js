@@ -15,7 +15,8 @@ function PlayerPowerType() {
     
     // Weapon cooldowns
     p.fireCd = 0;
-    p.laserCd = 0;
+    p.laserData = { cd: 0, range: LASER_RANGE, list: p.bullets, dx: 0, dy: 54, pierce: true };
+    p.FireLasers = EnemyWeaponGun;
     
     // Sprites
     p.drawObjects.push({ 
@@ -85,31 +86,11 @@ function PlayerPowerType() {
         }
         
         // Lasers
-        if (this.laserCd <= 0 && KeyPressed(KEY_LMB)) {
-			this.laserCd = 60 / (LASER_APS + this.upgrades[LASER_ID] * LASER_UP);
-			var laser = ProjectileBase(
-                m2 > 1 ? GetImage('abilityLaser') : GetImage('laser'),
-                this,
-                0, 
-                54, 
-                this.cos * BULLET_SPEED, 
-                this.sin * BULLET_SPEED, 
-                this.angle, 
-                LASER_DAMAGE * m * m2, 
-                LASER_RANGE,
-                true,
-                false
-            );
-			this.bullets.push(laser);
-			
-            // Spread shot
-			if (this.upgrades[SPREAD_ID] > 0) {                    
-                laser.Spread(this.upgrades[SPREAD_ID] / 2, this.bullets);
-			}
-        }
-        else if (this.laserCd > 0) {
-            this.laserCd--;
-        }
+        this.laserData.sprite = m2 > 1 ? GetImage('abilityLaser') : GetImage('laser');
+        this.laserData.damage = LASER_DAMAGE * m * m2;
+        this.laserData.rate = 60 / (LASER_APS + this.upgrades[LASER_ID] * LASER_UP);
+        this.laserData.spread = this.upgrades[SPREAD_ID] / 2;
+        this.FireLasers(this.laserData);
     };
     
     return p;

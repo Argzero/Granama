@@ -56,8 +56,13 @@ var vectorMethods = {
         return this.x * this.x + this.y * this.y;
     },
     
-    // Rotates the vector using the cos/sin values
+    // Rotates the vector using the cos/sin values 
+    // or an angle if one argument is provided
     Rotate: function(cos, sin) {
+        if (!sin) {
+            sin = Math.sin(cos);
+            cos = Math.cos(cos);
+        }
         var tx = this.x * cos - this.y * sin;
         this.y = this.x * sin + this.y * cos;
         this.x = tx;
@@ -189,6 +194,9 @@ function SpreadLaser(laser, factor, angle, c, s) {
 
 // Rotates the x, y pair by the given integer value and returns the x coordinate
 function RotateX(x, y, angle) {
+    if (angle >= 10) {
+        return x * Math.cos(angle) - y * Math.sin(angle);
+    }
 	var m = angle < 0 ? -1 : 1;
 	angle = Math.abs(angle);
 	for (var i = 0; i < angle; i++) {
@@ -201,6 +209,9 @@ function RotateX(x, y, angle) {
 
 // Rotates the x, y pair by the given integer value and returns the y coordinate
 function RotateY(x, y, angle) {
+    if (angle >= 10) {
+        return x * Math.sin(angle) + y * Math.cos(angle);
+    }
 	var m = angle < 0 ? -1 : 1;
 	angle = Math.abs(angle);
 	for (var i = 0; i < angle; i++) {

@@ -1,43 +1,67 @@
 // A basic gun that fires regular bullets
 //
-// Requires these fields to be set:
-//  gunSprite - the sprite used by the gun (default 'bullet')
-//  gunDamage - how much damage the gun does
-//   gunRange - range of the gun
-//   gunSpeed - the delay between shots
-//  gunSpread - the spread of the gun
-function EnemyWeaponGun() {
+// Required data values:
+//  damage - how much damage the gun does
+//   range - range of the gun
+//    rate - the delay between shots
+//  spread - the spread of the gun
+//
+// Optional data values:
+//  sprite - the sprite used by the gun (default 'bullet')
+//   delay - the delay before firing when in range (optional)
+//  pierce - whether or not to fire piercing bullets
+//   speed - speed of the bullets
+//      dx - horizontal offset for the bullet spawn location
+//      dy - vertical offset for the bullet spawn location
+//   angle - max angle of deviation from a straight shot
+function EnemyWeaponGun(data) {
 
     // Initialize data
-    if (this.gunCd === undefined) {
-        this.gunCd = 0;
+    if (data.delayTimer === undefined) {
+        data.delayTimer = 0;
     }
-    if (this.gunSprite === undefined) {
-        this.gunSprite = GetImage('bullet');
+    if (data.sprite === undefined) {
+        data.sprite = GetImage('bullet');
+    }
+    if (data.dx === undefined) {
+        data.dx = 0;
+    }
+    if (data.dy === undefined) {
+        data.dy = 0;
     }
 
     // Fire when in range and off cooldown
-    if (this.IsInRange(this.gunRange) && this.gunCd <= 0) {
+    if (this.IsInRange(data.range) && data.cd <= 0) {
+        if (data.delay && data.delayTimer < data.delay) {
+            data.delayTimer++;
+            return;
+        }
+        var vel = Vector(this.cos * (data.speed || BULLET_SPEED), this.sin * (data.speed || BULLET_SPEED));
+        if (data.angle) {
+            vel.Rotate(Rand(2 * angle + 1) - angle);
+        }
         var bullet = ProjectileBase(
-            this.gunSprite,
+            data.sprite,
             this,
-            0,
-            this.sprite.width / 2, 
-            this.cos * BULLET_SPEED, 
-            this.sin * BULLET_SPEED, 
+            data.dx,
+            data.dy, 
+            vel.x, 
+            vel.y, 
             this.angle,
-            this.gunDamage, 
-            this.gunRange * 1.5, 
-            false,
+            data.damage, 
+            data.range * 1.5, 
+            data.pierce,
             false
         );
-        gameScreen.enemyManager.bullets.push(bullet);
-        bullet.Spread(this.gunSpread, gameScreen.enemyManager.bullets);
-        this.gunCd = this.gunSpeed;
+        data.list.push(bullet);
+        if (data.spread) {
+            bullet.Spread(data.spread, data.list);
+        }
+        data.cd = data.rate;
     }
     
     // Lower cooldown when on cooldown
-    else if (this.gunCd > 0) {
-        this.gunCd--;
+    else if (data.cd > 0) {
+        data.cd--;
     }
 }

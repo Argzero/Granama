@@ -28,7 +28,7 @@ function BasePlayer(sprite, drops) {
         mPower: 1,
         mSpeed: 1,
         mHealth: 1,
-		
+        
 		// Damages the player using an optional damage source
 		Damage: function(amount, damager) {
 			
@@ -194,6 +194,11 @@ function BasePlayer(sprite, drops) {
         // Checks whether or not a skill is being cast
         IsSkillCast: function() {
             return KeyPressed(KEY_SPACE) && this.skillCd <= 0 && this.skillDuration == 0;
+        },
+        
+        // Function for telling weapons when they can fire
+        IsInRange: function() {
+            return KeyPressed(KEY_LMB);
         }
 	}
 }

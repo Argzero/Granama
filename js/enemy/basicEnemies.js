@@ -1,5 +1,5 @@
 // sprite, x, y, health, speed, range
-// ApplyWeapons: undefined,
+// AddWeapon(method, data)
 // ApplyMove: undefined,
 // ApplyDraw: undefined,
 // ApplySprite: undefined,
@@ -31,11 +31,14 @@ function LightRangedEnemy(x, y) {
     enemy.ApplyMove = EnemyMoveBasic;
     
     // Gun weapon
-    enemy.ApplyWeapons = EnemyWeaponGun;
-    enemy.gunDamage = ((c + 1) / 2) * (c + 2);
-    enemy.gunSpeed = 20;
-    enemy.gunRange = 200;
-    enemy.gunSpread = Rand(c + 1);
+    enemy.AddWeapon(EnemyWeaponGun, {
+        damage: ((c + 1) / 2) * (c + 2),
+        rate: 20,
+        range: 200,
+        spread: Rand(c + 1),
+        dx: 23,
+        dy: 30
+    });
     
     return enemy;
 }
@@ -57,11 +60,14 @@ function HeavyRangedEnemy(x, y) {
     enemy.ApplyMove = EnemyMoveBasic;
     
     // Gun weapon
-    enemy.ApplyWeapons = EnemyWeaponGun;
-    enemy.gunDamage = ((c + 1) / 2) * (c + 2);
-    enemy.gunSpeed = 15;
-    enemy.gunRange = 250;
-    enemy.gunSpread = Rand(c + 1);
+    enemy.AddWeapon(EnemyWeaponGun, {
+        damage: ((c + 1) / 2) * (c + 2),
+        rate: 15,
+        range: 250,
+        spread: Rand(c + 1),
+        dx: 0,
+        dy: 35
+    });
     
     return enemy;
 }
@@ -83,12 +89,15 @@ function PaladinEnemy(x, y) {
     enemy.ApplyMove = EnemyMoveBasic;
     
     // Gun weapon
-    enemy.ApplyWeapons = EnemyWeaponGun;
-    enemy.gunSprite = GetImage('hammer');
-    enemy.gunDamage = 4 * ((c + 1) / 2) * (c + 2);
-    enemy.gunSpeed = 60;
-    enemy.gunRange = 300;
-    enemy.gunSpread = Math.max((c - 3) / 3, 2);
+    enemy.AddWeapon(EnemyWeaponGun, {
+        sprite: GetImage('hammer'),
+        damage: 4 * ((c + 1) / 2) * (c + 2),
+        rate: 60,
+        range: 300,
+        spread: Math.max((c - 3) / 3, 2),
+        dx: 0,
+        dy: 45
+    });
     
     return enemy;
 }
@@ -110,11 +119,14 @@ function LightArtilleryEnemy(x, y) {
     enemy.ApplyMove = EnemyMoveBasic;
     
     // Gun weapon
-    enemy.ApplyWeapons = EnemyWeaponGun;
-    enemy.gunDamage = ((c + 1) / 2) * (c + 2);
-    enemy.gunSpeed = 45;
-    enemy.gunRange = 400;
-    enemy.gunSpread = Rand((c + 1) / 2);
+    enemy.AddWeapon(EnemyWeaponGun, {
+        damage: ((c + 1) / 2) * (c + 2),
+        rate: 45,
+        range: 400,
+        spread: Rand((c + 1) / 2),
+        dx: 0,
+        dy: 38
+    });
     
     return enemy;
 }
@@ -136,11 +148,14 @@ function HeavyArtilleryEnemy(x, y) {
     enemy.ApplyMove = EnemyMoveBasic;
     
     // Gun weapon
-    enemy.ApplyWeapons = EnemyWeaponGun;
-    enemy.gunDamage = 2 * ((c + 1) / 2) * (c + 2);
-    enemy.gunSpeed = 35;
-    enemy.gunRange = 400;
-    enemy.gunSpread = Rand((c + 1) / 2);
+    enemy.AddWeapon(EnemyWeaponGun, {
+        damage: 2 * ((c + 1) / 2) * (c + 2),
+        rate: 35,
+        range: 400,
+        spread: Rand((c + 1) / 2),
+        dx: 0,
+        dy: 53
+    });
     
     return enemy;
 }
@@ -161,13 +176,14 @@ function RailerEnemy(x, y) {
     // Movement pattern
     enemy.ApplyMove = EnemyMoveBasic;
     
-    // Gun weapon
-    enemy.ApplyWeapons = EnemyWeaponRail;
-    enemy.railDamage = 0.1 * ((c + 1) / 2) * (c + 2);
-    enemy.railSpeed = 60;
-    enemy.railRange = 600;
-    enemy.railDischarge = 0.1;
-    enemy.railDuration = 120;
+    // Rail weapon
+    enemy.AddWeapon(EnemyWeaponRail, {
+        damage: 0.1 * ((c + 1) / 2) * (c + 2),
+        rate: 60,
+        range: 600,
+        discharge: 0.1,
+        duration: 120
+    });
     
     return enemy;
 }
@@ -189,10 +205,11 @@ function LightMeleeEnemy(x, y) {
     enemy.ApplyMove = EnemyMoveBasic;
     
     // Gun weapon
-    enemy.ApplyWeapons = EnemyWeaponMelee;
-    enemy.meleeDamage = 2 * ((c + 1) / 2) * (c + 2);
-    enemy.meleeSpeed = 30;
-    enemy.meleeRange = 50;
+    enemy.AddWeapon(EnemyWeaponMelee, {
+        damage: 2 * ((c + 1) / 2) * (c + 2),
+        rate: 30,
+        range: 50
+    });
     
     return enemy;
 }
@@ -214,10 +231,11 @@ function HeavyMeleeEnemy(x, y) {
     enemy.ApplyMove = EnemyMoveBasic;
     
     // Gun weapon
-    enemy.ApplyWeapons = EnemyWeaponGun;
-    enemy.meleeDamage = 3 * ((c + 1) / 2) * (c + 2);
-    enemy.meleeSpeed = 40;
-    enemy.meleeRange = 50;
+    enemy.AddWeapon(EnemyWeaponMelee, {
+        damage: 3 * ((c + 1) / 2) * (c + 2),
+        rate: 40,
+        range: 50
+    });
     
     return enemy;
 }
@@ -238,12 +256,13 @@ function LightBomberEnemy(x, y) {
     // Movement pattern
     enemy.ApplyMove = EnemyMoveOrbit;
     
-    // Gun weapon
-    enemy.ApplyWeapons = EnemyWeaponMines;
-    enemy.mineType = 'LightBomber';
-    enemy.mineDamage = 3 * ((c + 1) / 2) * (c + 2);
-    enemy.mineSpeed = 90;
-    enemy.mineRange = 500;
+    // Mines
+    enemy.AddWeapon(EnemyWeaponMines, {
+        type: 'LightBomber',
+        damage: 3 * ((c + 1) / 2) * (c + 2),
+        rate: 90,
+        range: 500
+    });
     
     return enemy;
 }
@@ -264,12 +283,13 @@ function HeavyBomberEnemy(x, y) {
     // Movement pattern
     enemy.ApplyMove = EnemyMoveOrbit;
     
-    // Gun weapon
-    enemy.ApplyWeapons = EnemyWeaponMines;
-    enemy.mineType = 'HeavyBomber';
-    enemy.mineDamage = 5 * ((c + 1) / 2) * (c + 2);
-    enemy.mineSpeed = 90;
-    enemy.mineRange = 600;
+    // Mines
+    enemy.AddWeapon(EnemyWeaponMines, {
+        type: 'HeavyBomber',
+        damage: 5 * ((c + 1) / 2) * (c + 2),
+        rate: 90,
+        range: 600
+    });
     
     return enemy;
 }
@@ -290,11 +310,13 @@ function TurretEnemy(x, y) {
     // Movement pattern
     enemy.ApplyMove = EnemyMoveOrbit;
     
-    // Gun weapon
-    enemy.ApplyWeapons = EnemyWeaponMines;
-    enemy.turretDamage = 1 * ((c + 1) / 2) * (c + 2);
-    enemy.turretSpeed = 600;
-    enemy.turretRange = 650;
+    // Turrets
+    enemy.AddWeapon(EnemyWeaponTurrets, {
+        health: 120 * TURRET_HEALTH * ScalePower(c, 1),
+        damage: ((c + 1) / 2) * (c + 2),
+        rate: 600,
+        range: 650
+    });
     
     return enemy;
 }

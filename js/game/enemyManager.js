@@ -2,7 +2,7 @@ function EnemyManager(screen) {
 
     // Boss data
     this.bossStatus = ACTIVE_NONE;
-    this.bossScore = BOSS_SPAWN_BASE;
+    this.bossScore = 0;//BOSS_SPAWN_BASE;
     this.bossIncrement = BOSS_SPAWN_BASE;
     this.bossCount = 0;
     
@@ -160,21 +160,8 @@ function EnemyManager(screen) {
             }
             
             // Spawn the boss
-            var bossId = this.bossCount % BOSS_COUNT;
+            this.enemies.push(BOSS_SPAWNS[this.bossCount % BOSS_SPAWNS.length](x, y));
             this.bossCount++;
-            if (bossId == BOSS_HEAVY) {
-                this.enemies.push(new HeavyBoss(x, y));
-            }
-            else if (bossId == BOSS_FIRE) {
-                this.enemies.push(new FireBoss(x, y));
-            }
-            else if (bossId == BOSS_PUNCH) {
-                this.enemies.push(new PunchBoss(x, y));
-            }
-            else if (bossId == BOSS_DRAGON) {
-                this.enemies.push(new DragonBoss(x, y));
-                this.bossStatus = ACTIVE_DRAGON;
-            }
         }
 
         // Don't spawn enemies if there are too many or one has just spawned

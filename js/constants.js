@@ -48,7 +48,7 @@ SKILL_METHODS = {
     OVERDRIVE: SkillOverdrive,
     TELEPORT: SkillTeleport,
     WAVEBURST: SkillWaveburst,
-    BREAKERBLASTER: SkillBreakerblaster,
+    KOCANNON: SkillBreakerblaster,
     DECIMATION: SkillDecimation,
     STASIS: SkillStasis,
     REFLECTOR: SkillReflector,
@@ -104,7 +104,6 @@ ATTACK_RAIL = 5,
 // Boss statuses
 ACTIVE_NONE = 0,
 ACTIVE_BOSS = 1,
-ACTIVE_DRAGON = 2,
 
 // Spawning
 // Normal base rate
@@ -154,6 +153,9 @@ SPAWN_DATA = [
     1, TurretEnemy,
     1, RailerEnemy,
     1, PaladinEnemy
+],
+BOSS_SPAWNS = [
+    PunchBoss
 ],
 
 BOSS_SPEED_SCALE = 0.4;

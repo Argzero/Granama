@@ -1,24 +1,19 @@
 // A basic gun that fires regular bullets
 //
 // Requires these fields to be set:
-//  meleeDamage - how much damage the attack does
-//   meleeRange - range of the attack
-//   meleeSpeed - the delay between attacks
-function EnemyWeaponMelee() {
-
-    // Initialize the melee cooldown
-    if (this.meleeCd === undefined) {
-        this.meleeCd = 0;
-    }
+//  damage - how much damage the attack does
+//   range - range of the attack
+//    rate - the delay between attacks
+function EnemyWeaponMelee(data) {
 
     // Fire when in range and off cooldown
-    if (this.IsInRange(this.meleeRange) && this.meleeCd <= 0) {
-        gameScreen.player.Damage(this.meleeDamage, this);
-        this.meleeCd = this.meleeSpeed;
+    if (this.IsInRange(data.range) && data.cd <= 0) {
+        gameScreen.player.Damage(data.damage, this);
+        data.cd = data.rate;
     }
     
     // Lower cooldown when on cooldown
-    else if (this.meleeCd > 0) {
-        this.meleeCd--;
+    else if (data.cd > 0) {
+        data.cd--;
     }
 }
