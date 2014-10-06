@@ -148,7 +148,12 @@ SPAWN_DATA = [
     60, LightArtilleryEnemy,
     30, HeavyArtilleryEnemy,
     15, LightMeleeEnemy,
-    15, HeavyMeleeEnemy
+    15, HeavyMeleeEnemy,
+    30, LightBomberEnemy,
+    15, HeavyBomberEnemy,
+    1, TurretEnemy,
+    1, RailerEnemy,
+    1, PaladinEnemy
 ],
 
 BOSS_SPEED_SCALE = 0.4;

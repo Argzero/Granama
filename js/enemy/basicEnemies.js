@@ -4,6 +4,7 @@
 // ApplyDraw: undefined,
 // ApplySprite: undefined,
 
+// Power function for scaling enemy health
 function ScalePower(c, step) {
     if (c > 4) {
         return Math.pow(2, step * (2 + c / 2));
@@ -65,6 +66,33 @@ function HeavyRangedEnemy(x, y) {
     return enemy;
 }
 
+function PaladinEnemy(x, y) {
+    
+    // Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('enemyPaladin'), 
+        x, 
+        y,
+        100 * ScalePower(c, 1.5),
+        3 + 0.25 * c,
+        300
+    );
+    
+    // Movement pattern
+    enemy.ApplyMove = EnemyMoveBasic;
+    
+    // Gun weapon
+    enemy.ApplyWeapons = EnemyWeaponGun;
+    enemy.gunSprite = GetImage('hammer');
+    enemy.gunDamage = 4 * ((c + 1) / 2) * (c + 2);
+    enemy.gunSpeed = 60;
+    enemy.gunRange = 300;
+    enemy.gunSpread = Math.max((c - 3) / 3, 2);
+    
+    return enemy;
+}
+
 function LightArtilleryEnemy(x, y) {
     
     // Base enemy stats
@@ -117,6 +145,33 @@ function HeavyArtilleryEnemy(x, y) {
     return enemy;
 }
 
+function RailerEnemy(x, y) {
+    
+    // Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('enemyRailer'), 
+        x, 
+        y,
+        80 * ScalePower(c, 1.5),
+        2 + 0.2 * c,
+        550
+    );
+    
+    // Movement pattern
+    enemy.ApplyMove = EnemyMoveBasic;
+    
+    // Gun weapon
+    enemy.ApplyWeapons = EnemyWeaponRail;
+    enemy.railDamage = 0.1 * ((c + 1) / 2) * (c + 2);
+    enemy.railSpeed = 60;
+    enemy.railRange = 600;
+    enemy.railDischarge = 0.1;
+    enemy.railDuration = 120;
+    
+    return enemy;
+}
+
 function LightMeleeEnemy(x, y) {
     
     // Base enemy stats
@@ -163,6 +218,83 @@ function HeavyMeleeEnemy(x, y) {
     enemy.meleeDamage = 3 * ((c + 1) / 2) * (c + 2);
     enemy.meleeSpeed = 40;
     enemy.meleeRange = 50;
+    
+    return enemy;
+}
+
+function LightBomberEnemy(x, y) {
+    
+    // Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('enemyLightBomber'), 
+        x, 
+        y,
+        15 * ScalePower(c, 1),
+        2.5 + 0.25 * c,
+        400
+    );
+    
+    // Movement pattern
+    enemy.ApplyMove = EnemyMoveOrbit;
+    
+    // Gun weapon
+    enemy.ApplyWeapons = EnemyWeaponMines;
+    enemy.mineType = 'LightBomber';
+    enemy.mineDamage = 3 * ((c + 1) / 2) * (c + 2);
+    enemy.mineSpeed = 90;
+    enemy.mineRange = 500;
+    
+    return enemy;
+}
+
+function HeavyBomberEnemy(x, y) {
+
+    // Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('enemyHeavyBomber'), 
+        x, 
+        y,
+        20 * ScalePower(c, 1),
+        2.5 + 0.25 * c,
+        500
+    );
+    
+    // Movement pattern
+    enemy.ApplyMove = EnemyMoveOrbit;
+    
+    // Gun weapon
+    enemy.ApplyWeapons = EnemyWeaponMines;
+    enemy.mineType = 'HeavyBomber';
+    enemy.mineDamage = 5 * ((c + 1) / 2) * (c + 2);
+    enemy.mineSpeed = 90;
+    enemy.mineRange = 600;
+    
+    return enemy;
+}
+
+function TurretEnemy(x, y) {
+    
+    // Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('enemyTurret'), 
+        x, 
+        y,
+        120 * ScalePower(c, 1.5),
+        2.5 + 0.2 * c,
+        550
+    );
+    
+    // Movement pattern
+    enemy.ApplyMove = EnemyMoveOrbit;
+    
+    // Gun weapon
+    enemy.ApplyWeapons = EnemyWeaponMines;
+    enemy.turretDamage = 1 * ((c + 1) / 2) * (c + 2);
+    enemy.turretSpeed = 600;
+    enemy.turretRange = 650;
     
     return enemy;
 }
