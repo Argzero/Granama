@@ -3,8 +3,8 @@ function SkillDecimation(player) {
     // Activate the ability on move
     player.onMove = function() {
         if (this.IsSkillCast()) {
-            this.skillDuration = DECIMATION_DURATION;
-            this.skillCd = DECIMATION_CD;
+            this.skillDuration = 420;
+            this.skillCd = 1500;
         }
     }
     

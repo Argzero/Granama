@@ -8,15 +8,15 @@ function PlayerDefenseType() {
             6,             SHIELD,     50,   6,
             6,             SPEED,      50,   6,
             10,            DAMAGE,     -1,   5,
-            10,            HEALTH,     -1,   6,
+            30,            HEALTH,     -1,   6,
             10,            HEAL,       -1,   7
         ]
     );
 	
 	// Sprites
     p.drawObjects.push({ 
-        sprite: GetImage('pDefenseLaser'), 
-        xOffset: -10, 
+        sprite: GetImage('pDefenseMissile'), 
+        xOffset: -20, 
         yOffset: -21
     });
     p.drawObjects.push({
@@ -26,10 +26,9 @@ function PlayerDefenseType() {
         condition: function() { return this.upgrades[SHIELD_ID] > 0; }.bind(p)
     });
     p.drawObjects.push({
-        sprite: GetImage('pDefenseFlame'),
+        sprite: GetImage('pDefenseGun'),
         xOffset: -42,
-        yOffset: -17,
-        condition: function() { return this.upgrades[MINIGUN_ID] > 0; }.bind(p)
+        yOffset: -17
     });
 	
 	// Weapon data
@@ -40,17 +39,17 @@ function PlayerDefenseType() {
 	
 	// Updates the player
     p.Update = function() {
-        this.UpdateBase();
+        if (this.UpdateBase()) {
+            return;
+        }
 		
 		// Damage multiplier
 		var m = this.GetDamageMultiplier();
 		
 		// Minigun
-		if (this.upgrades[MINIGUN_ID] > 0) {
-			this.minigunData.damage = 2 * m;
-			this.minigunData.rate = 6 - this.upgrades[MINIGUN_ID] * 0.1;
-			this.FireMinigun(this.minigunData);
-		}
+        this.minigunData.damage = 2 * m;
+        this.minigunData.rate = 6 - this.upgrades[MINIGUN_ID] * 0.1;
+        this.FireMinigun(this.minigunData);
 		
 		// Rockets
 		if (!this.rocketData.lists) {
@@ -58,7 +57,7 @@ function PlayerDefenseType() {
 		}
 		this.rocketData.damage = 8 * m;
 		this.rocketData.knockback = 30 + 5 * this.upgrades[KNOCKBACK_ID];
-		this.rocketData.radius = 100 + 10 * this.upgrades[EXPLOSION_ID];
+		this.rocketData.radius = 100 + 5 * this.upgrades[EXPLOSION_ID];
 		this.FireRocket(this.rocketData);
 	}
 	

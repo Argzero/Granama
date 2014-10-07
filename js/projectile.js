@@ -63,6 +63,15 @@ function RocketProjectile(sprite, source, x, y, velX, velY, angle, damage, range
 	return projectile;
 }
 
+// Slowing projectile
+function SlowProjectile(sprite, source, x, y, velX, velY, angle, damage, range, pierce, offScreen, multiplier, duration) {
+    var projectile = ProjectileBase(sprite, source, x, y, velX, velY, angle, damage, range, pierce, offScreen); 
+    projectile.Hit = projectileFunctions.SlowHit;
+    projectile.multiplier = multiplier;
+    projectile.duration = duration;
+    return projectile;
+}
+
 // Boss fist projectile
 function FistProjectile(source, x, y, velX, velY, angle, damage, range, delay, side) {
     var projectile = ProjectileBase(GetImage('fist' + side), source, x, y, velX, velY, angle, damage, 99999, true, true);
@@ -277,5 +286,13 @@ var projectileFunctions = {
 				}
 			}
 		}
-	}
+	},
+    
+    // Hits a target and slows it
+    SlowHit: function(target) {
+        target.Damage(this.damage, this.source);
+        if (target.Slow) {
+            target.Slow(this.multiplier, this.duration);
+        }
+    }
 };

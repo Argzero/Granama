@@ -6,7 +6,7 @@ function SkillRecharger(player) {
             var maxShield = this.maxHealth * SHIELD_MAX;
             if (this.shield < maxShield) {
                 this.shield = maxShield;
-                this.skillCd = RECHARGER_CD;
+                this.skillCd = 1500;
             }
         }
     }

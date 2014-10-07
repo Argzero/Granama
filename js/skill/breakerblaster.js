@@ -3,8 +3,8 @@ function SkillBreakerblaster(player) {
     
         // Activating the ability
         if (this.IsSkillCast()) {
-            this.skillDuration = BREAKERBLASTER_DURATION;
-            this.skillCd = BREAKERBLASTER_CD;
+            this.skillDuration = 120;
+            this.skillCd = 600;
         }
         
         // Active skill effects

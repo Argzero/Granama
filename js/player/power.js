@@ -7,7 +7,7 @@ function PlayerPowerType() {
             6,           FLAMETHROWER, 50,   5,
             6,           SHIELD,       50,   6,
             6,           SPEED,        50,   6,
-            10,          DAMAGE,       -1,   5,
+            30,          DAMAGE,       -1,   5,
             10,          HEALTH,       -1,   6,
             10,          HEAL,         -1,   7
         ]
@@ -35,8 +35,7 @@ function PlayerPowerType() {
     p.drawObjects.push({
         sprite: GetImage('pPowerFlame'),
         xOffset: -40,
-        yOffset: -20,
-        condition: function() { return this.upgrades[FLAME_ID] > 0; }.bind(p)
+        yOffset: -20
     });
 	
 	// Weapon data
@@ -64,12 +63,10 @@ function PlayerPowerType() {
         
         // Flamethrower
 		var fireUps = this.upgrades[FLAME_ID];
-		if (fireUps > 0) {
-			this.fireData.sprite = m2 > 1 ? GetImage('abilityFire') : GetImage('fire');
-			this.fireData.damage = FIRE_DAMAGE * m * m2;
-			this.fireData.range = fireUps * FLAME_UP + FIRE_RANGE;
-			this.ShootFire(this.fireData);
-		}
+        this.fireData.sprite = m2 > 1 ? GetImage('abilityFire') : GetImage('fire');
+        this.fireData.damage = FIRE_DAMAGE * m * m2;
+        this.fireData.range = fireUps * FLAME_UP + FIRE_RANGE;
+        this.ShootFire(this.fireData);
         
         // Lasers
         this.laserData.sprite = m2 > 1 ? GetImage('abilityLaser') : GetImage('laser');

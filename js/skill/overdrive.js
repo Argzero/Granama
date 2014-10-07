@@ -3,8 +3,8 @@ function SkillOverdrive(player) {
     
         // Activating the ability
         if (this.IsSkillCast()) {
-            this.skillDuration = OVERDRIVE_DURATION;
-            this.skillCd = OVERDRIVE_CD;
+            this.skillDuration = 300;
+            this.skillCd = 900 * this.cdm;
         }
         
         // Effects while active

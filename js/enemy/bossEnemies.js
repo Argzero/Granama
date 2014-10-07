@@ -12,6 +12,9 @@ function HeavyBoss(x, y) {
         300
     );
     
+    enemy.Knockback = undefined;
+    enemy.Slow = undefined;
+    
     // Movement pattern
     enemy.ApplyMove = EnemyMoveBasic;
 	
@@ -48,7 +51,8 @@ function HeavyBoss(x, y) {
 			rate: 120,
 			dx: -46 + 92 * i,
 			dy: 18,
-			delay: 60 * i
+			delay: 60 * i,
+            speed: 15
 		});
 	}
 	
@@ -69,6 +73,9 @@ function FireBoss(x, y) {
         200
     );
 	
+    enemy.Knockback = undefined;
+    enemy.Slow = undefined;
+    
     // Movement pattern
     enemy.ApplyMove = EnemyMoveBasic;
 	
@@ -120,6 +127,9 @@ function PunchBoss(x, y) {
         3 + 0.2 * c,
         300
     );
+    
+    enemy.Knockback = undefined;
+    enemy.Slow = undefined;
     
     // Specific values
     enemy.leftFist = true;

@@ -4,16 +4,16 @@ function SkillBlink(player) {
             var blinkX = 0;
             var blinkY = 0;
             if (KeyPressed(KEY_D)) {
-                blinkX += BLINK_DISTANCE;
+                blinkX += 300;
             }
             if (KeyPressed(KEY_A)) {
-                blinkX -= BLINK_DISTANCE;
+                blinkX -= 300;
             }
             if (KeyPressed(KEY_W)) {
-                blinkY -= BLINK_DISTANCE;
+                blinkY -= 300;
             }
             if (KeyPressed(KEY_S)) {
-                blinkY += BLINK_DISTANCE;
+                blinkY += 300;
             }
             if (blinkX != 0 && blinkY != 0) {
                 blinkX *= HALF_RT_2;
@@ -22,7 +22,7 @@ function SkillBlink(player) {
             if (blinkX != 0 || blinkY != 0) {
                 this.x += blinkX;
                 this.y += blinkY;
-                this.skillCd = BLINK_CD;
+                this.skillCd = 360 * this.cdm;
             }
         }
 	};

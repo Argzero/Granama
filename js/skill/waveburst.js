@@ -3,8 +3,8 @@ function SkillWaveburst(player) {
     
         // Activating the ability
         if (this.IsSkillCast()) {
-            this.skillDuration = WAVEBURST_DURATION;
-            this.skillCd = WAVEBURST_CD;
+            this.skillDuration = 120;
+            this.skillCd = 600;
             this.waveAngle = 0;
         }
         
@@ -27,10 +27,6 @@ function SkillWaveburst(player) {
                     true,
                     true
                 );
-                /*
-                laser.x += laser.velX * i / 5;
-                laser.y += laser.velY * i / 5;
-                */
                 this.bullets.push(laser);
             }
         }

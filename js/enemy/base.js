@@ -9,6 +9,8 @@ function EnemyBase(sprite, x, y, health, speed, range) {
         cos: 0,
         sin: 1,
         speed: speed,
+        speedM: undefined,
+        speedMDuration: undefined,
         health: health,
         maxHealth: health,
         sprite: sprite,
@@ -27,7 +29,8 @@ function EnemyBase(sprite, x, y, health, speed, range) {
         Update: enemyFunctions.Update,
         Draw: enemyFunctions.Draw,
         IsInRange: enemyFunctions.IsInRange,
-		Damage: enemyFunctions.Damage
+		Damage: enemyFunctions.Damage,
+        Slow: enemyFunctions.Slow
     };
 };
 
@@ -49,6 +52,11 @@ var enemyFunctions = {
     
     // Updates the enemy
     Update: function() {
+    
+        // Speed multiplier countdown
+        if (this.speedMDuration) {
+            this.speedMDuration--;
+        }
     
         // Apply knockback
         if (this.knockback.LengthSq() > 0) {
@@ -155,5 +163,11 @@ var enemyFunctions = {
 	// Damages the enemy
 	Damage: function(amount, source) {
 		this.health -= amount;
-	}
+	},
+    
+    // Slows the enemy down temporarily
+    Slow: function(multiplier, duration) {
+        this.speedM = multiplier;
+        this.speedMDuration = duration;
+    }
 };

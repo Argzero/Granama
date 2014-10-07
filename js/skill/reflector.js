@@ -3,8 +3,8 @@ function SkillReflector(player) {
     // Activating the ability
     player.onMove = function() {
         if (this.IsSkillCast()) {
-            this.skillDuration = STASIS_DURATION;
-            this.skillCd = STASIS_CD;
+            this.skillDuration = 300;
+            this.skillCd = 600;
         }
     }
     

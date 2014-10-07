@@ -23,13 +23,17 @@ function EnemyMoveBasic() {
     }
     
     // Move the enemy to their preferred range
-    var dSq = Sq(this.x - gameScreen.player.x) + Sq(this.y - gameScreen.player.y);
-    if (dSq - Sq(this.range + this.speed) > 0) {
-        this.x += m * this.cos * this.speed;
-        this.y += m * this.sin * this.speed;
+    var speed = this.speed;
+    if (this.speedMDuration) {
+        speed *= this.speedM;
     }
-    else if (dSq - Sq(this.range - this.speed) < 0) {
-        this.x -= m * this.cos * this.speed;
-        this.y -= m * this.sin * this.speed;
+    var dSq = Sq(this.x - gameScreen.player.x) + Sq(this.y - gameScreen.player.y);
+    if (dSq - Sq(this.range + speed) > 0) {
+        this.x += m * this.cos * speed;
+        this.y += m * this.sin * speed;
+    }
+    else if (dSq - Sq(this.range - speed) < 0) {
+        this.x -= m * this.cos * speed;
+        this.y -= m * this.sin * speed;
     }
 }

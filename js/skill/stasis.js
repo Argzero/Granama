@@ -6,13 +6,13 @@ function SkillStasis(player) {
         // Activating the ability
         if (this.IsSkillCast() && this.health < this.maxHealth) {
             this.pluses = [];
-            this.skillDuration = STASIS_DURATION;
-            this.skillCd = STASIS_CD;
+            this.skillDuration = 180;
+            this.skillCd = 1200;
         }
         
         // Active skill effects
         if (this.skillDuration > 0) {
-            this.health += this.maxHealth * STASIS_REGEN / STASIS_DURATION;
+            this.health += this.maxHealth * 0.5 / 180;
             if (this.health >= this.maxHealth) {
                 this.health = this.maxHealth;
                 this.skillDuration = 0;
@@ -24,7 +24,10 @@ function SkillStasis(player) {
                 var angle = Math.random() * 2 * Math.PI;
 		        var c = Math.cos(angle);
 		        var s = Math.sin(angle);
-		        this.pluses[this.pluses.length] = new Plus(this.x, this.y, 2 * c, 2 * s);
+		        this.pluses.push(new Plus(this.x, this.y, 2 * c, 2 * s));
+            }
+            for (var i = 0; i < this.pluses.length; i++) {
+                this.pluses[i].Update();
             }
             
             return 0;
@@ -34,7 +37,7 @@ function SkillStasis(player) {
     // Damage reduction while active
     player.onDamaged = function(amount, damager) {
         if (this.skillDuration > 0) {
-            return amount * STASIS_REDUCTION;
+            return amount * 0.1;
         }
     }
     

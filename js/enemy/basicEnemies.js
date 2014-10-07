@@ -182,7 +182,10 @@ function RailerEnemy(x, y) {
         rate: 60,
         range: 600,
         discharge: 0.1,
-        duration: 120
+        duration: 120,
+        pierce: true,
+        dy: 68,
+        dx: 0
     });
     
     return enemy;

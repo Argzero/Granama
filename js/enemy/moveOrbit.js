@@ -38,12 +38,16 @@ function EnemyMoveOrbit() {
     this.sin = Math.cos(this.angle);
     
     // Move forward
+    var speed = this.speed;
+    if (this.speedMDuration) {
+        speed *= this.speedM;
+    }
     if (tooClose && d2 > 0) {
-        this.x -= this.cos * this.speed;
-        this.y -= this.sin * this.speed;
+        this.x -= this.cos * speed;
+        this.y -= this.sin * speed;
     }
     else {
-        this.x += this.cos * this.speed;
-        this.y += this.sin * this.speed;
+        this.x += this.cos * speed;
+        this.y += this.sin * speed;
     }
 }

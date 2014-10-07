@@ -28,6 +28,8 @@ function BasePlayer(sprite, drops) {
         mPower: 1,
         mSpeed: 1,
         mHealth: 1,
+        cdm: 1,
+        rm: 1,
         
 		// Damages the player using an optional damage source
 		Damage: function(amount, damager) {
@@ -99,6 +101,15 @@ function BasePlayer(sprite, drops) {
 					i--;
 				}
 			}
+            
+            //Player's ability
+            if (this.skillDuration > 0) {
+                this.skillDuration--;
+            }
+			else if (this.skillCd > 0 && this.skillDuration == 0)
+			{
+				this.skillCd--;
+			}
 			
 			// Update event
 			var speed = this.speed;
@@ -108,17 +119,8 @@ function BasePlayer(sprite, drops) {
                     speed = result;
                 }
                 if (!speed) {
-                    return;
+                    return true;
                 }
-			}
-			
-			//Player's ability
-            if (this.skillDuration > 0) {
-                this.skillDuration--;
-            }
-			else if (this.skillCd > 0 && this.skillDuration == 0)
-			{
-				this.skillCd--;
 			}
 			
 			// Update the player's angle
