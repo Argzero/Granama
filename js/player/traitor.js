@@ -29,7 +29,7 @@ function PlayerTraitorType() {
     p.drawObjects.push({
         sprite: GetImage('pTraitorShield'),
         xOffset: -11,
-        yOffset: -20,
+        yOffset: -10,
         condition: function() { return this.upgrades[SHIELD_ID] > 0; }.bind(p)
     });
     p.drawObjects.push({
@@ -39,14 +39,14 @@ function PlayerTraitorType() {
     });
     p.drawObjects.push({
         sprite: GetImage('droneArmRight'),
-        xOffset: -26,
-        yOffset: -25,
+        xOffset: -75,
+        yOffset: -40,
         condition: function() { return this.drones.length == 6; }.bind(p)
     });
     p.drawObjects.push({
-        sprite: GetImage('droneArmRight'),
-        xOffset: 26,
-        yOffset: -25,
+        sprite: GetImage('droneArmLeft'),
+        xOffset: 25,
+        yOffset: -40,
         condition: function() { return this.drones.length == 6; }.bind(p)
     });
 	

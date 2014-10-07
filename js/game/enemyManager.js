@@ -193,7 +193,7 @@ function EnemyManager(screen) {
             this.bossStatus = ACTIVE_BOSS;
             this.spawnCd = BOSS_SPAWN_INTERVAL;
             this.SpawnBoss(screen.score);
-            this.bossCount += 0.25;
+            this.bossCount += 0.1;
         }
         else if (this.spawnCd > 0) this.spawnCd--;
     };

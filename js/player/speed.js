@@ -31,8 +31,8 @@ function PlayerSpeedType() {
         yOffset: -14
     });
     
-    p.shotgunData = { cd: 0, sprite: GetImage('bullet'), range: LASER_RANGE, discharge: 0, initial: true, angle: 20, speed: 15, dx: -30, dy: 45, list: p.bullets };
-    p.slowData = { cd: 0, sprite: GetImage('bullet'), range: LASER_RANGE, multiplier: 0.5, dx: 0, dy: 54, list: p.bullets };
+    p.shotgunData = { cd: 0, sprite: GetImage('shell'), range: LASER_RANGE, discharge: 0, initial: true, angle: 30, speed: 15, dx: -30, dy: 45, list: p.bullets };
+    p.slowData = { cd: 0, sprite: GetImage('slowMissile'), range: LASER_RANGE, multiplier: 0.5, dx: 0, dy: 54, speed: 15, list: p.bullets };
     p.FireShotgun = EnemyWeaponRail;
     p.FireSlow = EnemyWeaponSlow;
     
@@ -48,17 +48,17 @@ function PlayerSpeedType() {
         
         // Shotgun
         var num = 15 + this.upgrades[SHOTGUN_ID];
-        var bullets = Math.ceil(num / 8);
+        var bullets = Math.ceil(num / 5);
         this.shotgunData.damage = m;
         this.shotgunData.duration = Math.floor(num / bullets);
         this.shotgunData.bullets = bullets;
-        this.shotgunData.rate = 30 * this.rm;
+        this.shotgunData.rate = 60 * this.rm;
         this.FireShotgun(this.shotgunData);
         
         // Slow gun
         this.slowData.damage = 2 * m;
-        this.slowData.duration = 180 + this.upgrades[SLOW_ID] * 5;
-        this.slowData.rate = 20 * this.rm;
+        this.slowData.duration = 300 + this.upgrades[SLOW_ID] * 10;
+        this.slowData.rate = 40 * this.rm;
         this.FireSlow(this.slowData);
     }
     

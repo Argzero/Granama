@@ -33,11 +33,11 @@ function HeavyBoss(x, y) {
 	for (var i = 0; i < 2; i++) {
 		enemy.AddWeapon(EnemyWeaponGun, {
 			damage: 0.5 * damageScale,
-			ramge: 350,
+			range: 350,
 			rate: 10,
 			dx: -60 + 120 * i,
 			dy: 100,
-			angle: 10,
+			angle: 20,
 			delay: 5 * i
 		});
 	}

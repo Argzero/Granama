@@ -15,6 +15,18 @@ function Turret(x, y, damage, health) {
     this.sprite = GetImage("turretGun");
     this.base = GetImage("turretBase");
     this.angle = 0;
+    this.cos = 0;
+    this.sin = 1;
+    this.gunData = { 
+        cd: 0, 
+        list: gameScreen.enemyManager.bullets, 
+        damage: damage, 
+        range: TURRET_RANGE * 1.5, 
+        rate: TURRET_RATE,  
+        dx: 0,
+        dy: 22
+    };
+    this.Fire = EnemyWeaponGun;
     
     // Updates the turret
     this.Update = function() {
@@ -27,18 +39,11 @@ function Turret(x, y, damage, health) {
         else {
             this.angle = HALF_PI - a;
         }
-        var c = -Math.sin(this.angle);
-        var s = Math.cos(this.angle);
+        this.cos = -Math.sin(this.angle);
+        this.sin = Math.cos(this.angle);
         
         // Fire if in range
-        if (this.attackCd <= 0 && DistanceSq(this.x, this.y, gameScreen.player.x, gameScreen.player.y) < Sq(this.range) && gameScreen.player.health > 0) {
-            var bullet = new Bullet(this.x + c * this.sprite.height / 2, this.y + s * this.sprite.height / 2, c * BULLET_SPEED, s * BULLET_SPEED, this.damage, this.range * 1.5);
-            gameScreen.bullets[gameScreen.bullets.length] = bullet;
-            this.attackCd = this.attackRate;
-        }
-        else if (this.attackCd > 0) {
-            this.attackCd--;
-        }
+        this.Fire(this.gunData);
     };
     
     // Draws the turret

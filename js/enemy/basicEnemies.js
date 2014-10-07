@@ -10,7 +10,7 @@ function ScalePower(c, step) {
         return Math.pow(2, step * (2 + c / 2));
     }
     else {
-        return Math.pow(2, step);
+        return Math.pow(2, step * c);
     }
 }
 

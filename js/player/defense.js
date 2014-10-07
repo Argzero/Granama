@@ -32,8 +32,8 @@ function PlayerDefenseType() {
     });
 	
 	// Weapon data
-	p.rocketData = { cd: 0, range: LASER_RANGE, rate: 60, sprite: GetImage('rocket'), speed: 15, dx: 0, dy: 54, list: p.bullets };
-	p.minigunData = { cd: 0, range: LASER_RANGE, angle: 20, dx: -30, dy: 45, sprite: GetImage('bullet'), list: p.bullets };
+	p.rocketData = { cd: 0, range: LASER_RANGE, rate: 60, sprite: GetImage('missile'), speed: 15, dx: 0, dy: 0, list: p.bullets };
+	p.minigunData = { cd: 0, range: LASER_RANGE, angle: 20, dx: -30, dy: 45, sprite: GetImage('minigunBullet'), list: p.bullets };
 	p.FireRocket = EnemyWeaponRocket;
     p.FireMinigun = EnemyWeaponGun;
 	

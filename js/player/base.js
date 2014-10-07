@@ -112,7 +112,7 @@ function BasePlayer(sprite, drops) {
 			}
 			
 			// Update event
-			var speed = this.speed;
+			var speed = this.speed + this.upgrades[SPEED_ID] * SPEED_UP;
 			if (this.onMove) {
 				var result = this.onMove(speed);
 				if (result !== undefined) {
@@ -137,18 +137,17 @@ function BasePlayer(sprite, drops) {
 			// Movement
 			var hor = KeyPressed(KEY_D) != KeyPressed(KEY_A);
 			var vert = KeyPressed(KEY_W) != KeyPressed(KEY_S);
-			var m = (this.ability == OVERDRIVE && this.abilityActive == true) ? 2 : 1;
 			if (KeyPressed(KEY_W)) {
-				this.y -= speed * (hor ? HALF_RT_2 : 1) * m;
+				this.y -= speed * (hor ? HALF_RT_2 : 1);
 			}
 			if (KeyPressed(KEY_S)) {
-				this.y += speed * (hor ? HALF_RT_2 : 1) * m;
+				this.y += speed * (hor ? HALF_RT_2 : 1);
 			}
 			if (KeyPressed(KEY_A)) {
-				this.x -= speed * (vert ? HALF_RT_2 : 1) * m;
+				this.x -= speed * (vert ? HALF_RT_2 : 1);
 			}
 			if (KeyPressed(KEY_D)) {
-				this.x += speed * (vert ? HALF_RT_2 : 1) * m;
+				this.x += speed * (vert ? HALF_RT_2 : 1);
 			}
 			
 			// Bounding
