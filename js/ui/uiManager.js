@@ -9,12 +9,22 @@ function UIManager(screen) {
     this.healthYellow = GetImage("healthy");
     this.healthBlue = GetImage("healthb");
     
+    // Drone images
+    this.droneImgs = [
+        GetImage('droneAssaulter'),
+        GetImage('droneHealer'),
+        GetImage('droneShielder')
+    ];
+    
     // Player upgrade/skill icons
-    this.skillIcon = GetImage('ability' + screen.player.ability);
+    if (screen.player.ability) {
+        this.skillIcon = GetImage('ability' + screen.player.ability);
+    }
     this.upIcons = [];
     for (var i = 0; i < DROP_COUNT; i++) {
         this.upIcons.push(GetImage("icon" + screen.player.drops[DROP_VALUES * i + DROP_TYPE]));
     }
+    
     
     // Draws the sidebar with the upgrades
     this.DrawStatBar = function() {
@@ -135,5 +145,24 @@ function UIManager(screen) {
         
         // Reset the canvas transform
         canvas.setTransform(1, 0, 0, 1, 0, 0);
-    }
+    };
+    
+    this.DrawDroneInfo = function() {
+    
+        // Move to the sidebar location
+        canvas.translate(WINDOW_WIDTH + SIDEBAR_WIDTH, 0);
+    
+        canvas.fillStyle = '#FFFFFF';
+        canvas.font = '30px Flipbash';
+        if (screen.player.drones.length < 6) {
+            var droneImg = this.droneImgs[screen.player.drones.length % 3];
+            canvas.drawImage(droneImg, (UI_WIDTH - droneImg.width) / 2, 55 - droneImg.height / 2);
+            var left = screen.player.droneTarget - screen.player.droneCounter;
+            canvas.fillText(left, (UI_WIDTH - StringWidth(left, canvas.font)) / 2, 65);
+        }
+        else canvas.fillText("MAX", (UI_WIDTH - StringWidth("MAX", canvas.font)) / 2, 65);
+        
+        // Reset the canvas transform
+        canvas.setTransform(1, 0, 0, 1, 0, 0);
+    };
 }

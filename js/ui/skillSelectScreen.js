@@ -68,7 +68,7 @@ function SkillScreen(player, choice1, choice2, choice3) {
                 if (KeyPressed(KEY_LMB) && !escDown) {
                     this.methods[i](this.player);
                     this.player.ability = this.choices[i];
-                    gameScreen = new GameScreen(this.player, this.player.mPower, this.player.mHealth, this.player.mSpeed);
+                    gameScreen = new GameScreen(this.player, false);
                 }
             }
             else {

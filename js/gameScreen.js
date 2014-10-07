@@ -1,11 +1,8 @@
-function GameScreen(player, damageScale, healthScale, speedScale) {
+function GameScreen(player, bossRush) {
 
     this.scrollX = 0;
     this.scrollY = 0;
     this.score = 0;
-    this.dmgScale = damageScale;
-    this.hpScale = healthScale;
-    this.spdScale = speedScale;
     
     this.damageOverlay = GetImage("damage");
     this.pauseOverlay = GetImage("pause");
@@ -74,7 +71,13 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
         this.dropManager.Update();
         
         this.ApplyScrolling();
-        this.enemyManager.CheckSpawns();
+        
+        if (bossRush) {
+            this.enemyManager.CheckBosses();
+        }
+        else {
+            this.enemyManager.CheckSpawns();
+        }
     }
 
     // Update function
@@ -135,7 +138,13 @@ function GameScreen(player, damageScale, healthScale, speedScale) {
         
         this.ui.DrawStatBar();
         this.ui.DrawHealthBar();
-        this.ui.DrawSkillInfo();
+        
+        if (bossRush) {
+            this.ui.DrawDroneInfo();
+        }
+        else {
+            this.ui.DrawSkillInfo();
+        }
         
         // Draw the cursor
         canvas.drawImage(cursor, mx - element.offsetLeft + pageScrollX - cursor.width / 2, my - element.offsetTop + pageScrollY - cursor.height / 2);

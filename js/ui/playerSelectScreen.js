@@ -60,7 +60,7 @@ function SelectScreen() {
                         gameScreen = new SkillScreen(PlayerDefenseType(), STASIS, REFLECTOR, RECHARGER);
                     }
                     else if (i == 1) {
-                        gameScreen = new SkillScreen(PlayerSpeedType(), BLINK, OVERDRIVE, TELEPORT);
+                        gameScreen = new SkillScreen(PlayerSpeedType(), BLINK, OVERDRIVE, BLITZ);
                     }
                     else {
                         gameScreen = new SkillScreen(PlayerPowerType(), WAVEBURST, BREAKERBLASTER, DECIMATION);

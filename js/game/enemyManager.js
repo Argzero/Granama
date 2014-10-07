@@ -139,23 +139,7 @@ function EnemyManager(screen) {
         // Boss spawning
         if (this.bossStatus == ACTIVE_NONE && screen.score == this.bossScore) {
             this.bossStatus = ACTIVE_BOSS;
-            
-            // Get the position
-            if (screen.player.x < GAME_WIDTH / 2) {
-                x = GAME_WIDTH - 500;
-            }
-            else {
-                x = 500;
-            }
-            if (screen.player.y < GAME_HEIGHT / 2) {
-                y = GAME_HEIGHT - 500;
-            }
-            else {
-                y = 500;
-            }
-            
-            // Spawn the boss
-            this.enemies.push(BOSS_SPAWNS[this.bossCount % BOSS_SPAWNS.length](x, y));
+            this.SpawnBoss(this.bossCount);
             this.bossCount++;
         }
 
@@ -198,5 +182,39 @@ function EnemyManager(screen) {
         else if (this.spawnCd > 0) {
             this.spawnCd--;
         }
+    };
+    
+    // Checks for boss spawns in Boss Rush mode
+    this.CheckBosses = function() {
+        var x, y;
+        
+        this.bossScore = 'RUSH';
+        if (this.spawnCd <= 0 && this.enemies.length < Math.floor(1 + screen.score / MAX_BOSS_INTERVAL)) {
+            this.bossStatus = ACTIVE_BOSS;
+            this.spawnCd = BOSS_SPAWN_INTERVAL;
+            this.SpawnBoss(screen.score);
+            this.bossCount += 0.25;
+        }
+        else if (this.spawnCd > 0) this.spawnCd--;
+    };
+    
+    // Spawns a boss
+    this.SpawnBoss = function(id) {
+        // Get the position
+        if (screen.player.x < GAME_WIDTH / 2) {
+            x = GAME_WIDTH - 500;
+        }
+        else {
+            x = 500;
+        }
+        if (screen.player.y < GAME_HEIGHT / 2) {
+            y = GAME_HEIGHT - 500;
+        }
+        else {
+            y = 500;
+        }
+        
+        // Spawn the boss
+        this.enemies.push(BOSS_SPAWNS[id % BOSS_SPAWNS.length](x, y));
     };
 }

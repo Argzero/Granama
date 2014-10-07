@@ -3,9 +3,12 @@ function SkillBlitz(player) {
     // Activating the ability
     player.onMove = function() {
         if (this.IsSkillCast()) {
-            this.skillDuration = 10;
-            this.skillCd = 40;
+            this.skillDuration = 300;
+            this.skillCd = 1200;
             this.rm = 0.75;
+        }
+        if (this.skillDuration <= 0) {
+            this.rm = 1;
         }
     }
 }
