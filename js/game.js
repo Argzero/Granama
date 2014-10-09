@@ -33,6 +33,11 @@ window.onload = function() {
         //gameScreen = new TitleScreen();
     });
     
+    // Cancel the context menu
+    element.oncontextmenu = function(e) {
+        return false;
+    };
+    
     window.onresize = ResizeCanvas;
     ResizeCanvas();
     
