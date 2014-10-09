@@ -70,7 +70,7 @@ function ResizeCanvas() {
                : document.documentElement.offsetHeight; 
     WINDOW_WIDTH = element.width - UI_WIDTH - SIDEBAR_WIDTH;
     WINDOW_HEIGHT = element.height;
-    if (gameScreen.Draw) {
+    if (gameScreen && gameScreen.Draw) {
         gameScreen.Draw();
     }
 }

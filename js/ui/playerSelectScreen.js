@@ -64,6 +64,7 @@ function SelectScreen() {
                     }
                     else {
                         gameScreen = new SkillScreen(PlayerPowerType(), WAVEBURST, BREAKERBLASTER, DECIMATION);
+                        //gameScreen = new SkillScreen(PlayerKnightType(), WAVEBURST, BREAKERBLASTER, DECIMATION);
                     }
                     escDown = true;
                 }

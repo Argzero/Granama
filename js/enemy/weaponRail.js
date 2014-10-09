@@ -17,6 +17,7 @@
 //  offScreen - whether or not the bullet can exist off screen
 //         dx - horizontal offset
 //         dy - vertical offset
+//    xOffset - max horizontal deviation for spreading bullets
 function EnemyWeaponRail(data) {
 
     // Initialize values
@@ -38,10 +39,14 @@ function EnemyWeaponRail(data) {
                 if (data.angle) {
                     vel.Rotate((Rand(2 * data.angle + 1) - data.angle) * Math.PI / 180);
                 }
+                var xOffset = 0;
+                if (data.xOffset) {
+                    xOffset = Rand(data.xOffset * 2 + 1) - data.xOffset;
+                }
                 var laser = ProjectileBase(
                     data.sprite || GetImage('bossLaser'),
                     this,
-                    data.dx,
+                    data.dx + xOffset,
                     data.dy, 
                     vel.x, 
                     vel.y, 
