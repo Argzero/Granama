@@ -170,18 +170,18 @@ function GameScreen(player, bossRush) {
                 if (BulletCollides(this.player.bullets[i], turret)) {
                     this.player.bullets[i].Hit(turret);
                     
+                    // See if the turret is destroyed
+                    if (turret.health <= 0) {
+                        this.explosions[this.explosions.length] = new Explosion(turret.x, turret.y, 0.25);
+                        this.enemyManager.turrets.splice(j, 1);
+						j--;
+                    }
+                    
                     // If the bullet is not a piercing bullet, remove it
                     if (!this.player.bullets[i].pierce) {
                         this.player.bullets.splice(i, 1);
                         i--;
 						break;
-                    }
-                    
-                    // See if the turret is destroyed
-                    if (turret <= 0) {
-                        this.explosions[this.explosions.length] = new Explosion(turret.x, turret.y, 0.25);
-                        this.enemyManager.turrets.splice(j, 1);
-						j--;
                     }
                 }
             }

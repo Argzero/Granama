@@ -109,36 +109,6 @@ BOSS_SPAWNS = [
     PunchBoss
 ],
 
-BOSS_SPEED_SCALE = 0.4;
-BOSS_HEAVY = 0,
-BOSS_FIRE = 1,
-BOSS_PUNCH = 2,
-BOSS_DRAGON = 3,
-BOSS_COUNT = 4,
-BOSS_RUSH_DRAGON = 3,
-BOSS_DATA = new Array(
-
-// Heavy Boss
-//         | Gun                                | Rocket                             | Mines                             |
-//  HP (0) | Range (1) | Atk Rate (2) | Dmg (3) | Range (4) | Atk Rate (5) | Dmg (6) | Rate (7) | Dmg (8) | Lifespan (9) | Speed (10) 
-	150,     350,        5,             0.5,      500,        60,            4,        30,        8,        2700,          3,
-
-// Fire Boss
-//          | Flamethrower                     | Rocket                                               |            | Tail           
-//  HP (11) | Range (12) | Rate (13) | Dmg(14) | Range (15) | Rate (16) | Round Delay (17) | Dmg (18) | Speed (19) | Offset (20) | length (21) | Base (22)
-    120,      200,         3,          0.02,     500,         180,        20,                4,         3,           15,           5,            25,
-    
-// Punch Boss
-//                       | Punches                                                        | Laser
-//  HP (23) | Speed (24) | Range (25) | Rate (26) | Dmg (27) | Velocity (28) | Delay (29) | Range (30) | Rate (31) | Round (32) | Dmg (33)
-    150,      3,           400,         300,        1,         15,             120,         500,         150,        60,          0.05,
-    
-// Dragon Boss
-//                       | Tail                                              | Wing Gun                             | Tail Turrets
-//  HP (34) | Speed (35) | Length (36) | Offset (37) | Space (38) | End (39) | Rate (40) | Damage (41) | Range (42) | Rate (43) | Damage (44) | Range (45) 
-    250,      5,           5,            30,           40,          10,        15,         1,            1000,        20,         0.1,          1000
-),
-
 // Drop names (Do not modify these values)
 // General
 SHIELD = "Shield",

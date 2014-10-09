@@ -70,4 +70,11 @@ function Turret(x, y, damage, health) {
 	this.Damage = function(amount, source) {
 		this.health -= amount;
 	};
+    
+    // Checks whether or not the enemy is in range of a player using the specified range
+    this.IsInRange = function(range) {
+        var dx = gameScreen.player.x - this.x;
+        var dy = gameScreen.player.y - this.y;
+        return dx * dx + dy * dy < Sq(range);
+    };
 }

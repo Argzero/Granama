@@ -15,7 +15,6 @@ function EnemyWeaponFist(data) {
     // Fire when in range and off cooldown
     if (this.IsInRange(data.range) && data.cd <= 0) {
         var tx = (data.side ? -1 : 1) * (5 + this.sprite.width / 2 + this.rightFistImg.width / 2);
-        var side = data.side ? 'right' : 'left';
         var fist = FistProjectile(
             this,
             tx,
@@ -26,10 +25,10 @@ function EnemyWeaponFist(data) {
             data.damage, 
             data.range * 1.5, 
             120,
-            side
+            data.side ? 'Right' : 'Left'
         );
         gameScreen.enemyManager.bullets.push(fist);
-        this[side + 'Fist'] = false;
+        this[(data.side ? 'right' : 'left') + 'Fist'] = false;
         data.cd = data.rate;
         data.side = !data.side;
     }

@@ -72,7 +72,7 @@ function PlayerPowerType() {
         this.laserData.sprite = m2 > 1 ? GetImage('abilityLaser') : GetImage('laser');
         this.laserData.damage = LASER_DAMAGE * m * m2;
         this.laserData.rate = 60 / (LASER_APS + this.upgrades[LASER_ID] * LASER_UP);
-        this.laserData.spread = this.upgrades[SPREAD_ID] / 2;
+        this.laserData.spread = this.upgrades[SPREAD_ID] / 5;
         this.FireLasers(this.laserData);
     };
     
