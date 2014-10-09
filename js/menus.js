@@ -477,3 +477,96 @@ function ControlsScreen() {
         canvas.drawImage(cursor, cx - cursor.width / 2, cy - cursor.height / 2);
     }
 }
+
+// The controls gameScreen
+function AbilityScreen() {
+
+    this.controls = GetImage("abilityScreen");
+    this.controlBtn = GetImage('controlBtn');
+    this.controlHover = GetImage('controlBtnHover');
+
+    // Draws the controls gameScreen
+    this.Draw = Draw;
+    function Draw() {
+
+        // Prevent IE bugs
+        canvas.setTransform(1, 0, 0, 1, 0, 0);
+        
+        // Draw the background
+        if (tile && tile.width) {
+            for (var i = 0; i < element.width / tile.width + 1; i++) {
+                var x = i * tile.width;
+                for (var j = 0; j < element.height / tile.height + 1; j++) {
+                    canvas.drawImage(tile, x, j * tile.height);
+                }
+            }
+        }
+        
+        // Draw the main section
+        var scale = (element.height - 140) / this.controls.height;
+        var scale2 = (element.width - 20) / this.controls.width;
+        if (scale2 < scale) {
+            scale = scale2;
+        }
+        canvas.drawImage(this.controls, (element.width - this.controls.width * scale) / 2, 10, this.controls.width * scale, this.controls.height * scale);
+        
+        var cx = mx - element.offsetLeft + pageScrollX;
+        var cy = my - element.offsetTop + pageScrollY;
+        
+        var wx = element.width / 2;
+        var wy = element.height / 2;
+        
+        var bw = (element.width - 40) / 2;
+        if (bw > this.controls.width * scale / 2 - 10) {
+            bw = this.controls.width * scale / 2 - 10;
+        }
+        var by = this.controls.height * scale + 20;
+        
+        // Controls button
+        var controlsHovered = cx > (element.width - this.controls.width * scale) / 2 && cx < (element.width - this.controls.width * scale + this.controlBtn.width * scale) / 2 && cy > 10 && cy < 10 + this.controlBtn.height * scale;
+        var btn = controlsHovered ? this.controlHover : this.controlBtn;
+        canvas.drawImage(btn, (element.width - this.controls.width * scale) / 2, 10, this.controlBtn.width * scale, this.controlBtn.height * scale);
+        
+        // Back button
+        var backHovered = cx < wx - 10 && cx > wx - bw - 10 && cy > by && cy < by + 80;
+        canvas.fillStyle = BUTTON_BORDER;
+        canvas.fillRect(wx - bw - 10, by, bw, 80);
+        canvas.fillStyle = backHovered ? BUTTON_HOVER : BUTTON_BG;
+        canvas.fillRect(wx - bw, by + 10, bw - 20, 60);
+        canvas.fillStyle = "#FFFFFF";
+        canvas.font = "50px Flipbash";
+        canvas.fillText("Back", wx - 10 - bw / 2 - StringWidth("Back", canvas.font) / 2, by + 60);
+        
+        // Play button
+        var playHovered = cx > wx + 10 && cx < wx + bw + 10 && cy > by && cy < by + 80;
+        canvas.fillStyle = BUTTON_BORDER;
+        canvas.fillRect(wx + 10, by, bw, 80);
+        canvas.fillStyle = playHovered ? BUTTON_HOVER : BUTTON_BG;
+        canvas.fillRect(wx + 20, by + 10, bw - 20, 60);
+        canvas.fillStyle = "#FFFFFF";
+        canvas.font = "50px Flipbash";
+        canvas.fillText("Play", wx + 10 + bw / 2 - StringWidth("Play", canvas.font) / 2, by + 60);
+        
+        // Unmarks the left mouse button as pressed
+        if (!KeyPressed(KEY_LMB)) {
+            escDown = false;
+        }
+        
+        // Button interactions
+        if (KeyPressed(KEY_LMB) && !escDown) {
+            if (playHovered) {
+                gameScreen = new SelectScreen();
+            }
+            else if (backHovered) {
+                gameScreen = new TitleScreen();
+            }
+            else if (controlsHovered) {
+                gameScreen = new ControlsScreen();
+            }
+            escDown = true;
+        }
+        
+        // Draw the cursor
+        canvas.drawImage(cursor, cx - cursor.width / 2, cy - cursor.height / 2);
+    }
+}
