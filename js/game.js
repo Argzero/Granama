@@ -14,7 +14,7 @@ cursor;
 
 // Set up the game when the page loads
 window.onload = function() {
-    
+
     // Load data
 	parent = document.querySelector("#game");
 	element = document.querySelector("#granama");
@@ -39,7 +39,6 @@ window.onload = function() {
     };
     
     window.onresize = ResizeCanvas;
-    ResizeCanvas();
     
     // Game loop
     window.setInterval(function() {
@@ -54,6 +53,8 @@ window.onload = function() {
             gameScreen.Draw();
         }
     }, 1000 / GAME_FPS);
+    
+    ResizeCanvas();
 }
 
 window.onmousewheel = document.onmousewheel = function(e) {
@@ -69,4 +70,7 @@ function ResizeCanvas() {
                : document.documentElement.offsetHeight; 
     WINDOW_WIDTH = element.width - UI_WIDTH - SIDEBAR_WIDTH;
     WINDOW_HEIGHT = element.height;
+    if (gameScreen.Draw) {
+        gameScreen.Draw();
+    }
 }
