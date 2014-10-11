@@ -1,4 +1,4 @@
-function BasePlayer(sprite, drops) {
+function BasePlayer(sprite, drops, gamepadIndex) {
 	return {
 	
 		// Events
@@ -30,6 +30,10 @@ function BasePlayer(sprite, drops) {
         mHealth: 1,
         cdm: 1,
         rm: 1,
+		validControls: true,
+		gamepadIndex: 0,
+		gamepad: undefined,
+		pausePressed: false,
         
 		// Damages the player using an optional damage source
 		Damage: function(amount, damager) {
@@ -75,8 +79,9 @@ function BasePlayer(sprite, drops) {
 		// Updates the player
 		UpdateBase: function() {
         
+			this.UpdatePause();
             this.UpdateHealth();
-        
+			
 			// Shield regeneration
 			if (this.upgrades[SHIELD_ID] > 0) {
 				this.shieldCd--;
@@ -124,30 +129,52 @@ function BasePlayer(sprite, drops) {
 			}
 			
 			// Update the player's angle
-			var a = Math.atan((mouseY - this.y) / (this.x - mouseX));
-			if (this.x < mouseX) {
-				this.angle = -HALF_PI - a;
+			var a;
+			if (this.gamepadIndex >= 0) {
+				if (Math.abs(this.gamepad.axes[3]) > 0.2 || Math.abs(this.gamepad.axes[2]) > 0.2) {
+					a = Math.atan(this.gamepad.axes[3] / -this.gamepad.axes[2]);
+					if (this.gamepad.axes[2] > 0) {
+						this.angle = -HALF_PI - a;
+					}
+					else {
+						this.angle = HALF_PI - a;
+					}
+				}
 			}
 			else {
-				this.angle = HALF_PI - a;
+				a = Math.atan((mouseY - this.y) / (this.x - mouseX));
+				if (this.x < mouseX) {
+					this.angle = -HALF_PI - a;
+				}
+				else {
+					this.angle = HALF_PI - a;
+				}
 			}
 			this.cos = -Math.sin(this.angle);
 			this.sin = Math.cos(this.angle);
 			
 			// Movement
-			var hor = KeyPressed(KEY_D) != KeyPressed(KEY_A);
-			var vert = KeyPressed(KEY_W) != KeyPressed(KEY_S);
-			if (KeyPressed(KEY_W)) {
-				this.y -= speed * (hor ? HALF_RT_2 : 1);
+			if (this.gamepadIndex >= 0) {
+				if (Math.abs(this.gamepad.axes[0]) > 0.2 || Math.abs(this.gamepad.axes[1]) > 0.2) {
+					this.x += speed * this.gamepad.axes[0];
+					this.y += speed * this.gamepad.axes[1];
+				}
 			}
-			if (KeyPressed(KEY_S)) {
-				this.y += speed * (hor ? HALF_RT_2 : 1);
-			}
-			if (KeyPressed(KEY_A)) {
-				this.x -= speed * (vert ? HALF_RT_2 : 1);
-			}
-			if (KeyPressed(KEY_D)) {
-				this.x += speed * (vert ? HALF_RT_2 : 1);
+			else {
+				var hor = KeyPressed(KEY_D) != KeyPressed(KEY_A);
+				var vert = KeyPressed(KEY_W) != KeyPressed(KEY_S);
+				if (KeyPressed(KEY_W)) {
+					this.y -= speed * (hor ? HALF_RT_2 : 1);
+				}
+				if (KeyPressed(KEY_S)) {
+					this.y += speed * (hor ? HALF_RT_2 : 1);
+				}
+				if (KeyPressed(KEY_A)) {
+					this.x -= speed * (vert ? HALF_RT_2 : 1);
+				}
+				if (KeyPressed(KEY_D)) {
+					this.x += speed * (vert ? HALF_RT_2 : 1);
+				}
 			}
 			
 			// Bounding
@@ -162,6 +189,37 @@ function BasePlayer(sprite, drops) {
 			}
 			if (YMax(this) > GAME_HEIGHT) {
 				this.y -= YMax(this) - GAME_HEIGHT;
+			}
+		},
+		
+		UpdatePause: function() {
+		
+			// Gamepad reference
+			if (this.gamepadIndex >= 0) {
+				this.gamepad = navigator.getGamepads()[this.gamepadIndex];
+				if (this.gamepad === undefined) {
+					this.validControls = false;
+				}
+			}
+		
+			// Pausing
+			if (this.gamepadIndex >= 0) {
+				if (this.gamepad.buttons[9].value == 1) {
+					if (!this.pausePressed) {
+						this.pausePressed = true;
+						gameScreen.Pause(this);
+					}
+				}
+				else this.pausePressed = false;
+			}
+			else {
+				if (KeyPressed(KEY_ESCAPE)) {
+					if (!this.pausePressed) {
+						this.pausePressed = true;
+						gameScreen.Pause(this);
+					}
+				}
+				else this.pausePressed = false;
 			}
 		},
 		
@@ -197,12 +255,19 @@ function BasePlayer(sprite, drops) {
         
         // Checks whether or not a skill is being cast
         IsSkillCast: function() {
-            return KeyPressed(KEY_SPACE) && this.skillCd <= 0 && this.skillDuration == 0;
+			if (this.skillCd > 0 || this.skillDuration > 0) return false;
+			if (this.gamepadIndex >= 0) {
+				return this.gamepad.buttons[6].value >= 0.1;
+			}
+			else return KeyPressed(KEY_SPACE);
         },
         
         // Function for telling weapons when they can fire
         IsInRange: function() {
-            return KeyPressed(KEY_LMB);
+			if (this.gamepadIndex >= 0) {
+				return this.gamepad.buttons[7].value >= 0.1;
+			}
+			else return KeyPressed(KEY_LMB);
         }
 	}
 }

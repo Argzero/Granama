@@ -1,5 +1,7 @@
 var keysDown = new Array(false, false, false, false, false, false, false);
 var mouseX = 0, mouseY = 0, mx, my;
+var gamepads = navigator.getGamepads();
+console.log(gamepads);
 
 // Key down event
 document.addEventListener('keydown', function(event) {
@@ -15,6 +17,18 @@ document.addEventListener('keyup', function(event) {
     if (index != KEY_UNUSED) {
         keysDown[index] = false;
     }
+});
+
+// Gamepad connected
+window.addEventListener('gamepadconnected', function(e) {
+	console.log("Pad connected at index "  + e.gamepad.index + " and ID " + e.gamepad.id);
+	gamepads[e.gamepad.index] = e.gamepad;
+});
+
+// Gamepad disconnected
+window.addEventListener('gamepaddisconnected', function(e) {
+	console.log("Pad disconnected at index " + e.gamepad.index);
+	gamepads[e.gamepad.index] = undefined;
 });
 
 // Updates the mouse according to the client mouse position

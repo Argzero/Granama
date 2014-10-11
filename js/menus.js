@@ -307,7 +307,8 @@ function TitleScreen() {
         // Button interactions
         if (KeyPressed(KEY_LMB) && !escDown) {
             if (playHovered) {
-                gameScreen = new SelectScreen();
+                //gameScreen = new SelectScreen();
+				gameScreen = new PlayerScreen();
             }
             else if (rushHovered) {
                 player = PlayerTraitorType();

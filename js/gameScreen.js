@@ -21,7 +21,7 @@ function GameScreen(player, bossRush) {
     );
     
     this.damageAlpha;
-    this.paused = false;
+    this.paused = undefined;
     this.music;
     this.player = player;
     this.dropManager = new DropManager(this);
@@ -29,28 +29,13 @@ function GameScreen(player, bossRush) {
     this.ui = new UIManager(this);
     
     // Update function
-    this.Update = Update;
-    function Update() {
+    this.Update = function() {
 
         this.UpdateMusic();
 
-        // Pausing the game
-        if (KeyPressed(KEY_ESC) && !escDown) {
-            escDown = true;
-            if (player.health <= 0) {
-                for (var i = 0; i < DEFAULT_DROPS.length; i++) {
-                    DROPS[i * 2] = DEFAULT_DROPS[i];
-                }
-                gameScreen = new TitleScreen();
-            }
-            else {
-                this.paused = !this.paused;
-            }
-        }
-        else if (!KeyPressed(KEY_ESC)) {
-            escDown = false;
-        }
+        // Do nothing if paused
         if (this.paused) {
+			this.player.UpdatePause();
             return;
         }
 
@@ -78,7 +63,19 @@ function GameScreen(player, bossRush) {
         else {
             this.enemyManager.CheckSpawns();
         }
-    }
+    };
+	
+	// Pauses the game
+	this.Pause = function(player) {
+		if (this.paused) {
+			if (this.paused == player) {	
+				this.paused = undefined;
+			}
+		}
+		else {
+			this.paused = player;
+		}
+	};
 
     // Update function
     this.Draw = Draw;

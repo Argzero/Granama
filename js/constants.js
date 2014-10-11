@@ -57,6 +57,70 @@ SKILL_METHODS = {
     RECHARGER: SkillRecharger
 },
 
+// Skill Data
+PLAYER_DATA = [
+	{
+		player: PlayerDefenseType,
+		preview: 'pDefense',
+		name: 'Heavy',
+		weapons: [ 'Rocket Launcher', 'Minigun' ],
+		skills: [
+			{
+				name: 'Recharger',
+				callback: SkillRecharger
+			},
+			{
+				name: 'Reflector',
+				callback: SkillReflector
+			},
+			{
+				name: 'Stasis',
+				callback: SkillStasis
+			}
+		]
+	},
+	{
+		player: PlayerSpeedType,
+		preview: 'pSpeed',
+		name: 'Blitz',
+		weapons: [ 'Static Gun', 'Shotgun' ],
+		skills: [
+			{
+				name: 'Blink',
+				callback: SkillBlink
+			},
+			{
+				name: 'Blitz',
+				callback: SkillBlitz
+			},
+			{
+				name: 'Overdrive',
+				callback: SkillOverdrive
+			}
+		]
+	},
+	{
+		player: PlayerPowerType,
+		preview: 'pPower',
+		name: 'Slayer',
+		weapons: [ 'Laser Gun', 'Flamethrower' ],
+		skills: [
+			{
+				name: 'KO Cannon',
+				callback: SkillBreakerblaster
+			},
+			{
+				name: 'Decimation',
+				callback: SkillDecimation
+			},
+			{
+				name: 'Wave Burst',
+				callback: SkillWaveburst
+			}
+		]
+	}
+],
+
 // Animation
 GAME_FPS = 60,
 DAMAGE_ALPHA = 0.3,
