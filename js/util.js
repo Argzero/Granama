@@ -20,7 +20,8 @@ function Vector(x, y) {
         Rotate: vectorMethods.Rotate,
         Set: vectorMethods.Set,
         Add: vectorMethods.Add,
-        SetLength: vectorMethods.SetLength
+        SetLength: vectorMethods.SetLength,
+        Normalize: vectorMethods.Normalize
     };
 }
 

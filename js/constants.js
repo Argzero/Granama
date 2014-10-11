@@ -90,7 +90,7 @@ PLAYER_DATA = [
 				callback: SkillBlink
 			},
 			{
-				name: 'Blitz',
+				name: 'Overdrive',
 				callback: SkillBlitz
 			},
 			{
