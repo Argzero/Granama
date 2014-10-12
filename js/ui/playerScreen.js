@@ -218,50 +218,6 @@ function PlayerScreen() {
         
         this.frame = (this.frame + 1) % 60;
      
-		/*
-        for (var i = 0; i < 3; i++) {
-            var x = element.width / 2 - 395 + 270 * i;
-            canvas.fillStyle = "#484848";
-            canvas.fillRect(x, y, 250, 250);
-            if (cx > x && cx < x + 250 && cy > y && cy < y + 250) {
-                canvas.fillStyle = "#383838";
-                
-                // Choosing an option
-                if (KeyPressed(KEY_LMB) && !escDown) {
-                    if (i == 0) {
-                        gameScreen = new SkillScreen(PlayerDefenseType(), STASIS, REFLECTOR, RECHARGER);
-                    }
-                    else if (i == 1) {
-                        gameScreen = new SkillScreen(PlayerSpeedType(), BLINK, OVERDRIVE, BLITZ);
-                    }
-                    else {
-                        gameScreen = new SkillScreen(PlayerPowerType(), WAVEBURST, BREAKERBLASTER, DECIMATION);
-                        //gameScreen = new SkillScreen(PlayerKnightType(), WAVEBURST, BREAKERBLASTER, DECIMATION);
-                    }
-                    escDown = true;
-                }
-            }
-            else {
-                canvas.fillStyle = "#000000";
-            }
-            canvas.fillRect(x + 10, y + 10, 230, 230);
-        }
-		*/
-        
-        // Draw the robot images for the options
-		/*
-        canvas.drawImage(this.imgDefOption, x - 415 - this.imgDefOption.width / 2, y + 100 - this.imgDefOption.height / 2);
-        canvas.drawImage(this.imgSpdOption, x - 145 - this.imgSpdOption.width / 2, y + 100 - this.imgSpdOption.height / 2);
-        canvas.drawImage(this.imgPowOption, x + 125 - this.imgPowOption.width / 2, y + 100 - this.imgPowOption.height / 2);
-
-        // Draw the text for each option
-        canvas.fillStyle = "#FFFFFF";
-        canvas.font = "30px Flipbash";
-        canvas.fillText("Defense", x - 415 - StringWidth("Defense", canvas.font) / 2, y + 220);
-        canvas.fillText("Speed", x - 145 - StringWidth("Speed", canvas.font) / 2, y + 220);
-        canvas.fillText("Power", x + 125 - StringWidth("Power", canvas.font) / 2, y + 220);
-        */
-		
         // Draw the cursor
         canvas.drawImage(cursor, cx - cursor.width / 2, cy - cursor.height / 2);
         

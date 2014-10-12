@@ -77,63 +77,12 @@ function UIManager(screen) {
         }
         */
     }
-
-    // Draws the health bar
-    this.DrawHealthBar = function() {
-
-        // Move to the sidebar location
-        canvas.translate(WINDOW_WIDTH + SIDEBAR_WIDTH, 0);
-        
-        // Background
-        canvas.fillStyle = "#000000";
-        canvas.fillRect(0, 0, UI_WIDTH, WINDOW_HEIGHT);
-        
-        // Top and bottom images
-        canvas.drawImage(this.healthTop, 0, 110);
-        canvas.drawImage(this.healthBottom, 0, element.height - this.healthBottom.height);
-       
-        return;
-       
-        // Get measurements
-        var space = element.height - this.healthTop.height - this.healthBottom.height - 110;
-        var blocks = Math.floor(space / (this.healthBlue.height + 4));
-        if (blocks < 1) {
-            blocks = 1;
-        }
-        var margin = Math.floor((space - blocks * this.healthBlue.height) / (blocks + 1));
-        var extra = Math.floor((space - blocks * this.healthBlue.height - margin * (blocks + 1)) / 2) + 110;
-        var percent = 100 * screen.player.health / screen.player.maxHealth;
-        var shield = 100 * screen.player.shield / (screen.player.maxHealth * SHIELD_MAX);
-        
-        // Draw each health box individually
-        for (var i = 0; i < blocks; i++) {
-            var y = this.healthTop.height + extra + margin + (this.healthBlue.height + margin) * i;
-            if (shield * blocks > 100 * (blocks - 1 - i)) {
-                canvas.drawImage(this.healthBlue, 0, y);
-            }
-            else if (percent > 99 - i * 33 / blocks) {
-                canvas.drawImage(this.healthGreen, 0, y);
-            }
-            else if (percent > 66 - i * 33 / blocks) {
-                canvas.drawImage(this.healthYellow, 0, y);
-            }
-            else if (percent > 33 - i * 33 / blocks && percent > 0) {
-                canvas.drawImage(this.healthRed, 0, y);
-            }
-        }
-        
-        // Reset the canvas transform
-        canvas.setTransform(1, 0, 0, 1, 0, 0);
-    };
     
     // Draws the skill info for the player
     this.DrawSkillInfo = function() {
    
-        return;
-    
-        // Move to the sidebar location
-        canvas.translate(WINDOW_WIDTH + SIDEBAR_WIDTH, 0);
-    
+        /*
+   
         // Skill Icon
         canvas.drawImage(this.skillIcon, 10, 60 - UI_WIDTH / 2, UI_WIDTH - 20, UI_WIDTH - 20);
     
@@ -153,14 +102,10 @@ function UIManager(screen) {
             canvas.fillText(cd, (UI_WIDTH - StringWidth(cd, canvas.font)) / 2, 65);
         }
         
-        // Reset the canvas transform
-        canvas.setTransform(1, 0, 0, 1, 0, 0);
+        */
     };
     
     this.DrawDroneInfo = function() {
-    
-        // Move to the sidebar location
-        canvas.translate(WINDOW_WIDTH + SIDEBAR_WIDTH, 0);
     
         canvas.fillStyle = '#FFFFFF';
         canvas.font = '30px Flipbash';
@@ -171,8 +116,5 @@ function UIManager(screen) {
             canvas.fillText(left, (UI_WIDTH - StringWidth(left, canvas.font)) / 2, 65);
         }
         else canvas.fillText("MAX", (UI_WIDTH - StringWidth("MAX", canvas.font)) / 2, 65);
-        
-        // Reset the canvas transform
-        canvas.setTransform(1, 0, 0, 1, 0, 0);
     };
 }

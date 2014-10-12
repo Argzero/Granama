@@ -187,15 +187,41 @@ function BasePlayer(sprite, drops, gamepadIndex) {
             var healthPercent = this.health / this.maxHealth;
             var shieldPercent = this.shield / (this.maxHealth * SHIELD_MAX);
             canvas.beginPath();
-            canvas.arc(this.x, this.y, 75, Math.PI * 2, (2 - healthPercent) * Math.PI, true);
+            canvas.arc(this.x, this.y, 75, Math.PI * 2, (2 - healthPercent * 9 / 10) * Math.PI, true);
             if (healthPercent > 0.66) canvas.strokeStyle = '#0f0';
             else if (healthPercent > 0.33) canvas.strokeStyle = '#ff0';
             else canvas.strokeStyle = '#f00';
             canvas.stroke();
             canvas.beginPath();
-            canvas.arc(this.x, this.y, 75, 0, shieldPercent * Math.PI);
+            canvas.arc(this.x, this.y, 75, 0, shieldPercent * Math.PI * 9 / 10);
             canvas.strokeStyle = '#f0f';
             canvas.stroke();
+            
+            // Draw skill icon
+            if (this.skillCd > 0) {
+                canvas.globalAlpha = 0.5;
+            }
+            canvas.drawImage(GetImage('ability' + this.ability), this.x - 95, this.y - 20, 40, 40);
+            canvas.globalAlpha = 1;
+            
+            // Skill cooldown/duration
+            var num;
+            if (this.skillDuration > 0) {
+                num = this.skillDuration / 60;
+                canvas.fillStyle = '#0f0';
+            }
+            else {
+                num = this.skillCd / 60;
+                canvas.fillStyle = '#fff';
+            }
+            if (num > 0) {
+                canvas.font = '24px Flipbash';
+                if (num < 10) {
+                    num = num.toFixed(1);
+                }
+                else num = num.toFixed(0);
+                canvas.fillText(num, this.x - 75 - StringWidth(num) / 2, this.y + 10);
+            }
             
             ResetTransform(canvas);
 		},

@@ -131,13 +131,12 @@ function GameScreen(bossRush) {
         }
         
         this.ui.DrawStatBar();
-        this.ui.DrawHealthBar();
         
         if (bossRush) {
             this.ui.DrawDroneInfo();
         }
         else {
-            this.ui.DrawSkillInfo();
+            //this.ui.DrawSkillInfo();
         }
         
         // Draw the cursor
