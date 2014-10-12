@@ -60,10 +60,10 @@ function DropManager(screen) {
                 if (total > rand) {
                     this.drops.push(new Drop(x + ox, y, drops[k * DROP_VALUES + DROP_TYPE], k, player));
                     ox += 15;
-                    return true;
+                    break;
                 }
             }
         }
-        return false;
+        return ox > 0;
     }
 }

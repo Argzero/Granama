@@ -17,5 +17,10 @@ function Drop(x, y, type, id, player) {
     this.Draw = Draw;
     function Draw(canvas) {
         canvas.drawImage(this.sprite, this.x - this.sprite.width / 2, this.y - this.sprite.height / 2);
+        canvas.strokeStyle = this.player.color;
+        canvas.lineWidth = 3;
+        canvas.beginPath();
+        canvas.arc(this.x, this.y, this.sprite.width / 2, 0, Math.PI * 2);
+        canvas.stroke();
     }
 }

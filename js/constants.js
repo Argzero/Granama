@@ -12,7 +12,7 @@ BULLET_SPEED = 10,
 PLAYER_SPEED = 3,
 
 // Health
-PLAYER_HEALTH = 20,
+PLAYER_HEALTH = 100,
 
 // Attacks
 GUN_CD = 10,

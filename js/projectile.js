@@ -22,7 +22,7 @@ function ProjectileBase(sprite, source, x, y, velX, velY, angle, damage, range, 
         range: range,
         damage: damage,
         scale: 1,
-        offScreen: offScreen,
+        offScreen: true,
         expired: false,
         
         // Components to be set by specific projectiles
