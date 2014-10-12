@@ -1,4 +1,4 @@
-function GameScreen(player, bossRush) {
+function GameScreen(bossRush) {
 
     this.scrollX = 0;
     this.scrollY = 0;
@@ -23,45 +23,39 @@ function GameScreen(player, bossRush) {
     this.damageAlpha;
     this.paused = undefined;
     this.music;
-    this.player = player;
     this.dropManager = new DropManager(this);
     this.enemyManager = new EnemyManager(this);
     this.ui = new UIManager(this);
+    this.playerMinX = 0;
+    this.playerMinY = 0;
+    this.playerMaxX = 9999;
+    this.playerMaxY = 9999;
     
     // Update function
     this.Update = function() {
 
         this.UpdateMusic();
 
-        // Do nothing if paused
-        if (this.paused) {
-			this.player.UpdatePause();
-            return;
-        }
-
         var doc = document.documentElement, body = document.body;
         pageScrollX = (doc && doc.scrollLeft || body && body.scrollLeft || 0);
         pageScrollY = (doc && doc.scrollTop  || body && body.scrollTop  || 0);
         
         // Players and enemies don't need to update if the game is over
-        if (this.player.health > 0) {
-            this.player.Update();
+        playerManager.update(this.paused);
+        if (!this.paused) {
             this.enemyManager.UpdateEnemies();
-        }
-        else if (this.player.bullets.length++) {
-            this.player.bullets.splice(0, this.player.bullets.length);
-        }
         
-        this.UpdateBullets();
-        this.dropManager.Update();
-        
-        this.ApplyScrolling();
-        
-        if (bossRush) {
-            this.enemyManager.CheckBosses();
-        }
-        else {
-            this.enemyManager.CheckSpawns();
+            this.UpdateBullets();
+            this.dropManager.Update();
+            
+            this.ApplyScrolling();
+            
+            if (bossRush) {
+                this.enemyManager.CheckBosses();
+            }
+            else {
+                this.enemyManager.CheckSpawns();
+            }
         }
     };
 	
@@ -99,9 +93,12 @@ function GameScreen(player, bossRush) {
         
         this.dropManager.Draw();
         
-        // Player
-        if (this.player.health > 0) {
-            this.player.Draw(canvas);
+        // Players
+        for (var i = 0; i < playerManager.players.length; i++) {    
+            var player = playerManager.players[i].robot;
+            if (player.health > 0) {
+                player.Draw(canvas);
+            }
         }
         
         this.enemyManager.Draw();
@@ -144,6 +141,7 @@ function GameScreen(player, bossRush) {
         }
         
         // Draw the cursor
+        canvas.setTransform(1, 0, 0, 1, 0, 0);
         canvas.drawImage(cursor, mx - element.offsetLeft + pageScrollX - cursor.width / 2, my - element.offsetTop + pageScrollY - cursor.height / 2);
     }
 
@@ -153,53 +151,54 @@ function GameScreen(player, bossRush) {
 
         this.enemyManager.UpdateBullets();
         
-        // Done if the player is dead
-        if (this.player.health <= 0) {
-            return;
-        }
+        // Update bullets for each player
+        for (var p = 0; p < playerManager.players.length; p++) {
         
-        // Check for collisions between the player's bullets and enemies
-        for (var i = 0; i < this.player.bullets.length; i++) {
+            var player = playerManager.players[p].robot;
         
-            // Colliding with turrets
-            for (var j = 0; j < this.enemyManager.turrets.length; j++) {
-				var turret = this.enemyManager.turrets[j];
-                if (BulletCollides(this.player.bullets[i], turret)) {
-                    this.player.bullets[i].Hit(turret);
-                    
-                    // See if the turret is destroyed
-                    if (turret.health <= 0) {
-                        this.explosions[this.explosions.length] = new Explosion(turret.x, turret.y, 0.25);
-                        this.enemyManager.turrets.splice(j, 1);
-						j--;
+            // Check for collisions between the player's bullets and enemies
+            for (var i = 0; i < player.bullets.length; i++) {
+            
+                // Colliding with turrets
+                for (var j = 0; j < this.enemyManager.turrets.length; j++) {
+                    var turret = this.enemyManager.turrets[j];
+                    if (BulletCollides(player.bullets[i], turret)) {
+                        player.bullets[i].Hit(turret);
+                        
+                        // See if the turret is destroyed
+                        if (turret.health <= 0) {
+                            this.explosions[this.explosions.length] = new Explosion(turret.x, turret.y, 0.25);
+                            this.enemyManager.turrets.splice(j, 1);
+                            j--;
+                        }
+                        
+                        // If the bullet is not a piercing bullet, remove it
+                        if (!player.bullets[i].pierce) {
+                            player.bullets.splice(i, 1);
+                            i--;
+                            break;
+                        }
                     }
-                    
-                    // If the bullet is not a piercing bullet, remove it
-                    if (!this.player.bullets[i].pierce) {
-                        this.player.bullets.splice(i, 1);
-                        i--;
-						break;
+                }
+                
+                // Regular enemy collision
+                for (var j = 0; j < this.enemyManager.enemies.length; j++) {
+                
+                    // See if the bullet hit the enemy
+                    if (BulletCollides(player.bullets[i], this.enemyManager.enemies[j])) {
+                        player.bullets[i].Hit(this.enemyManager.enemies[j]);
+                        
+                        // If the bullet is not a piercing bullet, remove it
+                        if (!player.bullets[i].pierce) {
+                            player.bullets.splice(i, 1);
+                            i--;
+                            break;
+                        }
                     }
                 }
             }
-            
-            // Regular enemy collision
-            for (var j = 0; j < this.enemyManager.enemies.length; j++) {
-            
-                // See if the bullet hit the enemy
-                if (BulletCollides(this.player.bullets[i], this.enemyManager.enemies[j])) {
-                    this.player.bullets[i].Hit(this.enemyManager.enemies[j]);
-                    
-                    // If the bullet is not a piercing bullet, remove it
-                    if (!this.player.bullets[i].pierce) {
-                        this.player.bullets.splice(i, 1);
-                        i--;
-                        break;
-                    }
-                }
-            }
         }
-        
+            
         this.enemyManager.CheckDeaths();
     }
 
@@ -207,23 +206,25 @@ function GameScreen(player, bossRush) {
     this.ApplyScrolling = ApplyScrolling;
     function ApplyScrolling() {
 
-        // Get the scroll position according to the player's position
-        this.scrollX = this.player.x - WINDOW_WIDTH / 2;
-        this.scrollY = this.player.y - WINDOW_HEIGHT / 2;
+        // Get the average player position
+        var avgX = 0;
+        var avgY = 0;
+        for (var i = 0; i < playerManager.players.length; i++) {
+            avgX += playerManager.players[i].robot.x;
+            avgY += playerManager.players[i].robot.y;
+        }
+        avgX /= playerManager.players.length;
+        avgY /= playerManager.players.length;
         
-        // Limit the scroll amount to stay within the arena
-        if (this.scrollX < 0) {
-            this.scrollX = 0;
-        }
-        if (this.scrollY < 0) {
-            this.scrollY = 0;
-        }
-        if (this.scrollX > GAME_WIDTH - WINDOW_WIDTH) {
-            this.scrollX = GAME_WIDTH - WINDOW_WIDTH;
-        }
-        if (this.scrollY > GAME_HEIGHT - WINDOW_HEIGHT) {
-            this.scrollY = GAME_HEIGHT - WINDOW_HEIGHT;
-        }
+        // Scroll bounds
+        this.scrollX = clamp(avgX - WINDOW_WIDTH / 2, 0, GAME_WIDTH - WINDOW_WIDTH);
+        this.scrollY = clamp(avgY - WINDOW_HEIGHT / 2, 0, GAME_HEIGHT - WINDOW_HEIGHT);
+        
+        // player bounds
+        this.playerMinX = Math.max(0, Math.min(avgX - WINDOW_WIDTH / 2, this.scrollX) + 100);
+        this.playerMinY = Math.max(0, Math.min(avgY - WINDOW_HEIGHT / 2, this.scrollY) + 100);
+        this.playerMaxX = Math.min(GAME_WIDTH, Math.max(avgX + WINDOW_WIDTH / 2, this.scrollX + WINDOW_WIDTH) - 100);
+        this.playerMaxY = Math.min(GAME_HEIGHT, Math.max(avgY + WINDOW_HEIGHT / 2, this.scrollY + WINDOW_HEIGHT) - 100);
         
         // Apply the scroll amount to the mouse coordinates
         mouseX = mx + this.scrollX - SIDEBAR_WIDTH - element.offsetLeft + pageScrollX;
@@ -235,7 +236,7 @@ function GameScreen(player, bossRush) {
     function UpdateMusic() {
 
         // Player must be alive for the music to play
-        if (this.player.health > 0) {
+        //if (this.player.health > 0) {
         
             // Initially load the music if it isn't already
             if (!this.music) {
@@ -256,6 +257,7 @@ function GameScreen(player, bossRush) {
                 }
                 this.music.volume = newVolume;
             }
+            /*
         }
         
         // Fade out and then stop when the player dies
@@ -269,5 +271,6 @@ function GameScreen(player, bossRush) {
                 this.music.volume = newVolume;
             }
         }
+        */
     }
 }

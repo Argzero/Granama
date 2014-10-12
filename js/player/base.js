@@ -30,7 +30,7 @@ function BasePlayer(sprite, drops, gamepadIndex) {
         mHealth: 1,
         cdm: 1,
         rm: 1,
-		input: (gamepadIndex == -1 ? StandardInput() : GamepadInput(0)),
+		input: undefined,
         
 		// Damages the player using an optional damage source
 		Damage: function(amount, damager) {
@@ -136,18 +136,8 @@ function BasePlayer(sprite, drops, gamepadIndex) {
             this.y += speed * this.input.movement.y;
 			
 			// Bounding
-			if (XMin(this) < 0) {
-				this.x += -XMin(this);
-			}
-			if (XMax(this) > GAME_WIDTH) {
-				this.x -= XMax(this) - GAME_WIDTH;
-			}
-			if (YMin(this) < 0) {
-				this.y += -YMin(this);
-			}
-			if (YMax(this) > GAME_HEIGHT) {
-				this.y -= YMax(this) - GAME_HEIGHT;
-			}
+			this.x = clamp(this.x, gameScreen.playerMinX + this.sprite.width / 2, gameScreen.playerMaxX - this.sprite.width / 2);
+            this.y = clamp(this.y, gameScreen.playerMinY + this.sprite.height / 2, gameScreen.playerMaxY - this.sprite.height / 2);
 		},
 		
 		UpdatePause: function() {
@@ -181,7 +171,7 @@ function BasePlayer(sprite, drops, gamepadIndex) {
 		
             // Restore the transform
             ResetTransform(canvas);
-        
+            
 			// Draw bullets
 			for (i = 0; i < this.bullets.length; i++) {
 				this.bullets[i].Draw(canvas);
@@ -191,6 +181,23 @@ function BasePlayer(sprite, drops, gamepadIndex) {
 			if (this.onDraw) {
 				this.onDraw();
 			}
+            
+            // Draw health bar
+            canvas.lineWidth = 3;
+            var healthPercent = this.health / this.maxHealth;
+            var shieldPercent = this.shield / (this.maxHealth * SHIELD_MAX);
+            canvas.beginPath();
+            canvas.arc(this.x, this.y, 75, Math.PI * 2, (2 - healthPercent) * Math.PI, true);
+            if (healthPercent > 0.66) canvas.strokeStyle = '#0f0';
+            else if (healthPercent > 0.33) canvas.strokeStyle = '#ff0';
+            else canvas.strokeStyle = '#f00';
+            canvas.stroke();
+            canvas.beginPath();
+            canvas.arc(this.x, this.y, 75, 0, shieldPercent * Math.PI);
+            canvas.strokeStyle = '#f0f';
+            canvas.stroke();
+            
+            ResetTransform(canvas);
 		},
         
         // Checks whether or not a skill is being cast

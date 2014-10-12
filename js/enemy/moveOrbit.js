@@ -1,14 +1,15 @@
 // Moves the enemy towards the player to their preferred range
 function EnemyMoveOrbit() {
 
-   // Move normally if not in the preferred range
-    var ds = DistanceSq(this.x, this.y, gameScreen.player.x, gameScreen.player.y);
+    // Move normally if not in the preferred range
+    var player = playerManager.getClosest(this.x, this.y);
+    var ds = DistanceSq(this.x, this.y, player.x, player.y);
     var tooFar = ds > Sq(this.range + 100);
     var tooClose = ds < Sq(this.range - 100);
 
     // Turn towards the player
-    var dx = gameScreen.player.x - this.x;
-    var dy = gameScreen.player.y - this.y;
+    var dx = player.x - this.x;
+    var dy = player.y - this.y;
     var d1 = this.sin * dx + -this.cos * dy;
     var d2 = this.cos * dx + this.sin * dy;
     

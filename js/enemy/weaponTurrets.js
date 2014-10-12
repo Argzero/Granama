@@ -9,7 +9,8 @@
 function EnemyWeaponTurrets(data) {
 
     // See if it's in range while ignoring the direction being faced
-    var ds = DistanceSq(this.x, this.y, gameScreen.player.x, gameScreen.player.y);
+    var player = playerManager.getClosest(this.x, this.y);
+    var ds = DistanceSq(this.x, this.y, player.x, player.y);
     var inRange = ds <= Sq(data.range);
         
     // Drop mines

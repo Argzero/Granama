@@ -27,6 +27,7 @@ function EnemyBase(sprite, x, y, health, speed, range) {
         AddWeapon: enemyFunctions.AddWeapon,
         Knockback: enemyFunctions.Knockback,
         Update: enemyFunctions.Update,
+        clamp: enemyFunctions.clamp,
         Draw: enemyFunctions.Draw,
         IsInRange: enemyFunctions.IsInRange,
 		Damage: enemyFunctions.Damage,
@@ -67,6 +68,7 @@ var enemyFunctions = {
             this.knockback.Add(-dx, -dy);
             this.x += dx;
             this.y += dy;
+            this.clamp();
             return;
         }
         
@@ -99,19 +101,13 @@ var enemyFunctions = {
             }
         }
         
-        // Limit the enemy to the map
-        if (XMin(this) < 0) {
-            this.x += -XMin(this);
-        }
-        if (XMax(this) > GAME_WIDTH) {
-            this.x -= XMax(this) - GAME_WIDTH;
-        }
-        if (YMin(this) < 0) {
-            this.y += -YMin(this);
-        }
-        if (YMax(this) > GAME_HEIGHT) {
-            this.y -= YMax(this) - GAME_HEIGHT;
-        }
+        this.clamp();
+    },
+    
+    // Clamps the enemy to the map
+    clamp: function() {
+        this.x = clamp(this.x, this.sprite.width / 2, GAME_WIDTH - this.sprite.width / 2);
+        this.y = clamp(this.y, this.sprite.height / 2, GAME_HEIGHT - this.sprite.height / 2);
     },
     
     // Draws the enemy
@@ -155,9 +151,10 @@ var enemyFunctions = {
     
     // Checks whether or not the enemy is in range of a player using the specified range
     IsInRange: function(range) {
-        var dx = gameScreen.player.x - this.x;
-        var dy = gameScreen.player.y - this.y;
-        return dx * dx + dy * dy < Sq(range + this.speed) && this.cos * dx + this.sin * dy >= 0;
+        var player = playerManager.getClosest(this.x, this.y);
+        var dx = player.x - this.x;
+        var dy = player.y - this.y;
+        return player.health > 0 && dx * dx + dy * dy < Sq(range + this.speed) && this.cos * dx + this.sin * dy >= 0;
     },
 	
 	// Damages the enemy

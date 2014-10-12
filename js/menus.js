@@ -308,10 +308,14 @@ function TitleScreen() {
         if (KeyPressed(KEY_LMB) && !escDown) {
             if (playHovered) {
                 //gameScreen = new SelectScreen();
+                playerManager.setMultiplayer();
 				gameScreen = new PlayerScreen();
             }
             else if (rushHovered) {
+                playerManager.setSingleplayer();
                 player = PlayerTraitorType();
+                playerManager.players[0].robot = player;
+                player.input = playerManager.players[0].input;
                 gameScreen = new GameScreen(player, true);
                 /*
                 player = new BossPlayer(GAME_WIDTH / 4, GAME_HEIGHT / 4);

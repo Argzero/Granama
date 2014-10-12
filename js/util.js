@@ -89,6 +89,13 @@ var vectorMethods = {
     }
 };
 
+// Returns a modified value clamped to the given bounds
+function clamp(value, min, max) {
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
+}
+
 // Measures the width of the string using the active canvas font
 // str - string to measure
 function StringWidth(str) {
@@ -122,6 +129,9 @@ function OffScreen(x, y, padding) {
 // bullet - bullet to check with
 //  robot - robot to check against
 function BulletCollides(bullet, robot) {
+    if (bullet.sprite === undefined || robot.sprite === undefined) {
+        console.log('huh?');
+    }
     return Sq(bullet.sprite.width * bullet.scale / 2 + robot.sprite.width / 2) > Sq(bullet.x - robot.x) + Sq(bullet.y - robot.y);
 }
 
@@ -155,44 +165,6 @@ function Rand(max) {
     return Math.floor(Math.random() * max);
 }
 
-// Speads the bullet by the given factor
-// bullet - bullet to spread from
-// factor - direction factor (1 or -1)
-//      c - cosine of the angle to rotate by
-//      s - sine of the angle to rotate by
-function Spread(bullet, factor, c, s) {
-	var velX = bullet.velX * c - bullet.velY * s * factor;
-	var velY = bullet.velX * s * factor + bullet.velY * c;
-	
-	return new Bullet(bullet.x, bullet.y, velX, velY, bullet.damage, bullet.range, bullet.enemy);
-}
-
-// Spreads a laser by the given factor
-//  laser - laser to spread from
-// factor - direction factor (-1 or 1)
-//      c - cosine of the angle to rotate by
-//      s - sine of the angle to rotate by
-function SpreadHammer(hammer, factor, angle, c, s) {
-    var velX = hammer.velX * c - hammer.velY * s * factor;
-	var velY = hammer.velX * s * factor + hammer.velY * c;
-	
-	return NewHammer(hammer.x, hammer.y, velX, velY, hammer.angle + angle * factor, hammer.damage, hammer.range);
-}
-
-// Spreads a laser by the given factor
-//  laser - laser to spread from
-// factor - direction factor (-1 or 1)
-//      c - cosine of the angle to rotate by
-//      s - sine of the angle to rotate by
-function SpreadLaser(laser, factor, angle, c, s) {
-    var velX = laser.velX * c - laser.velY * s * factor;
-	var velY = laser.velX * s * factor + laser.velY * c;
-	
-	var result = NewLaser(laser.x, laser.y, velX, velY, laser.angle + angle * factor, laser.damage, laser.range);
-	result.sprite = laser.sprite;
-	return result;
-}
-
 // Rotates the x, y pair by the given integer value and returns the x coordinate
 function RotateX(x, y, angle) {
     if (angle >= 10) {
@@ -221,111 +193,6 @@ function RotateY(x, y, angle) {
 		x = xt;
 	}
 	return y;
-}
-
-// Fires spread shots form the robot based on the initial bullet
-//  robot - robot to fire the spread shot for
-// bullet - initial fired bullet
-//  array - list to add the bullets to
-function SpreadShots(robot, bullet, array) {
-
-    // Spread shots
-    var l = bullet;
-    var r = bullet;
-    var d = GetSpreadData(robot);
-    
-    for (var i = 0; i < robot.spread; i++) {
-        l = Spread(l, 1, d.c, d.s);
-        r = Spread(r, -1, d.c, d.s);
-        array[array.length] = l;
-        array[array.length] = r;
-    }
-}
-
-// Fires spread shots from the robot based on the initial laser
-// robot - robot to fire the spread shot for
-// laser - initial fired laser
-// array - list to add the lasers to
-function SpreadHammers(robot, hammer, array) {
-
-    var l = hammer;
-    var r = hammer;
-    var c = COS_15;
-    var s = SIN_15;
-    var a = Math.PI / 12;
-	
-    // Hammers don't spread as much
-    var spread = robot.spread / 5;
-	if (spread > 2) {
-		spread = 2;
-	}
-    
-    for (var i = 0; i < spread; i++) {
-        l = SpreadHammer(l, 1, a, c, s);
-        r = SpreadHammer(r, -1, a, c, s);
-        array[array.length] = l;
-        array[array.length] = r;
-    }
-}
-
-// Fires spread shots from the robot based on the initial laser
-// robot - robot to fire the spread shot for
-// laser - initial fired laser
-// array - list to add the lasers to
-function SpreadLaserShots(robot, laser, array, amount) {
-
-    var l = laser;
-    var r = laser;
-    var d = GetSpreadData(amount);
-    
-    for (var i = 0; i < amount && i < 90; i++) {
-        l = SpreadLaser(l, 1, d.a, d.c, d.s);
-        r = SpreadLaser(r, -1, d.a, d.c, d.s);
-        array[array.length] = l;
-        array[array.length] = r;
-    }
-}
-
-// Retrieves the value of the angle in radians for the spread shot of the robot
-// amount - Spread of the bullets
-function GetSpreadData(amount) {
-    if (amount > 29) {
-		return { a: Math.PI / 180, s: SIN_1, c: COS_1 };
-	}
-	else if (amount > 17) {
-        return { a: Math.PI / 60, s: SIN_3, c: COS_3 };
-    }
-    else if (amount > 8) {
-        return { a: Math.PI / 36, s: SIN_5, c: COS_5 };
-    }
-    else if (amount > 5) {
-        return { a: Math.PI / 18, s: SIN_10, c: COS_10 };
-    }
-    else {
-        return { a: Math.PI / 12, s: SIN_15, c: COS_15 };
-    }
-}
-
-// Fires a bullet from the given enemy
-function FireBullet(enemy) {
-
-    // Normal bullet
-    var bullet = new Bullet(enemy.x + enemy.c * enemy.sprite.width / 2, enemy.y + enemy.s * enemy.sprite.width / 2, enemy.c * BULLET_SPEED, enemy.s * BULLET_SPEED, enemy.damage, enemy.range * 1.5, enemy);
-    gameScreen.bullets[gameScreen.bullets.length] = bullet;
-    
-    // Spread shots
-	SpreadShots(enemy, bullet, gameScreen.bullets);
-}
-
-// Fires a hammer from the given enemy
-function FireHammer(enemy) {
-	
-	// Hammer
-	var hammer = NewHammer(enemy.x, enemy.y, enemy.c * BULLET_SPEED, enemy.s * BULLET_SPEED, enemy.angle, enemy.damage, enemy.range * 1.5);
-	gameScreen.bullets[gameScreen.bullets.length] = hammer;
-	
-	// Spread shots
-	SpreadHammers(enemy, hammer, gameScreen.bullets);
 }
 
 // Gets the angle from the first point to the second point

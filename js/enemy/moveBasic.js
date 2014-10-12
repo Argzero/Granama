@@ -2,8 +2,9 @@
 function EnemyMoveBasic() {
 
     // Turn towards the player
-    var dx = gameScreen.player.x - this.x;
-    var dy = gameScreen.player.y - this.y;
+    var player = playerManager.getClosest(this.x, this.y);
+    var dx = player.x - this.x;
+    var dy = player.y - this.y;
     var dot = this.sin * dx + -this.cos * dy;
     if (dot > 0) {
         this.angle -= this.speed / 100.0;
@@ -27,7 +28,7 @@ function EnemyMoveBasic() {
     if (this.speedMDuration) {
         speed *= this.speedM;
     }
-    var dSq = Sq(this.x - gameScreen.player.x) + Sq(this.y - gameScreen.player.y);
+    var dSq = Sq(this.x - player.x) + Sq(this.y - player.y);
     if (dSq - Sq(this.range + speed) > 0) {
         this.x += m * this.cos * speed;
         this.y += m * this.sin * speed;

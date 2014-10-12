@@ -19,7 +19,7 @@ function PlayerInput(confirmButtonName) {
         updateBase: inputFunctions.updateBase,
         setPlayer: inputFunctions.setPlayer
     };
-}
+};
 
 // Keyboard/mouse input
 function StandardInput() {
@@ -27,7 +27,7 @@ function StandardInput() {
     
     obj.update = inputFunctions.updateStandard;
     return obj;
-}
+};
 
 // Gamepad input
 function GamepadInput(id) {
@@ -36,7 +36,7 @@ function GamepadInput(id) {
     
     obj.update = inputFunctions.updateGamepad;
     return obj;
-}
+};
 
 // Functions for inputs
 var inputFunctions = {
@@ -48,11 +48,15 @@ var inputFunctions = {
 
     // Base update for player input
     updateBase: function() {
-        if (!this.pause && !this.confirm) {
+        if (this.movement.LengthSq() == 0 && !this.pause && !this.confirm) {
             this.locked = false;
         }
-        this.pause = this.pause && !this.locked;
-        this.confirm = this.confirm && !this.locked;
+        if (this.locked) {
+            this.pause = false;
+            this.confirm = false;
+            this.movement.x = 0;
+            this.movement.y = 0;
+        }
     },
     
     // Updates for keyboard input
@@ -101,6 +105,7 @@ var inputFunctions = {
             this.valid = false;
             return;
         }
+        else this.valid = true;
         
         // Weapons
         this.ability = gamepad.buttons[6].value >= 0.1;

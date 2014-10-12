@@ -28,8 +28,11 @@ function Mine(x, y, damage, type) {
         }
         this.exploded = true;
         gameScreen.explosions[gameScreen.explosions.length] = new Explosion(this.x, this.y, this.sprite.width / 100);
-        if (DistanceSq(this.x, this.y, gameScreen.player.x, gameScreen.player.y) < Sq(MINE_RADIUS)) {
-            gameScreen.player.Damage(this.damage);
+        for (var i = 0; i < playerManager.players.length; i++) {
+            var player = playerManager.players[i].robot;
+            if (DistanceSq(this.x, this.y, player.x, player.y) < Sq(MINE_RADIUS)) {
+                player.Damage(this.damage);
+            }
         }
     }
     

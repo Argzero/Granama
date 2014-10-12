@@ -8,7 +8,7 @@ function EnemyWeaponMelee(data) {
 
     // Fire when in range and off cooldown
     if (this.IsInRange(data.range) && data.cd <= 0) {
-        gameScreen.player.Damage(data.damage, this);
+        playerManager.getClosest(this.x, this.y).Damage(data.damage, this);
         data.cd = data.rate;
     }
     

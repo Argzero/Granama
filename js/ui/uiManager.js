@@ -17,13 +17,17 @@ function UIManager(screen) {
     ];
     
     // Player upgrade/skill icons
+    /*
     if (screen.player.ability) {
         this.skillIcon = GetImage('ability' + screen.player.ability);
     }
+    */
     this.upIcons = [];
+    /*
     for (var i = 0; i < DROP_COUNT; i++) {
         this.upIcons.push(GetImage("icon" + screen.player.drops[DROP_VALUES * i + DROP_TYPE]));
     }
+    */
     
     
     // Draws the sidebar with the upgrades
@@ -58,6 +62,7 @@ function UIManager(screen) {
         var interval = 120 + margin;
         
         // Upgrade counters
+        /*
         for (var i = 0; i < 4; i++) {
             for (var j = 0; j < 2; j++) {
                 var index = i * 2 + j;
@@ -70,6 +75,7 @@ function UIManager(screen) {
                 canvas.fillText(ups, 50 + 100 * j - StringWidth(ups) / 2, margin + extra + 110 + interval * i);
             }
         }
+        */
     }
 
     // Draws the health bar
@@ -85,6 +91,8 @@ function UIManager(screen) {
         // Top and bottom images
         canvas.drawImage(this.healthTop, 0, 110);
         canvas.drawImage(this.healthBottom, 0, element.height - this.healthBottom.height);
+       
+        return;
        
         // Get measurements
         var space = element.height - this.healthTop.height - this.healthBottom.height - 110;
@@ -120,6 +128,8 @@ function UIManager(screen) {
     
     // Draws the skill info for the player
     this.DrawSkillInfo = function() {
+   
+        return;
     
         // Move to the sidebar location
         canvas.translate(WINDOW_WIDTH + SIDEBAR_WIDTH, 0);

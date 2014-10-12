@@ -68,13 +68,18 @@ function EnemyManager(screen) {
             }
             
             // See if the bullet hit the player
-            else if (screen.player.health > 0 && BulletCollides(this.bullets[i], screen.player) && this.bullets[i].damage > 0) {
-                this.bullets[i].Hit(screen.player);
-                if (!this.bullets[i].pierce) {
-                    this.bullets.splice(i, 1);
-                    i--;
+            else {
+                for (var p = 0; p < playerManager.players.length; p++) {
+                    var player = playerManager.players[p].robot;
+                    if (player.health > 0 && BulletCollides(this.bullets[i], player) && this.bullets[i].damage > 0) {
+                        this.bullets[i].Hit(player);
+                        if (!this.bullets[i].pierce) {
+                            this.bullets.splice(i, 1);
+                            i--;
+                        }
+                        screen.damageAlpha = DAMAGE_ALPHA;
+                    }
                 }
-                screen.damageAlpha = DAMAGE_ALPHA;
             }
         }
         
@@ -85,10 +90,15 @@ function EnemyManager(screen) {
                 this.mines.splice(i, 1);
                 i--;
             }
-            else if (BulletCollides(this.mines[i], screen.player) && screen.player.health > 0) {
-                this.mines[i].Explode();
-                this.mines.splice(i, 1);
-                i--;
+            else {
+                for (var p = 0; p < playerManager.players.length; p++) {
+                    var player = playerManager.players[p].robot;
+                    if (BulletCollides(this.mines[i], player) && player.health > 0) {
+                        this.mines[i].Explode();
+                        this.mines.splice(i, 1);
+                        i--;
+                    }
+                }
             }
         }
     };
@@ -148,12 +158,12 @@ function EnemyManager(screen) {
             var dir = Math.random();
             
             // Get a spawn point off of the gameScreen
-            x = Rand(GAME_WIDTH - 200 + 100);
-            y = Rand(GAME_HEIGHT - 200 + 100);
-            while (!OffScreen(x, y, 100)) {
+            var x, y;
+            do {
                 x = Rand(GAME_WIDTH - 200 + 100);
                 y = Rand(GAME_HEIGHT - 200 + 100);
             }
+            while (!OffScreen(x, y, 100));
             
             // Get a random type
             var r = Rand(this.spawnWeight - 3);
@@ -201,13 +211,13 @@ function EnemyManager(screen) {
     // Spawns a boss
     this.SpawnBoss = function(id) {
         // Get the position
-        if (screen.player.x < GAME_WIDTH / 2) {
+        if (gameScreen.scrollX + WINDOW_WIDTH / 2 < GAME_WIDTH / 2) {
             x = GAME_WIDTH - 500;
         }
         else {
             x = 500;
         }
-        if (screen.player.y < GAME_HEIGHT / 2) {
+        if (gameScreen.scrollY + WINDOW_HEIGHT / 2 < GAME_HEIGHT / 2) {
             y = GAME_HEIGHT - 500;
         }
         else {

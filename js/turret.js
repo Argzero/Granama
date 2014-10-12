@@ -32,7 +32,8 @@ function Turret(x, y, damage, health) {
     this.Update = function() {
     
         // Update the turret's angle
-        var a = Math.atan((gameScreen.player.y - this.y) / (this.x - gameScreen.player.x));
+        var player = playerManager.getClosest(this.x, this.y);
+        var a = Math.atan((player.y - this.y) / (this.x - player.x));
         if (this.x < player.x) {
             this.angle = -HALF_PI - a;
         }
@@ -73,8 +74,9 @@ function Turret(x, y, damage, health) {
     
     // Checks whether or not the enemy is in range of a player using the specified range
     this.IsInRange = function(range) {
-        var dx = gameScreen.player.x - this.x;
-        var dy = gameScreen.player.y - this.y;
-        return dx * dx + dy * dy < Sq(range);
+        var player = playerManager.getClosest(this.x, this.y);
+        var dx = player.x - this.x;
+        var dy = player.y - this.y;
+        return player.health > 0 && dx * dx + dy * dy < Sq(range);
     };
 }
