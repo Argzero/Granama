@@ -8,8 +8,13 @@ var playerManager = {
     update: function(paused) {
         for (var i = 0; i < this.players.length; i++) {
             this.players[i].input.update();
-            if (!paused && this.players[i].robot.health > 0) {
-                this.players[i].robot.Update();
+            if (!paused) {
+                if (this.players[i].robot.health > 0) {
+                    this.players[i].robot.Update();
+                }
+                else {
+                    this.players[i].robot.UpdateDead();
+                }
             }
             else {
                 this.players[i].robot.UpdatePause();
@@ -19,17 +24,18 @@ var playerManager = {
     
     // Gets the nearest player to the coordinates
     getClosest: function(x, y) {
-        var r = this.players[0].robot;
-        var min = (r.x - x) * (r.x - x) + (r.y - y) * (r.y - y);
-        for (var i = 1; i < this.players.length; i++) {
+        var r = undefined;
+        var min = 9999999;
+        for (var i = 0; i < this.players.length; i++) {
             var robot = this.players[i].robot;
+            if (robot.health <= 0) continue;
             var dSq = (robot.x - x) * (robot.x - x) + (robot.y - y) * (robot.y - y);
             if (dSq < min) {
                 min = dSq;
                 r = robot;
             }
         }
-        return r;
+        return r || this.players[0].robot;
     },
     
     // Sets up the list for single player

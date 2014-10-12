@@ -30,6 +30,7 @@ function BasePlayer(sprite, drops, gamepadIndex) {
         mHealth: 1,
         cdm: 1,
         rm: 1,
+        rescue: 1,
 		input: undefined,
         
 		// Damages the player using an optional damage source
@@ -57,7 +58,7 @@ function BasePlayer(sprite, drops, gamepadIndex) {
 			
 			// Health damage
 			if (amount) {
-				this.health -= amount;
+				this.health = Math.max(0, this.health - amount);
 			}
 		},
         
@@ -139,6 +140,34 @@ function BasePlayer(sprite, drops, gamepadIndex) {
 			this.x = clamp(this.x, gameScreen.playerMinX + this.sprite.width / 2, gameScreen.playerMaxX - this.sprite.width / 2);
             this.y = clamp(this.y, gameScreen.playerMinY + this.sprite.height / 2, gameScreen.playerMaxY - this.sprite.height / 2);
 		},
+        
+        // Updates the player while dead
+        UpdateDead: function() {
+        
+            // See if a player is in range to rescue the player
+            var inRange = false;
+            for (var i = 0; i < playerManager.players.length; i++) {
+                var p = playerManager.players[i].robot;
+                if (p.health <= 0) continue;
+                if (DistanceSq(p.x, p.y, this.x, this.y) < 10000) {
+                    inRange = true;
+                }
+            }
+            
+            // Apply rescue effects
+            if (inRange) {
+                this.rescue -= 1 / 300;
+                if (this.rescue <= 0) {
+                    this.health = this.maxHealth * 0.5;
+                    this.rescue = 1;
+                }
+            }
+            else if (this.rescue < 1) {
+                this.rescue = Math.min(1, this.rescue + 1 / 300);
+            }
+            
+            this.UpdatePause();
+        },
 		
 		UpdatePause: function() {
 		
@@ -156,6 +185,11 @@ function BasePlayer(sprite, drops, gamepadIndex) {
 		// Draws the player and its bullets
 		Draw: function(canvas) {
         
+            // Semi-transparent when dead
+            if (this.health <= 0) {
+                canvas.globalAlpha = 0.5;
+            }
+        
             // Transform the canvas to match the player orientation
             canvas.translate(this.x, this.y);
             canvas.transform(this.sin, -this.cos, this.cos, this.sin, 0, 0);
@@ -172,55 +206,71 @@ function BasePlayer(sprite, drops, gamepadIndex) {
             // Restore the transform
             ResetTransform(canvas);
             
-			// Draw bullets
-			for (i = 0; i < this.bullets.length; i++) {
-				this.bullets[i].Draw(canvas);
-			}
-			
 			// Draw event
 			if (this.onDraw) {
 				this.onDraw();
 			}
             
-            // Draw health bar
-            canvas.lineWidth = 3;
-            var healthPercent = this.health / this.maxHealth;
-            var shieldPercent = this.shield / (this.maxHealth * SHIELD_MAX);
-            canvas.beginPath();
-            canvas.arc(this.x, this.y, 75, Math.PI * 2, (2 - healthPercent * 9 / 10) * Math.PI, true);
-            if (healthPercent > 0.66) canvas.strokeStyle = '#0f0';
-            else if (healthPercent > 0.33) canvas.strokeStyle = '#ff0';
-            else canvas.strokeStyle = '#f00';
-            canvas.stroke();
-            canvas.beginPath();
-            canvas.arc(this.x, this.y, 75, 0, shieldPercent * Math.PI * 9 / 10);
-            canvas.strokeStyle = '#f0f';
-            canvas.stroke();
-            
-            // Draw skill icon
-            if (this.skillCd > 0) {
-                canvas.globalAlpha = 0.5;
-            }
-            canvas.drawImage(GetImage('ability' + this.ability), this.x - 95, this.y - 20, 40, 40);
+            // Reset alpha in case dead
             canvas.globalAlpha = 1;
             
-            // Skill cooldown/duration
-            var num;
-            if (this.skillDuration > 0) {
-                num = this.skillDuration / 60;
-                canvas.fillStyle = '#0f0';
-            }
-            else {
-                num = this.skillCd / 60;
-                canvas.fillStyle = '#fff';
-            }
-            if (num > 0) {
-                canvas.font = '24px Flipbash';
-                if (num < 10) {
-                    num = num.toFixed(1);
+            // Draw bullets
+			for (i = 0; i < this.bullets.length; i++) {
+				this.bullets[i].Draw(canvas);
+			}
+            
+            // Draw HUD if alive
+            if (this.health > 0) {
+            
+                // Health bar
+                canvas.lineWidth = 3;
+                var healthPercent = this.health / this.maxHealth;
+                var shieldPercent = this.shield / (this.maxHealth * SHIELD_MAX);
+                canvas.beginPath();
+                canvas.arc(this.x, this.y, 75, Math.PI * 2, (2 - healthPercent * 9 / 10) * Math.PI, true);
+                if (healthPercent > 0.66) canvas.strokeStyle = '#0f0';
+                else if (healthPercent > 0.33) canvas.strokeStyle = '#ff0';
+                else canvas.strokeStyle = '#f00';
+                canvas.stroke();
+                canvas.beginPath();
+                canvas.arc(this.x, this.y, 75, 0, shieldPercent * Math.PI * 9 / 10);
+                canvas.strokeStyle = '#f0f';
+                canvas.stroke();
+                
+                // Draw skill icon
+                if (this.skillCd > 0) {
+                    canvas.globalAlpha = 0.5;
                 }
-                else num = num.toFixed(0);
-                canvas.fillText(num, this.x - 75 - StringWidth(num) / 2, this.y + 10);
+                canvas.drawImage(GetImage('ability' + this.ability), this.x - 95, this.y - 20, 40, 40);
+                canvas.globalAlpha = 1;
+                
+                // Skill cooldown/duration
+                var num;
+                if (this.skillDuration > 0) {
+                    num = this.skillDuration / 60;
+                    canvas.fillStyle = '#0f0';
+                }
+                else {
+                    num = this.skillCd / 60;
+                    canvas.fillStyle = '#fff';
+                }
+                if (num > 0) {
+                    canvas.font = '24px Flipbash';
+                    if (num < 10) {
+                        num = num.toFixed(1);
+                    }
+                    else num = num.toFixed(0);
+                    canvas.fillText(num, this.x - 75 - StringWidth(num) / 2, this.y + 10);
+                }
+            }
+            
+            // Otherwise draw rescue circle
+            else {
+                canvas.strokeStyle = 'white';
+                canvas.lineWidth = 3;
+                canvas.beginPath();
+                canvas.arc(this.x, this.y, 100, 0, Math.PI * 2 * this.rescue);
+                canvas.stroke();
             }
             
             ResetTransform(canvas);

@@ -96,9 +96,7 @@ function GameScreen(bossRush) {
         // Players
         for (var i = 0; i < playerManager.players.length; i++) {    
             var player = playerManager.players[i].robot;
-            if (player.health > 0) {
-                player.Draw(canvas);
-            }
+            player.Draw(canvas);
         }
         
         this.enemyManager.Draw();
@@ -206,24 +204,32 @@ function GameScreen(bossRush) {
     function ApplyScrolling() {
 
         // Get the average player position
-        var avgX = 0;
-        var avgY = 0;
-        for (var i = 0; i < playerManager.players.length; i++) {
-            avgX += playerManager.players[i].robot.x;
-            avgY += playerManager.players[i].robot.y;
+        var minX = 9999;
+        var minY = 9999;
+        var maxX = 0;
+        var maxY = 0;
+        for (var i = 0; i < playerManager.players.length; i++) {    
+            var r = playerManager.players[i].robot;
+            if (r.health <= 0) continue;
+            if (r.x < minX) minX = r.x;
+            if (r.x > maxX) maxX = r.x;
+            if (r.y < minY) minY = r.y;
+            if (r.y > maxY) maxY = r.y;
         }
-        avgX /= playerManager.players.length;
-        avgY /= playerManager.players.length;
-        
-        // Scroll bounds
-        this.scrollX = clamp(avgX - WINDOW_WIDTH / 2, 0, GAME_WIDTH - WINDOW_WIDTH);
-        this.scrollY = clamp(avgY - WINDOW_HEIGHT / 2, 0, GAME_HEIGHT - WINDOW_HEIGHT);
-        
-        // player bounds
-        this.playerMinX = Math.max(0, Math.min(avgX - WINDOW_WIDTH / 2, this.scrollX) + 100);
-        this.playerMinY = Math.max(0, Math.min(avgY - WINDOW_HEIGHT / 2, this.scrollY) + 100);
-        this.playerMaxX = Math.min(GAME_WIDTH, Math.max(avgX + WINDOW_WIDTH / 2, this.scrollX + WINDOW_WIDTH) - 100);
-        this.playerMaxY = Math.min(GAME_HEIGHT, Math.max(avgY + WINDOW_HEIGHT / 2, this.scrollY + WINDOW_HEIGHT) - 100);
+        if (minX != 9999) {
+            var avgX = (maxX + minX) / 2;
+            var avgY = (maxY + minY) / 2;
+            
+            // Scroll bounds
+            this.scrollX = clamp(avgX - WINDOW_WIDTH / 2, 0, GAME_WIDTH - WINDOW_WIDTH);
+            this.scrollY = clamp(avgY - WINDOW_HEIGHT / 2, 0, GAME_HEIGHT - WINDOW_HEIGHT);
+            
+            // player bounds
+            this.playerMinX = Math.max(0, Math.min(avgX - WINDOW_WIDTH / 2, this.scrollX) + 100);
+            this.playerMinY = Math.max(0, Math.min(avgY - WINDOW_HEIGHT / 2, this.scrollY) + 100);
+            this.playerMaxX = Math.min(GAME_WIDTH, Math.max(avgX + WINDOW_WIDTH / 2, this.scrollX + WINDOW_WIDTH) - 100);
+            this.playerMaxY = Math.min(GAME_HEIGHT, Math.max(avgY + WINDOW_HEIGHT / 2, this.scrollY + WINDOW_HEIGHT) - 100);
+        }
         
         // Apply the scroll amount to the mouse coordinates
         mouseX = mx + this.scrollX - SIDEBAR_WIDTH - element.offsetLeft + pageScrollX;
