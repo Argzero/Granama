@@ -4,7 +4,6 @@ var
 WINDOW_WIDTH = 800,
 WINDOW_HEIGHT = 800,
 SIDEBAR_WIDTH = 200,
-UI_WIDTH = 80,
 GAME_WIDTH = 3000,
 GAME_HEIGHT = 3000,
 
@@ -63,6 +62,7 @@ PLAYER_DATA = [
 		player: PlayerDefenseType,
 		preview: 'pDefense',
 		name: 'Heavy',
+        color: '#f0f',
 		weapons: [ 'Rocket Launcher', 'Minigun' ],
 		skills: [
 			{
@@ -83,6 +83,7 @@ PLAYER_DATA = [
 		player: PlayerSpeedType,
 		preview: 'pSpeed',
 		name: 'Blitz',
+        color: '#00f',
 		weapons: [ 'Static Gun', 'Shotgun' ],
 		skills: [
 			{
@@ -103,6 +104,7 @@ PLAYER_DATA = [
 		player: PlayerPowerType,
 		preview: 'pPower',
 		name: 'Slayer',
+        color: '#0f0',
 		weapons: [ 'Laser Gun', 'Flamethrower' ],
 		skills: [
 			{
@@ -217,33 +219,13 @@ HEALTH_ID = 6,
 HEAL_ID = 7,
 
 // Drop data
-DROP_COUNT = 8,
 BOSS_DROPS = 6,
-DROP_VALUE_COUNT = 2,
+DROP_COUNT = 8,
 DROP_VALUES = 4,
 DROP_CHANCE = 0,
 DROP_TYPE = 1,
 DROP_MAX = 2,
 DROP_BACKUP = 3,
-DROP_LASER = 0,
-DROP_SPREAD = 1,
-DROP_FLAMETHROWER = 2,
-DROP_SHIELD = 3,
-DROP_HEALTH = 4,
-DROP_DAMAGE = 5,
-DROP_SPEED = 6,
-DROP_HEAL = 7,
-DROPS = new Array (
-//  Drop Chance | Drop Type
-    10,           LASER,     
-    5,            SPREAD_SHOT, 
-    10,           FLAMETHROWER, 
-    10,           SHIELD,
-	10,           HEALTH,
-	10,           DAMAGE,
-	10,           SPEED,
-	10,           HEAL
-),
 
 // Drop values
 MAX_DROPS = 50,
@@ -282,18 +264,6 @@ GAME = 4,
 BUTTON_BORDER = "#484848",
 BUTTON_HOVER = "#383838",
 BUTTON_BG = "#000000",
-
-// Default drop rates for drops (do not change this)
-DEFAULT_DROPS = new Array(
-    DROPS[0],
-    DROPS[2],
-    DROPS[4],
-    DROPS[6],
-    DROPS[8],
-    DROPS[10],
-    DROPS[12],
-    DROPS[14]
-),
 
 // Math (Do not modify these values)
 COS_1 = Math.cos(Math.PI / 180),

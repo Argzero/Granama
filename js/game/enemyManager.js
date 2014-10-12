@@ -2,8 +2,8 @@ function EnemyManager(screen) {
 
     // Boss data
     this.bossStatus = ACTIVE_NONE;
-    this.bossScore = BOSS_SPAWN_BASE;
-    this.bossIncrement = BOSS_SPAWN_BASE;
+    this.bossScore = BOSS_SPAWN_BASE * (1 + 2 * (playerManager.players.length - 1) / 5);
+    this.bossIncrement = BOSS_SPAWN_BASE * (1 + 2 * (playerManager.players.length - 1) / 5);
     this.bossCount = 0;
     
     // Spawn data

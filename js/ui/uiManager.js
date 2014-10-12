@@ -39,27 +39,66 @@ function UIManager(screen) {
 
         // Score
         //canvas.drawImage(scoreTitle, 20, 0);
-        canvas.font = "50px Flipbash";
-        canvas.fillStyle = "#FFFFFF";
-        canvas.fillText("Kills", SIDEBAR_WIDTH / 2 - StringWidth("Kills", canvas.font) / 2, 50);
-        canvas.fillRect(5, 55, SIDEBAR_WIDTH - 10, 2);
-        canvas.fillStyle = "#00FF00"
-        canvas.fillText(screen.score, (SIDEBAR_WIDTH - StringWidth(screen.score, canvas.font)) / 2, 100);
-        
-        // Boss countdown
-        canvas.fillStyle = "#FFFFFF";
-        canvas.fillText("Boss", SIDEBAR_WIDTH / 2 - StringWidth("Boss", canvas.font) / 2, 160);
-        canvas.fillRect(5, 165, SIDEBAR_WIDTH - 10, 2);
-        canvas.fillStyle = "#00FF00"
-        canvas.fillText(screen.enemyManager.bossScore, (SIDEBAR_WIDTH - StringWidth(screen.enemyManager.bossScore, canvas.font)) / 2, 210);
+        canvas.font = "24px Flipbash";
+        canvas.fillStyle = "#fff";
+        canvas.fillText("Kills", 10, 30);
+        canvas.fillText("Boss", SIDEBAR_WIDTH - StringWidth("Boss", canvas.font) - 10, 30);
+        canvas.fillRect(5, 35, SIDEBAR_WIDTH - 10, 2);
+        canvas.fillStyle = "#0f0"
+        canvas.font = '20px Flipbash';
+        canvas.fillText(screen.score, 10, 70);
+        canvas.fillText(screen.enemyManager.bossScore, SIDEBAR_WIDTH - StringWidth(screen.enemyManager.bossScore, canvas.font) - 10, 70);
         
         canvas.font = "30px Flipbash";
         
         // Spacing between upgrade counters
-        var space = element.height - 220;
-        var margin = Math.floor((space - 4 * 120) / 5);
-        var extra = Math.floor((space - 480 - margin * 5) / 2) + 220;
-        var interval = 120 + margin;
+        var base = 120;
+        var space = element.height - base - 10;
+        var interval = Math.min(255, space / playerManager.players.length);
+        
+        // Player stats
+        for (var i = 0; i < playerManager.players.length; i++) {
+            var player = playerManager.players[i].robot;
+            
+            var y = base + interval * i;
+            
+            canvas.fillStyle = 'white';
+            canvas.fillRect(5, y - 35, SIDEBAR_WIDTH - 10, 2);
+            
+            // Name
+            canvas.font = '32px Flipbash';
+            canvas.fillStyle = player.color;
+            canvas.textAlign = 'left';
+            canvas.fillText(player.name, 10, y);
+            
+            // Health
+            canvas.fillStyle = 'white';
+            canvas.font = '16px Flipbash';
+            canvas.fillText('HP: ' + player.health.toFixed(0) + '/' + player.maxHealth, 10, y + 25);
+            
+            // Damage
+            canvas.fillText('DMG: x ' + player.GetDamageMultiplier().toFixed(1), 10, y + 50);
+            
+            // Upgrade graph
+            var graphHeight = interval - 105;
+            var iconSize = graphHeight / 5;
+            canvas.fillStyle = '#222';
+            canvas.strokeStyle = '#666';
+            canvas.lineWidth = 2;
+            canvas.fillRect(iconSize + 10, y + 60, SIDEBAR_WIDTH - iconSize - 20, graphHeight);
+            canvas.strokeRect(iconSize + 10, y + 60, SIDEBAR_WIDTH - iconSize - 20, graphHeight);
+            
+            // Draw icons on left
+            canvas.fillStyle = '#f0f';
+            for (var j = 0; j < 5; j++) {
+                var upImg = GetImage('upgrade' + player.drops[j * DROP_VALUES + DROP_TYPE]);
+                var max = player.drops[j * DROP_VALUES + DROP_MAX];
+                var current = player.upgrades[j];
+                
+                canvas.drawImage(upImg, 5, y + 60 + iconSize * j, iconSize, iconSize);
+                canvas.fillRect(iconSize + 10, y + 60 + iconSize * (j + 0.2), (SIDEBAR_WIDTH - 50) * current / max, iconSize * 0.6);
+            }
+        }
         
         // Upgrade counters
         /*
@@ -78,43 +117,16 @@ function UIManager(screen) {
         */
     }
     
-    // Draws the skill info for the player
-    this.DrawSkillInfo = function() {
-   
-        /*
-   
-        // Skill Icon
-        canvas.drawImage(this.skillIcon, 10, 60 - UI_WIDTH / 2, UI_WIDTH - 20, UI_WIDTH - 20);
-    
-        // Skill Duration
-        if (player.skillDuration > 0) {
-            canvas.fillStyle = '#00FF00';
-            canvas.font = '30px Flipbash';
-            var cd = Math.ceil(player.skillDuration / 60);
-            canvas.fillText(cd, (UI_WIDTH - StringWidth(cd, canvas.font)) / 2, 65);
-        }
-        
-        // Skill Cooldown
-        else if (player.skillCd > 0) {
-            canvas.fillStyle = '#FFFFFF';
-            canvas.font = '30px Flipbash';
-            var cd = Math.ceil(player.skillCd / 60);
-            canvas.fillText(cd, (UI_WIDTH - StringWidth(cd, canvas.font)) / 2, 65);
-        }
-        
-        */
-    };
-    
     this.DrawDroneInfo = function() {
     
         canvas.fillStyle = '#FFFFFF';
         canvas.font = '30px Flipbash';
         if (screen.player.drones.length < 6) {
             var droneImg = this.droneImgs[screen.player.drones.length % 3];
-            canvas.drawImage(droneImg, (UI_WIDTH - droneImg.width) / 2, 55 - droneImg.height / 2);
+            canvas.drawImage(droneImg, (SIDEBAR_WIDTH - droneImg.width) / 2, WINDOW_HEIGHT - droneImg.height - 20);
             var left = screen.player.droneTarget - screen.player.droneCounter;
-            canvas.fillText(left, (UI_WIDTH - StringWidth(left, canvas.font)) / 2, 65);
+            canvas.fillText(left, (SIDEBAR_WIDTH - StringWidth(left, canvas.font)) / 2, WINDOW_HEIGHT - droneImg.height / 2 - 35);
         }
-        else canvas.fillText("MAX", (UI_WIDTH - StringWidth("MAX", canvas.font)) / 2, 65);
+        else canvas.fillText("MAX", (SIDEBAR_WIDTH - StringWidth("MAX", canvas.font)) / 2, WINDOW_HEIGHT - droneImg.height / 2 - 35);
     };
 }

@@ -149,6 +149,8 @@ function PlayerScreen() {
                     if (input.confirm) {
                         input.locked = true;
                         var robot = data.player();
+                        robot.color = data.color;
+                        robot.name = data.name;
                         var skill = data.skills[this.abilityId[i]];
                         robot.ability = skill.name;
                         robot.input = input;

@@ -68,7 +68,7 @@ function ResizeCanvas() {
     element.height = "innerHeight" in window 
                ? window.innerHeight
                : document.documentElement.offsetHeight; 
-    WINDOW_WIDTH = element.width - UI_WIDTH - SIDEBAR_WIDTH;
+    WINDOW_WIDTH = element.width - SIDEBAR_WIDTH;
     WINDOW_HEIGHT = element.height;
     if (gameScreen && gameScreen.Draw) {
         gameScreen.Draw();
