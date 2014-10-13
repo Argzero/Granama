@@ -14,6 +14,7 @@ function EnemyBase(sprite, x, y, health, speed, range) {
         health: health,
         maxHealth: health,
         sprite: sprite,
+        killer: undefined,
         knockback: Vector(0, 0),
         range: range,
         weapons: [],
@@ -160,6 +161,7 @@ var enemyFunctions = {
 	// Damages the enemy
 	Damage: function(amount, source) {
 		this.health -= amount;
+        this.killer = source;
 	},
     
     // Slows the enemy down temporarily

@@ -61,43 +61,25 @@ PLAYER_DATA = [
 	{
 		player: PlayerDefenseType,
 		preview: 'pDefense',
-		name: 'Heavy',
-        color: '#f0f',
+		name: 'Guardian',
+        color: '#d0d',
 		weapons: [ 'Rocket Launcher', 'Minigun' ],
 		skills: [
-			{
-				name: 'Recharger',
-				callback: SkillRecharger
-			},
-			{
-				name: 'Reflector',
-				callback: SkillReflector
-			},
-			{
-				name: 'Stasis',
-				callback: SkillStasis
-			}
+			{ name: 'Recharger', callback: SkillRecharger },
+			{ name: 'Reflector', callback: SkillReflector },
+			{ name: 'Stasis', callback: SkillStasis }
 		]
 	},
 	{
 		player: PlayerSpeedType,
 		preview: 'pSpeed',
 		name: 'Blitz',
-        color: '#00f',
+        color: '#06f',
 		weapons: [ 'Static Gun', 'Shotgun' ],
 		skills: [
-			{
-				name: 'Blink',
-				callback: SkillBlink
-			},
-			{
-				name: 'Overdrive',
-				callback: SkillBlitz
-			},
-			{
-				name: 'Overdrive',
-				callback: SkillOverdrive
-			}
+			{ name: 'Blink', callback: SkillBlink },
+			{ name: 'Overdrive', callback: SkillBlitz },
+			{ name: 'Overdrive', callback: SkillOverdrive }
 		]
 	},
 	{
@@ -107,18 +89,21 @@ PLAYER_DATA = [
         color: '#0f0',
 		weapons: [ 'Laser Gun', 'Flamethrower' ],
 		skills: [
-			{
-				name: 'KO Cannon',
-				callback: SkillBreakerblaster
-			},
-			{
-				name: 'Decimation',
-				callback: SkillDecimation
-			},
-			{
-				name: 'Wave Burst',
-				callback: SkillWaveburst
-			}
+			{ name: 'KO Cannon', callback: SkillBreakerblaster },
+			{ name: 'Decimation', callback: SkillDecimation },
+			{ name: 'Wave Burst', callback: SkillWaveburst }
+		]
+	},
+    {
+		player: PlayerKnightType,
+		preview: 'pKnight',
+		name: 'Knight',
+        color: '#fcf',
+		weapons: [ 'Quiver Gun', 'Sword' ],
+		skills: [
+			{ name: 'Recharger', callback: SkillRecharger },
+			{ name: 'Reflector', callback: SkillReflector },
+			{ name: 'Stasis', callback: SkillStasis }
 		]
 	}
 ],
@@ -268,6 +253,8 @@ BUTTON_BG = "#000000",
 // Math (Do not modify these values)
 COS_1 = Math.cos(Math.PI / 180),
 SIN_1 = Math.sin(Math.PI / 180),
+COS_2 = Math.cos(Math.PI / 90),
+SIN_2 = Math.sin(Math.PI / 90),
 COS_3 = Math.cos(Math.PI / 60),
 SIN_3 = Math.sin(Math.PI / 60),
 COS_5 = Math.cos(Math.PI / 36),

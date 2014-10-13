@@ -5,19 +5,22 @@
 //       arc - how far the sword arcs
 //    damage - how much damage the slash does
 // knockback - how far the slash knocks things back
-//
-// Optional data values:
-//   speed - speed of the sword
+// lifesteal - the percentage of damage returned as life
 function EnemyWeaponSword(data) {
 
     // Fire when in range and off cooldown
     if (this.IsInRange(150) && data.cd <= 0) {
+        this.sword = false;
         var sword = SwordProjectile(
+            GetImage('sword'),
             this,
+            -16,
+            40,
+            100,
             data.damage, 
             data.arc,
-            data.speed || BULLET_SPEED,
-            data.knockback
+            data.knockback,
+            data.lifesteal
         );
         data.list.push(sword);
         this.sword = false;

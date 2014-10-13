@@ -2,8 +2,8 @@ function EnemyManager(screen) {
 
     // Boss data
     this.bossStatus = ACTIVE_NONE;
-    this.bossScore = BOSS_SPAWN_BASE * (1 + 2 * (playerManager.players.length - 1) / 5);
-    this.bossIncrement = BOSS_SPAWN_BASE * (1 + 2 * (playerManager.players.length - 1) / 5);
+    this.bossScore = BOSS_SPAWN_BASE * (0.6 + 0.4 * playerManager.players.length);
+    this.bossIncrement = BOSS_SPAWN_BASE * (0.6 + 0.4 * playerManager.players.length);
     this.bossCount = 0;
     
     // Spawn data
@@ -108,6 +108,11 @@ function EnemyManager(screen) {
         for (var i = 0; i < this.enemies.length; i++) {
             if (this.enemies[i].health <= 0) {
             
+                // Credit the killer
+                if (this.enemies[i].killer) {
+                    this.enemies[i].killer.enemiesKilled++;
+                }
+            
                 // Drop an item if applicable
                 screen.dropManager.Drop(this.enemies[i].x, this.enemies[i].y);
                 
@@ -154,7 +159,10 @@ function EnemyManager(screen) {
         }
 
         // Don't spawn enemies if there are too many or one has just spawned
-        if (this.bossStatus == ACTIVE_NONE && this.spawnCd <= 0 && this.enemies.length < MAX_ENEMIES && this.enemies.length + screen.score < this.bossScore) {
+        if (this.bossStatus == ACTIVE_NONE 
+                && this.spawnCd <= 0 
+                && this.enemies.length < MAX_ENEMIES * (0.7 + 0.3 * playerManager.players.length) 
+                && this.enemies.length + screen.score < this.bossScore) {
             var dir = Math.random();
             
             // Get a spawn point off of the gameScreen
@@ -187,7 +195,7 @@ function EnemyManager(screen) {
             this.enemies.push(enemy);
             
             // Apply the cooldown
-            this.spawnCd = SPAWN_RATE - SPAWN_SCALE * screen.score;
+            this.spawnCd = (SPAWN_RATE - SPAWN_SCALE * screen.score) / (0.6 + playerManager.players.length * 0.4);
         }
         else if (this.spawnCd > 0) {
             this.spawnCd--;

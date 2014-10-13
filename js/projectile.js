@@ -55,8 +55,11 @@ function ReflectionProjectile(source, x, y, velX, velY, damage, target) {
 
 // Rocket projectile with knockback and AOE damage
 function RocketProjectile(sprite, source, x, y, velX, velY, angle, damage, range, radius, knockback, lists) {
-	var projectile = ProjectileBase(sprite, source, x, y, velX, velY, angle, damage, range, false, false);
+	var projectile = ProjectileBase(sprite, source, x, y, velX, velY, angle, damage, 9999, false, false);
 	projectile.Hit = projectileFunctions.RocketHit;
+    projectile.updateBase = projectile.Update;
+    projectile.Update = projectileFunctions.updateRocket;
+    projectile.actualRange = range;
 	projectile.radius = radius;
 	projectile.lists = lists;
 	projectile.knockback = knockback;
@@ -69,6 +72,21 @@ function SlowProjectile(sprite, source, x, y, velX, velY, angle, damage, range, 
     projectile.Hit = projectileFunctions.SlowHit;
     projectile.multiplier = multiplier;
     projectile.duration = duration;
+    return projectile;
+}
+
+// Sword projectile
+function SwordProjectile(sprite, source, x, y, r, damage, arc, knockback, lifesteal) {
+    var projectile = ProjectileBase(sprite, source, source.x + x, source.y + y, 0, 0, source.angle, damage, 9999, true, true);
+    projectile.Update = projectileFunctions.updateSword;
+    projectile.Hit = projectileFunctions.hitSword;
+    projectile.arc = arc;
+    projectile.knockback = knockback;
+    projectile.initial = Vector(x, y);
+    projectile.start = Vector(-r * Math.sin(arc / 2), r * Math.cos(arc / 2));
+    projectile.step = 0;
+    projectile.state = 0;
+    projectile.lifesteal = lifesteal;
     return projectile;
 }
 
@@ -184,6 +202,11 @@ var projectileFunctions = {
 	// Hits the target robot, damaging it
 	Hit: function(target) {
 		target.Damage(this.damage, this.source);
+        
+        // Player damage dealt progress
+        if (this.source.damageDealt !== undefined) {
+            this.source.damageDealt += this.damage;
+        }
 	},
     
     // Scales fire projectiles on update
@@ -269,7 +292,97 @@ var projectileFunctions = {
             this.damage = 0;
         }
     },
+    
+    // Updates a sword projectile
+    updateSword: function() {
+        
+        // Leaving robot
+        if (this.state == 0) {
+            var target = this.arc / 2 + Math.PI / 4;
+            this.angle = this.source.angle + target * ++this.step / 10;
+            this.cos = Math.cos(this.angle);
+            this.sin = Math.sin(this.angle);
+            
+            var offset = Vector(this.initial.x + (this.start.x - this.initial.x) * this.step / 10, this.initial.y + (this.start.y - this.initial.y) * this.step / 10);
+            offset.Rotate(this.source.sin, -this.source.cos);
+            this.x = this.source.x + offset.x;
+            this.y = this.source.y + offset.y;
+            if (this.step == 10) {
+                this.step = 0;
+                this.state = 1;
+            }
+        }
+        
+        // Swinging
+        else if (this.state == 1) {
+            var target = this.arc / 2 + Math.PI / 2;
+            this.angle = this.source.angle + target - Math.PI * ++this.step / 36;
+            this.cos = Math.cos(this.angle);
+            this.sin = Math.sin(this.angle);
+            this.start.Rotate(COS_5, -SIN_5);
+            var offset = Vector(this.start.x, this.start.y);
+            offset.Rotate(this.source.sin, - this.source.cos);
+            this.x = this.source.x + offset.x;
+            this.y = this.source.y + offset.y;
+            if (this.step >= this.arc * 36 / Math.PI) {
+                this.step = 0;
+                this.state = 2;
+            }
+        }
+        
+        // Returning back to robot
+        else if (this.state == 2) {
+            var target = this.arc / 2 + Math.PI / 4;
+            this.angle = this.source.angle + (Math.PI / 2 - this.arc / 2) * (10 - ++this.step) / 10;
+            this.cos = Math.cos(this.angle);
+            this.sin = Math.sin(this.angle);
+            
+            var offset = Vector(this.start.x + (this.initial.x - this.start.x) * this.step / 10, this.start.y + (this.initial.y - this.start.y) * this.step / 10);
+            offset.Rotate(this.source.sin, -this.source.cos);
+            this.x = this.source.x + offset.x;
+            this.y = this.source.y + offset.y;
+            if (this.step == 10) {
+                this.source.sword = true;
+                this.expired = true;
+            }
+        }
+    },
+    
+    // Hit application for a sword
+    hitSword: function(target) {
+    
+        // Damage
+        target.Damage(this.damage, this.source);
+        
+        // Player damage dealt progress
+        if (this.source.damageDealt !== undefined) {
+            this.source.damageDealt += this.damage;
+        }
+        
+        // Lifesteal
+        this.source.health += this.damage * this.lifesteal;
+        if (this.source.health > this.source.maxHealth) {
+            this.source.health = this.source.maxHealth;
+        }
+    
+        // Knockback
+        var k = Vector(target.x - this.source.x, target.y - this.source.y);
+        k.SetLength(this.knockback);
+        target.Knockback(k.x, k.y);
+    },
 	
+    // Updates a rocket projectile
+    updateRocket: function() {
+        this.updateBase();
+        
+        var dx = this.x - this.ox;
+        var dy = this.y - this.oy;
+        if (dx * dx + dy * dy >= this.actualRange * this.actualRange) {
+            this.Hit();
+            this.expired = true;
+        }
+    },
+    
 	// Hits a target as a rocket, knocking back and damaging nearby units
 	RocketHit: function(target) {
 		for (var l = 0; l < this.lists.length; l++) {
@@ -283,14 +396,29 @@ var projectileFunctions = {
 						target.Knockback(dir.x, dir.y);
 					}
 					target.Damage(this.damage, this.source);
+                    
+                    // Player damage dealt progress
+                    if (this.source.damageDealt !== undefined) {
+                        this.source.damageDealt += this.damage;
+                    }
 				}
 			}
 		}
+        var ex = new Explosion(this.x, this.y, this.radius / 150);
+        ex.c = 10;
+        gameScreen.explosions.push(ex);
 	},
     
     // Hits a target and slows it
     SlowHit: function(target) {
         target.Damage(this.damage, this.source);
+        
+        // Player damage dealt progress
+        if (this.source.damageDealt !== undefined) {
+            this.source.damageDealt += this.damage;
+        }
+        
+        // Slow the target
         if (target.Slow) {
             target.Slow(this.multiplier, this.duration);
         }

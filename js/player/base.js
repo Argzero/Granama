@@ -14,7 +14,7 @@ function BasePlayer(sprite, drops, gamepadIndex) {
         skillCd: 0,
         skillDuration: 0,
 		angle: 0,
-		shield: 0,
+		shield: PLAYER_HEALTH * SHIELD_MAX,
 		shieldCd: SHIELD_RATE,
 		cos: 0,
 		sin: 1,
@@ -31,11 +31,17 @@ function BasePlayer(sprite, drops, gamepadIndex) {
         cdm: 1,
         rm: 1,
         rescue: 1,
+        damageAbsorbed: 0,
+        damageTaken: 0,
+        damageDealt: 0,
+        deaths: 0,
+        enemiesKilled: 0,
 		input: undefined,
         
 		// Damages the player using an optional damage source
 		Damage: function(amount, damager) {
-			
+            this.damageAbsorbed += amount;
+            
 			// Damage event
 			if (this.onDamaged) {
 				var result = this.onDamaged(amount, damager);
@@ -58,7 +64,12 @@ function BasePlayer(sprite, drops, gamepadIndex) {
 			
 			// Health damage
 			if (amount) {
+                this.damageAbsorbed -= amount;
+                this.damageTaken += amount;
 				this.health = Math.max(0, this.health - amount);
+                if (this.health == 0) {
+                    this.deaths++;
+                }
 			}
 		},
         
@@ -93,17 +104,7 @@ function BasePlayer(sprite, drops, gamepadIndex) {
 			}
 			
 			// Update bullets
-			for (var i = 0; i < this.bullets.length; i++) {
-				if (!this.bullets[i]) {
-					this.bullets.splice(i, 1);
-					i--;
-				}
-				this.bullets[i].Update();
-				if (this.bullets[i].expired) {
-					this.bullets.splice(i, 1);
-					i--;
-				}
-			}
+			this.updateBullets();
             
             //Player's ability
             if (this.skillDuration > 0) {
@@ -141,8 +142,26 @@ function BasePlayer(sprite, drops, gamepadIndex) {
             this.y = clamp(this.y, gameScreen.playerMinY + this.sprite.height / 2, gameScreen.playerMaxY - this.sprite.height / 2);
 		},
         
+        // Updates the bullets of the player
+        updateBullets: function() {
+            for (var i = 0; i < this.bullets.length; i++) {
+				if (!this.bullets[i]) {
+					this.bullets.splice(i, 1);
+					i--;
+				}
+				this.bullets[i].Update();
+				if (this.bullets[i].expired) {
+					this.bullets.splice(i, 1);
+					i--;
+				}
+			}
+        },
+        
         // Updates the player while dead
         UpdateDead: function() {
+        
+            // Update bullets of the player
+            this.updateBullets();
         
             // See if a player is in range to rescue the player
             var inRange = false;
@@ -234,33 +253,35 @@ function BasePlayer(sprite, drops, gamepadIndex) {
                 canvas.stroke();
                 canvas.beginPath();
                 canvas.arc(this.x, this.y, 75, 0, shieldPercent * Math.PI * 9 / 10);
-                canvas.strokeStyle = '#f0f';
+                canvas.strokeStyle = '#00f';
                 canvas.stroke();
                 
                 // Draw skill icon
-                if (this.skillCd > 0) {
-                    canvas.globalAlpha = 0.5;
-                }
-                canvas.drawImage(GetImage('ability' + this.ability), this.x - 95, this.y - 20, 40, 40);
-                canvas.globalAlpha = 1;
-                
-                // Skill cooldown/duration
-                var num;
-                if (this.skillDuration > 0) {
-                    num = this.skillDuration / 60;
-                    canvas.fillStyle = '#0f0';
-                }
-                else {
-                    num = this.skillCd / 60;
-                    canvas.fillStyle = '#fff';
-                }
-                if (num > 0) {
-                    canvas.font = '24px Flipbash';
-                    if (num < 10) {
-                        num = num.toFixed(1);
+                if (this.ability) {
+                    if (this.skillCd > 0) {
+                        canvas.globalAlpha = 0.5;
                     }
-                    else num = num.toFixed(0);
-                    canvas.fillText(num, this.x - 75 - StringWidth(num) / 2, this.y + 10);
+                    canvas.drawImage(GetImage('ability' + this.ability), this.x - 95, this.y - 20, 40, 40);
+                    canvas.globalAlpha = 1;
+                    
+                    // Skill cooldown/duration
+                    var num;
+                    if (this.skillDuration > 0) {
+                        num = this.skillDuration / 60;
+                        canvas.fillStyle = '#0f0';
+                    }
+                    else {
+                        num = this.skillCd / 60;
+                        canvas.fillStyle = '#fff';
+                    }
+                    if (num > 0) {
+                        canvas.font = '24px Flipbash';
+                        if (num < 10) {
+                            num = num.toFixed(1);
+                        }
+                        else num = num.toFixed(0);
+                        canvas.fillText(num, this.x - 75 - StringWidth(num) / 2, this.y + 10);
+                    }
                 }
             }
             

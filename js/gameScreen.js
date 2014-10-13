@@ -17,7 +17,17 @@ function GameScreen(bossRush) {
         GetImage("EX7"),
         GetImage("EX8"),
         GetImage("EX9"),
-        GetImage("EX10")
+        GetImage("EX10"),
+        GetImage("PEX1"), 
+        GetImage("PEX2"),
+        GetImage("PEX3"),
+        GetImage("PEX4"),
+        GetImage("PEX5"),
+        GetImage("PEX6"),
+        GetImage("PEX7"),
+        GetImage("PEX8"),
+        GetImage("PEX9"),
+        GetImage("PEX10")
     );
     
     this.damageAlpha;

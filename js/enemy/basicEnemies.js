@@ -80,7 +80,7 @@ function PaladinEnemy(x, y) {
         GetImage('enemyPaladin'), 
         x, 
         y,
-        100 * ScalePower(c, 1.5),
+        100 * ScalePower(c, 1.2),
         3 + 0.25 * c,
         300
     );
@@ -168,7 +168,7 @@ function RailerEnemy(x, y) {
         GetImage('enemyRailer'), 
         x, 
         y,
-        80 * ScalePower(c, 1.5),
+        80 * ScalePower(c, 1.2),
         2 + 0.2 * c,
         550
     );
@@ -305,7 +305,7 @@ function TurretEnemy(x, y) {
         GetImage('enemyTurret'), 
         x, 
         y,
-        120 * ScalePower(c, 1.5),
+        120 * ScalePower(c, 1.2),
         2.5 + 0.2 * c,
         550
     );

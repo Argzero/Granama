@@ -7,7 +7,7 @@ function PlayerScreen() {
     this.joined = [true, false, false, false];
     this.ready = [false, false, false, false];
     this.abilityId = [0, 0, 0, 0];
-    this.open = [0, 1, 2];
+    this.open = [0, 1, 2, 3];
     
     // Checks if a robot ID is still open
     this.isOpen = function(id) {
@@ -39,7 +39,6 @@ function PlayerScreen() {
         var cy = my - element.offsetTop + pageScrollY;
         
         canvas.font = "70px Flipbash";
-        var sw = StringWidth("Choose A Robot", canvas.font) / 2;
         
         // Draw the title box
         var x = element.width / 2;
@@ -51,8 +50,9 @@ function PlayerScreen() {
         
         // Draw the title
         canvas.fillStyle = "#FFFFFF";
-        canvas.textAlign = 'left';
-        canvas.fillText("Choose A Robot", x - sw, y - 300);
+        canvas.textAlign = 'center';
+        canvas.textBaseline = 'top';
+        canvas.fillText("Choose A Robot", x, y - 300);
         
         for (var i = 0; i < playerManager.players.length; i++) {
         
@@ -96,11 +96,11 @@ function PlayerScreen() {
                 
                 // Preview image
                 var preview = GetImage(data.preview);
-                canvas.drawImage(preview, x - preview.width / 2, y - 115);
+                canvas.drawImage(preview, x - preview.width / 2, y - 70 - preview.height / 2);
 
                 // Name
                 canvas.font = '32px Flipbash';
-                canvas.fillStyle = '#0F0';
+                canvas.fillStyle = data.color;
                 canvas.textAlign = 'center';
                 canvas.textBaseline = 'top';
                 canvas.fillText(data.name, x, y);
@@ -173,9 +173,9 @@ function PlayerScreen() {
                 else {
                 
                     // Indicator
-                    var dx = Math.cos(this.frame * Math.PI / 30);
-                    canvas.drawImage(GetImage('uiArrowLeft'), x - 125 - 10 * dx, y + 10);
-                    canvas.drawImage(GetImage('uiArrowRight'), x + 74 + 10 * dx, y + 10);
+                    var dx = Math.cos(this.frame * Math.PI / 15);
+                    canvas.drawImage(GetImage('uiArrowLeft'), x - 130 - 5 * dx, y + 10);
+                    canvas.drawImage(GetImage('uiArrowRight'), x + 79 + 5 * dx, y + 10);
                     
                     // Controls
                     if (input.movement.x < 0) {

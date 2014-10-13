@@ -7,10 +7,10 @@ function EnemyMoveBasic() {
     var dy = player.y - this.y;
     var dot = this.sin * dx + -this.cos * dy;
     if (dot > 0) {
-        this.angle -= this.speed / 100.0;
+        this.angle -= this.speed / 50.0;
     }
     else {
-        this.angle += this.speed / 100.0;
+        this.angle += this.speed / 50.0;
     }
     
     // Update the angle values
@@ -34,7 +34,7 @@ function EnemyMoveBasic() {
         this.y += m * this.sin * speed;
     }
     else if (dSq - Sq(this.range - speed) < 0) {
-        this.x -= m * this.cos * speed;
-        this.y -= m * this.sin * speed;
+        this.x -= m * this.cos * speed / 3;
+        this.y -= m * this.sin * speed / 3;
     }
 }

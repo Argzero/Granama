@@ -2,11 +2,11 @@ function PlayerKnightType() {
     var p = BasePlayer(
         GetImage('pKnightBody'),
         [ // Drop Chance | Drop type | Max | Backup Drop
-            6,             COOLDOWN,   50,   5,
-            6,             SHOTGUN,    50,   5,
-            6,             SLOW,       50,   5,
-            6,             SHIELD,     50,   6,
-            15,            SPEED,      100,  6,
+            6,             ARROW,      50,   5,
+            6,             SLASH_ARC,  50,   5,
+            6,             LIFESTEAL,  50,   5,
+            15,            SHIELD,     100,  6,
+            6,             SPEED,      50,  6,
             10,            DAMAGE,     -1,   5,
             10,            HEALTH,     -1,   6,
             10,            HEAL,       -1,   7
@@ -34,38 +34,50 @@ function PlayerKnightType() {
         sprite: GetImage('sword'),
         xOffset: -35,
         yOffset: 21,
-        condition: function() { return true; }
+        condition: function() { return this.sword; }.bind(p)
     });
     
-    p.shotgunData = { cd: 0, sprite: GetImage('shell'), range: LASER_RANGE, discharge: 0, initial: true, angle: 30, speed: 15, dx: -30, dy: 45, list: p.bullets };
-    p.slowData = { cd: 0, sprite: GetImage('slowMissile'), range: LASER_RANGE, multiplier: 0.5, dx: 0, dy: 54, speed: 15, list: p.bullets };
-    p.FireShotgun = EnemyWeaponRail;
-    p.FireSlow = EnemyWeaponSlow;
+    p.arrowData = { 
+        cd: 0, 
+        sprite: GetImage('arrow'), 
+        range: LASER_RANGE, 
+        discharge: 0, 
+        initial: true, 
+        speed: 10,
+        dx: 0, 
+        dy: 30,
+        rate: 60,
+        list: p.bullets 
+    };
+    p.swordData = { 
+        cd: 0, 
+        knockback: 100,
+        rate: 60,
+        list: p.bullets 
+    };
+    p.FireArrow = EnemyWeaponRail;
+    p.Slash = EnemyWeaponSword;
+    p.sword = true;
     
     // Update function
     p.Update = function() {
         this.UpdateBase();
         
-        // Cooldown reduction
-        this.cdm = 1 - 0.01 * this.upgrades[COOLDOWN_ID];
-        
         // Damage multiplier
 		var m = this.GetDamageMultiplier();
         
-        // Shotgun
-        var num = 15 + this.upgrades[SHOTGUN_ID];
-        var bullets = Math.ceil(num / 5);
-        this.shotgunData.damage = m;
-        this.shotgunData.duration = Math.floor(num / bullets);
-        this.shotgunData.bullets = bullets;
-        this.shotgunData.rate = 60 * this.rm;
-        this.FireShotgun(this.shotgunData);
+        // Arrows
+        var num = 5 + this.upgrades[ARROW_ID] / 3;
+        this.arrowData.xOffset = num * 1.5;
+        this.arrowData.damage = 3 * m;
+        this.arrowData.duration = num;
+        //this.FireArrow(this.arrowData);
         
-        // Slow gun
-        this.slowData.damage = 2 * m;
-        this.slowData.duration = 300 + this.upgrades[SLOW_ID] * 10;
-        this.slowData.rate = 40 * this.rm;
-        this.FireSlow(this.slowData);
+        // Sword
+        this.swordData.damage = 2 * m;
+        this.swordData.arc = Math.PI / 3 + this.upgrades[SLASH_ID] * Math.PI / 90;
+        this.swordData.lifesteal = 0.1 + this.upgrades[LIFESTEAL_ID] * 0.003;
+        this.Slash(this.swordData);
     }
     
     return p;

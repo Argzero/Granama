@@ -314,13 +314,11 @@ function TitleScreen() {
             else if (rushHovered) {
                 playerManager.setSingleplayer();
                 player = PlayerTraitorType();
+                player.color = '#f80';
+                player.name = 'Traitor';
                 playerManager.players[0].robot = player;
                 player.input = playerManager.players[0].input;
                 gameScreen = new GameScreen(player, true);
-                /*
-                player = new BossPlayer(GAME_WIDTH / 4, GAME_HEIGHT / 4);
-                gameScreen = new BossRush(player); 
-                */
             }
             else if (controlsHovered) {
                 gameScreen = new ControlsScreen();

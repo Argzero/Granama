@@ -7,7 +7,7 @@ function HeavyBoss(x, y) {
         GetImage('bossHeavy'), 
         x, 
         y,
-        150 * ScalePower(c, 2) * playerManager.players.length,
+        150 * ScalePower(c, 1.5) * playerManager.players.length,
         3 + 0.2 * c,
         300
     );
@@ -68,7 +68,7 @@ function FireBoss(x, y) {
         GetImage('bossFire'), 
         x, 
         y,
-        120 * ScalePower(c, 2) * playerManager.players.length,
+        120 * ScalePower(c, 1.5) * playerManager.players.length,
         3 + 0.2 * c,
         200
     );
@@ -123,7 +123,7 @@ function PunchBoss(x, y) {
         GetImage('bossPunch'), 
         x, 
         y,
-        150 * ScalePower(c, 2) * playerManager.players.length,
+        150 * ScalePower(c, 1.5) * playerManager.players.length,
         3 + 0.2 * c,
         300
     );

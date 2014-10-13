@@ -49,9 +49,9 @@ function DropManager(screen) {
     // Drops an item at the given point
     this.Drop = function(x, y) {
         var rand = Rand(100);
-        var total = 0;
         var ox = 0;
         for (var i = 0; i < playerManager.players.length; i++) {
+            var total = 0;
             var player = playerManager.players[i].robot;
             if (player.health <= 0) continue;
             var drops = player.drops;

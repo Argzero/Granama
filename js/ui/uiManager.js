@@ -121,10 +121,11 @@ function UIManager(screen) {
     
         canvas.fillStyle = '#FFFFFF';
         canvas.font = '30px Flipbash';
-        if (screen.player.drones.length < 6) {
-            var droneImg = this.droneImgs[screen.player.drones.length % 3];
+        var player = playerManager.players[0].robot;
+        if (player.drones.length < 6) {
+            var droneImg = this.droneImgs[player.drones.length % 3];
             canvas.drawImage(droneImg, (SIDEBAR_WIDTH - droneImg.width) / 2, WINDOW_HEIGHT - droneImg.height - 20);
-            var left = screen.player.droneTarget - screen.player.droneCounter;
+            var left = player.droneTarget - player.droneCounter;
             canvas.fillText(left, (SIDEBAR_WIDTH - StringWidth(left, canvas.font)) / 2, WINDOW_HEIGHT - droneImg.height / 2 - 35);
         }
         else canvas.fillText("MAX", (SIDEBAR_WIDTH - StringWidth("MAX", canvas.font)) / 2, WINDOW_HEIGHT - droneImg.height / 2 - 35);
