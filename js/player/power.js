@@ -39,8 +39,21 @@ function PlayerPowerType() {
     });
 	
 	// Weapon data
-	p.fireData = { cd: 0, list: p.bullets, dx: -30, dy: 45, rate: FIRE_CD };
-    p.laserData = { cd: 0, range: LASER_RANGE, list: p.bullets, dx: 0, dy: 54, pierce: true };
+	p.fireData = { 
+        cd: 0, 
+        list: p.bullets, 
+        dx: -30, 
+        dy: 45, 
+        rate: FIRE_CD 
+    };
+    p.laserData = { 
+        cd: 0, 
+        range: 499, 
+        list: p.bullets, 
+        dx: 0, 
+        dy: 54, 
+        pierce: true 
+    };
 	p.ShootFire = EnemyWeaponFire;
     p.FireLasers = EnemyWeaponGun;
     
@@ -70,7 +83,7 @@ function PlayerPowerType() {
         
         // Lasers
         this.laserData.sprite = m2 > 1 ? GetImage('abilityLaser') : GetImage('laser');
-        this.laserData.damage = LASER_DAMAGE * m * m2;
+        this.laserData.damage = 0.4 * m * m2;
         this.laserData.rate = 60 / (LASER_APS + this.upgrades[LASER_ID] * LASER_UP);
         this.laserData.spread = this.upgrades[SPREAD_ID] / 10;
         this.FireLasers(this.laserData);

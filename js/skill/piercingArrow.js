@@ -12,7 +12,7 @@ function SkillPiercingArrow(player) {
                 this.cos * 15,
                 this.sin * 15,
                 this.angle,
-                this.GetDamageMultiplier() * 3,
+                this.GetDamageMultiplier() * 6,
                 1249,
                 true,
                 true,

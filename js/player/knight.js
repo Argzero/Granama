@@ -40,7 +40,7 @@ function PlayerKnightType() {
     p.arrowData = { 
         cd: 0, 
         sprite: GetImage('arrow'), 
-        range: LASER_RANGE, 
+        range: 499, 
         discharge: 0, 
         initial: true, 
         speed: 10,
@@ -53,6 +53,7 @@ function PlayerKnightType() {
         cd: 0, 
         knockback: 100,
         rate: 60,
+        angle: Math.PI / 4,
         list: p.bullets 
     };
     p.FireArrow = EnemyWeaponRail;
@@ -69,12 +70,12 @@ function PlayerKnightType() {
         // Arrows
         var num = 5 + this.upgrades[ARROW_ID] / 3;
         this.arrowData.xOffset = num * 1.5;
-        this.arrowData.damage = 3 * m;
+        this.arrowData.damage = 4 * m;
         this.arrowData.duration = num;
         this.FireArrow(this.arrowData);
         
         // Sword
-        this.swordData.damage = 2 * m;
+        this.swordData.damage = 3 * m;
         this.swordData.arc = Math.PI / 3 + this.upgrades[SLASH_ID] * Math.PI / 90;
         this.swordData.lifesteal = 0.1 + this.upgrades[LIFESTEAL_ID] * 0.003;
         this.Slash(this.swordData);

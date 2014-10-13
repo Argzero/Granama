@@ -44,6 +44,11 @@ var enemyFunctions = {
         this.knockback.Set(x, y);
     },
     
+    // Knocks back the boss a lesser amount
+    BossKnockback: function(x, y) {
+        this.knockback.Set(x / 5, y / 5);
+    },
+    
     // Adds a weapon to the enemy
     AddWeapon: function(method, data) {
         data.method = method.bind(this);
@@ -167,6 +172,12 @@ var enemyFunctions = {
     // Slows the enemy down temporarily
     Slow: function(multiplier, duration) {
         this.speedM = multiplier;
+        this.speedMDuration = duration;
+    },
+    
+    // Slows the boss down a lesser amount
+    BossSlow: function(multiplier, duration) {
+        this.speedM = multiplier + (1 - multiplier) * 4 / 5;
         this.speedMDuration = duration;
     }
 };

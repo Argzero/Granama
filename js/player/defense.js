@@ -34,7 +34,7 @@ function PlayerDefenseType() {
 	// Weapon data
 	p.rocketData = { 
         cd: 0, 
-        range: LASER_RANGE, 
+        range: 349, 
         rate: 50, 
         sprite: GetImage('missile'), 
         speed: 15, 
@@ -44,7 +44,7 @@ function PlayerDefenseType() {
     };
 	p.minigunData = { 
         cd: 0, 
-        range: LASER_RANGE, 
+        range: 499, 
         angle: 20, 
         dx: -30, 
         dy: 45, 
@@ -64,7 +64,7 @@ function PlayerDefenseType() {
 		var m = this.GetDamageMultiplier();
 		
 		// Minigun
-        this.minigunData.damage = 2 * m;
+        this.minigunData.damage = 3 * m;
         this.minigunData.rate = 6 - this.upgrades[MINIGUN_ID] * 0.1;
         this.FireMinigun(this.minigunData);
 		
@@ -72,7 +72,7 @@ function PlayerDefenseType() {
 		if (!this.rocketData.lists) {
 			this.rocketData.lists = [gameScreen.enemyManager.enemies, gameScreen.enemyManager.turrets];
 		}
-		this.rocketData.damage = 8 * m;
+		this.rocketData.damage = 12 * m;
 		this.rocketData.knockback = 30 + 5 * this.upgrades[KNOCKBACK_ID];
 		this.rocketData.radius = 100 + 5 * this.upgrades[EXPLOSION_ID];
 		this.FireRocket(this.rocketData);

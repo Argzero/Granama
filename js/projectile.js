@@ -76,7 +76,7 @@ function SlowProjectile(sprite, source, x, y, velX, velY, angle, damage, range, 
 }
 
 // Sword projectile
-function SwordProjectile(sprite, source, x, y, r, damage, arc, knockback, lifesteal) {
+function SwordProjectile(sprite, source, x, y, r, angle, damage, arc, knockback, lifesteal) {
     var projectile = ProjectileBase(sprite, source, source.x + x, source.y + y, 0, 0, source.angle, damage, 9999, true, true);
     projectile.Update = projectileFunctions.updateSword;
     projectile.Hit = projectileFunctions.hitSword;
@@ -86,6 +86,7 @@ function SwordProjectile(sprite, source, x, y, r, damage, arc, knockback, lifest
     projectile.start = Vector(-r * Math.sin(arc / 2), r * Math.cos(arc / 2));
     projectile.step = 0;
     projectile.state = 0;
+    projectile.initialAngle = angle;
     projectile.lifesteal = lifesteal;
     return projectile;
 }
@@ -298,7 +299,7 @@ var projectileFunctions = {
         
         // Leaving robot
         if (this.state == 0) {
-            var target = this.arc / 2 + Math.PI / 4;
+            var target = this.arc / 2 + this.initialAngle;
             this.angle = this.source.angle + target * ++this.step / 10;
             this.cos = Math.cos(this.angle);
             this.sin = Math.sin(this.angle);
@@ -315,7 +316,7 @@ var projectileFunctions = {
         
         // Swinging
         else if (this.state == 1) {
-            var target = this.arc / 2 + Math.PI / 2;
+            var target = this.arc / 2 + this.initialAngle;
             this.angle = this.source.angle + target - Math.PI * ++this.step / 36;
             this.cos = Math.cos(this.angle);
             this.sin = Math.sin(this.angle);
@@ -332,8 +333,7 @@ var projectileFunctions = {
         
         // Returning back to robot
         else if (this.state == 2) {
-            var target = this.arc / 2 + Math.PI / 4;
-            this.angle = this.source.angle + (Math.PI / 2 - this.arc / 2) * (10 - ++this.step) / 10;
+            this.angle = this.source.angle + (this.initialAngle - this.arc / 2) * (10 - ++this.step) / 10;
             this.cos = Math.cos(this.angle);
             this.sin = Math.sin(this.angle);
             

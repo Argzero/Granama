@@ -22,7 +22,7 @@ function LightRangedEnemy(x, y) {
         GetImage('enemyLightRanged'), 
         x, 
         y,
-        20 * ScalePower(c, 1),
+        20 * ScalePower(c, 0.8),
         2.5 + 0.2 * c,
         200
     );
@@ -35,7 +35,7 @@ function LightRangedEnemy(x, y) {
         damage: ((c + 1) / 2) * (c + 2),
         rate: 20,
         range: 200,
-        spread: Rand(c + 1),
+        spread: Rand(c + 0.8),
         dx: 23,
         dy: 30
     });
@@ -51,7 +51,7 @@ function HeavyRangedEnemy(x, y) {
         GetImage('enemyHeavyRanged'), 
         x, 
         y,
-        30 * ScalePower(c, 1),
+        30 * ScalePower(c, 0.8),
         2 + 0.2 * c,
         250
     );
@@ -64,7 +64,7 @@ function HeavyRangedEnemy(x, y) {
         damage: ((c + 1) / 2) * (c + 2),
         rate: 15,
         range: 250,
-        spread: Rand(c + 1),
+        spread: Rand(c + 0.8),
         dx: 0,
         dy: 35
     });
@@ -80,7 +80,7 @@ function PaladinEnemy(x, y) {
         GetImage('enemyPaladin'), 
         x, 
         y,
-        100 * ScalePower(c, 1.2),
+        100 * ScalePower(c, 1.1),
         3 + 0.25 * c,
         300
     );
@@ -110,7 +110,7 @@ function LightArtilleryEnemy(x, y) {
         GetImage('enemyLightArtillery'), 
         x, 
         y,
-        10 * ScalePower(c, 1),
+        10 * ScalePower(c, 0.8),
         2 + 0.1 * c,
         400
     );
@@ -139,7 +139,7 @@ function HeavyArtilleryEnemy(x, y) {
         GetImage('enemyHeavyArtillery'), 
         x, 
         y,
-        30 * ScalePower(c, 1),
+        30 * ScalePower(c, 0.8),
         1.5 + 0.1 * c,
         400
     );
@@ -168,7 +168,7 @@ function RailerEnemy(x, y) {
         GetImage('enemyRailer'), 
         x, 
         y,
-        80 * ScalePower(c, 1.2),
+        80 * ScalePower(c, 1.1),
         2 + 0.2 * c,
         550
     );
@@ -199,7 +199,7 @@ function LightMeleeEnemy(x, y) {
         GetImage('enemyLightMelee'), 
         x, 
         y,
-        35 * ScalePower(c, 1),
+        35 * ScalePower(c, 0.8),
         3.5 + 0.4 * c,
         50
     );
@@ -225,7 +225,7 @@ function HeavyMeleeEnemy(x, y) {
         GetImage('enemyHeavyMelee'), 
         x, 
         y,
-        45 * ScalePower(c, 1),
+        45 * ScalePower(c, 0.8),
         3 + 0.3 * c,
         50
     );
@@ -251,7 +251,7 @@ function LightBomberEnemy(x, y) {
         GetImage('enemyLightBomber'), 
         x, 
         y,
-        15 * ScalePower(c, 1),
+        15 * ScalePower(c, 0.8),
         2.5 + 0.25 * c,
         400
     );
@@ -278,7 +278,7 @@ function HeavyBomberEnemy(x, y) {
         GetImage('enemyHeavyBomber'), 
         x, 
         y,
-        20 * ScalePower(c, 1),
+        20 * ScalePower(c, 0.8),
         2.5 + 0.25 * c,
         500
     );
@@ -305,7 +305,7 @@ function TurretEnemy(x, y) {
         GetImage('enemyTurret'), 
         x, 
         y,
-        120 * ScalePower(c, 1.2),
+        120 * ScalePower(c, 1.1),
         2.5 + 0.2 * c,
         550
     );

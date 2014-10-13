@@ -2,16 +2,12 @@ function EnemyManager(screen) {
 
     // Boss data
     this.bossStatus = ACTIVE_NONE;
-    this.bossScore = BOSS_SPAWN_BASE * (0.6 + 0.4 * playerManager.players.length);
-    this.bossIncrement = BOSS_SPAWN_BASE * (0.6 + 0.4 * playerManager.players.length);
+    this.bossScore = Math.floor(BOSS_SPAWN_BASE * (0.6 + 0.4 * playerManager.players.length));
+    this.bossIncrement = Math.floor(BOSS_SPAWN_BASE * (0.6 + 0.4 * playerManager.players.length));
     this.bossCount = 0;
     
     // Spawn data
     this.spawnCd = SPAWN_RATE;
-    this.spawnWeight = 0;
-    for (var i = 0; i < SPAWN_DATA.length; i += 2) {
-        this.spawnWeight += SPAWN_DATA[i];
-    }
     
     // Game objects
     this.enemies = new Array();
@@ -174,16 +170,21 @@ function EnemyManager(screen) {
             while (!OffScreen(x, y, 100));
             
             // Get a random type
-            var r = Rand(this.spawnWeight - 3);
-            if (this.bossCount >= 3) {
-                r = Rand(this.spawnWeight);
+            var spawnWeight = 0;
+            for (var i = 0; i < SPAWN_DATA.length; i += 3) {
+                if (SPAWN_DATA[i + 1] <= this.bossCount) {
+                    spawnWeight += SPAWN_DATA[i];
+                }
             }
+            var r = Rand(spawnWeight);
             var total = 0;
             var enemy;
-            for (var i = 0; i < SPAWN_DATA.length; i += 2) {
-                total += SPAWN_DATA[i];
+            for (var i = 0; i < SPAWN_DATA.length; i += 3) {
+                if (SPAWN_DATA[i + 1] <= this.bossCount) {
+                    total += SPAWN_DATA[i];
+                }
                 if (total > r) {
-                    enemy = SPAWN_DATA[i + 1](x, y);
+                    enemy = SPAWN_DATA[i + 2](x, y);
                     break;
                 }
             }

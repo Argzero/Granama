@@ -30,32 +30,6 @@ TURRET_HEALTH = 0.2,
 TURRET_RATE = 15,
 TURRET_RANGE = 500,
 
-// Ability names
-BLINK = 'Blink',
-OVERDRIVE = 'Overdrive',
-TELEPORT = 'Teleport',
-BLITZ = 'Blitz',
-WAVEBURST = 'Wave Burst',
-BREAKERBLASTER = 'KO Cannon',
-DECIMATION = 'Decimation',
-STASIS = 'Stasis',
-REFLECTOR = 'Reflector',
-RECHARGER = 'Recharger',
-
-// Ability methods
-SKILL_METHODS = {
-    BLINK: SkillBlink,
-    OVERDRIVE: SkillOverdrive,
-    TELEPORT: SkillTeleport,
-    BLITZ: SkillBlitz,
-    WAVEBURST: SkillWaveburst,
-    KOCANNON: SkillBreakerblaster,
-    DECIMATION: SkillDecimation,
-    STASIS: SkillStasis,
-    REFLECTOR: SkillReflector,
-    RECHARGER: SkillRecharger
-},
-
 // Skill Data
 PLAYER_DATA = [
 	{
@@ -102,8 +76,8 @@ PLAYER_DATA = [
 		weapons: [ 'Quiver Gun', 'Sword' ],
 		skills: [
 			{ name: 'Recharger', callback: SkillPiercingArrow },
-			{ name: 'Reflector', callback: SkillReflector },
-			{ name: 'Stasis', callback: SkillStasis }
+			{ name: 'Reflector', callback: SkillGyroSlash },
+			{ name: 'Stasis', callback: SkillSweepingBlade }
 		]
 	}
 ],
@@ -112,17 +86,6 @@ PLAYER_DATA = [
 GAME_FPS = 60,
 DAMAGE_ALPHA = 0.3,
 DAMAGE_ALPHA_DECAY = 0.02,
-
-// Scaling
-DAMAGE_DIVISOR = 500,
-
-// Attack types
-ATTACK_BULLET = 0,
-ATTACK_MINES = 1,
-ATTACK_MELEE = 2,
-ATTACK_HAMMER = 3,
-ATTACK_TURRET = 4,
-ATTACK_RAIL = 5,
 
 // Boss statuses
 ACTIVE_NONE = 0,
@@ -142,17 +105,17 @@ SPAWN_SCALE = 0.3,
 MAX_ENEMIES = 30,
 MINIBOSS_START = 8,
 SPAWN_DATA = [
-    90, LightRangedEnemy,
-    45, HeavyRangedEnemy,
-    60, LightArtilleryEnemy,
-    30, HeavyArtilleryEnemy,
-    15, LightMeleeEnemy,
-    15, HeavyMeleeEnemy,
-    30, LightBomberEnemy,
-    15, HeavyBomberEnemy,
-    1, TurretEnemy,
-    1, RailerEnemy,
-    1, PaladinEnemy
+    90, 0, LightRangedEnemy,
+    45, 2, HeavyRangedEnemy,
+    60, 1, LightArtilleryEnemy,
+    30, 2, HeavyArtilleryEnemy,
+    15, 1, LightMeleeEnemy,
+    15, 2, HeavyMeleeEnemy,
+    30, 0, LightBomberEnemy,
+    15, 2, HeavyBomberEnemy,
+    1,  3, TurretEnemy,
+    1,  3, RailerEnemy,
+    1,  3, PaladinEnemy
 ],
 BOSS_SPAWNS = [
 	HeavyBoss,

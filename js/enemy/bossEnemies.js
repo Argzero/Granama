@@ -12,8 +12,8 @@ function HeavyBoss(x, y) {
         300
     );
     
-    enemy.Knockback = undefined;
-    enemy.Slow = undefined;
+    enemy.Knockback = enemyFunctions.BossKnockback;
+    enemy.Slow = enemyFunctions.BossSlow;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveBasic;
@@ -73,8 +73,8 @@ function FireBoss(x, y) {
         200
     );
 	
-    enemy.Knockback = undefined;
-    enemy.Slow = undefined;
+    enemy.Knockback = enemyFunctions.BossKnockback;
+    enemy.Slow = enemyFunctions.BossSlow;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveBasic;
@@ -128,8 +128,8 @@ function PunchBoss(x, y) {
         300
     );
     
-    enemy.Knockback = undefined;
-    enemy.Slow = undefined;
+    enemy.Knockback = enemyFunctions.BossKnockback;
+    enemy.Slow = enemyFunctions.BossSlow;
     
     // Specific values
     enemy.leftFist = true;

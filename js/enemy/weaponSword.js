@@ -6,6 +6,7 @@
 //    damage - how much damage the slash does
 // knockback - how far the slash knocks things back
 // lifesteal - the percentage of damage returned as life
+//     angle - initial angle of the sword
 function EnemyWeaponSword(data) {
 
     // Fire when in range and off cooldown
@@ -17,6 +18,7 @@ function EnemyWeaponSword(data) {
             -16,
             40,
             100,
+            data.angle,
             data.damage, 
             data.arc,
             data.knockback,
