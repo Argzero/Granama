@@ -35,7 +35,7 @@ function LightRangedEnemy(x, y) {
         damage: ((c + 1) / 2) * (c + 2),
         rate: 20,
         range: 200,
-        spread: Rand(c + 0.8),
+        spread: Rand(c / 2 + 0.4),
         dx: 23,
         dy: 30
     });
@@ -64,7 +64,7 @@ function HeavyRangedEnemy(x, y) {
         damage: ((c + 1) / 2) * (c + 2),
         rate: 15,
         range: 250,
-        spread: Rand(c + 0.8),
+        spread: Rand(c / 2 + 0.4),
         dx: 0,
         dy: 35
     });
@@ -94,7 +94,7 @@ function PaladinEnemy(x, y) {
         damage: 4 * ((c + 1) / 2) * (c + 2),
         rate: 60,
         range: 300,
-        spread: Math.max((c - 3) / 3, 2),
+        spread: Math.max((c - 3) / 4, 2),
         dx: 0,
         dy: 45
     });
@@ -123,7 +123,7 @@ function LightArtilleryEnemy(x, y) {
         damage: ((c + 1) / 2) * (c + 2),
         rate: 45,
         range: 400,
-        spread: Rand((c + 1) / 2),
+        spread: Rand((c + 1) / 3),
         dx: 0,
         dy: 38
     });
@@ -152,7 +152,7 @@ function HeavyArtilleryEnemy(x, y) {
         damage: 2 * ((c + 1) / 2) * (c + 2),
         rate: 35,
         range: 400,
-        spread: Rand((c + 1) / 2),
+        spread: Rand((c + 1) / 3),
         dx: 0,
         dy: 53
     });
@@ -315,7 +315,7 @@ function TurretEnemy(x, y) {
     
     // Turrets
     enemy.AddWeapon(EnemyWeaponTurrets, {
-        health: 120 * TURRET_HEALTH * ScalePower(c, 1),
+        health: 50 * ScalePower(c, 0.8),
         damage: ((c + 1) / 2) * (c + 2),
         rate: 600,
         range: 650
