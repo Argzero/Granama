@@ -134,8 +134,15 @@ function PlayerScreen() {
                 }
                 else if (this.playerSet[i]) {
                     
+                    // Highlight
                     canvas.fillStyle = 'red';
                     canvas.fillRect(x - 110 + this.abilityId[i] * 75, y + 195, 70, 70);
+                    
+                    // Skill name
+                    canvas.textAlign = 'center';
+                    canvas.fillStyle = 'white';
+                    canvas.font = '24px Flipbash';
+                    canvas.fillText(data.skills[this.abilityId[i]].name, x, y + 270);
                     
                     // Controls
                     if (input.movement.x < 0) {

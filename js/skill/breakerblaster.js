@@ -17,7 +17,7 @@ function SkillBreakerblaster(player) {
                 this.cos * BULLET_SPEED, 
                 this.sin * BULLET_SPEED, 
                 this.angle, 
-                LASER_DAMAGE * 2, 
+                LASER_DAMAGE * 2 * this.GetDamageMultiplier(), 
                 LASER_RANGE * 2,
                 true,
                 true

@@ -101,7 +101,7 @@ PLAYER_DATA = [
         color: '#fcf',
 		weapons: [ 'Quiver Gun', 'Sword' ],
 		skills: [
-			{ name: 'Recharger', callback: SkillRecharger },
+			{ name: 'Recharger', callback: SkillPiercingArrow },
 			{ name: 'Reflector', callback: SkillReflector },
 			{ name: 'Stasis', callback: SkillStasis }
 		]

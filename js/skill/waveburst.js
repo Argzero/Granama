@@ -22,7 +22,7 @@ function SkillWaveburst(player) {
                     cos * BULLET_SPEED, 
                     sin * BULLET_SPEED, 
                     this.angle + this.waveAngle, 
-                    LASER_DAMAGE, 
+                    LASER_DAMAGE * this.GetDamageMultiplier(), 
                     LASER_RANGE * 2,
                     true,
                     true

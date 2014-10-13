@@ -67,6 +67,13 @@ function GameScreen(bossRush) {
                 this.enemyManager.CheckSpawns();
             }
         }
+        
+        // Check for losing
+        for (var i = 0; i < playerManager.players.length; i++) {
+            if (playerManager.players[i].robot.health > 0) return;
+        }
+        endScreen.setup(this);
+        gameScreen = endScreen;
     };
 	
 	// Pauses the game

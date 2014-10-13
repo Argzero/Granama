@@ -360,9 +360,11 @@ var projectileFunctions = {
         }
         
         // Lifesteal
-        this.source.health += this.damage * this.lifesteal;
-        if (this.source.health > this.source.maxHealth) {
-            this.source.health = this.source.maxHealth;
+        if (this.source.health > 0) {
+            this.source.health += this.damage * this.lifesteal;
+            if (this.source.health > this.source.maxHealth) {
+                this.source.health = this.source.maxHealth;
+            }
         }
     
         // Knockback

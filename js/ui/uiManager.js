@@ -41,6 +41,8 @@ function UIManager(screen) {
         //canvas.drawImage(scoreTitle, 20, 0);
         canvas.font = "24px Flipbash";
         canvas.fillStyle = "#fff";
+        canvas.textBaseline = 'alphabetic';
+        canvas.textAlign = 'left';
         canvas.fillText("Kills", 10, 30);
         canvas.fillText("Boss", SIDEBAR_WIDTH - StringWidth("Boss", canvas.font) - 10, 30);
         canvas.fillRect(5, 35, SIDEBAR_WIDTH - 10, 2);

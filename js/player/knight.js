@@ -46,7 +46,7 @@ function PlayerKnightType() {
         speed: 10,
         dx: 0, 
         dy: 30,
-        rate: 60,
+        rate: 50,
         list: p.bullets 
     };
     p.swordData = { 
@@ -71,7 +71,7 @@ function PlayerKnightType() {
         this.arrowData.xOffset = num * 1.5;
         this.arrowData.damage = 3 * m;
         this.arrowData.duration = num;
-        //this.FireArrow(this.arrowData);
+        this.FireArrow(this.arrowData);
         
         // Sword
         this.swordData.damage = 2 * m;
