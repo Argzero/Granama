@@ -5,11 +5,10 @@ function PlayerKnightType() {
             6,             ARROW,      50,   5,
             6,             SLASH_ARC,  50,   5,
             6,             LIFESTEAL,  50,   5,
-            15,            SHIELD,     100,  6,
-            6,             SPEED,      50,  6,
+            15,            SHIELD,     75,   6,
+            6,             SPEED,      50,   6,
             10,            DAMAGE,     -1,   5,
-            10,            HEALTH,     -1,   6,
-            10,            HEAL,       -1,   7
+            10,            HEALTH,     -1,   6
         ]
     );
     

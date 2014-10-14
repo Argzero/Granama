@@ -323,3 +323,114 @@ function TurretEnemy(x, y) {
     
     return enemy;
 }
+
+function LightOrbiterEnemy(x, y) {
+
+	// Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('enemyLightOrbiter'), 
+        x, 
+        y,
+        20 * ScalePower(c, 0.8),
+        4 + 0.5 * c,
+        300
+    );
+    
+    // Movement pattern
+    enemy.ApplyMove = EnemyMoveOrbit;
+    
+    // Side gun
+    enemy.AddWeapon(EnemyWeaponSideGun, {
+        damage: ((c + 1) / 2) * (c + 2),
+        rate: 45,
+        range: 450
+    });
+	
+	//offset, length, base, endOffset
+	// Draw the tail
+	enemy.tail = EnemyTail(enemy, GetImage('enemyLightOrbiterTail'), GetImage('enemyLightOrbiterTail'), 7, 3, 10, 0);
+	enemy.ApplyDraw = function() {
+		this.tail.Draw();
+	}
+    
+    return enemy;
+}
+
+function HeavyOrbiterEnemy(x, y) {
+
+	// Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('enemyHeavyOrbiter'), 
+        x, 
+        y,
+        30 * ScalePower(c, 0.8),
+        3.75 + 0.45 * c,
+        300
+    );
+    
+    // Movement pattern
+    enemy.ApplyMove = EnemyMoveOrbit;
+    
+    // Side gun
+    enemy.AddWeapon(EnemyWeaponSideGun, {
+        damage: 2 * ((c + 1) / 2) * (c + 2),
+        rate: 60,
+        range: 450
+    });
+	
+	//offset, length, base, endOffset
+	// Draw the tail
+	enemy.tail = EnemyTail(enemy, GetImage('enemyHeavyOrbiterTail'), GetImage('enemyHeavyOrbiterTail'), 8, 3, 10, 0);
+	enemy.ApplyDraw = function() {
+		this.tail.Draw();
+	}
+    
+    return enemy;
+}
+
+function HunterEnemy(x, y) {
+
+	// Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('enemyHunter'), 
+        x, 
+        y,
+        120 * ScalePower(c, 1.1),
+        3.5 + 0.4 * c,
+        350
+    );
+    
+    // Movement pattern
+    enemy.ApplyMove = EnemyMoveOrbit;
+    
+    // Side gun
+    enemy.AddWeapon(EnemyWeaponSideGun, {
+        damage: 3 * ((c + 1) / 2) * (c + 2),
+        rate: 45,
+        range: 450
+    });
+	
+	//offset, length, base, endOffset
+	// Draw the tail
+	enemy.tail = EnemyTail(enemy, GetImage('enemyHunterSegment'), GetImage('enemyHunterEnd'), 9, 4, 11, 0);
+	enemy.ApplyDraw = function() {
+		this.tail.Draw();
+		
+		// Switch to melee when below 1/4 hp
+		if (this.health < this.maxHealth * 0.25 && this.ApplyMove != EnemyMoveBasic) {
+			this.ApplyMove = EnemyMoveBasic;
+			this.range = 50;
+			this.weapons = [];
+			this.AddWeapon(EnemyWeaponMelee, {
+				damage: 4 * ((c + 1) / 2) * (c + 2),
+				rate: 40,
+				range: 50
+			});
+		}
+	}
+    
+    return enemy;
+}

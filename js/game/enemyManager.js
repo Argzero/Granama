@@ -73,7 +73,6 @@ function EnemyManager(screen) {
                             this.bullets.splice(i, 1);
                             i--;
                         }
-                        screen.damageAlpha = DAMAGE_ALPHA;
                     }
                 }
             }
@@ -108,27 +107,25 @@ function EnemyManager(screen) {
                 if (this.enemies[i].killer) {
                     this.enemies[i].killer.enemiesKilled++;
                 }
-            
-                // Drop an item if applicable
-                screen.dropManager.Drop(this.enemies[i].x, this.enemies[i].y);
-                
+				
                 // Bosses apply extra effects
                 if (this.bossStatus != ACTIVE_NONE) {
                 
                     // Clear boss status
                     this.bossStatus = ACTIVE_NONE;
                 
-                    // Extra drops from bosses
-                    for (var n = 0; n < BOSS_DROPS; n++) {
-                        var xOffset = RotateX(40, 0, n * 360 / BOSS_DROPS);
-                        var yOffset = RotateY(40, 0, n * 360 / BOSS_DROPS);
-                        screen.dropManager.Drop(this.enemies[i].x + xOffset, this.enemies[i].y + yOffset);
-                    }
+                    // Drops for bosses
+					screen.dropManager.Drop(this.enemies[i].x, this.enemies[i].y, BOSS_DROPS);
                     
                     // Scale the score the next boss spawns at
                     this.bossIncrement += BOSS_SPAWN_SCALE;
                     this.bossScore += this.bossIncrement;        
                 }
+				
+				// Drops for normal enemies
+				else {
+					screen.dropManager.Drop(this.enemies[i].x, this.enemies[i].y, 1);
+				}
                 
                 // Create an explosion
                 screen.explosions.push(new Explosion(this.enemies[i].x, this.enemies[i].y, this.enemies[i].sprite.width / 150));

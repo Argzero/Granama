@@ -75,9 +75,9 @@ PLAYER_DATA = [
         color: '#fcf',
 		weapons: [ 'Quiver Gun', 'Sword' ],
 		skills: [
-			{ name: 'Recharger', callback: SkillPiercingArrow },
-			{ name: 'Reflector', callback: SkillGyroSlash },
-			{ name: 'Stasis', callback: SkillSweepingBlade }
+			{ name: 'Piercing arrow', callback: SkillPiercingArrow },
+			{ name: 'Gyro Slash', callback: SkillGyroSlash },
+			{ name: 'Sweeping Blade', callback: SkillSweepingBlade }
 		]
 	}
 ],
@@ -106,16 +106,19 @@ MAX_ENEMIES = 30,
 MINIBOSS_START = 8,
 SPAWN_DATA = [
     90, 0, LightRangedEnemy,
-    45, 2, HeavyRangedEnemy,
-    60, 1, LightArtilleryEnemy,
-    30, 2, HeavyArtilleryEnemy,
-    15, 1, LightMeleeEnemy,
-    15, 2, HeavyMeleeEnemy,
+    45, 1, HeavyRangedEnemy,
+    60, 0, LightArtilleryEnemy,
+    30, 1, HeavyArtilleryEnemy,
+    15, 0, LightMeleeEnemy,
+    15, 1, HeavyMeleeEnemy,
     30, 0, LightBomberEnemy,
-    15, 2, HeavyBomberEnemy,
+    15, 1, HeavyBomberEnemy,
+	20, 0, LightOrbiterEnemy,
+	10, 1, HeavyOrbiterEnemy,
     1,  3, TurretEnemy,
     1,  3, RailerEnemy,
-    1,  3, PaladinEnemy
+    1,  3, PaladinEnemy,
+	1,  3, HunterEnemy
 ],
 BOSS_SPAWNS = [
 	HeavyBoss,
@@ -167,7 +170,7 @@ HEALTH_ID = 6,
 HEAL_ID = 7,
 
 // Drop data
-BOSS_DROPS = 6,
+BOSS_DROPS = 7,
 DROP_COUNT = 8,
 DROP_VALUES = 4,
 DROP_CHANCE = 0,

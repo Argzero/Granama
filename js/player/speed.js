@@ -8,8 +8,7 @@ function PlayerSpeedType() {
             6,             SHIELD,     50,   6,
             15,            SPEED,      100,  6,
             10,            DAMAGE,     -1,   5,
-            10,            HEALTH,     -1,   6,
-            10,            HEAL,       -1,   7
+            10,            HEALTH,     -1,   6
         ]
     );
     

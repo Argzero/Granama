@@ -36,6 +36,7 @@ function BasePlayer(sprite, drops, gamepadIndex) {
         damageDealt: 0,
         deaths: 0,
         enemiesKilled: 0,
+		damageAlpha: 0,
 		input: undefined,
         
 		// Damages the player using an optional damage source
@@ -48,6 +49,11 @@ function BasePlayer(sprite, drops, gamepadIndex) {
 				if (result !== undefined) {
 					amount = result;
 				}
+			}
+			
+			// Damage indicator
+			if (amount) {
+				this.damageAlpha = 0.5;
 			}
 			
 			// Deduct shield damage
@@ -211,6 +217,15 @@ function BasePlayer(sprite, drops, gamepadIndex) {
         
             // Transform the canvas to match the player orientation
             canvas.translate(this.x, this.y);
+			
+			// Damage effect
+			if (this.damageAlpha > 0) {
+				canvas.globalAlpha = this.damageAlpha;
+				canvas.drawImage(GetImage('damage'), -75, -75, 150, 150);
+				canvas.globalAlpha = 1;
+				this.damageAlpha -= DAMAGE_ALPHA_DECAY;
+			}
+			
             canvas.transform(this.sin, -this.cos, this.cos, this.sin, 0, 0);
         
             // Draw various parts of the player
@@ -246,7 +261,7 @@ function BasePlayer(sprite, drops, gamepadIndex) {
                 var healthPercent = this.health / this.maxHealth;
                 var shieldPercent = this.shield / (this.maxHealth * SHIELD_MAX);
                 canvas.beginPath();
-                canvas.arc(this.x, this.y, 75, Math.PI * 2, (2 - healthPercent * 9 / 10) * Math.PI, true);
+                canvas.arc(this.x, this.y, 75, -Math.PI * 9 / 10, -((1 - healthPercent) * Math.PI * 9 / 10), false);
                 if (healthPercent > 0.66) canvas.strokeStyle = '#0f0';
                 else if (healthPercent > 0.33) canvas.strokeStyle = '#ff0';
                 else canvas.strokeStyle = '#f00';

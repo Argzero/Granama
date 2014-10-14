@@ -11,8 +11,8 @@ function DropManager(screen) {
     // Updates the drops
     this.Update = function() {
         for (var i = 0; i < this.drops.length; i++) {
-            if (BulletCollides(this.drops[i], this.drops[i].player)) {
-                var player = this.drops[i].player;
+			var player = this.drops[i].player;
+            if (BulletCollides(this.drops[i], player)) {
                 
                 // Health pack special case
                 if (this.drops[i].type == HEAL) {
@@ -47,23 +47,55 @@ function DropManager(screen) {
     };
     
     // Drops an item at the given point
-    this.Drop = function(x, y) {
-        var rand = Rand(100);
-        var ox = 0;
-        for (var i = 0; i < playerManager.players.length; i++) {
-            var total = 0;
-            var player = playerManager.players[i].robot;
-            if (player.health <= 0) continue;
-            var drops = player.drops;
-            for (var k = 0; k < DROP_COUNT; k++) {
-                total += drops[k * DROP_VALUES + DROP_CHANCE];
-                if (total > rand) {
-                    this.drops.push(new Drop(x + ox, y, drops[k * DROP_VALUES + DROP_TYPE], k, player));
-                    ox += 15;
-                    break;
-                }
-            }
-        }
-        return ox > 0;
+    this.Drop = function(x, y, num) {
+        var count = 0;
+		var offset = Vector(0, 0);
+		var ringCount = 1;
+		var radius = 0;
+		for (var j = 0; j < num; j++) {
+			for (var i = 0; i < playerManager.players.length; i++) {
+				var rand = Rand(100);
+				var total = 0;
+				var player = playerManager.players[i].robot;
+				if (player.health <= 0) continue;
+				var drops = player.drops;
+				for (var k = 0; k < DROP_COUNT; k++) {
+					total += drops[k * DROP_VALUES + DROP_CHANCE];
+					if (total > rand) {
+						this.drops.push(new Drop(x + offset.x, y + offset.y, drops[k * DROP_VALUES + DROP_TYPE], k, player));
+						count++;
+						if (count >= ringCount) {
+							count = 0;
+							offset.x = 0;
+							radius += 40;
+							offset.y = radius;
+							ringCount += 6;
+						}
+						else {
+							offset.Rotate(Math.PI * 2 / ringCount);
+						}
+						break;
+					}
+				}
+			}
+			
+			// Health packs
+			if (Rand(100) < 10) {
+				this.drops.push(new Drop(x + offset.x, y + offset.y, HEAL, HEAL_ID, player));
+				count++;
+				if (count >= ringCount) {
+					count = 0;
+					offset.x = 0;
+					radius += 40;
+					offset.y = radius;
+					ringCount += 6;
+				}
+				else {
+					offset.Rotate(Math.PI * 2 / ringCount);
+				}
+			}
+		}
+		
+        return ringCount > 1;
     }
 }

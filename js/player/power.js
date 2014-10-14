@@ -8,8 +8,7 @@ function PlayerPowerType() {
             6,           SHIELD,       50,   6,
             6,           SPEED,        50,   6,
             30,          DAMAGE,       -1,   5,
-            10,          HEALTH,       -1,   6,
-            10,          HEAL,         -1,   7
+            10,          HEALTH,       -1,   6
         ]
     );
     
