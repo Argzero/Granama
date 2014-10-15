@@ -198,12 +198,12 @@ function BasePlayer(sprite, drops, gamepadIndex) {
 		
             // Input update
             this.input.setPlayer(this);
-            this.input.update();
 		
 			// Pausing
-            if (this.input.pause) {
-                this.input.locked = true;
+            if (this.input.pause > 0) {
+            if (this.input.pause == 1) {
                 gameScreen.Pause(this);
+            }
             }
 		},
 		
@@ -315,7 +315,7 @@ function BasePlayer(sprite, drops, gamepadIndex) {
         // Checks whether or not a skill is being cast
         IsSkillCast: function() {
 			if (this.skillCd > 0 || this.skillDuration > 0) return false;
-			return this.input.ability;
+			return this.input.ability == 1;
         },
         
         // Function for telling weapons when they can fire

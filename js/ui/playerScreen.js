@@ -84,8 +84,7 @@ function PlayerScreen() {
                 canvas.fillText('to join...', x, y + 30);
                 
                 // Joining
-                if (input.confirm) {
-                    input.locked = true;
+                if (input.confirm == 1) {
                     this.joined[i] = true;
                 }
             }
@@ -124,12 +123,9 @@ function PlayerScreen() {
                     canvas.fillStyle = 'red';
                     canvas.fillRect(x - 110 + this.abilityId[i] * 75, y + 195, 70, 70);
                 
-                    if (input.confirm) {
+                    if (input.cancel == 1) {
                         playerManager.players[i].robot = undefined;
                         this.ready[i] = false;
-                        this.playerSet[i] = false;
-                        this.open.push(this.selection[i]);
-                        input.locked = true;
                     }
                 }
                 else if (this.playerSet[i]) {
@@ -145,15 +141,13 @@ function PlayerScreen() {
                     canvas.fillText(data.skills[this.abilityId[i]].name, x, y + 270);
                     
                     // Controls
-                    if (input.movement.x < 0) {
+                    if (input.left == 1) {
                         this.abilityId[i] = (this.abilityId[i] + 2) % 3;
-                        input.locked = true;
                     }
-                    if (input.movement.x > 0) {
+                    if (input.right == 1) {
                         this.abilityId[i] = (this.abilityId[i] + 1) % 3;
-                        input.locked = true;
                     }
-                    if (input.confirm) {
+                    if (input.confirm == 1) {
                         input.locked = true;
                         var robot = data.player();
                         robot.color = data.color;
@@ -176,6 +170,10 @@ function PlayerScreen() {
                             gameScreen = new GameScreen(false);
                         }
                     }
+                    else if (input.cancel == 1) {
+                        this.playerSet[i] = false;
+                        this.open.push(this.selection[i]);
+                    }
                 }
                 else {
                 
@@ -185,21 +183,21 @@ function PlayerScreen() {
                     canvas.drawImage(GetImage('uiArrowRight'), x + 79 + 5 * dx, y + 10);
                     
                     // Controls
-                    if (input.movement.x < 0) {
+                    if (input.left == 1) {
                         do {
                             this.selection[i] = (this.selection[i] + PLAYER_DATA.length - 1) % PLAYER_DATA.length;
                         }
                         while (!this.isOpen(this.selection[i]));
                         input.locked = true;
                     }
-                    if (input.movement.x > 0) {
+                    if (input.right == 1) {
                         do {
                             this.selection[i] = (this.selection[i] + 1) % PLAYER_DATA.length;
                         }
                         while (!this.isOpen(this.selection[i]));
                         input.locked = true;
                     }
-                    if (input.confirm) {
+                    if (input.confirm == 1) {
                         input.locked = true;
                         this.playerSet[i] = true;
                         for (var k = 0; k < 4; k++) {
