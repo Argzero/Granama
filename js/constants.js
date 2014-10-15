@@ -75,7 +75,7 @@ PLAYER_DATA = [
         color: '#fcf',
 		weapons: [ 'Quiver Gun', 'Sword' ],
 		skills: [
-			{ name: 'Piercing arrow', callback: SkillPiercingArrow },
+			{ name: 'Piercing Arrow', callback: SkillPiercingArrow },
 			{ name: 'Gyro Slash', callback: SkillGyroSlash },
 			{ name: 'Sweeping Blade', callback: SkillSweepingBlade }
 		]

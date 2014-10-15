@@ -34,6 +34,7 @@ function EnemyBase(sprite, x, y, health, speed, range, exp, patternMin, patternM
         // Functions
         AddWeapon: enemyFunctions.AddWeapon,
 		SetRange: enemyFunctions.SetRange,
+        SetMovement: enemyFunctions.SetMovement,
         Knockback: enemyFunctions.Knockback,
         Update: enemyFunctions.Update,
         clamp: enemyFunctions.clamp,
@@ -91,14 +92,12 @@ var enemyFunctions = {
 		// Pattern switching
 		if (this.patterns.length > 1) {
 			this.patternTimer--;
-			if (this.patternTimer == -1) {
-				this.patternTimer = Rand(this.patternMax - this.patternMin) + this.patternMin;
-			}
-			else if (this.patternTimer == 0) {
+			if (this.patternTimer <= 0) {
 				this.pattern = Rand(this.patterns.length);
 				this.range = this.ranges[this.pattern] || this.range;
 				this.ApplyMove = this.movements[this.pattern] || this.ApplyMove;
-				this.patterTimer = Rand(this.patternMax - this.patternMin) + this.patternMin;
+				this.patternTimer = Rand(this.patternMax - this.patternMin) + this.patternMin;
+                console.log("Changed pattern to: " + this.pattern);
 			}
 		}
 	

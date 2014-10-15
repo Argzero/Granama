@@ -22,6 +22,15 @@ var playerManager = {
         }
     },
     
+    // Retrieves the list of player robots
+    getRobots: function() {
+        var list = [];
+        for (var i = 0; i < this.players.length; i++) {
+            list.push(this.players[i].robot);
+        }
+        return list;
+    },
+    
     // Gets the nearest player to the coordinates
     getClosest: function(x, y) {
         var r = undefined;

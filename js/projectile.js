@@ -47,7 +47,7 @@ function FireProjectile(sprite, source, x, y, velX, velY, angle, damage, range) 
 
 // Reflection ability projectile
 function ReflectionProjectile(sprite, source, x, y, velX, velY, damage, target) {
-    var projectile = ProjectileBase(sprite, source, x, y, velX, velY, 0, damage, 2500, false, true);
+    var projectile = ProjectileBase(sprite, source, x, y, velX, velY, 0, damage, 9999, false, true);
 	projectile.rotSpeed = Rand(10) / 100 + 0.04;
     projectile.target = target;
     projectile.ApplyUpdate = projectileFunctions.UpdateHoming;
@@ -66,6 +66,22 @@ function RocketProjectile(sprite, source, x, y, velX, velY, angle, damage, range
 	projectile.lists = lists;
 	projectile.knockback = knockback;
 	return projectile;
+}
+
+// Rocket projectile with knockback, AOE damage, and homing properties
+function HomingRocketProjectile(sprite, source, target, x, y, velX, velY, angle, damage, range, radius, knockback, lists) {
+    var projectile = ProjectileBase(sprite, source, x, y, velX, velY, angle, damage, 9999, false, true);
+	projectile.Hit = projectileFunctions.RocketHit;
+    projectile.ApplyUpdate = projectileFunctions.updateHomingRocket;
+    projectile.actualRange = range;
+	projectile.radius = radius;
+	projectile.lists = lists;
+    projectile.target = target;
+    projectile.speed = Math.sqrt(velX * velX + velY * velY);
+    projectile.rotSpeed = 0.02;
+    projectile.lifespan = range / (Math.abs(velX) + Math.abs(velY) * HALF_RT_2);
+	projectile.knockback = knockback;
+    return projectile;
 }
 
 // Slowing projectile
@@ -388,6 +404,22 @@ var projectileFunctions = {
         var dx = this.x - this.ox;
         var dy = this.y - this.oy;
         if (dx * dx + dy * dy >= this.actualRange * this.actualRange) {
+            this.Hit();
+            this.expired = true;
+        }
+    },
+    
+    // Updates a homing rocket projectile
+    updateHomingRocket: function() {
+        if (!this.updateHoming) this.updateHoming = projectileFunctions.UpdateHoming;
+        this.updateHoming();
+        
+        this.cos = this.velY / this.speed;
+        this.sin = -this.velX / this.speed;
+        
+        // Blow up automatically after a duration
+        this.lifespan--;
+        if (this.lifespan <= 0) {
             this.Hit();
             this.expired = true;
         }

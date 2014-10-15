@@ -12,18 +12,19 @@ function HeavyBoss(x, y) {
         300 * ScalePower(c, 1.4) * playerManager.players.length,
         3 + 0.2 * c,
         300,
-		BOSS_EXP
+		BOSS_EXP,
+        300,
+        400
     );
     
     enemy.Knockback = enemyFunctions.BossKnockback;
     enemy.Slow = enemyFunctions.BossSlow;
     
-    // Movement pattern
-    enemy.ApplyMove = EnemyMoveBasic;
-	
-	var damageScale = ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000);
+    var damageScale = ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000);
     
-    // Mines
+    // Attack pattern 0 - Orbiting mines
+    enemy.SetRange(0, 350);
+    enemy.SetMovement(0, EnemyMoveOrbit);
     enemy.AddWeapon(EnemyWeaponMines, {
         type: 'boss',
         damage: 8 * damageScale,
@@ -32,7 +33,9 @@ function HeavyBoss(x, y) {
         duration: 2700
     });
 	
-	// Gatling Guns
+    // Attack pattern 1 - Minigun/Rockets
+    enemy.SetRange(1, 300);
+    enemy.SetMovement(1, EnemyMoveBasic);
 	for (var i = 0; i < 2; i++) {
 		enemy.AddWeapon(EnemyWeaponGun, {
 			damage: 0.5 * damageScale,
@@ -42,21 +45,40 @@ function HeavyBoss(x, y) {
 			dy: 100,
 			angle: 20,
 			delay: 5 * i
-		});
+		}, 1);
 	}
-	
-	// Rockets
 	for (var i = 0; i < 2; i++) {
-		enemy.AddWeapon(EnemyWeaponGun, {
+		enemy.AddWeapon(EnemyWeaponRocket, {
 			sprite: GetImage('rocket'),
+            lists: [playerManager.getRobots()],
 			damage: 4 * damageScale,
-			range: 500,
+			range: 350,
+            radius: 100,
+            knockback: 150,
 			rate: 120,
 			dx: -46 + 92 * i,
 			dy: 18,
 			delay: 60 * i,
             speed: 15
-		});
+		}, 1);
+	}
+    
+    // Attack pattern 2 - Homing rockets
+    enemy.SetRange(2, 500);
+    enemy.SetMovement(2, EnemyMoveBasic);
+    for (var i = 0; i < 2; i++) {
+		enemy.AddWeapon(EnemyWeaponHomingRocket, {
+			sprite: GetImage('rocket'),
+			damage: 4 * damageScale,
+			range: 550,
+            radius: 100,
+            knockback: 150,
+			rate: 60,
+			dx: -46 + 92 * i,
+			dy: 18,
+			delay: 30 * i,
+            speed: 8
+		}, 2);
 	}
 	
 	return enemy;
