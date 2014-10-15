@@ -62,7 +62,9 @@ var inputFunctions = {
     
     // Checks a gamepad button for input
     checkButton: function(gamepad, buttonId, property) {
-        if (gamepad.buttons[buttonId] >= 0.1) this[property]++;
+        if (gamepad.buttons[buttonId].value >= 0.1) {
+			this[property]++;
+		}
         else this[property] = 0;
     },
     
@@ -122,11 +124,11 @@ var inputFunctions = {
         else this.valid = true;
         
         // Weapons
-        this.checkKey(gamepad, 6, 'ability');
-        this.checkKey(gamepad, 1, 'cancel');
-        this.checkKey(gamepad, 0, 'confirm');
-        this.checkKey(gamepad, 9, 'pause');
-        this.checkKey(gamepad, 7, 'shoot');
+        this.checkButton(gamepad, 6, 'ability');
+        this.checkButton(gamepad, 1, 'cancel');
+        this.checkButton(gamepad, 0, 'confirm');
+        this.checkButton(gamepad, 9, 'pause');
+        this.checkButton(gamepad, 7, 'shoot');
         
         // Movement
         this.movement.x = gamepad.axes[0];

@@ -46,10 +46,12 @@ function FireProjectile(sprite, source, x, y, velX, velY, angle, damage, range) 
 }
 
 // Reflection ability projectile
-function ReflectionProjectile(source, x, y, velX, velY, damage, target) {
-    var projectile = ProjectileBase(GetImage("abilityReflect"), source, x, y, velX, velY, 0, damage, 2500, false, true);
+function ReflectionProjectile(sprite, source, x, y, velX, velY, damage, target) {
+    var projectile = ProjectileBase(sprite, source, x, y, velX, velY, 0, damage, 2500, false, true);
+	projectile.rotSpeed = Rand(10) / 100 + 0.04;
     projectile.target = target;
     projectile.ApplyUpdate = projectileFunctions.UpdateHoming;
+	projectile.Collides = projectileFunctions.CollidesHoming;
     return projectile;
 }
 
@@ -97,7 +99,7 @@ function FistProjectile(source, x, y, velX, velY, angle, damage, range, delay, s
     projectile.speed = Distance(0, 0, velX, velY);
     projectile.delay = delay;
     projectile.fistRange = range;
-    projectile.side = side;
+    projectile.side = side.toLowerCase();
     projectile.tx = x;
     projectile.ApplyUpdate = projectileFunctions.UpdateFist;
     projectile.returning = false;
@@ -150,6 +152,11 @@ var projectileFunctions = {
     Collides: function(target) {
         return Sq(this.sprite.width * this.scale / 2 + target.sprite.width / 2) > Sq(this.x - target.x) + Sq(this.y - target.y);
     },
+	
+	// Collision detection for homing bullets
+	CollidesHoming: function(target) {
+		return this.target == target && Sq(this.sprite.width * this.scale / 2 + target.sprite.width / 2) > Sq(this.x - target.x) + Sq(this.y - target.y);
+	},
     
     // Spreads more projectiles from this one, putting the new ones into the array
     Spread: function(amount, array) {
@@ -230,11 +237,12 @@ var projectileFunctions = {
         var dot = this.velY * dx + -this.velX * dy;
         var angle;
         if (dot > 0) {
-            angle = -0.1;
+            angle = -this.rotSpeed;
         }
         else {
-            angle = 0.1;
+            angle = this.rotSpeed;
         }
+		this.rotSpeed += 0.0001;
         var c = Math.cos(angle);
         var s = Math.sin(angle);
         var tx = this.velX * c - this.velY * s;
@@ -407,7 +415,7 @@ var projectileFunctions = {
 			}
 		}
         var ex = new Explosion(this.x, this.y, this.radius / 150);
-        ex.c = 10;
+        if (this.lists.length > 1) ex.c = 10;
         gameScreen.explosions.push(ex);
 	},
     

@@ -67,13 +67,15 @@ function EnemyManager(screen) {
             else {
                 for (var p = 0; p < playerManager.players.length; p++) {
                     var player = playerManager.players[p].robot;
-                    if (player.health > 0 && BulletCollides(this.bullets[i], player) && this.bullets[i].damage > 0) {
-                        this.bullets[i].Hit(player);
-                        if (!this.bullets[i].pierce) {
-                            this.bullets.splice(i, 1);
-                            i--;
-                        }
-                    }
+                    if (player.health > 0 && BulletCollides(this.bullets[i], player)) {
+						if (this.bullets[i].damage > 0) {
+							this.bullets[i].Hit(player);
+						}
+						if (!this.bullets[i].pierce) {
+							this.bullets.splice(i, 1);
+							i--;
+						}
+					}
                 }
             }
         }
@@ -107,6 +109,25 @@ function EnemyManager(screen) {
                 if (this.enemies[i].killer) {
                     this.enemies[i].killer.enemiesKilled++;
                 }
+				
+				// Spawn experience
+				for (var e = 0; e < this.enemies[i].exp; e++) {
+					var direction = Vector(0, BULLET_SPEED);
+					direction.Rotate(Rand(360) * Math.PI / 180);
+					var robot = playerManager.players[e % playerManager.players.length].robot;
+					robot.exp++;
+					var exp = ReflectionProjectile(
+						GetImage("abilityReflect"),
+						this.enemies[i],
+						0,
+						0, 
+						direction.x, 
+						direction.y, 
+						0, 
+						robot
+					);
+					this.bullets.push(exp);
+				}
 				
                 // Bosses apply extra effects
                 if (this.bossStatus != ACTIVE_NONE) {

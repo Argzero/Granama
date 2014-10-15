@@ -62,4 +62,6 @@ function EnemyWeaponGun(data) {
     else if (data.cd > 0) {
         data.cd--;
     }
+    
+    else data.delayTimer = 0;
 }

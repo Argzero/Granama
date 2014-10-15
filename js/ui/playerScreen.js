@@ -84,7 +84,7 @@ function PlayerScreen() {
                 canvas.fillText('to join...', x, y + 30);
                 
                 // Joining
-                if (input.confirm == 1) {
+                if (input.pause == 1) {
                     this.joined[i] = true;
                 }
             }

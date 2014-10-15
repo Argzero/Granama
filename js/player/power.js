@@ -66,9 +66,9 @@ function PlayerPowerType() {
         if (this.onFire) {
             var temp = this.onFire();
             if (temp !== undefined) {
-                m = temp;
+                m2 = temp;
             }
-            if (!m) {
+            if (!m2) {
                 return;
             }
         }

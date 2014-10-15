@@ -4,7 +4,7 @@ function SkillDecimation(player) {
     player.onMove = function() {
         if (this.IsSkillCast()) {
             this.skillDuration = 420;
-            this.skillCd = 1500;
+            this.skillCd = 900;
         }
     }
     

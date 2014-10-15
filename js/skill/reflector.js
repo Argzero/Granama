@@ -14,6 +14,7 @@ function SkillReflector(player) {
             if (damager) {
                 var m = Rand(2) * 2 - 1;
                 var reflection = ReflectionProjectile(
+					GetImage("abilityReflect"),
                     this,
                     0,
                     0, 

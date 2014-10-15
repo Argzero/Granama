@@ -4,6 +4,10 @@
 // ApplyDraw: undefined,
 // ApplySprite: undefined,
 
+var LIGHT_EXP = 24;
+var HEAVY_EXP = 36;
+var MINIBOSS_EXP = 120;
+
 // Power function for scaling enemy health
 function ScalePower(c, step) {
     if (c > 4) {
@@ -22,9 +26,10 @@ function LightRangedEnemy(x, y) {
         GetImage('enemyLightRanged'), 
         x, 
         y,
-        20 * ScalePower(c, 0.8),
+        20 * ScalePower(c, 0.9),
         2.5 + 0.2 * c,
-        200
+        200,
+		LIGHT_EXP
     );
     
     // Movement pattern
@@ -51,9 +56,10 @@ function HeavyRangedEnemy(x, y) {
         GetImage('enemyHeavyRanged'), 
         x, 
         y,
-        30 * ScalePower(c, 0.8),
+        30 * ScalePower(c, 0.9),
         2 + 0.2 * c,
-        250
+        250,
+		HEAVY_EXP
     );
     
     // Movement pattern
@@ -82,7 +88,8 @@ function PaladinEnemy(x, y) {
         y,
         100 * ScalePower(c, 1.1),
         3 + 0.25 * c,
-        300
+        300,
+		MINIBOSS_EXP
     );
     
     // Movement pattern
@@ -110,9 +117,10 @@ function LightArtilleryEnemy(x, y) {
         GetImage('enemyLightArtillery'), 
         x, 
         y,
-        10 * ScalePower(c, 0.8),
+        10 * ScalePower(c, 0.9),
         2 + 0.1 * c,
-        400
+        400,
+		LIGHT_EXP
     );
     
     // Movement pattern
@@ -127,7 +135,7 @@ function LightArtilleryEnemy(x, y) {
         dx: 0,
         dy: 38
     });
-    
+	
     return enemy;
 }
 
@@ -139,9 +147,10 @@ function HeavyArtilleryEnemy(x, y) {
         GetImage('enemyHeavyArtillery'), 
         x, 
         y,
-        30 * ScalePower(c, 0.8),
+        30 * ScalePower(c, 0.9),
         1.5 + 0.1 * c,
-        400
+        400,
+		HEAVY_EXP
     );
     
     // Movement pattern
@@ -170,7 +179,8 @@ function RailerEnemy(x, y) {
         y,
         80 * ScalePower(c, 1.1),
         2 + 0.2 * c,
-        550
+        550,
+		MINIBOSS_EXP
     );
     
     // Movement pattern
@@ -178,7 +188,7 @@ function RailerEnemy(x, y) {
     
     // Rail weapon
     enemy.AddWeapon(EnemyWeaponRail, {
-        damage: 0.1 * ((c + 1) / 2) * (c + 2),
+        damage: 0.2 * ((c + 1) / 2) * (c + 2),
         rate: 60,
         range: 600,
         discharge: 0.1,
@@ -199,15 +209,16 @@ function LightMeleeEnemy(x, y) {
         GetImage('enemyLightMelee'), 
         x, 
         y,
-        35 * ScalePower(c, 0.8),
+        35 * ScalePower(c, 0.9),
         3.5 + 0.4 * c,
-        50
+        50,
+		LIGHT_EXP
     );
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveBasic;
     
-    // Gun weapon
+    // Melee weapon
     enemy.AddWeapon(EnemyWeaponMelee, {
         damage: 2 * ((c + 1) / 2) * (c + 2),
         rate: 30,
@@ -225,9 +236,10 @@ function HeavyMeleeEnemy(x, y) {
         GetImage('enemyHeavyMelee'), 
         x, 
         y,
-        45 * ScalePower(c, 0.8),
+        45 * ScalePower(c, 0.9),
         3 + 0.3 * c,
-        50
+        50,
+		HEAVY_EXP
     );
     
     // Movement pattern
@@ -251,9 +263,10 @@ function LightBomberEnemy(x, y) {
         GetImage('enemyLightBomber'), 
         x, 
         y,
-        15 * ScalePower(c, 0.8),
+        15 * ScalePower(c, 0.9),
         2.5 + 0.25 * c,
-        400
+        400,
+		LIGHT_EXP
     );
     
     // Movement pattern
@@ -278,9 +291,10 @@ function HeavyBomberEnemy(x, y) {
         GetImage('enemyHeavyBomber'), 
         x, 
         y,
-        20 * ScalePower(c, 0.8),
+        20 * ScalePower(c, 0.9),
         2.5 + 0.25 * c,
-        500
+        500,
+		HEAVY_EXP
     );
     
     // Movement pattern
@@ -307,7 +321,8 @@ function TurretEnemy(x, y) {
         y,
         120 * ScalePower(c, 1.1),
         2.5 + 0.2 * c,
-        550
+        550,
+		MINIBOSS_EXP
     );
     
     // Movement pattern
@@ -332,9 +347,10 @@ function LightOrbiterEnemy(x, y) {
         GetImage('enemyLightOrbiter'), 
         x, 
         y,
-        20 * ScalePower(c, 0.8),
+        60 * ScalePower(c, 0.9),
         4 + 0.5 * c,
-        300
+        300,
+		LIGHT_EXP
     );
     
     // Movement pattern
@@ -365,9 +381,10 @@ function HeavyOrbiterEnemy(x, y) {
         GetImage('enemyHeavyOrbiter'), 
         x, 
         y,
-        30 * ScalePower(c, 0.8),
+        80 * ScalePower(c, 0.9),
         3.75 + 0.45 * c,
-        300
+        300,
+		HEAVY_EXP
     );
     
     // Movement pattern
@@ -398,9 +415,10 @@ function HunterEnemy(x, y) {
         GetImage('enemyHunter'), 
         x, 
         y,
-        120 * ScalePower(c, 1.1),
+        300 * ScalePower(c, 1.1),
         3.5 + 0.4 * c,
-        350
+        350,
+		MINIBOSS_EXP
     );
     
     // Movement pattern
@@ -420,7 +438,7 @@ function HunterEnemy(x, y) {
 		this.tail.Draw();
 		
 		// Switch to melee when below 1/4 hp
-		if (this.health < this.maxHealth * 0.25 && this.ApplyMove != EnemyMoveBasic) {
+		if (this.health < this.maxHealth * 0.5 && this.ApplyMove != EnemyMoveBasic) {
 			this.ApplyMove = EnemyMoveBasic;
 			this.range = 50;
 			this.weapons = [];
@@ -430,6 +448,108 @@ function HunterEnemy(x, y) {
 				range: 50
 			});
 		}
+	}
+    
+    return enemy;
+}
+
+function LightBouncerEnemy(x, y) {
+
+	// Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('enemyLightBouncer'), 
+        x, 
+        y,
+        60 * ScalePower(c, 0.9),
+        5 + 0.3 * c,
+        0,
+		LIGHT_EXP
+    );
+    
+    // Movement pattern
+	var angle = Rand(360 * Math.PI / 180);
+	enemy.direction = Vector(Math.cos(angle), Math.sin(angle));
+    enemy.ApplyMove = EnemyMoveBounce;
+	enemy.Knockback = enemyFunctions.KnockbackBouncer;
+	
+	// Stats for collision
+	enemy.scale = 1;
+	enemy.damage = 4 * ((c + 1) / 2) * (c + 2);
+	enemy.distance = 150;
+	
+	// Draw the spinner
+	enemy.spinner = EnemySpinner(GetImage('enemyLightBouncerBack'), enemy, Math.PI / 15);
+	enemy.ApplyDraw = function() {
+		this.spinner.draw();
+	}
+    
+    return enemy;
+}
+
+function HeavyBouncerEnemy(x, y) {
+
+	// Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('enemyHeavyBouncer'), 
+        x, 
+        y,
+        80 * ScalePower(c, 0.9),
+        5 + 0.3 * c,
+        0,
+		HEAVY_EXP
+    );
+    
+    // Movement pattern
+	var angle = Rand(360 * Math.PI / 180);
+	enemy.direction = Vector(Math.cos(angle), Math.sin(angle));
+    enemy.ApplyMove = EnemyMoveBounce;
+	enemy.Knockback = enemyFunctions.KnockbackBouncer;
+	
+	// Stats for collision
+	enemy.scale = 1;
+	enemy.damage = 6 * ((c + 1) / 2) * (c + 2);
+	enemy.distance = 200;
+	
+	// Draw the spinner
+	enemy.spinner = EnemySpinner(GetImage('enemyHeavyBouncerBack'), enemy, Math.PI / 30);
+	enemy.ApplyDraw = function() {
+		this.spinner.draw();
+	}
+    
+    return enemy;
+}
+
+function SolarEnemy(x, y) {
+
+	// Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('enemySolar'), 
+        x, 
+        y,
+        230 * ScalePower(c, 1.1),
+        5 + 0.3 * c,
+        0,
+		MINIBOSS_EXP
+    );
+    
+    // Movement pattern
+	var angle = Rand(360 * Math.PI / 180);
+	enemy.direction = Vector(Math.cos(angle), Math.sin(angle));
+    enemy.ApplyMove = EnemyMoveBounce;
+	enemy.Knockback = enemyFunctions.KnockbackBouncer;
+	
+	// Stats for collision
+	enemy.scale = 1;
+	enemy.damage = 8 * ((c + 1) / 2) * (c + 2);
+	enemy.distance = 300;
+	
+	// Draw the spinner
+	enemy.spinner = EnemySpinner(GetImage('enemySolarBack'), enemy, Math.PI / 30, true, 0.5 * ((c + 1) / 2) * (c + 2));
+	enemy.ApplyDraw = function() {
+		this.spinner.draw();
 	}
     
     return enemy;

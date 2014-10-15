@@ -18,6 +18,7 @@ function BasePlayer(sprite, drops, gamepadIndex) {
 		shieldCd: SHIELD_RATE,
 		cos: 0,
 		sin: 1,
+		exp: 0,
 		sprite: sprite,
 		speed: PLAYER_SPEED,
 		health: PLAYER_HEALTH,
@@ -37,6 +38,7 @@ function BasePlayer(sprite, drops, gamepadIndex) {
         deaths: 0,
         enemiesKilled: 0,
 		damageAlpha: 0,
+		knockback: Vector(0, 0),
 		input: undefined,
         
 		// Damages the player using an optional damage source
@@ -77,6 +79,11 @@ function BasePlayer(sprite, drops, gamepadIndex) {
                     this.deaths++;
                 }
 			}
+		},
+		
+		// Knocks back the enemy the given distance
+		Knockback: function(x, y) {
+			this.knockback.Set(x, y);
 		},
         
         // Updates the player's max health
@@ -121,27 +128,41 @@ function BasePlayer(sprite, drops, gamepadIndex) {
 				this.skillCd--;
 			}
 			
-			// Update event
-			var speed = this.speed + this.upgrades[SPEED_ID] * SPEED_UP;
-			if (this.onMove) {
-				var result = this.onMove(speed);
-				if (result !== undefined) {
-                    speed = result;
-                }
-                if (!speed) {
-                    return true;
-                }
+			// Apply knockback
+			if (this.knockback.LengthSq() > 0) {
+				var l = this.knockback.Length();
+				if (l < KNOCKBACK_SPEED) l = KNOCKBACK_SPEED;
+				var dx = this.knockback.x * KNOCKBACK_SPEED / l;
+				var dy = this.knockback.y * KNOCKBACK_SPEED / l;
+				this.knockback.Add(-dx, -dy);
+				this.x += dx;
+				this.y += dy;
 			}
 			
-			// Update the player's angle
-			this.cos = this.input.direction.x;
-			this.sin = this.input.direction.y;
-            this.angle = Math.acos(this.sin);
-            if (this.cos > 0) this.angle = -this.angle;
+			else {
 			
-			// Movement
-            this.x += speed * this.input.movement.x;
-            this.y += speed * this.input.movement.y;
+				// Update event
+				var speed = this.speed + this.upgrades[SPEED_ID] * SPEED_UP;
+				if (this.onMove) {
+					var result = this.onMove(speed);
+					if (result !== undefined) {
+						speed = result;
+					}
+					if (!speed) {
+						return true;
+					}
+				}
+				
+				// Update the player's angle
+				this.cos = this.input.direction.x;
+				this.sin = this.input.direction.y;
+				this.angle = Math.acos(this.sin);
+				if (this.cos > 0) this.angle = -this.angle;
+				
+				// Movement
+				this.x += speed * this.input.movement.x;
+				this.y += speed * this.input.movement.y;
+			}
 			
 			// Bounding
 			this.x = clamp(this.x, gameScreen.playerMinX + this.sprite.width / 2, gameScreen.playerMaxX - this.sprite.width / 2);

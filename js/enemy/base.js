@@ -1,5 +1,5 @@
 // Base functionality for enemies
-function EnemyBase(sprite, x, y, health, speed, range) {
+function EnemyBase(sprite, x, y, health, speed, range, exp, patternMin, patternMax) {
     return {
     
         // Fields
@@ -8,6 +8,7 @@ function EnemyBase(sprite, x, y, health, speed, range) {
         angle: 0,
         cos: 0,
         sin: 1,
+		exp: exp,
         speed: speed,
         speedM: undefined,
         speedMDuration: undefined,
@@ -17,7 +18,13 @@ function EnemyBase(sprite, x, y, health, speed, range) {
         killer: undefined,
         knockback: Vector(0, 0),
         range: range,
-        weapons: [],
+		ranges: [range],
+        movements: [],
+		patterns: [[]],
+		pattern: 0,
+		patternMin: patternMin,
+		patternMax: patternMax,
+		patternTimer: 0,
         
         // Components to be set for specific enemy types
         ApplyMove: undefined,
@@ -26,6 +33,7 @@ function EnemyBase(sprite, x, y, health, speed, range) {
         
         // Functions
         AddWeapon: enemyFunctions.AddWeapon,
+		SetRange: enemyFunctions.SetRange,
         Knockback: enemyFunctions.Knockback,
         Update: enemyFunctions.Update,
         clamp: enemyFunctions.clamp,
@@ -43,6 +51,13 @@ var enemyFunctions = {
     Knockback: function(x, y) {
         this.knockback.Set(x, y);
     },
+	
+	// Knocks back the enemy the given distance
+    KnockbackBouncer: function(x, y) {
+        this.knockback.Set(x, y);
+		this.direction.Set(x, y);
+		this.direction.SetLength(1);
+    },
     
     // Knocks back the boss a lesser amount
     BossKnockback: function(x, y) {
@@ -50,16 +65,43 @@ var enemyFunctions = {
     },
     
     // Adds a weapon to the enemy
-    AddWeapon: function(method, data) {
+    AddWeapon: function(method, data, pattern) {
+		if (pattern === undefined) pattern = 0;
+		
         data.method = method.bind(this);
         data.list = gameScreen.enemyManager.bullets;
         data.cd = 0;
-        this.weapons.push(data);
+		while (this.patterns[pattern] === undefined) this.patterns.push([]);
+        this.patterns[pattern].push(data);
     },
+	
+	// Sets a range for a specific pattern
+	SetRange: function(pattern, range) {
+		this.ranges[pattern] = range;
+	},
+	
+	// Sets the movement for a specific pattern
+	SetMovement: function(pattern, movement) {
+		this.movements[pattern] = movement;
+	},
     
     // Updates the enemy
-    Update: function() {
-    
+    Update: function() 
+	{
+		// Pattern switching
+		if (this.patterns.length > 1) {
+			this.patternTimer--;
+			if (this.patternTimer == -1) {
+				this.patternTimer = Rand(this.patternMax - this.patternMin) + this.patternMin;
+			}
+			else if (this.patternTimer == 0) {
+				this.pattern = Rand(this.patterns.length);
+				this.range = this.ranges[this.pattern] || this.range;
+				this.ApplyMove = this.movements[this.pattern] || this.ApplyMove;
+				this.patterTimer = Rand(this.patternMax - this.patternMin) + this.patternMin;
+			}
+		}
+	
         // Speed multiplier countdown
         if (this.speedMDuration) {
             this.speedMDuration--;
@@ -79,8 +121,8 @@ var enemyFunctions = {
         }
         
         // Apply weapons
-        for (var i = 0; i < this.weapons.length; i++) {
-            this.weapons[i].method(this.weapons[i]);;
+        for (var i = 0; i < this.patterns[this.pattern].length; i++) {
+            this.patterns[this.pattern][i].method(this.patterns[this.pattern][i]);
         }
         
         // Apply movement

@@ -1,3 +1,5 @@
+var BOSS_EXP = 600;
+
 // Boss that uses a minigun, mines, and rockets to fight
 function HeavyBoss(x, y) {
     
@@ -7,9 +9,10 @@ function HeavyBoss(x, y) {
         GetImage('bossHeavy'), 
         x, 
         y,
-        150 * ScalePower(c, 1.5) * playerManager.players.length,
+        300 * ScalePower(c, 1.4) * playerManager.players.length,
         3 + 0.2 * c,
-        300
+        300,
+		BOSS_EXP
     );
     
     enemy.Knockback = enemyFunctions.BossKnockback;
@@ -68,9 +71,10 @@ function FireBoss(x, y) {
         GetImage('bossFire'), 
         x, 
         y,
-        120 * ScalePower(c, 1.5) * playerManager.players.length,
+        250 * ScalePower(c, 1.4) * playerManager.players.length,
         3 + 0.2 * c,
-        200
+        200,
+		BOSS_EXP
     );
 	
     enemy.Knockback = enemyFunctions.BossKnockback;
@@ -123,9 +127,10 @@ function PunchBoss(x, y) {
         GetImage('bossPunch'), 
         x, 
         y,
-        150 * ScalePower(c, 1.5) * playerManager.players.length,
+        300 * ScalePower(c, 1.4) * playerManager.players.length,
         3 + 0.2 * c,
-        300
+        300,
+		BOSS_EXP
     );
     
     enemy.Knockback = enemyFunctions.BossKnockback;

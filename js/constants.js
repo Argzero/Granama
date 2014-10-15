@@ -115,10 +115,13 @@ SPAWN_DATA = [
     15, 1, HeavyBomberEnemy,
 	20, 0, LightOrbiterEnemy,
 	10, 1, HeavyOrbiterEnemy,
+	15, 0, LightBouncerEnemy,
+	10, 1, HeavyBouncerEnemy,
     1,  3, TurretEnemy,
     1,  3, RailerEnemy,
     1,  3, PaladinEnemy,
-	1,  3, HunterEnemy
+	1,  3, HunterEnemy,
+	1,  3, SolarEnemy
 ],
 BOSS_SPAWNS = [
 	HeavyBoss,
