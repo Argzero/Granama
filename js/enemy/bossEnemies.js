@@ -96,18 +96,27 @@ function FireBoss(x, y) {
         250 * ScalePower(c, 1.4) * playerManager.players.length,
         3 + 0.2 * c,
         200,
-		BOSS_EXP
+		BOSS_EXP,
+        300,
+        400
     );
 	
     enemy.Knockback = enemyFunctions.BossKnockback;
     enemy.Slow = enemyFunctions.BossSlow;
+    
+    // Specific stuff
+    enemy.leftClawImg = GetImage('bossFireClawLeft');
+    enemy.rightClawImg = GetImage('bossFireClawRight');
+    enemy.sword = true;
+    enemy.right = true;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveBasic;
 	
 	var damageScale = ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000);
 	
-	// Fire
+    // Weapon pattern 0 - rockets and fire
+    enemy.SetRange(0, 200);
 	for (var i = 0; i < 2; i++) {
 		enemy.AddWeapon(EnemyWeaponFire, {
 			damage: 0.02 * damageScale,
@@ -117,8 +126,6 @@ function FireBoss(x, y) {
 			dy: 40
 		});
 	}
-	
-	// Rockets
 	for (var i = 0; i < 3; i++) {
 		enemy.AddWeapon(EnemyWeaponGun, {
 			sprite: GetImage('rocket'),
@@ -130,6 +137,32 @@ function FireBoss(x, y) {
 			delay: 20 * i
 		});
 	}
+    
+    // Weapon pattern 1 - claw melee
+    enemy.SetRange(1, 100);
+    enemy.AddWeapon(EnemyWeaponDoubleSword, {
+        spriteName: 'bossFireClaw',
+        range: 125,
+        rate: 60,
+        arc: Math.PI * 3 / 4,
+        radius: 125,
+        damage: damageScale,
+        knockback: 100,
+        angle: 0,
+        dx: -32,
+        dy: -27
+    }, 1);
+    
+    
+    // Drawing claws
+    enemy.ApplySprite = function() {
+        if (this.sword || !this.right) {
+            canvas.drawImage(this.leftClawImg, this.sprite.width - 28, 69);
+        }
+        if (this.sword || this.right) {
+            canvas.drawImage(this.rightClawImg, 28 - this.rightClawImg.width, 69);
+        }
+    };
 	
 	// Draw the tail
 	enemy.tail = EnemyTail(enemy, GetImage('bossTailMid'), GetImage('bossTailEnd'), 15, 5, 25, 0);

@@ -95,7 +95,7 @@ function ShieldMechanics(player) {
     this.angle = GetAngle(this.x, this.y, 0, 0);
     if (this.cd <= 0) {
         if (player.health < player.getMaxHealth * DRONE_SHIELD_RANGE) {
-            player.currentShield = player.maxHealth * SHIELD_MAX;   
+            player.shield = player.maxHealth * SHIELD_MAX;   
         }
     }
     else this.cd--;

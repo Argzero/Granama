@@ -341,15 +341,16 @@ var projectileFunctions = {
         // Swinging
         else if (this.state == 1) {
             var target = this.arc / 2 + this.initialAngle;
-            this.angle = this.source.angle + target - Math.PI * ++this.step / 36;
+            var m = this.arc > 0 ? 1 : -1;
+            this.angle = this.source.angle + target - m * Math.PI * ++this.step / 36;
             this.cos = Math.cos(this.angle);
             this.sin = Math.sin(this.angle);
-            this.start.Rotate(COS_5, -SIN_5);
+            this.start.Rotate(COS_5, -m * SIN_5);
             var offset = Vector(this.start.x, this.start.y);
             offset.Rotate(this.source.sin, - this.source.cos);
             this.x = this.source.x + offset.x;
             this.y = this.source.y + offset.y;
-            if (this.step >= this.arc * 36 / Math.PI) {
+            if (this.step >= Math.abs(this.arc * 36 / Math.PI)) {
                 this.step = 0;
                 this.state = 2;
             }
