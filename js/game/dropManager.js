@@ -10,8 +10,16 @@ function DropManager(screen) {
     
     // Updates the drops
     this.Update = function() {
+        var p = 0;
         for (var i = 0; i < this.drops.length; i++) {
 			var player = this.drops[i].player;
+            if (!player) {
+                player = playerManager.players[p++].robot;
+                if (p % playerManager.players.length == 0) {
+                    p = 0;
+                }
+                else i--;
+            }
             if (BulletCollides(this.drops[i], player)) {
                 
                 // Health pack special case
@@ -81,7 +89,7 @@ function DropManager(screen) {
 			
 			// Health packs
 			if (Rand(100) < 10) {
-				this.drops.push(new Drop(x + offset.x, y + offset.y, HEAL, HEAL_ID, player));
+				this.drops.push(new Drop(x + offset.x, y + offset.y, HEAL, HEAL_ID));
 				count++;
 				if (count >= ringCount) {
 					count = 0;

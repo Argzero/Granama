@@ -36,6 +36,7 @@ function EnemyBase(sprite, x, y, health, speed, range, exp, patternMin, patternM
 		SetRange: enemyFunctions.SetRange,
         SetMovement: enemyFunctions.SetMovement,
         Knockback: enemyFunctions.Knockback,
+        SwitchPattern: enemyFunctions.SwitchPattern,
         Update: enemyFunctions.Update,
         clamp: enemyFunctions.clamp,
         Draw: enemyFunctions.Draw,
@@ -55,7 +56,6 @@ var enemyFunctions = {
 	
 	// Knocks back the enemy the given distance
     KnockbackBouncer: function(x, y) {
-        this.knockback.Set(x, y);
 		this.direction.Set(x, y);
 		this.direction.SetLength(1);
     },
@@ -86,6 +86,14 @@ var enemyFunctions = {
 		this.movements[pattern] = movement;
 	},
     
+    // Switches attack patterns
+    SwitchPattern: function() {
+        this.pattern = Rand(this.patterns.length);
+        this.range = this.ranges[this.pattern] || this.range;
+        this.ApplyMove = this.movements[this.pattern] || this.ApplyMove;
+        this.patternTimer = Rand(this.patternMax - this.patternMin) + this.patternMin;
+    },
+    
     // Updates the enemy
     Update: function() 
 	{
@@ -93,11 +101,7 @@ var enemyFunctions = {
 		if (this.patterns.length > 1) {
 			this.patternTimer--;
 			if (this.patternTimer <= 0) {
-				this.pattern = Rand(this.patterns.length);
-				this.range = this.ranges[this.pattern] || this.range;
-				this.ApplyMove = this.movements[this.pattern] || this.ApplyMove;
-				this.patternTimer = Rand(this.patternMax - this.patternMin) + this.patternMin;
-                console.log("Changed pattern to: " + this.pattern);
+                this.SwitchPattern();
 			}
 		}
 	
@@ -202,6 +206,14 @@ var enemyFunctions = {
         var dx = player.x - this.x;
         var dy = player.y - this.y;
         return player.health > 0 && dx * dx + dy * dy < Sq(range + this.speed) && this.cos * dx + this.sin * dy >= 0;
+    },
+    
+    // Dragon ignores direction
+    DragonRange: function(range) {
+        var player = playerManager.getClosest(this.x, this.y);
+        var dx = player.x - this.x;
+        var dy = player.y - this.y;
+        return player.health > 0 && dx * dx + dy * dy < Sq(range + this.speed);
     },
 	
 	// Damages the enemy

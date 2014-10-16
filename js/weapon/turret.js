@@ -49,7 +49,7 @@ function Turret(x, y, damage, health) {
     
     // Draws the turret
     // canvas - context of the canvas to draw to
-    this.Draw = function(canvas) {
+    this.Draw = function() {
         canvas.translate(this.x, this.y);
         
         // Health bar
@@ -61,7 +61,12 @@ function Turret(x, y, damage, health) {
             canvas.fillRect(greenWidth - this.sprite.width / 2, -10 - this.sprite.height / 2, this.sprite.width - greenWidth, 5);
         }
         
-        canvas.drawImage(this.base, -this.base.width / 2, -this.base.height / 2);
+        // Base of the turret
+        if (this.base) {
+            canvas.drawImage(this.base, -this.base.width / 2, -this.base.height / 2);
+        }
+        
+        // Turret gun
         canvas.rotate(this.angle);
         canvas.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
         canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH - gameScreen.scrollX, -gameScreen.scrollY);

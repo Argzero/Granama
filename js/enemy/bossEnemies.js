@@ -198,3 +198,81 @@ function PunchBoss(x, y) {
     
     return enemy;
 }
+
+function DragonBoss(x, y) {
+
+    // Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('bossDragonHead'), 
+        x, 
+        y,
+        500 * ScalePower(c, 1.4) * playerManager.players.length,
+        4 + 0.3 * c,
+        300,
+		BOSS_EXP,
+        1200,
+        1500
+    );
+    
+    enemy.Knockback = undefined;
+    enemy.Slow = undefined;
+    enemy.IsInRange = enemyFunctions.DragonRange;
+    
+    // Specific values
+    enemy.leftWing = GetImage('bossDragonLeftWing');
+    enemy.rightWing = GetImage('bossDragonRightWing');
+    
+    // Movement pattern
+    enemy.ApplyMove = EnemyMoveDragon;
+    
+    var damageScale = ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000);
+    
+    // Attack pattern 0 - Lasers and fire
+    enemy.SetMovement(0, EnemyMoveDragon);
+    for (var i = 0; i < 2; i++) {
+		enemy.AddWeapon(EnemyWeaponGun, {
+			sprite: GetImage('bossLaser'),
+			damage: 0.1 * damageScale,
+			range: 1000,
+			rate: 30,
+			dx: -133 + 266 * i,
+			dy: -23,
+            speed: 15,
+            pierce: true
+		});
+	}
+    enemy.AddWeapon(EnemyWeaponFire, {
+        damage: 0.05 * damageScale,
+        range: 300,
+        rate: 3,
+        dx: 0,
+        dy: 42
+    });
+    
+    // Attack pattern 1 - Spawning minibosses
+    enemy.SetMovement(1, EnemyMoveDragonCenter);
+    enemy.AddWeapon(EnemyWeaponSpawn, {
+        enemies: DRAGON_SPAWNS,
+        max: 5,
+        rate: 120,
+        delay: 300,
+        dx: 0,
+        dy: -100
+    });
+    
+    // Dragon's tail
+	enemy.tail = EnemyTail(enemy, GetImage('bossDragonSegment'), GetImage('bossDragonEnd'), 30, 5, 40, 10);
+    enemy.tail.SetTurrets(GetImage('bossDragonTurret'), GetImage('bullet'), damageScale, 60, false, 0, 48);
+	enemy.ApplyDraw = function() {
+		this.tail.Draw();
+	}
+    
+    // Drawing wings
+    enemy.ApplySprite = function() {
+        canvas.drawImage(this.leftWing, this.sprite.width, -100);
+        canvas.drawImage(this.rightWing, -this.rightWing.width, -100);
+    }
+
+    return enemy;
+}

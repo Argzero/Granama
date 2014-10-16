@@ -126,7 +126,15 @@ SPAWN_DATA = [
 BOSS_SPAWNS = [
 	HeavyBoss,
 	FireBoss,
-    PunchBoss
+    PunchBoss,
+    DragonBoss
+],
+DRAGON_SPAWNS = [
+    1, 0, TurretEnemy,
+    1, 0, RailerEnemy,
+    1, 0, PaladinEnemy,
+    1, 0, HunterEnemy,
+    1, 0, SolarEnemy
 ],
 
 // Drop names (Do not modify these values)
