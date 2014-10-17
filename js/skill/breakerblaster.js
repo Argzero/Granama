@@ -14,11 +14,11 @@ function SkillBreakerblaster(player) {
                 this,
                 0,
                 54, 
-                this.cos * BULLET_SPEED, 
-                this.sin * BULLET_SPEED, 
+                this.cos * 10, 
+                this.sin * 10, 
                 this.angle, 
-                LASER_DAMAGE * 2 * this.GetDamageMultiplier(), 
-                LASER_RANGE * 2,
+                0.4 * this.GetDamageMultiplier(), 
+                999,
                 true,
                 true
             );

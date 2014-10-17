@@ -7,28 +7,6 @@ function GameScreen(bossRush) {
     this.damageOverlay = GetImage("damage");
     this.pauseOverlay = GetImage("pause");
     this.explosions = new Array();
-    this.explosion = new Array(
-        GetImage("EX1"), 
-        GetImage("EX2"),
-        GetImage("EX3"),
-        GetImage("EX4"),
-        GetImage("EX5"),
-        GetImage("EX6"),
-        GetImage("EX7"),
-        GetImage("EX8"),
-        GetImage("EX9"),
-        GetImage("EX10"),
-        GetImage("PEX1"), 
-        GetImage("PEX2"),
-        GetImage("PEX3"),
-        GetImage("PEX4"),
-        GetImage("PEX5"),
-        GetImage("PEX6"),
-        GetImage("PEX7"),
-        GetImage("PEX8"),
-        GetImage("PEX9"),
-        GetImage("PEX10")
-    );
     
     this.damageAlpha;
     this.paused = undefined;
@@ -55,17 +33,17 @@ function GameScreen(bossRush) {
         if (!this.paused) {
             this.enemyManager.UpdateEnemies();
         
-            this.UpdateBullets();
-            this.dropManager.Update();
-            
-            this.ApplyScrolling();
-            
-            if (bossRush) {
+			if (bossRush) {
                 this.enemyManager.CheckBosses();
             }
             else {
                 this.enemyManager.CheckSpawns();
             }
+		
+            this.UpdateBullets();
+            this.dropManager.Update();
+            
+            this.ApplyScrolling();
         }
         
         // Check for losing
@@ -141,7 +119,7 @@ function GameScreen(bossRush) {
         canvas.setTransform(1, 0, 0, 1, 0, 0);
         
         // Pause overlay
-        if (this.paused) {
+        if (this.paused && this.paused !== true) {
             canvas.drawImage(this.pauseOverlay, SIDEBAR_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
         }
         
@@ -150,9 +128,11 @@ function GameScreen(bossRush) {
         if (bossRush) {
             this.ui.DrawDroneInfo();
         }
-        else {
-            //this.ui.DrawSkillInfo();
-        }
+		
+		// Draw the upgrade screen if applicable
+		if (this.paused == true) {
+			this.ui.DrawUpgradeUI();
+		}
         
         // Draw the cursor
         canvas.setTransform(1, 0, 0, 1, 0, 0);

@@ -12,13 +12,30 @@ function DropManager(screen) {
     this.Update = function() {
         var p = 0;
         for (var i = 0; i < this.drops.length; i++) {
+			for (var p = 0; p < playerManager.players.length; p++) {
+				var player = playerManager.players[p].robot;
+				if (BulletCollides(this.drops[i], player)) {
+				
+					// Heal the player
+					player.health += HEAL_PERCENT * player.maxHealth / 100;
+                    if (player.health > player.maxHealth) {
+                        player.health = player.maxHealth;
+                    }
+
+					// Remove the drop
+					this.drops.splice(i, 1);
+                
+					// Since the drop is removed, stay on the same index
+					i--;
+				}
+			}
+			/*
 			var player = this.drops[i].player;
             if (!player) {
                 player = playerManager.players[p++].robot;
                 if (p % playerManager.players.length == 0) {
                     p = 0;
                 }
-                else i--;
             }
             if (BulletCollides(this.drops[i], player)) {
                 
@@ -51,6 +68,8 @@ function DropManager(screen) {
                 // Since the drop is removed, stay on the same index
                 i--;
             }
+			else if (!player && p != 0) i--;
+			*/
         }
     };
     
@@ -61,6 +80,7 @@ function DropManager(screen) {
 		var ringCount = 1;
 		var radius = 0;
 		for (var j = 0; j < num; j++) {
+			/*
 			for (var i = 0; i < playerManager.players.length; i++) {
 				var rand = Rand(100);
 				var total = 0;
@@ -86,7 +106,7 @@ function DropManager(screen) {
 					}
 				}
 			}
-			
+			*/
 			// Health packs
 			if (Rand(100) < 10) {
 				this.drops.push(new Drop(x + offset.x, y + offset.y, HEAL, HEAL_ID));

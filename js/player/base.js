@@ -1,4 +1,4 @@
-function BasePlayer(sprite, drops, gamepadIndex) {
+function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 	return {
 	
 		// Events
@@ -10,7 +10,6 @@ function BasePlayer(sprite, drops, gamepadIndex) {
 		// Fields
 		x: GAME_WIDTH / 2,
 		y: GAME_HEIGHT / 2,
-		drops: drops,
         skillCd: 0,
         skillDuration: 0,
 		angle: 0,
@@ -19,10 +18,17 @@ function BasePlayer(sprite, drops, gamepadIndex) {
 		cos: 0,
 		sin: 1,
 		exp: 0,
+		level: 1,
+		points: 0,
 		sprite: sprite,
 		speed: PLAYER_SPEED,
 		health: PLAYER_HEALTH,
 		maxHealth: PLAYER_HEALTH,
+		healthScale: healthScale || 1,
+		damageScale: damageScale || 0.1,
+		shieldScale: shieldScale || 1,
+		speedScale: speedScale || 1,
+		damage: 1,
 		bullets: [],
         drawObjects: [{ sprite: sprite, xOffset: -sprite.width / 2, yOffset: -sprite.height / 2 }],
 		upgrades: [0, 0, 0, 0, 0, 0, 0, 0],
@@ -38,8 +44,24 @@ function BasePlayer(sprite, drops, gamepadIndex) {
         deaths: 0,
         enemiesKilled: 0,
 		damageAlpha: 0,
+		levelFrame: -1,
 		knockback: Vector(0, 0),
 		input: undefined,
+		
+		// Gives the player experience and checks for level ups
+		GiveExp: function(amount) {
+			this.exp += amount;
+			while (this.exp >= this.level * 150) {
+				console.log("Level Up! " + this.level + " -> " + (this.level + 1));
+				this.exp -= this.level * 150;
+				this.level++;
+				this.maxHealth += this.healthScale * this.level;
+				this.health += this.healthScale * this.level;
+				this.damage += this.damageScale * this.level;
+				this.points += Math.floor((this.level + 3) / 5);
+				this.levelFrame = 0;
+			}
+		},
         
 		// Damages the player using an optional damage source
 		Damage: function(amount, damager) {
@@ -86,33 +108,23 @@ function BasePlayer(sprite, drops, gamepadIndex) {
 			this.knockback.Set(x, y);
 		},
         
-        // Updates the player's max health
-        UpdateHealth: function() {
-            var maxBonus = PLAYER_HEALTH + this.upgrades[HEALTH_ID] * HEALTH_UP - this.maxHealth;
-            this.maxHealth += maxBonus;
-            this.health += maxBonus;
-        },
-        
         // Retrieves the damage multiplier for the player
         GetDamageMultiplier: function() {
-            return 1 + this.upgrades[DAMAGE_ID] * DAMAGE_UP;
+            return this.damage;
         },
 		
 		// Updates the player
 		UpdateBase: function() {
         
 			this.UpdatePause();
-            this.UpdateHealth();
 			
 			// Shield regeneration
-			if (this.upgrades[SHIELD_ID] > 0) {
-				this.shieldCd--;
-				if (this.shieldCd <= 0) {
-					this.shieldCd += SHIELD_RATE - this.upgrades[SHIELD_ID] * SHIELD_SCALE;
-					this.shield += this.maxHealth * SHIELD_GAIN;
-					if (this.shield > this.maxHealth * SHIELD_MAX) {
-						this.shield = this.maxHealth * SHIELD_MAX;
-					}
+			this.shieldCd--;
+			if (this.shieldCd <= 0) {
+				this.shieldCd += 60 / (this.shieldScale * (this.upgrades[SHIELD_ID] + 1) * 1 / 10);
+				this.shield += this.maxHealth * SHIELD_GAIN;
+				if (this.shield > this.maxHealth * SHIELD_MAX) {
+					this.shield = this.maxHealth * SHIELD_MAX;
 				}
 			}
 			
@@ -142,7 +154,7 @@ function BasePlayer(sprite, drops, gamepadIndex) {
 			else {
 			
 				// Update event
-				var speed = this.speed + this.upgrades[SPEED_ID] * SPEED_UP;
+				var speed = this.speed + this.speedScale * this.upgrades[SPEED_ID] * 0.2;
 				if (this.onMove) {
 					var result = this.onMove(speed);
 					if (result !== undefined) {
@@ -231,6 +243,32 @@ function BasePlayer(sprite, drops, gamepadIndex) {
 		// Draws the player and its bullets
 		Draw: function(canvas) {
         
+			// Draw level up effect
+			if (this.levelFrame >= 0) {
+				var circleFrame = this.levelFrame % 15;
+				canvas.globalAlpha = 1 - 0.06 * circleFrame;
+				canvas.fillStyle = '#6ff';
+				canvas.beginPath();
+				canvas.arc(this.x, this.y, circleFrame * 5, 0, Math.PI * 2);
+				canvas.fill();
+				
+				var img = GetImage('LevelUpWords');
+				canvas.translate(this.x, this.y);
+				angle = 0;
+				if (this.levelFrame < 30) angle = Math.PI * ((30 - this.levelFrame) / 30);
+				canvas.rotate(angle);
+				canvas.globalAlpha = 1;
+				if (this.levelFrame > 150) canvas.globalAlpha = 1 - (this.levelFrame - 150) / 60;
+				canvas.drawImage(img, -img.width / 2, -120);
+				canvas.globalAlpha = 1;
+				ResetTransform(canvas);
+				
+				this.levelFrame++;
+				if (this.levelFrame >= 210) {
+					this.levelFrame = -1;
+				}
+			}
+		
             // Semi-transparent when dead
             if (this.health <= 0) {
                 canvas.globalAlpha = 0.5;
@@ -273,7 +311,7 @@ function BasePlayer(sprite, drops, gamepadIndex) {
 			for (i = 0; i < this.bullets.length; i++) {
 				this.bullets[i].Draw(canvas);
 			}
-            
+			
             // Draw HUD if alive
             if (this.health > 0) {
             
@@ -291,7 +329,7 @@ function BasePlayer(sprite, drops, gamepadIndex) {
                 canvas.arc(this.x, this.y, 75, 0, shieldPercent * Math.PI * 9 / 10);
                 canvas.strokeStyle = '#00f';
                 canvas.stroke();
-                
+				
                 // Draw skill icon
                 if (this.ability) {
                     if (this.skillCd > 0) {

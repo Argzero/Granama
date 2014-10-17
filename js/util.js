@@ -129,7 +129,7 @@ function OffScreen(x, y, padding) {
 // bullet - bullet to check with
 //  robot - robot to check against
 function BulletCollides(bullet, robot) {
-    if (bullet.sprite === undefined || robot.sprite === undefined) {
+    if (!bullet || bullet.sprite === undefined || !robot || robot.sprite === undefined) {
         console.log('huh?');
     }
     return Sq(bullet.sprite.width * bullet.scale / 2 + robot.sprite.width / 2) > Sq(bullet.x - robot.x) + Sq(bullet.y - robot.y);

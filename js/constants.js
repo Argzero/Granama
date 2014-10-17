@@ -1,5 +1,28 @@
 var
 
+EXPLOSION_IMGS = new Array(
+	GetImage("EX1"), 
+	GetImage("EX2"),
+	GetImage("EX3"),
+	GetImage("EX4"),
+	GetImage("EX5"),
+	GetImage("EX6"),
+	GetImage("EX7"),
+	GetImage("EX8"),
+	GetImage("EX9"),
+	GetImage("EX10"),
+	GetImage("PEX1"), 
+	GetImage("PEX2"),
+	GetImage("PEX3"),
+	GetImage("PEX4"),
+	GetImage("PEX5"),
+	GetImage("PEX6"),
+	GetImage("PEX7"),
+	GetImage("PEX8"),
+	GetImage("PEX9"),
+	GetImage("PEX10")
+),
+
 // Sizes
 WINDOW_WIDTH = 800,
 WINDOW_HEIGHT = 800,
@@ -36,6 +59,8 @@ PLAYER_DATA = [
 		player: PlayerDefenseType,
 		preview: 'pDefense',
 		name: 'Guardian',
+		ups: ['MinigunAttackSpeed', 'BlastRadius', 'Knockback', 'ShieldRecharge', 'MovementSpeed'],
+		icons: ['Minigun', 'Explosion', 'Knockback', 'Shield', 'Speed'],
         color: '#d0d',
 		weapons: [ 'Rocket Launcher', 'Minigun' ],
 		skills: [
@@ -48,6 +73,8 @@ PLAYER_DATA = [
 		player: PlayerSpeedType,
 		preview: 'pSpeed',
 		name: 'Blitz',
+		ups: ['CooldownReduction', 'ShotgunProjectiles', 'SlowingDuration', 'ShieldRecharge', 'MovementSpeed'],
+		icons: ['Cooldown', 'Shotgun', 'Slow', 'Shield', 'Speed'],
         color: '#06f',
 		weapons: [ 'Static Gun', 'Shotgun' ],
 		skills: [
@@ -60,6 +87,8 @@ PLAYER_DATA = [
 		player: PlayerPowerType,
 		preview: 'pPower',
 		name: 'Slayer',
+		ups: ['AttackSpeed', 'LaserSpread', 'FlamethrowerRange', 'ShieldRecharge', 'MovementSpeed'],
+		icons: ['Laser', 'Spread', 'Flamethrower', 'Shield', 'Speed'],
         color: '#0f0',
 		weapons: [ 'Laser Gun', 'Flamethrower' ],
 		skills: [
@@ -72,6 +101,8 @@ PLAYER_DATA = [
 		player: PlayerKnightType,
 		preview: 'pKnight',
 		name: 'Knight',
+		ups: ['ArrowVolleyCount', 'SwordSwingArc', 'SwordLifeSteal', 'ShieldRecharge', 'MovementSpeed'],
+		icons: ['Arrow', 'Slash', 'Lifesteal', 'Shield', 'Speed'],
         color: '#fcf',
 		weapons: [ 'Quiver Gun', 'Sword' ],
 		skills: [
@@ -130,11 +161,14 @@ BOSS_SPAWNS = [
     DragonBoss
 ],
 DRAGON_SPAWNS = [
-    1, 0, TurretEnemy,
-    1, 0, RailerEnemy,
-    1, 0, PaladinEnemy,
-    1, 0, HunterEnemy,
+    1, 0, HunterEnemy
+],
+HEAVY_SPAWNS = [
     1, 0, SolarEnemy
+],
+HEAVY_EASY_SPAWNS = [
+	1, 0, LightBomberEnemy,
+    1, 0, HeavyBomberEnemy
 ],
 
 // Drop names (Do not modify these values)

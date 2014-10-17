@@ -59,6 +59,11 @@ var enemyFunctions = {
 		this.direction.Set(x, y);
 		this.direction.SetLength(1);
     },
+	
+	// Knocks back minibosses a lesser amount
+	MinibossKnockback: function(x, y) {
+		this.knockback.Set(x / 3, y / 3);
+	},
     
     // Knocks back the boss a lesser amount
     BossKnockback: function(x, y) {

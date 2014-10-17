@@ -1,15 +1,10 @@
 function PlayerSpeedType() {
     var p = BasePlayer(
         GetImage('pSpeedBody'),
-        [ // Drop Chance | Drop type | Max | Backup Drop
-            6,             COOLDOWN,   50,   5,
-            6,             SHOTGUN,    50,   5,
-            6,             SLOW,       50,   5,
-            6,             SHIELD,     50,   6,
-            15,            SPEED,      100,  6,
-            10,            DAMAGE,     -1,   5,
-            10,            HEALTH,     -1,   6
-        ]
+		8,
+		0.1,
+		1,
+		1.5
     );
     
     // Sprites
@@ -21,8 +16,8 @@ function PlayerSpeedType() {
     p.drawObjects.push({
         sprite: GetImage('pSpeedShield'),
         xOffset: -4,
-        yOffset: -11,
-        condition: function() { return this.upgrades[SHIELD_ID] > 0; }.bind(p)
+        yOffset: -11
+        //condition: function() { return this.upgrades[SHIELD_ID] > 0; }.bind(p)
     });
     p.drawObjects.push({
         sprite: GetImage('pSpeedShotgun'),
@@ -60,13 +55,13 @@ function PlayerSpeedType() {
         this.UpdateBase();
         
         // Cooldown reduction
-        this.cdm = 1 - 0.01 * this.upgrades[COOLDOWN_ID];
+        this.cdm = 1 - 0.05 * this.upgrades[COOLDOWN_ID];
         
         // Damage multiplier
 		var m = this.GetDamageMultiplier();
         
         // Shotgun
-        var num = 15 + this.upgrades[SHOTGUN_ID];
+        var num = 15 + 5 * this.upgrades[SHOTGUN_ID];
         var bullets = Math.ceil(num / 5);
         this.shotgunData.damage = 2 * m;
         this.shotgunData.duration = Math.floor(num / bullets);
@@ -76,7 +71,7 @@ function PlayerSpeedType() {
         
         // Slow gun
         this.slowData.damage = 5 * m;
-        this.slowData.duration = 300 + this.upgrades[SLOW_ID] * 10;
+        this.slowData.duration = 300 + this.upgrades[SLOW_ID] * 50;
         this.slowData.rate = 40 * this.rm;
         this.FireSlow(this.slowData);
     }

@@ -1,15 +1,8 @@
 function PlayerPowerType() {
     var p = BasePlayer(
         GetImage('pPowerBody'),
-        [ // Drop Chance | Drop type | Max | Backup Drop
-            6,           LASER,        50,   5,
-            6,           SPREAD_SHOT,  50,   5,
-            6,           FLAMETHROWER, 50,   5,
-            6,           SHIELD,       50,   6,
-            6,           SPEED,        50,   6,
-            30,          DAMAGE,       -1,   5,
-            10,          HEALTH,       -1,   6
-        ]
+		6,
+		0.25
     );
     
     // Sprites
@@ -28,8 +21,8 @@ function PlayerPowerType() {
     p.drawObjects.push({
         sprite: GetImage('pPowerShield'),
         xOffset: -11,
-        yOffset: -20,
-        condition: function() { return this.upgrades[SHIELD_ID] > 0; }.bind(p)
+        yOffset: -20
+        //condition: function() { return this.upgrades[SHIELD_ID] > 0; }.bind(p)
     });
     p.drawObjects.push({
         sprite: GetImage('pPowerFlame'),
@@ -77,14 +70,14 @@ function PlayerPowerType() {
 		var fireUps = this.upgrades[FLAME_ID];
         this.fireData.sprite = m2 > 1 ? GetImage('abilityFire') : GetImage('fire');
         this.fireData.damage = FIRE_DAMAGE * m * m2;
-        this.fireData.range = fireUps * FLAME_UP + FIRE_RANGE;
+        this.fireData.range = fireUps * 20 + 100;
         this.ShootFire(this.fireData);
         
         // Lasers
         this.laserData.sprite = m2 > 1 ? GetImage('abilityLaser') : GetImage('laser');
         this.laserData.damage = 0.4 * m * m2;
-        this.laserData.rate = 60 / (LASER_APS + this.upgrades[LASER_ID] * LASER_UP);
-        this.laserData.spread = this.upgrades[SPREAD_ID] / 10;
+        this.laserData.rate = 60 / (5 + this.upgrades[LASER_ID] * 2.5);
+        this.laserData.spread = this.upgrades[SPREAD_ID] / 2;
         this.FireLasers(this.laserData);
     };
     

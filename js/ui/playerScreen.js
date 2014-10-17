@@ -155,6 +155,8 @@ function PlayerScreen() {
                         var skill = data.skills[this.abilityId[i]];
                         robot.ability = skill.name;
                         robot.input = input;
+						robot.ups = data.ups;
+						robot.icons = data.icons;
                         skill.callback(robot);
                         playerManager.players[i].robot = robot;
                         this.ready[i] = true;

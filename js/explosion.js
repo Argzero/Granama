@@ -9,7 +9,7 @@ function Explosion(x, y, size) {
     // Draws the explosion
     this.Draw = Draw;
     function Draw(canvas) {
-        var img = gameScreen.explosion[Math.floor(this.c + this.frame)];
+        var img = EXPLOSION_IMGS[Math.floor(this.c + this.frame)];
         canvas.drawImage(img, this.x - img.width * this.size / 2, this.y - img.height * this.size / 2, this.size * img.width, this.size * img.height);
         this.frame += 0.4;
     }

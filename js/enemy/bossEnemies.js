@@ -22,7 +22,7 @@ function HeavyBoss(x, y) {
     
     var damageScale = ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000);
     
-    // Attack pattern 0 - Orbiting mines
+    // Attack pattern 0 - Orbiting mines/spawning
     enemy.SetRange(0, 350);
     enemy.SetMovement(0, EnemyMoveOrbit);
     enemy.AddWeapon(EnemyWeaponMines, {
@@ -32,6 +32,14 @@ function HeavyBoss(x, y) {
         range: 9999,
         duration: 2700
     });
+	enemy.AddWeapon(EnemyWeaponSpawn, {
+		enemies: c < 4 ? HEAVY_EASY_SPAWNS : HEAVY_SPAWNS,
+        max: 10,
+        rate: 120,
+        delay: 120,
+        dx: 0,
+        dy: 0
+	});
 	
     // Attack pattern 1 - Minigun/Rockets
     enemy.SetRange(1, 300);
@@ -293,6 +301,29 @@ function DragonBoss(x, y) {
         dx: 0,
         dy: -100
     });
+	
+	// Attack pattern 2 - Homing missiles
+	enemy.SetMovement(0, EnemyMoveDragon);
+	enemy.AddWeapon(EnemyWeaponFire, {
+        damage: 0.05 * damageScale,
+        range: 300,
+        rate: 3,
+        dx: 0,
+        dy: 42
+    }, 2);
+	for (var i = 0; i < 2; i++) {
+		enemy.AddWeapon(EnemyWeaponHomingRocket, {
+			sprite: GetImage('rocket'),
+			damage: 5 * damageScale,
+			range: 600,
+            radius: 100,
+            knockback: 150,
+			rate: 90,
+			dx: -223 + 446 * i,
+			dy: -33,
+            speed: 8
+		}, 2);
+	}
     
     // Dragon's tail
 	enemy.tail = EnemyTail(enemy, GetImage('bossDragonSegment'), GetImage('bossDragonEnd'), 30, 5, 40, 10);

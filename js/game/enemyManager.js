@@ -5,6 +5,7 @@ function EnemyManager(screen) {
     this.bossScore = Math.floor(BOSS_SPAWN_BASE * (0.6 + 0.4 * playerManager.players.length));
     this.bossIncrement = Math.floor(BOSS_SPAWN_BASE * (0.6 + 0.4 * playerManager.players.length));
     this.bossCount = 0;
+	this.timer = 0;
     
     // Experience data
     this.expData = [
@@ -43,6 +44,29 @@ function EnemyManager(screen) {
         for (var i = 0; i < this.bullets.length; i++) {
             this.bullets[i].Draw(canvas);
         }
+		
+		// Enemy indicators if applicable
+		if (screen.score >= this.bossScore - 10) {
+			canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH, 0);
+			var pointer = GetImage('enemyPointer');
+			var halfX = WINDOW_WIDTH / 2;
+			var halfY = WINDOW_HEIGHT / 2;
+			var midX = screen.scrollX + halfX;
+			var midY = screen.scrollY + halfY;
+			for (var i = 0; i < this.enemies.length; i++) {
+				var e = this.enemies[i];
+				if (OffScreen(e.x, e.y, e.sprite.width / 2)) {
+					var d = Vector(e.x - midX, e.y - midY);
+					var xs = Math.abs(halfX / d.x);
+					var ys = Math.abs(halfY / d.y);
+					var s = xs < ys ? xs : ys;
+					d.x *= s;
+					d.y *= s;
+					canvas.drawImage(pointer, halfX + d.x - pointer.width / 2, halfY + d.y - pointer.height / 2);
+				}
+			}
+			ResetTransform(canvas);
+		}
     };
     
     // Updates the enemies in the game
@@ -120,27 +144,28 @@ function EnemyManager(screen) {
 				// Spawn experience
                 if (this.enemies[i].exp >= 300 || this.bossStatus == ACTIVE_NONE) { 
                     var num = this.enemies[i].exp;
-                    var player = 0;
                     for (var e = 0; e < this.expData.length; e++) {
                         var data = this.expData[e];
                         while (data.value * playerManager.players.length <= num) {
-                            num -= data.value;
-                            var direction = Vector(0, BULLET_SPEED);
-                            direction.Rotate(Rand(360) * Math.PI / 180);
-                            var robot = playerManager.players[player % playerManager.players.length].robot;
-                            player++;
-                            robot.exp += data.value;
-                            var exp = ReflectionProjectile(
-                                data.sprite,
-                                this.enemies[i],
-                                0,
-                                0, 
-                                direction.x, 
-                                direction.y, 
-                                0, 
-                                robot
-                            );
-                            this.bullets.push(exp);
+							for (var player = 0; player < playerManager.players.length; player++) {
+								num -= data.value;
+								var direction = Vector(0, BULLET_SPEED);
+								direction.Rotate(Rand(360) * Math.PI / 180);
+								var robot = playerManager.players[player % playerManager.players.length].robot;
+								var exp = ReflectionProjectile(
+									data.sprite,
+									this.enemies[i],
+									0,
+									0, 
+									direction.x, 
+									direction.y, 
+									1, 
+									robot
+								);
+								exp.exp = data.value;
+								exp.Hit = projectileFunctions.HitExp;
+								this.bullets.push(exp);
+							}
                         }
                     }
                 }
@@ -150,9 +175,6 @@ function EnemyManager(screen) {
 				
                 // Boss effects
                 if (this.enemies[i].exp >= 300) {
-                
-                    // Clear boss status
-                    this.bossStatus = ACTIVE_NONE;
                 
                     // More drops for bosses
 					screen.dropManager.Drop(this.enemies[i].x, this.enemies[i].y, BOSS_DROPS);
@@ -168,15 +190,14 @@ function EnemyManager(screen) {
                     this.bossIncrement += BOSS_SPAWN_SCALE;
                     this.bossScore += this.bossIncrement;        
                     
+					// Reset the timer for upgrade transitions
+					this.timer = 0;
+					
                     screen.score++;
                 }
 				
 				// Normal enemy effects
 				else {
-                    
-                    // Remove the enemy
-                    this.enemies.splice(i, 1);
-                    i--;
                     
                     // Increment the score if not fighting a boss
                     if (this.bossStatus == ACTIVE_NONE) {
@@ -185,6 +206,10 @@ function EnemyManager(screen) {
                         // Drop one item
                         screen.dropManager.Drop(this.enemies[i].x, this.enemies[i].y, 1);
                     }
+					
+					// Remove the enemy
+                    this.enemies.splice(i, 1);
+                    i--;
 				}
             }
         }
@@ -192,6 +217,19 @@ function EnemyManager(screen) {
     
     // Checks for whether or not an enemy should spawn
     this.CheckSpawns = function() {
+		
+		// Transition to upgrade screen
+		if (this.bossStatus == ACTIVE_BOSS) {
+			if (this.enemies.length == 0) {	
+				this.timer++;
+				if (this.timer >= 600) {	
+					screen.ui.SetupUpgradeUI();
+					this.bossStatus = ACTIVE_NONE;
+				}
+			}
+			return;
+		}
+		
         var x, y;
         
         // Boss spawning

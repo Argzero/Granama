@@ -232,6 +232,13 @@ var projectileFunctions = {
             this.source.damageDealt += this.damage;
         }
 	},
+	
+	// Exp hitting something
+	HitExp: function(target) {
+		console.log("Gave: " + this.exp);
+		target.GiveExp(this.exp);
+		this.expired = true;
+	},
     
     // Scales fire projectiles on update
     ScaleFire: function() {
@@ -393,9 +400,11 @@ var projectileFunctions = {
         }
     
         // Knockback
-        var k = Vector(target.x - this.source.x, target.y - this.source.y);
-        k.SetLength(this.knockback);
-        target.Knockback(k.x, k.y);
+		if (target.Knockback) {
+			var k = Vector(target.x - this.source.x, target.y - this.source.y);
+			k.SetLength(this.knockback);
+			target.Knockback(k.x, k.y);
+		}
     },
 	
     // Updates a rocket projectile

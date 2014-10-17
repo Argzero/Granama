@@ -91,6 +91,8 @@ function PaladinEnemy(x, y) {
         300,
 		MINIBOSS_EXP
     );
+	
+	enemy.Knockback = enemyFunctions.MinibossKnockback;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveBasic;
@@ -182,6 +184,8 @@ function RailerEnemy(x, y) {
         550,
 		MINIBOSS_EXP
     );
+	
+	enemy.Knockback = enemyFunctions.MinibossKnockback;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveBasic;
@@ -324,6 +328,8 @@ function TurretEnemy(x, y) {
         550,
 		MINIBOSS_EXP
     );
+	
+	enemy.Knockback = enemyFunctions.MinibossKnockback;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveOrbit;
@@ -420,6 +426,8 @@ function HunterEnemy(x, y) {
         350,
 		MINIBOSS_EXP
     );
+	
+	enemy.Knockback = enemyFunctions.MinibossKnockback;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveOrbit;
@@ -539,7 +547,7 @@ function SolarEnemy(x, y) {
 	var angle = Rand(360 * Math.PI / 180);
 	enemy.direction = Vector(Math.cos(angle), Math.sin(angle));
     enemy.ApplyMove = EnemyMoveBounce;
-	enemy.Knockback = enemyFunctions.KnockbackBouncer;
+	enemy.Knockback = undefined;
 	
 	// Stats for collision
 	enemy.scale = 1;
