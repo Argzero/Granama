@@ -1,4 +1,7 @@
 function EnemyTail(source, segment, end, offset, length, base, endOffset) {
+    offset = Math.round(offset / source.speed);
+    base = Math.round(base / source.speed);
+    endOffset = Math.round(endOffset / source.speed);
 	var obj = {
 		source: source,
 		segment: segment,

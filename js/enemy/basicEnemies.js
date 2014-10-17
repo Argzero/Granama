@@ -371,7 +371,7 @@ function LightOrbiterEnemy(x, y) {
 	
 	//offset, length, base, endOffset
 	// Draw the tail
-	enemy.tail = EnemyTail(enemy, GetImage('enemyLightOrbiterTail'), GetImage('enemyLightOrbiterTail'), 7, 3, 10, 0);
+	enemy.tail = EnemyTail(enemy, GetImage('enemyLightOrbiterTail'), GetImage('enemyLightOrbiterTail'), 28, 3, 40, 0);
 	enemy.ApplyDraw = function() {
 		this.tail.Draw();
 	}
@@ -405,7 +405,7 @@ function HeavyOrbiterEnemy(x, y) {
 	
 	//offset, length, base, endOffset
 	// Draw the tail
-	enemy.tail = EnemyTail(enemy, GetImage('enemyHeavyOrbiterTail'), GetImage('enemyHeavyOrbiterTail'), 8, 3, 10, 0);
+	enemy.tail = EnemyTail(enemy, GetImage('enemyHeavyOrbiterTail'), GetImage('enemyHeavyOrbiterTail'), 30, 3, 35, 0);
 	enemy.ApplyDraw = function() {
 		this.tail.Draw();
 	}
@@ -441,7 +441,7 @@ function HunterEnemy(x, y) {
 	
 	//offset, length, base, endOffset
 	// Draw the tail
-	enemy.tail = EnemyTail(enemy, GetImage('enemyHunterSegment'), GetImage('enemyHunterEnd'), 9, 4, 11, 0);
+	enemy.tail = EnemyTail(enemy, GetImage('enemyHunterSegment'), GetImage('enemyHunterEnd'), 27, 4, 33, 0);
 	enemy.ApplyDraw = function() {
 		this.tail.Draw();
 		

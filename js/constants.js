@@ -170,6 +170,9 @@ HEAVY_EASY_SPAWNS = [
 	1, 0, LightBomberEnemy,
     1, 0, HeavyBomberEnemy
 ],
+FIST_SPAWNS = [
+    1, 0, PaladinEnemy
+],
 
 // Drop names (Do not modify these values)
 // General

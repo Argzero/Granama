@@ -52,19 +52,19 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 		GiveExp: function(amount) {
 			this.exp += amount;
 			while (this.exp >= this.level * 150) {
-				console.log("Level Up! " + this.level + " -> " + (this.level + 1));
 				this.exp -= this.level * 150;
 				this.level++;
 				this.maxHealth += this.healthScale * this.level;
 				this.health += this.healthScale * this.level;
 				this.damage += this.damageScale * this.level;
-				this.points += Math.floor((this.level + 3) / 5);
+				this.points++;
 				this.levelFrame = 0;
 			}
 		},
         
 		// Damages the player using an optional damage source
 		Damage: function(amount, damager) {
+            //return;
             this.damageAbsorbed += amount;
             
 			// Damage event
@@ -326,7 +326,7 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
                 else canvas.strokeStyle = '#f00';
                 canvas.stroke();
                 canvas.beginPath();
-                canvas.arc(this.x, this.y, 75, 0, shieldPercent * Math.PI * 9 / 10);
+                canvas.arc(this.x, this.y, 75, (1 - shieldPercent) * Math.PI * 9 / 10, Math.PI * 9 / 10);
                 canvas.strokeStyle = '#00f';
                 canvas.stroke();
 				

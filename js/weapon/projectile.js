@@ -235,7 +235,6 @@ var projectileFunctions = {
 	
 	// Exp hitting something
 	HitExp: function(target) {
-		console.log("Gave: " + this.exp);
 		target.GiveExp(this.exp);
 		this.expired = true;
 	},

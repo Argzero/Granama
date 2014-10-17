@@ -98,7 +98,7 @@ function EnemyManager(screen) {
             else {
                 for (var p = 0; p < playerManager.players.length; p++) {
                     var player = playerManager.players[p].robot;
-                    if (player.health > 0 && BulletCollides(this.bullets[i], player)) {
+                    if (player.health > 0 && this.bullets[i].Collides(player)) {
 						if (this.bullets[i].damage > 0) {
 							this.bullets[i].Hit(player);
 						}
@@ -148,10 +148,11 @@ function EnemyManager(screen) {
                         var data = this.expData[e];
                         while (data.value * playerManager.players.length <= num) {
 							for (var player = 0; player < playerManager.players.length; player++) {
+                                var robot = playerManager.players[player % playerManager.players.length].robot;
+                                if (robot.health <= 0) continue;
 								num -= data.value;
 								var direction = Vector(0, BULLET_SPEED);
 								direction.Rotate(Rand(360) * Math.PI / 180);
-								var robot = playerManager.players[player % playerManager.players.length].robot;
 								var exp = ReflectionProjectile(
 									data.sprite,
 									this.enemies[i],

@@ -173,7 +173,7 @@ function FireBoss(x, y) {
     };
 	
 	// Draw the tail
-	enemy.tail = EnemyTail(enemy, GetImage('bossTailMid'), GetImage('bossTailEnd'), 15, 5, 25, 0);
+	enemy.tail = EnemyTail(enemy, GetImage('bossTailMid'), GetImage('bossTailEnd'), 45, 5, 75, 0);
 	enemy.ApplyDraw = function() {
 		this.tail.Draw();
 	}
@@ -210,15 +210,13 @@ function PunchBoss(x, y) {
 	
 	var damageScale = ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000);
     
-    // Fist weapon
+    // Weapon pattern 0 - fists and rail gun
     enemy.AddWeapon(EnemyWeaponFist, {
         rate: 300,
         speed: 10,
         range: 400,
         damage: damageScale
     });
-    
-    // Rail weapon
     enemy.AddWeapon(EnemyWeaponRail, {
         damage: 0.05 * damageScale,
         rate: 150,
@@ -226,6 +224,31 @@ function PunchBoss(x, y) {
         discharge: 0.1,
         duration: 60
     });
+    
+    // Weapon pattern 1 - shockwaves
+    for (var i = 0; i < 2; i++) {
+        var offset = 3 * Math.PI * i / 8;
+        enemy.AddWeapon(EnemyWeaponShockwave, {
+            rate: 120,
+            damage: 2 * damageScale,
+            start: offset,
+            end: 2 * Math.PI / 8 + offset,
+            radius: 75,
+            range: 600,
+            knockback: 50,
+            speed: 4
+        }, 1);
+    }
+    
+    // Weapon pattern 2 - Spawning paladins
+    enemy.AddWeapon(EnemyWeaponSpawn, {
+        enemies: PUNCH_SPAWNS,
+        max: 1,
+        rate: 120,
+        delay: 300,
+        dx: 0,
+        dy: 0
+    }, 2);
     
     // Drawing fists
     enemy.ApplySprite = function() {
@@ -252,8 +275,8 @@ function DragonBoss(x, y) {
         4 + 0.3 * c,
         300,
 		BOSS_EXP,
-        1200,
-        1500
+        600,
+        750
     );
     
     enemy.Knockback = undefined;
@@ -303,7 +326,7 @@ function DragonBoss(x, y) {
     });
 	
 	// Attack pattern 2 - Homing missiles
-	enemy.SetMovement(0, EnemyMoveDragon);
+	enemy.SetMovement(2, EnemyMoveDragon);
 	enemy.AddWeapon(EnemyWeaponFire, {
         damage: 0.05 * damageScale,
         range: 300,
@@ -326,7 +349,7 @@ function DragonBoss(x, y) {
 	}
     
     // Dragon's tail
-	enemy.tail = EnemyTail(enemy, GetImage('bossDragonSegment'), GetImage('bossDragonEnd'), 30, 5, 40, 10);
+	enemy.tail = EnemyTail(enemy, GetImage('bossDragonSegment'), GetImage('bossDragonEnd'), 90, 5, 120, 30);
     enemy.tail.SetTurrets(GetImage('bossDragonTurret'), GetImage('bullet'), damageScale, 60, false, 0, 48);
 	enemy.ApplyDraw = function() {
 		this.tail.Draw();

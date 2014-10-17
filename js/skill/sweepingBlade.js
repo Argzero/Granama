@@ -17,7 +17,7 @@ function SkillSweepingBlade(player) {
                 this.GetDamageMultiplier() * 6,
                 Math.PI,
                 600,
-                0
+                0.1 + this.upgrades[LIFESTEAL_ID] * 0.015
             );
             this.bullets.push(sword);
         }
