@@ -6,6 +6,7 @@ function EnemyManager(screen) {
     this.bossIncrement = Math.floor(BOSS_SPAWN_BASE * (0.6 + 0.4 * playerManager.players.length));
     this.bossCount = 0;
 	this.timer = 0;
+    this.expM = [0, 4/3, 3/2, 5/3];
     
     // Experience data
     this.expData = [
@@ -146,7 +147,7 @@ function EnemyManager(screen) {
 				
 				// Spawn experience
                 if (this.enemies[i].exp >= 300 || this.bossStatus == ACTIVE_NONE) { 
-                    var num = Math.round(this.enemies[i].exp * (1 + (playerManager.players.length - 1) / 4));
+                    var num = Math.round(this.enemies[i].exp * this.expM[playerManager.players.length - 1]);
                     for (var e = 0; e < this.expData.length; e++) {
                         var data = this.expData[e];
                         while (data.value * playerManager.players.length <= num) {
