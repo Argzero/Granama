@@ -146,7 +146,7 @@ function EnemyManager(screen) {
 				
 				// Spawn experience
                 if (this.enemies[i].exp >= 300 || this.bossStatus == ACTIVE_NONE) { 
-                    var num = this.enemies[i].exp;
+                    var num = Math.round(this.enemies[i].exp * (1 + (playerManager.players.length - 1) / 4));
                     for (var e = 0; e < this.expData.length; e++) {
                         var data = this.expData[e];
                         while (data.value * playerManager.players.length <= num) {

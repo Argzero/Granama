@@ -51,8 +51,8 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 		// Gives the player experience and checks for level ups
 		GiveExp: function(amount) {
 			this.exp += amount;
-			while (this.exp >= this.level * 150) {
-				this.exp -= this.level * 150;
+			while (this.exp >= this.level * 200) {
+				this.exp -= this.level * 200;
 				if (this.level <= 25) {
 					this.points += 2;
 				}
