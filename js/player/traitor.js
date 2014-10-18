@@ -1,36 +1,22 @@
 function PlayerTraitorType() {
     var p = BasePlayer(
         GetImage('pTraitorBody'),
-        [ // Drop Chance | Drop type | Max | Backup Drop
-            8,           LASER,        50,   5,
-            8,           SPREAD_SHOT,  50,   5,
-            8,           FLAMETHROWER, 50,   5,
-            8,           SHIELD,       50,   6,
-            8,           SPEED,        50,   6,
-            15,          DAMAGE,       -1,   5,
-            15,          HEALTH,       -1,   6,
-            30,          HEAL,         -1,   7
-        ]
+		20
     );
+	
+	p.upgrades[SHIELD_ID] = 3;
+	p.upgrades[SPREAD_ID] = 1;
     
     // Sprites
     p.drawObjects.push({ 
-        sprite: GetImage('pTraitorLaser'), 
-        xOffset: -10, 
-        yOffset: -50,
-        condition: function() { return this.upgrades[SPREAD_ID] == 0; }.bind(p)
-    });
-    p.drawObjects.push({ 
         sprite: GetImage('pTraitorSpread'), 
         xOffset: -20.5,
-        yOffset: -50,
-        condition: function() { return this.upgrades[SPREAD_ID] > 0; }.bind(p)
+        yOffset: -50
     });
     p.drawObjects.push({
         sprite: GetImage('pTraitorShield'),
         xOffset: -11,
-        yOffset: -10,
-        condition: function() { return this.upgrades[SHIELD_ID] > 0; }.bind(p)
+        yOffset: -10
     });
     p.drawObjects.push({
         sprite: GetImage('pTraitorFlame'),

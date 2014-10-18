@@ -1,10 +1,11 @@
 // A shockwave that hits things like projectiles, but behaves much differently
-function Shockwave(source, color, x, y, speed, min, max, radius, thickness, damage, range, knockback) {
+function Shockwave(source, color1, color2, x, y, speed, min, max, radius, thickness, damage, range, knockback) {
     return {
         
         // Fields
         source: source,
-        color: color,
+        color1: color1,
+		color2: color2,
         x: x,
         y: y,
         speed: speed,
@@ -42,9 +43,14 @@ var shockwaveFunctions = {
     
     Draw: function() {
         canvas.lineWidth = this.thickness;
-        canvas.strokeStyle = this.color;
+        canvas.strokeStyle = this.color1;
         canvas.beginPath();
         canvas.arc(this.x, this.y, this.radius, this.min, this.max);
+        canvas.stroke();
+		canvas.lineWidth = this.thickness / 2;
+		canvas.strokeStyle = this.color2;
+		canvas.beginPath();
+        canvas.arc(this.x, this.y, this.radius + this.thickness / 4, this.min, this.max);
         canvas.stroke();
     },
     

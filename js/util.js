@@ -230,3 +230,36 @@ function YMin(obj) {
 function YMax(obj) {
     return obj.y + obj.sprite.height / 2; 
 }
+
+// Calculates the angle to a target from a source
+function AngleTo(target, source) {
+	var a = Math.atan((target.y - source.y) / (source.x - target.x));
+	if (source.x < target.x) {
+		a = -HALF_PI - a;
+	}
+	else {
+		a = HALF_PI - a;
+	}
+	return a;
+}
+
+// Calculates a new angle towards the target using a turn speed
+function AngleTowards(target, source, turnSpeed) {
+	var a = AngleTo(target, source);
+	var dx = target.x - source.x;
+	var dy = target.y - source.y;
+	var dot = source.sin * dx + -source.cos * dy;
+	
+	var result = source.angle;
+	
+	// Turning to the left
+	var m = dot < 0 ? 1 : -1;
+	while (m * (a - result) < 0) {
+		a += m * 2 * Math.PI;
+	}
+	result += m * turnSpeed;
+	if (m * (result - a) > 0) {
+		result = a;
+	}
+	return result;
+}

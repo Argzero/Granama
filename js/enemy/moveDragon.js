@@ -16,6 +16,11 @@ function EnemyMoveDragon() {
     
     // Update the angle/cos/sin values if necessary
     if (target) {
+		this.angle = AngleTowards(target, this, this.speed / 300.0);
+		if (this.angle === undefined) {
+			console.log('well, shoot');
+		}
+		/*
         var a = Math.atan((target.y - this.y) / (this.x - target.x));
         if (this.x < target.x) {
             a = -HALF_PI - a;
@@ -44,6 +49,7 @@ function EnemyMoveDragon() {
                 this.angle = a;
             }
         }
+		*/
         
         // Update the trig values
         this.cos = -Math.sin(this.angle);

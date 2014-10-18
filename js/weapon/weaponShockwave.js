@@ -12,7 +12,8 @@
 //        dx - horizontal offset of the shockwave's origin
 //        dy - vertical offset of the shockwave's origin
 //     speed - speed at which the shockwave travels at
-//     color - color of the shockwave
+//    color1 - primary color of the shockwave
+//    color2 - secondary color of the shockwave
 // knockback - how far the shockwave knocks things back
 // thickness - how thick the wave is
 function EnemyWeaponShockwave(data) {
@@ -27,7 +28,8 @@ function EnemyWeaponShockwave(data) {
         //source, color, x, y, speed, min, max, radius, thickness, damage, range, knockback
         var shockwave = Shockwave(
             this,
-            data.color || '#f70',
+            data.color1 || '#ff9933',
+			data.color2 || '#f70',
             this.x + data.dx,
             this.y + data.dy,
             data.speed || 5,

@@ -5,34 +5,7 @@ function EnemyMoveDragonCenter() {
     var target = { x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 };
     
     // Update the angle/cos/sin values if necessary
-    var a = Math.atan((target.y - this.y) / (this.x - target.x));
-    if (this.x < target.x) {
-        a = -HALF_PI - a;
-    }
-    else {
-        a = HALF_PI - a;
-    }
-    var dx = target.x - this.x;
-    var dy = target.y - this.y;
-    var dot = this.sin * dx + -this.cos * dy;
-    if (dot > 0) {
-        while (a > this.angle) {
-            a -= 2 * Math.PI;
-        }
-        this.angle -= this.speed / 300.0;
-        if (this.angle < a) {
-            this.angle = a;
-        }
-    }
-    else {
-        while (a < this.angle) {
-            a += 2 * Math.PI;
-        }
-        this.angle += this.speed / 300.0;
-        if (this.angle > a) {
-            this.angle = a;
-        }
-    }
+    this.angle = AngleTowards(target, this, this.speed / 300.0);
     
     // Update the trig values
     this.cos = -Math.sin(this.angle);

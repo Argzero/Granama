@@ -170,7 +170,7 @@ HEAVY_EASY_SPAWNS = [
 	1, 0, LightBomberEnemy,
     1, 0, HeavyBomberEnemy
 ],
-FIST_SPAWNS = [
+PUNCH_SPAWNS = [
     1, 0, PaladinEnemy
 ],
 
@@ -250,7 +250,12 @@ KEY_S = 2,
 KEY_D = 3,
 KEY_ESC = 4,
 KEY_LMB = 5,
-KEY_SPACE = 6;
+KEY_SPACE = 6,
+KEY_UP = 7,
+KEY_DOWN = 8,
+KEY_LEFT = 9,
+KEY_RIGHT = 10,
+KEY_ENTER = 11,
 
 // Menu IDs (Do not modify these values)
 TITLE_SCREEN = 0,

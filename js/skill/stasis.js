@@ -7,7 +7,7 @@ function SkillStasis(player) {
         if (this.IsSkillCast() && this.health < this.maxHealth) {
             this.pluses = [];
             this.skillDuration = 180;
-            this.skillCd = 1200;
+            this.skillCd = 900;
         }
         
         // Active skill effects

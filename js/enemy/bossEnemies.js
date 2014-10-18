@@ -1,4 +1,4 @@
-var BOSS_EXP = 600;
+var BOSS_EXP = 588;
 
 // Boss that uses a minigun, mines, and rockets to fight
 function HeavyBoss(x, y) {
@@ -147,13 +147,13 @@ function FireBoss(x, y) {
 	}
     
     // Weapon pattern 1 - claw melee
-    enemy.SetRange(1, 100);
+    enemy.SetRange(1, 150);
     enemy.AddWeapon(EnemyWeaponDoubleSword, {
         spriteName: 'bossFireClaw',
-        range: 125,
+        range: 175,
         rate: 60,
         arc: Math.PI * 3 / 4,
-        radius: 125,
+        radius: 175,
         damage: damageScale,
         knockback: 100,
         angle: 0,
@@ -193,7 +193,9 @@ function PunchBoss(x, y) {
         300 * ScalePower(c, 1.4) * playerManager.players.length,
         3 + 0.2 * c,
         300,
-		BOSS_EXP
+		BOSS_EXP,
+		300,
+		400
     );
     
     enemy.Knockback = enemyFunctions.BossKnockback;
@@ -226,7 +228,7 @@ function PunchBoss(x, y) {
     });
     
     // Weapon pattern 1 - shockwaves
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < 5; i++) {
         var offset = 3 * Math.PI * i / 8;
         enemy.AddWeapon(EnemyWeaponShockwave, {
             rate: 120,
@@ -234,9 +236,9 @@ function PunchBoss(x, y) {
             start: offset,
             end: 2 * Math.PI / 8 + offset,
             radius: 75,
-            range: 600,
+            range: 750,
             knockback: 50,
-            speed: 4
+            speed: enemy.speed
         }, 1);
     }
     
@@ -274,7 +276,7 @@ function DragonBoss(x, y) {
         500 * ScalePower(c, 1.4) * playerManager.players.length,
         4 + 0.3 * c,
         300,
-		BOSS_EXP,
+		1188,
         600,
         750
     );

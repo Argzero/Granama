@@ -87,25 +87,28 @@ function UIManager(screen) {
             // Health
             canvas.fillText('HP: ' + player.health.toFixed(0) + '/' + player.maxHealth, 10, y + 50);
             
-            // Upgrade graph
-            var graphHeight = interval - 105;
-            var iconSize = graphHeight / 5;
-            canvas.fillStyle = '#222';
-            canvas.strokeStyle = '#666';
-            canvas.lineWidth = 2;
-            canvas.fillRect(iconSize + 10, y + 60, SIDEBAR_WIDTH - iconSize - 20, graphHeight);
-            canvas.strokeRect(iconSize + 10, y + 60, SIDEBAR_WIDTH - iconSize - 20, graphHeight);
-            
-            // Draw icons on left
-            canvas.fillStyle = '#f0f';
-            for (var j = 0; j < 5; j++) {
-                var upImg = GetImage('upgrade' + player.icons[j]);
-                var current = player.upgrades[j];
-                
-                canvas.drawImage(upImg, 5, y + 60 + iconSize * j, iconSize, iconSize);
-				canvas.fillStyle = (current == 10 ? '#0ff' : player.color);
-                canvas.fillRect(iconSize + 10, y + 60 + iconSize * (j + 0.2), (SIDEBAR_WIDTH - 50) * current / 10, iconSize * 0.6);
-            }
+			if (player.icons) {
+			
+				// Upgrade graph
+				var graphHeight = interval - 105;
+				var iconSize = graphHeight / 5;
+				canvas.fillStyle = '#222';
+				canvas.strokeStyle = '#666';
+				canvas.lineWidth = 2;
+				canvas.fillRect(iconSize + 10, y + 60, SIDEBAR_WIDTH - iconSize - 20, graphHeight);
+				canvas.strokeRect(iconSize + 10, y + 60, SIDEBAR_WIDTH - iconSize - 20, graphHeight);
+				
+				// Draw icons on left
+				canvas.fillStyle = '#f0f';
+				for (var j = 0; j < 5; j++) {
+					var upImg = GetImage('upgrade' + player.icons[j]);
+					var current = player.upgrades[j];
+					
+					canvas.drawImage(upImg, 5, y + 60 + iconSize * j, iconSize, iconSize);
+					canvas.fillStyle = (current == 10 ? '#0ff' : player.color);
+					canvas.fillRect(iconSize + 10, y + 60 + iconSize * (j + 0.2), (SIDEBAR_WIDTH - 50) * current / 10, iconSize * 0.6);
+				}
+			}
         }
         
         // Upgrade counters
@@ -130,8 +133,8 @@ function UIManager(screen) {
         canvas.fillStyle = '#FFFFFF';
         canvas.font = '30px Flipbash';
         var player = playerManager.players[0].robot;
+		var droneImg = this.droneImgs[player.drones.length % 3];
         if (player.drones.length < 6) {
-            var droneImg = this.droneImgs[player.drones.length % 3];
             canvas.drawImage(droneImg, (SIDEBAR_WIDTH - droneImg.width) / 2, WINDOW_HEIGHT - droneImg.height - 20);
             var left = player.droneTarget - player.droneCounter;
             canvas.fillText(left, (SIDEBAR_WIDTH - StringWidth(left, canvas.font)) / 2, WINDOW_HEIGHT - droneImg.height / 2 - 35);

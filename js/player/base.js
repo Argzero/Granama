@@ -53,11 +53,13 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 			this.exp += amount;
 			while (this.exp >= this.level * 150) {
 				this.exp -= this.level * 150;
+				if (this.level <= 25) {
+					this.points += 2;
+				}
 				this.level++;
 				this.maxHealth += this.healthScale * this.level;
 				this.health += this.healthScale * this.level;
 				this.damage += this.damageScale * this.level;
-				this.points++;
 				this.levelFrame = 0;
 			}
 		},

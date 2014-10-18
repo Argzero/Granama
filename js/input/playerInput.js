@@ -74,30 +74,34 @@ var inputFunctions = {
         // Weapons
         this.checkKey(KEY_SPACE, 'ability');
         this.checkKey(KEY_ESC, 'cancel');
-        this.checkKey(KEY_SPACE, 'confirm');
+        this.checkKey(KEY_ENTER, 'confirm');
         this.checkKey(KEY_ESC, 'pause');
         this.checkKey(KEY_LMB, 'shoot');
         
         // Movement
-        var hor = KeyPressed(KEY_D) != KeyPressed(KEY_A);
-        var vert = KeyPressed(KEY_W) != KeyPressed(KEY_S);
+		var up = KeyPressed(KEY_W) || KeyPressed(KEY_UP);
+		var down = KeyPressed(KEY_S) || KeyPressed(KEY_DOWN);
+		var left = KeyPressed(KEY_A) || KeyPressed(KEY_LEFT);
+		var right = KeyPressed(KEY_D) || KeyPressed(KEY_RIGHT);
+        var hor = left != right;
+        var vert = up != down;
         this.movement.x = this.movement.y = 0;
-        if (KeyPressed(KEY_W)) {
+        if (up) {
             this.up++;
             this.movement.y -= (hor ? HALF_RT_2 : 1);
         }
         else this.up = 0;
-        if (KeyPressed(KEY_S)) {
+        if (down) {
             this.down++;
             this.movement.y += (hor ? HALF_RT_2 : 1);
         }
         else this.down = 0;
-        if (KeyPressed(KEY_A)) {
+        if (left) {
             this.left++;
             this.movement.x -= (vert ? HALF_RT_2 : 1);
         }
         else this.left = 0;
-        if (KeyPressed(KEY_D)) {
+        if (right) {
             this.right++;
             this.movement.x += (vert ? HALF_RT_2 : 1);
         }

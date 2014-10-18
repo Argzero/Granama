@@ -1,9 +1,19 @@
 // Moves the enemy towards the player to their preferred range
-function EnemyMoveBasic() {
+function EnemyMoveMedic() {
 
-    // Turn towards the player
-    var player = playerManager.getClosest(this.x, this.y);
-    this.angle = AngleTowards(player, this, this.speed / 50.0);
+    // Turn towards the nearest damaged enemy
+	var target, dSq;
+	for (var i = 0; i < gameScreen.enemyManager.enemies.length; i++) {
+		var e = gameScreen.enemyManager.enemies[i];
+		if (e.health >= e.maxHealth) continue;
+		var temp = DistanceSq(e.x, e.y, this.x, this.y);
+		if (!dSq || temp < dSq) {
+			dSq = temp;
+			target = e;
+		}
+	}
+	//if (!target) target = { x: this.x + this.cos, y: this.y };
+    this.angle = AngleTowards(target, this, this.speed / 50.0);
     
     // Update the angle values
     this.cos = -Math.sin(this.angle);

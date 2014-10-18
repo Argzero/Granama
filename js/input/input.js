@@ -1,7 +1,6 @@
-var keysDown = new Array(false, false, false, false, false, false, false);
+var keysDown = new Array(false, false, false, false, false, false, false, false, false, false, false, false);
 var mouseX = 0, mouseY = 0, mx, my;
 var gamepads = navigator.getGamepads();
-console.log(gamepads);
 
 // Key down event
 document.addEventListener('keydown', function(event) {
@@ -73,6 +72,11 @@ function KeyCodeToIndex(keyCode) {
         case 83: return KEY_S;
 		case 32: return KEY_SPACE;
         case 27: return KEY_ESC;
+		case 38: return KEY_UP;
+		case 40: return KEY_DOWN;
+		case 37: return KEY_LEFT;
+		case 39: return KEY_RIGHT;
+		case 13: return KEY_ENTER;
         default: return KEY_UNUSED;
     }
 }
