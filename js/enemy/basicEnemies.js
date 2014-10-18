@@ -562,3 +562,45 @@ function SolarEnemy(x, y) {
     
     return enemy;
 }
+
+function LightMedicEnemy(x, y) {
+
+    // Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('enemyLightMedic'), 
+        x, 
+        y,
+        50 * ScalePower(c, 0.9),
+        4 + 0.3 * c,
+        50,
+		LIGHT_EXP
+    );
+    
+    // Movement pattern
+    enemy.heal = enemy.health / 500;
+    enemy.ApplyMove = EnemyMoveMedic;
+    
+    return enemy;
+}
+
+function HeavyMedicEnemy(x, y) {
+
+    // Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('enemyHeavyMedic'), 
+        x, 
+        y,
+        80 * ScalePower(c, 0.9),
+        4 + 0.3 * c,
+        50,
+		HEAVY_EXP
+    );
+    
+    // Movement pattern
+    enemy.heal = enemy.health / 500;
+    enemy.ApplyMove = EnemyMoveMedic;
+    
+    return enemy;
+}

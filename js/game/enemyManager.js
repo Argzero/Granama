@@ -47,7 +47,6 @@ function EnemyManager(screen) {
 		
 		// Enemy indicators if applicable
 		if (screen.score >= this.bossScore - 10) {
-			canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH, 0);
 			var pointer = GetImage('enemyPointer');
 			var halfX = WINDOW_WIDTH / 2;
 			var halfY = WINDOW_HEIGHT / 2;
@@ -62,7 +61,11 @@ function EnemyManager(screen) {
 					var s = xs < ys ? xs : ys;
 					d.x *= s;
 					d.y *= s;
-					canvas.drawImage(pointer, halfX + d.x - pointer.width / 2, halfY + d.y - pointer.height / 2);
+                    canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH, 0);
+                    canvas.translate(halfX + d.x, halfY + d.y);
+                    var a = AngleTo(d, { x: 0, y: 0 });
+                    canvas.rotate(a);
+					canvas.drawImage(pointer, -pointer.width / 2, -pointer.height);
 				}
 			}
 			ResetTransform(canvas);

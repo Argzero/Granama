@@ -148,6 +148,8 @@ SPAWN_DATA = [
 	10, 1, HeavyOrbiterEnemy,
 	15, 0, LightBouncerEnemy,
 	10, 1, HeavyBouncerEnemy,
+    15, 0, LightMedicEnemy,
+    10, 1, HeavyMedicEnemy,
     1,  3, TurretEnemy,
     1,  3, RailerEnemy,
     1,  3, PaladinEnemy,

@@ -5,14 +5,30 @@ function EnemyMoveMedic() {
 	var target, dSq;
 	for (var i = 0; i < gameScreen.enemyManager.enemies.length; i++) {
 		var e = gameScreen.enemyManager.enemies[i];
-		if (e.health >= e.maxHealth) continue;
+		if (e == this || e.health >= e.maxHealth) continue;
 		var temp = DistanceSq(e.x, e.y, this.x, this.y);
 		if (!dSq || temp < dSq) {
 			dSq = temp;
 			target = e;
 		}
 	}
-	//if (!target) target = { x: this.x + this.cos, y: this.y };
+    
+    // Run from nearest player if no enemies can be healed
+	if (!target) {
+        if (!this.backup || DistanceSq(this.x, this.y, this.backup.x, this.backup.y) < Sq(this.range + 100)) {
+            this.backup = { x: Rand(GAME_WIDTH), y: Rand(GAME_HEIGHT) };
+        }
+        target = this.backup;
+    }
+    
+    // Heal the enemy if close enough
+    else if (dSq <= Sq(this.range + 10)) {
+        target.health += this.heal;
+        if (target.health > target.maxHealth) {
+            target.health = target.maxHealth;
+        }
+    }
+    
     this.angle = AngleTowards(target, this, this.speed / 50.0);
     
     // Update the angle values
@@ -21,7 +37,7 @@ function EnemyMoveMedic() {
     
     // Get the direction to move
     var m = 1;
-    if (this.cos * (player.x - this.x) + this.sin * (player.y - this.y) < 0) {
+    if (this.cos * (target.x - this.x) + this.sin * (target.y - this.y) < 0) {
         m = -1;
     }
     
@@ -30,7 +46,7 @@ function EnemyMoveMedic() {
     if (this.speedMDuration) {
         speed *= this.speedM;
     }
-    var dSq = Sq(this.x - player.x) + Sq(this.y - player.y);
+    var dSq = Sq(this.x - target.x) + Sq(this.y - target.y);
     if (dSq - Sq(this.range + speed) > 0) {
         this.x += m * this.cos * speed;
         this.y += m * this.sin * speed;
