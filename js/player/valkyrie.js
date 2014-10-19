@@ -99,10 +99,20 @@ function PlayerValkyrieType() {
         if (this.charge >= 75) y += this.charge - 75;
         canvas.drawImage(GetImage('pValkyrieTurret'), -10, y);
         
+        // Draw the scope
+        if (this.locked) {
+            canvas.drawImage(GetImage('pValkyrieScope'), -3, y + 34);
+        }
+        
         // Draw the front shell
         y = -14;
         if (this.charge >= 25) y = Math.min(y + this.charge - 25, 10);
         canvas.drawImage(GetImage('pValkyrieShell'), -12, y);
+        
+        // Draw range indicator
+        if (this.range) {
+            canvas.drawImage(GetImage('pValkyrieTarget'), -50, this.range - 50);
+        }
         
         ResetTransform(canvas);
     };

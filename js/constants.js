@@ -120,9 +120,9 @@ PLAYER_DATA = [
         color: '#0ff',
         weapons: [ 'Rail Gun', 'Double Shot' ],
         skills: [
-            { name: 'Piercing Arrow', callback: SkillIonicThunder },
-			{ name: 'Gyro Slash', callback: SkillLockdown },
-			{ name: 'Sweeping Blade', callback: SkillSweepingBlade }
+            { name: 'Ionic Thunder', callback: SkillIonicThunder },
+			{ name: 'Lock Down', callback: SkillLockdown },
+			{ name: 'Sweeping Blade', callback: SkillArtillery }
         ]
     }
 ],

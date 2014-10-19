@@ -6,8 +6,6 @@ function SkillLockdown(player) {
         var chargeRate = 2 + 0.3 * this.upgrades[CHARGE_ID];
         this.disabled = this.locked || this.charge > 0;
         
-        console.log("Locked: " + this.locked + ", Charge: " + this.charge);
-        
         // Activating the ability
         if (this.IsSkillCast()) {
             this.skillCooldown = Math.round(100 / chargeRate);
@@ -23,7 +21,7 @@ function SkillLockdown(player) {
             }
             
             // Laser firing
-            if (this.IsInRange() && this.charge >= 100) {
+            if ((this.charge > 0 && this.input.shoot == 1) || (this.IsInRange() && this.charge >= 100)) {
                 var laser = ProjectileBase(
                     GetImage('abilityLaser'),
                     this,
@@ -32,13 +30,13 @@ function SkillLockdown(player) {
                     this.cos * 20, 
                     this.sin * 20, 
                     this.angle, 
-                    40 * this.GetDamageMultiplier(), 
-                    499 + 50 * this.upgrades[RAIL_ID],
+                    40 * this.GetDamageMultiplier() * this.charge / 100, 
+                    299 + 50 * this.upgrades[RAIL_ID] + 2 * this.charge,
                     true,
                     true
                 );
                 this.bullets.push(laser);
-                this.charge = 0;
+                this.charge = -20;
                 this.skillCooldown = Math.round(100 / chargeRate);
             }
             
