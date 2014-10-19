@@ -15,7 +15,7 @@ function SkillGyroSlash(player) {
                 150,
                 0,
                 this.GetDamageMultiplier() * 4,
-                Math.PI * 10,
+                Math.PI * 5,
                 50,
                 0.1 + this.upgrades[LIFESTEAL_ID] * 0.015
             );

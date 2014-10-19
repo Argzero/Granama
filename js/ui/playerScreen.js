@@ -7,7 +7,7 @@ function PlayerScreen() {
     this.joined = [true, false, false, false];
     this.ready = [false, false, false, false];
     this.abilityId = [0, 0, 0, 0];
-    this.open = [0, 1, 2, 3];
+    this.open = [0, 1, 2, 3, 4];
     
     // Checks if a robot ID is still open
     this.isOpen = function(id) {

@@ -110,7 +110,21 @@ PLAYER_DATA = [
 			{ name: 'Gyro Slash', callback: SkillGyroSlash },
 			{ name: 'Sweeping Blade', callback: SkillSweepingBlade }
 		]
-	}
+	},
+    {
+        player: PlayerValkyrieType,
+        preview: 'pValkyrie',
+        name: 'Valkyrie',
+        ups: ['ChargeSpeed', 'RailGunRange', 'DualShot', 'ShieldRecharge', 'MovementSpeed'],
+        icons: ['Arrow', 'Slash', 'Lifesteal', 'Shield', 'Speed'],
+        color: '#0ff',
+        weapons: [ 'Rail Gun', 'Double Shot' ],
+        skills: [
+            { name: 'Piercing Arrow', callback: SkillIonicThunder },
+			{ name: 'Gyro Slash', callback: SkillLockdown },
+			{ name: 'Sweeping Blade', callback: SkillSweepingBlade }
+        ]
+    }
 ],
 
 // Animation

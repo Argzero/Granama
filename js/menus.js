@@ -118,6 +118,7 @@ function LoadingScreen() {
         'pTraitorLaser',
         'pTraitorShield',
         'pTraitorSpread',
+        'pValkyrieBody',
         'rocket',
         'rush',
         'shell',
