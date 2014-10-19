@@ -4,7 +4,7 @@ function SkillBlitz(player) {
     player.onMove = function() {
         if (this.IsSkillCast()) {
             this.skillDuration = 300;
-            this.skillCd = 1200;
+            this.skillCd = 900;
             this.rm = 0.75;
         }
         if (this.skillDuration <= 0) {

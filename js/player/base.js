@@ -5,6 +5,7 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 		onDamaged: undefined,
 		onUpdate: undefined,
 		onDraw: undefined,
+        onPreDraw: undefined,
         onFire: undefined,
 	
 		// Fields
@@ -283,6 +284,11 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
             if (this.health <= 0) {
                 canvas.globalAlpha = 0.5;
             }
+            
+            // Draw event
+			else if (this.onPreDraw) {
+				this.onPreDraw();
+			}
         
             // Transform the canvas to match the player orientation
             canvas.translate(this.x, this.y);
@@ -298,14 +304,8 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
             canvas.transform(this.sin, -this.cos, this.cos, this.sin, 0, 0);
         
             // Draw various parts of the player
-            var i;
-            for (i = 0; i < this.drawObjects.length; i++) {
-                var obj = this.drawObjects[i];
-                if (!obj.condition || obj.condition()) {
-                    canvas.drawImage(obj.sprite, obj.xOffset, obj.yOffset);
-                }
-            }
-		
+            this.drawParts();
+            
             // Restore the transform
             ResetTransform(canvas);
             
@@ -318,6 +318,7 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
             canvas.globalAlpha = 1;
             
             // Draw bullets
+            var i;
 			for (i = 0; i < this.bullets.length; i++) {
 				this.bullets[i].Draw(canvas);
 			}
@@ -380,6 +381,16 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
             
             ResetTransform(canvas);
 		},
+        
+        // Draws the parts of the player
+        drawParts: function() {
+            for (var i = 0; i < this.drawObjects.length; i++) {
+                var obj = this.drawObjects[i];
+                if (!obj.condition || obj.condition()) {
+                    canvas.drawImage(obj.sprite, obj.xOffset, obj.yOffset);
+                }
+            }
+        },
         
         // Checks whether or not a skill is being cast
         IsSkillCast: function() {
