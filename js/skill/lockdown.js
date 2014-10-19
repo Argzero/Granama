@@ -3,7 +3,7 @@ function SkillLockdown(player) {
     // Skill effects
     player.onMove = function() {
     
-        var chargeRate = 1 + 0.2 * this.upgrades[CHARGE_ID];
+        var chargeRate = 2 + 0.3 * this.upgrades[CHARGE_ID];
         this.disabled = this.locked || this.charge > 0;
         
         console.log("Locked: " + this.locked + ", Charge: " + this.charge);
@@ -29,11 +29,11 @@ function SkillLockdown(player) {
                     this,
                     0,
                     this.getTurretY(), 
-                    this.cos * 10, 
-                    this.sin * 10, 
+                    this.cos * 20, 
+                    this.sin * 20, 
                     this.angle, 
-                    10 * this.GetDamageMultiplier(), 
-                    599 + 50 * this.upgrades[RAIL_ID],
+                    40 * this.GetDamageMultiplier(), 
+                    499 + 50 * this.upgrades[RAIL_ID],
                     true,
                     true
                 );

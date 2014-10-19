@@ -239,11 +239,14 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
             // Input update
             this.input.setPlayer(this);
 		
-			// Pausing
-            if (this.input.pause > 0) {
-            if (this.input.pause == 1) {
+            // Pause when controls are invalid
+            if (this.input.invalid && !gameScreen.paused) {
                 gameScreen.Pause(this);
             }
+        
+			// Pausing
+            else if (!this.input.invalid && this.input.pause == 1) {
+                gameScreen.Pause(this);
             }
 		},
 		

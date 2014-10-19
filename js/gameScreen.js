@@ -5,7 +5,6 @@ function GameScreen(bossRush) {
     this.score = 0;
     
     this.damageOverlay = GetImage("damage");
-    this.pauseOverlay = GetImage("pause");
     this.explosions = new Array();
     
     this.damageAlpha;
@@ -120,7 +119,17 @@ function GameScreen(bossRush) {
         
         // Pause overlay
         if (this.paused && this.paused !== true) {
-            canvas.drawImage(this.pauseOverlay, SIDEBAR_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+            //canvas.drawImage(this.pauseOverlay, SIDEBAR_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+            canvas.globalAlpha = 0.65;
+            canvas.fillStyle = 'black';
+            canvas.fillRect(SIDEBAR_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+            canvas.globalAlpha = 1;
+            canvas.fillStyle = 'white';
+            canvas.font = '48px Flipbash';
+            canvas.textAlign = 'center';
+            canvas.fillText('Paused By', WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 - 50);
+            canvas.fillStyle = this.paused.color;
+            canvas.fillText(this.paused.name, WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 + 20);
         }
         
         this.ui.DrawStatBar();

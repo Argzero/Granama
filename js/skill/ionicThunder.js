@@ -19,8 +19,8 @@ function SkillIonicThunder(player) {
                 this.cos * 10, 
                 this.sin * 10, 
                 this.angle, 
-                elapsed * this.GetDamageMultiplier() / 200, 
-                599 + 50 * this.upgrades[RAIL_ID],
+                elapsed * this.GetDamageMultiplier() / 50, 
+                399 + 50 * this.upgrades[RAIL_ID] + elapsed / 2,
                 true,
                 true
             );

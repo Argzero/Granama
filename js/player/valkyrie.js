@@ -58,7 +58,7 @@ function PlayerValkyrieType() {
         // Double shot
         if (!this.disabled) {
             this.gunData1.damage = this.gunData2.damage = m;
-            this.gunData1.rate = this.gunData2.rate = 120 / (5 + this.upgrades[LASER_ID] * 2.5);
+            this.gunData1.rate = this.gunData2.rate = 120 / (5 + this.upgrades[DUAL_ID] * 2.5);
             this.Shoot(this.gunData1);
             this.Shoot(this.gunData2);
         }
