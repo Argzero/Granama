@@ -12,6 +12,7 @@ function EnemyBase(sprite, x, y, health, speed, range, exp, patternMin, patternM
         speed: speed,
         speedM: undefined,
         speedMDuration: undefined,
+        stunDuration: 0,
         health: health,
         maxHealth: health,
         sprite: sprite,
@@ -32,6 +33,8 @@ function EnemyBase(sprite, x, y, health, speed, range, exp, patternMin, patternM
         ApplySprite: undefined,
         
         // Functions
+        isBoss: enemyFunctions.isBoss,
+        stun: enemyFunctions.stun,
         AddWeapon: enemyFunctions.AddWeapon,
 		SetRange: enemyFunctions.SetRange,
         SetMovement: enemyFunctions.SetMovement,
@@ -48,6 +51,16 @@ function EnemyBase(sprite, x, y, health, speed, range, exp, patternMin, patternM
 
 // Functions for enemy objects
 var enemyFunctions = {
+
+    // Checks whether or not this enemy is a boss
+    isBoss: function() {
+        return this.exp >= 300;
+    },
+    
+    // Stuns the enemy for a duration
+    stun: function(duration) {
+        this.stunDuration = duration;
+    },
         
     // Knocks back the enemy the given distance
     Knockback: function(x, y) {
@@ -102,6 +115,12 @@ var enemyFunctions = {
     // Updates the enemy
     Update: function() 
 	{
+        // Don't do anything while stunned
+        if (this.stunDuration > 0) {
+            this.stunDuration--;
+            return;
+        }
+    
 		// Pattern switching
 		if (this.patterns.length > 1) {
 			this.patternTimer--;

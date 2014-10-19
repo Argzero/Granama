@@ -17,6 +17,7 @@ function HeavyBoss(x, y) {
         400
     );
     
+    enemy.pierceResistant = true;
     enemy.Knockback = enemyFunctions.BossKnockback;
     enemy.Slow = enemyFunctions.BossSlow;
     
@@ -109,6 +110,7 @@ function FireBoss(x, y) {
         400
     );
 	
+    enemy.pierceResistant = true;
     enemy.Knockback = enemyFunctions.BossKnockback;
     enemy.Slow = enemyFunctions.BossSlow;
     
@@ -198,6 +200,7 @@ function PunchBoss(x, y) {
 		400
     );
     
+    enemy.pierceResistant = true;
     enemy.Knockback = enemyFunctions.BossKnockback;
     enemy.Slow = enemyFunctions.BossSlow;
     
@@ -281,6 +284,7 @@ function DragonBoss(x, y) {
         750
     );
     
+    enemy.pierceResistant = true;
     enemy.Knockback = undefined;
     enemy.Slow = undefined;
     enemy.IsInRange = enemyFunctions.DragonRange;

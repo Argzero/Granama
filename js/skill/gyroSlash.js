@@ -3,8 +3,8 @@ function SkillGyroSlash(player) {
     
         // Activating the ability
         if (this.IsSkillCast()) {
-            this.skillDuration = 360;
-            this.skillCd = 900;
+            this.skillDuration = 180;
+            this.skillCd = 300;
             
             // Spinning sword
             var sword = SwordProjectile(

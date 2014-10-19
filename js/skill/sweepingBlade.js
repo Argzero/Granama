@@ -4,7 +4,7 @@ function SkillSweepingBlade(player) {
         // Activating the ability
         if (this.IsSkillCast()) {
             this.skillDuration = 36;
-            this.skillCd = 600;
+            this.skillCd = 300;
             
             // Spinning sword
             var sword = SwordProjectile(

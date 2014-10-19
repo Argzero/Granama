@@ -3,7 +3,7 @@ function SkillPiercingArrow(player) {
     
         // Activating the ability
         if (this.IsSkillCast()) {
-            this.skillCd = 600;
+            this.skillCd = 360;
             var arrow = SlowProjectile(
                 GetImage('abilityArrow'),
                 this,

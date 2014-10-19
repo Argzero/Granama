@@ -123,6 +123,17 @@ function FistProjectile(source, x, y, velX, velY, angle, damage, range, delay, s
     return projectile;
 }
 
+// A grapple hook projectile for knights
+function GrappleProjectile(source, damage, range, stun) {
+    //                              sprite,                  source, x, y, velX, velY, angle, damage, range, pierce, offScreen
+    var projectile = ProjectileBase(GetImage('grappleHook'), source, 0, 0, source.cos * 20, source.sin * 20, source.angle, damage, range, true, true);
+    projectile.Update = projectileFunctions.updateGrapple;
+    projectile.Hit = projectileFunctions.hitGrapple;
+    projectile.speed = Math.sqrt(DistanceSq(0, 0, projectile.velX, projectile.velY));
+    projectile.stun = stun;
+    return projectile;
+}
+
 // Functions for bullets
 var projectileFunctions = {
 
@@ -225,7 +236,9 @@ var projectileFunctions = {
 	
 	// Hits the target robot, damaging it
 	Hit: function(target) {
-		target.Damage(this.damage, this.source);
+        var damage = this.damage;
+        if (this.pierce && target.pierceResistant) damage /= 2;
+		target.Damage(damage, this.source);
         
         // Player damage dealt progress
         if (this.source.damageDealt !== undefined) {
@@ -472,6 +485,74 @@ var projectileFunctions = {
         // Slow the target
         if (target.Slow) {
             target.Slow(this.multiplier, this.duration);
+        }
+    },
+    
+    // Updates a grabble hook projectile
+    updateGrapple: function() {
+    
+        // Returning to the source
+        if (this.returning) {
+            var dir = Vector(this.source.x - this.x, this.source.y - this.y);
+            
+            // Reached the source
+            var lengthSq = dir.LengthSq();
+            if (lengthSq <= 400) {
+                this.expired = true;
+                this.source.grapple = undefined;
+            }
+            
+            // Still moving
+            else {
+                dir.SetLength(this.speed);
+                this.x += dir.x;
+                this.y += dir.y;
+                
+                // Drag target with the grapple
+                if (this.target && lengthSq >= 10000) {
+                    this.target.x += dir.x;
+                    this.target.y += dir.y;
+                    this.target.stun(this.stun);
+                }
+            }
+        }
+    
+        // Move normally if not attached to something
+        else {
+            // Move according to its velocity
+            this.x += this.velX;
+            this.y += this.velY;
+            
+            // Mark as expired when outside its range
+            var dx = this.x - this.ox;
+            var dy = this.y - this.oy;
+            if (dx * dx + dy * dy >= this.range * this.range) {
+                this.returning = true;
+            }
+        }
+    },
+    
+    // Applies hit effects for a grapple hook
+    hitGrapple: function(target) {
+        if (this.target) return;
+    
+        target.Damage(this.damage, this.source);
+        
+        // Player damage dealt progress
+        if (this.source.damageDealt !== undefined) {
+            this.source.damageDealt += this.damage;
+        }
+    
+        // Can't grapple bosses
+        if (target.exp >= 300) {
+            this.returning = true;
+        }
+        
+        // Grapple other enemies
+        else {
+            target.stun(this.stun);
+            this.target = target;
+            this.returning = true;
         }
     }
 };
