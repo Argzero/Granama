@@ -20,7 +20,7 @@ function SkillIonicThunder(player) {
                 this.sin * 10, 
                 this.angle, 
                 elapsed * this.GetDamageMultiplier() / 200, 
-                999,
+                599 + 50 * this.upgrades[RAIL_ID],
                 true,
                 true
             );
@@ -35,7 +35,7 @@ function SkillIonicThunder(player) {
             return 0;
         }
         else if (this.charge < 100) {
-            this.charge += 0.1;
+            this.charge += 0.05 + 0.02 * this.upgrades[CHARGE_ID];
         }
     }
 }
