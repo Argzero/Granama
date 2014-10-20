@@ -116,7 +116,7 @@ PLAYER_DATA = [
         preview: 'pValkyrie',
         name: 'Valkyrie',
         ups: ['ChargeSpeed', 'RailGunRange', 'DualShot', 'ShieldRecharge', 'MovementSpeed'],
-        icons: ['Arrow', 'Slash', 'Lifesteal', 'Shield', 'Speed'],
+        icons: ['Charge', 'Range', 'Dual', 'Shield', 'Speed'],
         color: '#0ff',
         weapons: [ 'Rail Gun', 'Double Shot' ],
         skills: [
@@ -164,11 +164,18 @@ SPAWN_DATA = [
 	10, 1, HeavyBouncerEnemy,
     15, 0, LightMedicEnemy,
     10, 1, HeavyMedicEnemy,
+	30, 0, LightGrabberEnemy,
+	20, 1, HeavyGrabberEnemy,
     1,  3, TurretEnemy,
     1,  3, RailerEnemy,
     1,  3, PaladinEnemy,
 	1,  3, HunterEnemy,
-	1,  3, SolarEnemy
+	1,  3, SolarEnemy,
+	2,  6, TurretEnemy,
+    2,  6, RailerEnemy,
+    2,  6, PaladinEnemy,
+	2,  6, HunterEnemy,
+	2,  6, SolarEnemy
 ],
 BOSS_SPAWNS = [
 	HeavyBoss,
@@ -188,6 +195,9 @@ HEAVY_EASY_SPAWNS = [
 ],
 PUNCH_SPAWNS = [
     1, 0, PaladinEnemy
+],
+FIRE_SPAWNS = [
+	1, 0, HeavyGrabberEnemy
 ],
 
 // Drop names (Do not modify these values)

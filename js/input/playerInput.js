@@ -62,7 +62,7 @@ var inputFunctions = {
     
     // Checks a gamepad button for input
     checkButton: function(gamepad, buttonId, property) {
-        if (gamepad.buttons[buttonId].value >= 0.1) {
+        if (gamepad.buttons.length > 0 && gamepad.buttons[buttonId].value >= 0.1) {
 			this[property]++;
 		}
         else this[property] = 0;

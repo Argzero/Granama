@@ -23,6 +23,8 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 		points: 0,
 		sprite: sprite,
 		speed: PLAYER_SPEED,
+		speedM: 1,
+		speedMDuration: 0,
 		health: PLAYER_HEALTH,
 		maxHealth: PLAYER_HEALTH,
 		healthScale: healthScale || 1,
@@ -63,6 +65,12 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 				this.damage += this.damageScale * this.level;
 				this.levelFrame = 0;
 			}
+		},
+		
+		// Slows the enemy down temporarily
+		Slow: function(multiplier, duration) {
+			this.speedM = multiplier;
+			this.speedMDuration = duration;
 		},
         
 		// Damages the player using an optional damage source
@@ -158,6 +166,10 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 			
 				// Update event
 				var speed = this.speed + this.speedScale * this.upgrades[SPEED_ID] * 0.2;
+				if (this.speedMDuration) {
+					speed *= this.speedM;
+					this.speedMDuration--;
+				}
 				if (this.onMove) {
 					var result = this.onMove(speed);
 					if (result !== undefined) {

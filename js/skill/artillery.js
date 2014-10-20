@@ -47,12 +47,12 @@ function SkillArtillery(player) {
                     20 * this.GetDamageMultiplier() * used / 25 * (1 + this.bonus),
                     0,
                     50 + used * 6,
-                    0,
+                    1,
                     [gameScreen.enemyManager.enemies, gameScreen.enemyManager.turrets]
                 );
                 this.bullets.push(rocket);
                 this.charge -= used;
-                this.bonus += 0.25;
+                this.bonus += 0.5;
                 this.timer = 1;
             }
             

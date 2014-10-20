@@ -124,13 +124,13 @@ function FistProjectile(source, x, y, velX, velY, angle, damage, range, delay, s
 }
 
 // A grapple hook projectile for knights
-function GrappleProjectile(source, damage, range, stun) {
-    //                              sprite,                  source, x, y, velX, velY, angle, damage, range, pierce, offScreen
-    var projectile = ProjectileBase(GetImage('grappleHook'), source, 0, 0, source.cos * 20, source.sin * 20, source.angle, damage, range, true, true);
+function GrappleProjectile(sprite, source, damage, range, stun, self) {
+    var projectile = ProjectileBase(sprite, source, 0, 0, source.cos * 20, source.sin * 20, source.angle, damage, range, true, true);
     projectile.Update = projectileFunctions.updateGrapple;
     projectile.Hit = projectileFunctions.hitGrapple;
     projectile.speed = Math.sqrt(DistanceSq(0, 0, projectile.velX, projectile.velY));
     projectile.stun = stun;
+	projectile.self = self;
     return projectile;
 }
 
@@ -491,8 +491,26 @@ var projectileFunctions = {
     // Updates a grabble hook projectile
     updateGrapple: function() {
     
+		// Pull in the user if applicable
+		if (this.self && this.target && !this.tooClose) {
+			var dir = Vector(this.x - this.source.x, this.y - this.source.y);
+			var lengthSq = dir.LengthSq();
+			
+			// Drag user to the grapple
+			if (this.target && lengthSq >= 10000) {
+				dir.SetLength(this.speed);
+				this.source.x += dir.x;
+				this.source.y += dir.y;
+				if (this.target.stun) {
+					this.target.stun(this.stun);
+				}
+			}
+			
+			else this.tooClose = true;
+		}
+	
         // Returning to the source
-        if (this.returning) {
+        else if (this.returning) {
             var dir = Vector(this.source.x - this.x, this.source.y - this.y);
             
             // Reached the source
@@ -512,7 +530,9 @@ var projectileFunctions = {
                 if (this.target && lengthSq >= 10000) {
                     this.target.x += dir.x;
                     this.target.y += dir.y;
-                    this.target.stun(this.stun);
+					if (this.target.stun) {
+						this.target.stun(this.stun);
+					}
                 }
             }
         }
@@ -544,13 +564,17 @@ var projectileFunctions = {
         }
     
         // Can't grapple bosses
-        if (target.exp >= 300) {
+        if (!this.self && target.exp >= 300) {
             this.returning = true;
+			this.target = target;
+			this.self = true;
         }
         
         // Grapple other enemies
         else {
-            target.stun(this.stun);
+            if (target.stun) {
+				target.stun(this.stun);
+			}
             this.target = target;
             this.returning = true;
         }

@@ -57,7 +57,7 @@ function PlayerKnightType() {
         knockback: 50,
         rate: 60,
         angle: Math.PI / 4,
-        list: p.bullets 
+        list: p.bullets
     };
     p.grappleData = {
         cd: 0,

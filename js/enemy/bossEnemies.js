@@ -162,7 +162,16 @@ function FireBoss(x, y) {
         dx: -32,
         dy: -27
     }, 1);
-    
+	
+	// Weapon pattern 2 - Spawning grabbers
+    enemy.AddWeapon(EnemyWeaponSpawn, {
+        enemies: FIRE_SPAWNS,
+        max: 3,
+        rate: 60,
+        delay: 60,
+        dx: 0,
+        dy: 0
+    }, 2);
     
     // Drawing claws
     enemy.ApplySprite = function() {

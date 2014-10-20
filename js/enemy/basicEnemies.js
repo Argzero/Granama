@@ -604,3 +604,103 @@ function HeavyMedicEnemy(x, y) {
     
     return enemy;
 }
+
+function LightGrabberEnemy(x, y) {
+
+	// Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('enemyLightGrabber'), 
+        x, 
+        y,
+        70 * ScalePower(c, 0.9),
+        3 + 0.3 * c,
+        50,
+		LIGHT_EXP
+    );
+    
+    // Movement pattern
+    enemy.ApplyMove = EnemyMoveBasic;
+	
+	var damageScale = ((c + 1) / 2) * (c + 2);
+	enemy.claw = GetImage('enemyLightGrabberArm');
+
+	// Slowing melee attack
+	enemy.AddWeapon(EnemyWeaponMelee, {
+		damage: damageScale,
+		range: 75,
+		rate: 60,
+		slow: 0.75,
+		duration: 60
+	});
+	
+	// Grapple arm
+	enemy.AddWeapon(EnemyWeaponGrapple, {
+		sprite: enemy.claw,
+		rate: 120,
+		range: 600,
+		damage: damageScale,
+		stun: 0,
+		self: true
+	});
+	
+	// Drawing claws
+    enemy.ApplySprite = function() {
+        if (!this.grapple) {
+            canvas.drawImage(this.claw, 5 + this.sprite.width, 10);
+        }
+        canvas.drawImage(this.claw, -5 - this.claw.width, 10);
+    };
+	
+	return enemy;
+}
+
+function HeavyGrabberEnemy(x, y) {
+
+	// Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('enemyHeavyGrabber'), 
+        x, 
+        y,
+        100 * ScalePower(c, 0.9),
+        3 + 0.3 * c,
+        50,
+		HEAVY_EXP
+    );
+    
+    // Movement pattern
+    enemy.ApplyMove = EnemyMoveBasic;
+	
+	var damageScale = ((c + 1) / 2) * (c + 2);
+	enemy.claw = GetImage('enemyHeavyGrabberArm');
+
+	// Slowing melee attack
+	enemy.AddWeapon(EnemyWeaponMelee, {
+		damage: damageScale,
+		range: 75,
+		rate: 60,
+		slow: 0.5,
+		duration: 60
+	});
+	
+	// Grapple arm
+	enemy.AddWeapon(EnemyWeaponGrapple, {
+		sprite: enemy.claw,
+		rate: 120,
+		range: 600,
+		damage: damageScale,
+		stun: 0,
+		self: true
+	});
+	
+	// Drawing claws
+    enemy.ApplySprite = function() {
+        if (!this.grapple) {
+            canvas.drawImage(this.claw, 5 + this.sprite.width, 10);
+        }
+        canvas.drawImage(this.claw, -5 - this.claw.width, 10);
+    };
+	
+	return enemy;
+}
