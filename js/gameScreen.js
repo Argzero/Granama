@@ -3,6 +3,7 @@ function GameScreen(bossRush) {
     this.scrollX = 0;
     this.scrollY = 0;
     this.score = 0;
+    this.gameOver = false;
     
     this.damageOverlay = GetImage("damage");
     this.explosions = new Array();
@@ -49,8 +50,7 @@ function GameScreen(bossRush) {
         for (var i = 0; i < playerManager.players.length; i++) {
             if (playerManager.players[i].robot.health > 0) return;
         }
-        endScreen.setup(this);
-        gameScreen = endScreen;
+        this.gameOver = true;
     };
 	
 	// Pauses the game
@@ -247,7 +247,7 @@ function GameScreen(bossRush) {
     function UpdateMusic() {
 
         // Player must be alive for the music to play
-        //if (this.player.health > 0) {
+        if (!this.gameOver) {
         
             // Initially load the music if it isn't already
             if (!this.music) {
@@ -268,20 +268,22 @@ function GameScreen(bossRush) {
                 }
                 this.music.volume = newVolume;
             }
-            /*
         }
         
         // Fade out and then stop when the player dies
         else if (this.music) {
-            var newVolume = this.music.volume - 0.01;
+            var newVolume = this.music.volume - 0.001;
             if (newVolume <= 0) {
                 this.music.pause();
                 this.music = false;
+                
+                // Move to the end screen
+                endScreen.setup(this);
+                gameScreen = endScreen;
             }
             else {
                 this.music.volume = newVolume;
             }
         }
-        */
     }
 }
