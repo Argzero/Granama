@@ -102,7 +102,7 @@ function PlayerKnightType() {
     // Draws the grapple gun when empty pointed towards the grapple hook
     p.onDraw = function() {
         if (this.grapple) {
-            canvas.translate(this.x, this.y - 20 * this.sin);
+            canvas.translate(this.x - 18 * this.cos, this.y - 18 * this.sin);
             var angle = AngleTo(this.grapple, this);
             var c = Math.cos(angle);
             var s = Math.sin(angle);
