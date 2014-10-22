@@ -25,6 +25,7 @@ function PlayerInput(confirmButtonName) {
         // Base update for controls
         setPlayer: inputFunctions.setPlayer,
         checkKey: inputFunctions.checkKey,
+        checkKeys: inputFunctions.checkKeys,
         checkButton: inputFunctions.checkButton
     };
 };
@@ -60,6 +61,17 @@ var inputFunctions = {
         else this[property] = 0;
     },
     
+    // Checks multiple keys for input
+    checkKeys: function(keys, property) {
+        for (var i = 0; i < keys.length; i++) {
+            if (KeyPressed(keys[i])) {
+                this[property]++;
+                return;
+            }
+        }
+        this[property] = 0;
+    },
+    
     // Checks a gamepad button for input
     checkButton: function(gamepad, buttonId, property) {
         if (gamepad.buttons.length > 0 && gamepad.buttons[buttonId].value >= 0.1) {
@@ -74,7 +86,7 @@ var inputFunctions = {
         // Weapons
         this.checkKey(KEY_SPACE, 'ability');
         this.checkKey(KEY_ESC, 'cancel');
-        this.checkKey(KEY_ENTER, 'confirm');
+        this.checkKeys([KEY_ENTER, KEY_SPACE], 'confirm');
         this.checkKey(KEY_ESC, 'pause');
         this.checkKey(KEY_LMB, 'shoot');
         

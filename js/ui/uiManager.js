@@ -239,14 +239,14 @@ function UIManager(screen) {
 				this.hovered[i]++;
 			}
 			
-            if (input.confirm == 1) {
+            if (input.confirm == 1 || input.right == 1) {
                 if (this.hovered[i] < 5) {
 					if (player.points > 0 && player.upgrades[this.hovered[i]] < 10) {	
 						player.upgrades[this.hovered[i]]++;
 						player.points--;
 					}
 				}
-				else {
+				else if (input.confirm == 1) {
 					this.ready[i] = true;
 					
 					var allReady = true;
@@ -259,14 +259,14 @@ function UIManager(screen) {
 					}
 				}
             }
-			if (input.cancel == 1) {
+			if (input.cancel == 1 || input.left == 1) {
 				if (this.hovered[i] < 5) {
 					if (player.upgrades[this.hovered[i]] > this.start[i][this.hovered[i]]) {
 						player.upgrades[this.hovered[i]]--;
 						player.points++;
 					}
 				}
-				else this.ready[i] = false;
+				else if (input.cancel == 1) this.ready[i] = false;
 			}
         }
         
