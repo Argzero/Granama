@@ -102,13 +102,14 @@ function EnemyManager(screen) {
             else {
                 for (var p = 0; p < playerManager.players.length; p++) {
                     var player = playerManager.players[p].robot;
-                    if (player.health > 0 && this.bullets[i].Collides(player)) {
+                    if (player.health > 0 && i < this.bullets.length && this.bullets[i].Collides(player)) {
 						if (this.bullets[i].damage > 0) {
 							this.bullets[i].Hit(player);
 						}
 						if (!this.bullets[i].pierce) {
 							this.bullets.splice(i, 1);
 							i--;
+							break;
 						}
 					}
                 }

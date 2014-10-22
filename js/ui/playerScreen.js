@@ -202,7 +202,7 @@ function PlayerScreen() {
                     if (input.confirm == 1) {
                         input.locked = true;
                         this.playerSet[i] = true;
-                        for (var k = 0; k < 4; k++) {
+                        for (var k = 0; k < this.open.length; k++) {
                             if (this.open[k] == this.selection[i]) {
                                 this.open.splice(k, 1);
                                 break;

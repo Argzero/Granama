@@ -158,23 +158,25 @@ var enemyFunctions = {
         }
         
         // Move away from other enemies
-        if (gameScreen.enemyManager.enemies.length > 0) {
-            for (var i = 0; i < gameScreen.enemyManager.enemies.length; i++) {
-                var enemy = gameScreen.enemyManager.enemies[i];
-                if (DistanceSq(this.x, this.y, enemy.x, enemy.y) < Sq(this.sprite.width) && DistanceSq(this.x, this.y, enemy.x, enemy.y) > 0) {
-                    if (this.sin * (enemy.x - this.x) - this.cos * (enemy.y - this.y) > 0) {
-                        this.x -= this.speed * this.sin / 2;
-                        this.y += this.speed * this.cos / 2;
-                        break;
-                    }
-                    else {
-                        this.x += this.speed * this.sin / 2;
-                        this.y -= this.speed * this.cos / 2;
-                        break;
-                    }
-                }
-            }
-        }
+		if (!this.isBoss()) {
+			if (gameScreen.enemyManager.enemies.length > 0) {
+				for (var i = 0; i < gameScreen.enemyManager.enemies.length; i++) {
+					var enemy = gameScreen.enemyManager.enemies[i];
+					if (DistanceSq(this.x, this.y, enemy.x, enemy.y) < Sq(this.sprite.width) && DistanceSq(this.x, this.y, enemy.x, enemy.y) > 0) {
+						if (this.sin * (enemy.x - this.x) - this.cos * (enemy.y - this.y) > 0) {
+							this.x -= this.speed * this.sin / 2;
+							this.y += this.speed * this.cos / 2;
+							break;
+						}
+						else {
+							this.x += this.speed * this.sin / 2;
+							this.y -= this.speed * this.cos / 2;
+							break;
+						}
+					}
+				}
+			}
+		}
         
         this.clamp();
     },
@@ -196,7 +198,8 @@ var enemyFunctions = {
     
         // Orientation
         canvas.translate(this.sprite.width / 2, this.sprite.height / 2);
-        canvas.rotate(this.angle);
+        //canvas.rotate(this.angle);
+		canvas.transform(this.sin, -this.cos, this.cos, this.sin, 0, 0);
         canvas.translate(-this.sprite.width / 2, -this.sprite.height / 2);
         
         // Sprite
@@ -231,6 +234,14 @@ var enemyFunctions = {
         var dy = player.y - this.y;
         return player.health > 0 && dx * dx + dy * dy < Sq(range + this.speed) && this.cos * dx + this.sin * dy >= 0;
     },
+	
+	// Bosses ignore direction constraints
+	BossInRange: function(range) {
+		var player = playerManager.getClosest(this.x, this.y);
+        var dx = player.x - this.x;
+        var dy = player.y - this.y;
+        return player.health > 0 && dx * dx + dy * dy < Sq(range + this.speed);
+	},
     
     // Dragon ignores direction
     DragonRange: function(range) {

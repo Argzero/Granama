@@ -4,13 +4,19 @@ function EnemyMoveMedic() {
     // Turn towards the nearest damaged enemy, ignoring faster units and
     // prioritizing non-healers
 	var target, dSq;
-	for (var i = 0; i < gameScreen.enemyManager.enemies.length; i++) {
-		var e = gameScreen.enemyManager.enemies[i];
-		if (e == this || e.health >= e.maxHealth || e.speed > this.speed) continue;
-		var temp = DistanceSq(e.x, e.y, this.x, this.y);
-		if (!dSq || ((!e.heal || target.heal) && temp < dSq)) {
-            dSq = temp;
-            target = e;
+	if (this.forcedTarget) {
+		target = this.forcedTarget;
+		dSq = DistanceSq(target.x, target.y, this.x, this.y);
+	}
+	else {
+		for (var i = 0; i < gameScreen.enemyManager.enemies.length; i++) {
+			var e = gameScreen.enemyManager.enemies[i];
+			if (e == this || e.health >= e.maxHealth || e.speed > this.speed) continue;
+			var temp = DistanceSq(e.x, e.y, this.x, this.y);
+			if (!dSq || ((!e.heal || target.heal) && temp < dSq)) {
+				dSq = temp;
+				target = e;
+			}
 		}
 	}
     

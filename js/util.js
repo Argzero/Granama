@@ -135,6 +135,22 @@ function BulletCollides(bullet, robot) {
     return Sq(bullet.sprite.width * bullet.scale / 2 + robot.sprite.width / 2) > Sq(bullet.x - robot.x) + Sq(bullet.y - robot.y);
 }
 
+function arcCollides(target, x, y, radius, thickness, start, end) {
+	var dx = target.x - x;
+	var dy = target.y - y;
+	var dSq = Sq(dx) + Sq(dy);
+	var thickness = (thickness + target.sprite.width) / 2;
+	var minVec = Vector(Math.cos(start), Math.sin(start));
+	var maxVec = Vector(Math.cos(end), Math.sin(end));
+	if (dSq > Sq(radius - thickness) && dSq < Sq(radius + thickness)) {
+		var minDot = minVec.y * dx - minVec.x * dy;
+		var maxDot = maxVec.y * dx - maxVec.x * dy;
+		
+		return maxDot >= 0 && minDot <= 0;
+	}
+	else return false;
+}
+
 // Squares a number
 // num - number to square
 function Sq(num) {
@@ -244,10 +260,19 @@ function AngleTo(target, source) {
 }
 
 // Calculates a new angle towards the target using a turn speed
-function AngleTowards(target, source, turnSpeed) {
+function AngleTowards(target, source, turnSpeed, backwards) {
 	var a = AngleTo(target, source);
-	var dx = target.x - source.x;
-	var dy = target.y - source.y;
+	
+	var dx, dy;
+	if (backwards) {
+		a = a + Math.PI;
+		dx = source.x - target.x;
+		dy = source.y - target.y;
+	}
+	else {
+		var dx = target.x - source.x;
+		var dy = target.y - source.y;
+	}
 	var dot = source.sin * dx + -source.cos * dy;
 	
 	var result = source.angle;

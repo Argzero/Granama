@@ -219,15 +219,14 @@ function LightMeleeEnemy(x, y) {
 		LIGHT_EXP
     );
     
-    // Movement pattern
-    enemy.ApplyMove = EnemyMoveBasic;
+    // Stats for collision
+	enemy.scale = 1;
+	enemy.damage = 3 * ((c + 1) / 2) * (c + 2);
+	enemy.distance = 200;
+	enemy.chargeDuration = 240;
     
-    // Melee weapon
-    enemy.AddWeapon(EnemyWeaponMelee, {
-        damage: 2 * ((c + 1) / 2) * (c + 2),
-        rate: 30,
-        range: 50
-    });
+    // Movement pattern
+    enemy.ApplyMove = EnemyMoveCharge;
     
     return enemy;
 }
@@ -245,16 +244,15 @@ function HeavyMeleeEnemy(x, y) {
         50,
 		HEAVY_EXP
     );
+	
+	// Stats for collision
+	enemy.scale = 1;
+	enemy.damage = 5 * damageScale;
+	enemy.distance = 250;
+	enemy.chargeDuration = 240;
     
     // Movement pattern
-    enemy.ApplyMove = EnemyMoveBasic;
-    
-    // Gun weapon
-    enemy.AddWeapon(EnemyWeaponMelee, {
-        damage: 3 * ((c + 1) / 2) * (c + 2),
-        rate: 40,
-        range: 50
-    });
+    enemy.ApplyMove = EnemyMoveCharge;
     
     return enemy;
 }
@@ -613,9 +611,9 @@ function LightGrabberEnemy(x, y) {
         GetImage('enemyLightGrabber'), 
         x, 
         y,
-        70 * ScalePower(c, 0.9),
+        40 * ScalePower(c, 0.9),
         3 + 0.3 * c,
-        50,
+        75,
 		LIGHT_EXP
     );
     
@@ -628,7 +626,7 @@ function LightGrabberEnemy(x, y) {
 	// Slowing melee attack
 	enemy.AddWeapon(EnemyWeaponMelee, {
 		damage: damageScale,
-		range: 75,
+		range: 100,
 		rate: 60,
 		slow: 0.75,
 		duration: 60
@@ -663,9 +661,9 @@ function HeavyGrabberEnemy(x, y) {
         GetImage('enemyHeavyGrabber'), 
         x, 
         y,
-        100 * ScalePower(c, 0.9),
+        60 * ScalePower(c, 0.9),
         3 + 0.3 * c,
-        50,
+        75,
 		HEAVY_EXP
     );
     
@@ -678,7 +676,7 @@ function HeavyGrabberEnemy(x, y) {
 	// Slowing melee attack
 	enemy.AddWeapon(EnemyWeaponMelee, {
 		damage: damageScale,
-		range: 75,
+		range: 100,
 		rate: 60,
 		slow: 0.5,
 		duration: 60
@@ -703,4 +701,108 @@ function HeavyGrabberEnemy(x, y) {
     };
 	
 	return enemy;
+}
+
+function SnatcherEnemy(x, y) {
+
+	// Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('enemySnatcher'), 
+        x, 
+        y,
+        100 * ScalePower(c, 1.1),
+        3 + 0.3 * c,
+        500,
+		MINIBOSS_EXP
+    );
+    
+    // Movement pattern
+    enemy.ApplyMove = EnemyMoveBasic;
+	
+	var damageScale = ((c + 1) / 2) * (c + 2);
+	enemy.claw = GetImage('enemySnatcherArm');
+	
+	// Grapple arm
+	enemy.AddWeapon(EnemyWeaponGrapple, {
+		sprite: enemy.claw,
+		rate: 180,
+		range: 500,
+		damage: 5 * damageScale,
+		stun: 0,
+		self: false
+	});
+	
+	// Drawing claws
+    enemy.ApplySprite = function() {
+        if (!this.grapple) {
+            canvas.drawImage(this.claw, 5 + this.sprite.width, 10);
+        }
+        canvas.drawImage(this.claw, -5 - this.claw.width, 10);
+    };
+	
+	return enemy;
+}
+
+function HiveDroneEnemy(x, y) {
+    
+    // Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('enemyHiveDrone'), 
+        x, 
+        y,
+        25 * ScalePower(c, 0.9),
+        4.5 + 0.4 * c,
+        50,
+		0
+    );
+    
+    // Movement pattern
+    enemy.ApplyMove = EnemyMoveBasic;
+    
+    // Melee weapon
+    enemy.AddWeapon(EnemyWeaponMelee, {
+        damage: ((c + 1) / 2) * (c + 2),
+        rate: 30,
+        range: 50
+    });
+	
+	// Draw the wings
+	enemy.wings = EnemyWings(enemy, 'enemyHiveDrone', 0, -5);
+	enemy.ApplyDraw = function() {
+		this.wings.draw();
+	};
+    
+    return enemy;
+}
+
+function HiveDefenderEnemy(x, y) {
+
+    // Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('enemyHiveDefender'), 
+        x, 
+        y,
+        35 * ScalePower(c, 0.9),
+        5 + 0.5 * c,
+        50,
+		0
+    );
+    
+    // Movement pattern
+    enemy.heal = enemy.health / 300;
+	var list = gameScreen.enemyManager.enemies;
+    enemy.forcedTarget = list[list.length - 1];
+	enemy.ApplyMove = EnemyMoveMedic;
+	
+    
+	// Draw the wings
+	enemy.wings = EnemyWings(enemy, 'enemyHiveDefender', 0, -5);
+	enemy.ApplyDraw = function() {
+		this.wings.draw();
+	};
+	
+    return enemy;
 }

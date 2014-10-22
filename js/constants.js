@@ -64,7 +64,8 @@ PLAYER_DATA = [
         color: '#d0d',
 		weapons: [ 'Rocket Launcher', 'Minigun' ],
 		skills: [
-			{ name: 'Recharger', callback: SkillRecharger },
+			//{ name: 'Recharger', callback: SkillRecharger },
+			{ name: 'Perfect Shield', callback: SkillPerfectShield },
 			{ name: 'Reflector', callback: SkillReflector },
 			{ name: 'Stasis', callback: SkillStasis }
 		]
@@ -122,7 +123,7 @@ PLAYER_DATA = [
         skills: [
             { name: 'Ionic Thunder', callback: SkillIonicThunder },
 			{ name: 'Lock Down', callback: SkillLockdown },
-			{ name: 'Sweeping Blade', callback: SkillArtillery }
+			{ name: 'Artillery', callback: SkillArtillery }
         ]
     }
 ],
@@ -162,8 +163,8 @@ SPAWN_DATA = [
 	10, 1, HeavyOrbiterEnemy,
 	15, 0, LightBouncerEnemy,
 	10, 1, HeavyBouncerEnemy,
-    15, 0, LightMedicEnemy,
-    10, 1, HeavyMedicEnemy,
+    15, 5, LightMedicEnemy,
+    10, 5, HeavyMedicEnemy,
 	30, 0, LightGrabberEnemy,
 	20, 1, HeavyGrabberEnemy,
     1,  3, TurretEnemy,
@@ -171,16 +172,19 @@ SPAWN_DATA = [
     1,  3, PaladinEnemy,
 	1,  3, HunterEnemy,
 	1,  3, SolarEnemy,
+	1,  3, SnatcherEnemy,
 	2,  6, TurretEnemy,
     2,  6, RailerEnemy,
     2,  6, PaladinEnemy,
 	2,  6, HunterEnemy,
-	2,  6, SolarEnemy
+	2,  6, SolarEnemy,
+	2,  6, SnatcherEnemy
 ],
 BOSS_SPAWNS = [
 	HeavyBoss,
 	FireBoss,
     PunchBoss,
+	QueenBoss,
     DragonBoss
 ],
 DRAGON_SPAWNS = [
@@ -197,7 +201,12 @@ PUNCH_SPAWNS = [
     1, 0, PaladinEnemy
 ],
 FIRE_SPAWNS = [
-	1, 0, HeavyGrabberEnemy
+	10, 0, HeavyGrabberEnemy,
+	1, 0, SnatcherEnemy
+],
+QUEEN_SPAWNS = [
+	1, 0, HiveDroneEnemy,
+	1, 0, HiveDefenderEnemy
 ],
 
 // Drop names (Do not modify these values)

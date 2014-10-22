@@ -132,8 +132,8 @@ function FireBoss(x, y) {
 			damage: 0.02 * damageScale,
 			range: 200,
 			rate: 3,
-			dx: -60 + 120 * i,
-			dy: 40
+			dx: -115 + 230 * i,
+			dy: 80
 		});
 	}
 	for (var i = 0; i < 3; i++) {
@@ -159,8 +159,8 @@ function FireBoss(x, y) {
         damage: damageScale,
         knockback: 100,
         angle: 0,
-        dx: -32,
-        dy: -27
+        dx: -90,
+        dy: 0
     }, 1);
 	
 	// Weapon pattern 2 - Spawning grabbers
@@ -176,15 +176,15 @@ function FireBoss(x, y) {
     // Drawing claws
     enemy.ApplySprite = function() {
         if (this.sword || !this.right) {
-            canvas.drawImage(this.leftClawImg, this.sprite.width - 28, 69);
+            canvas.drawImage(this.leftClawImg, this.sprite.width, 40);
         }
         if (this.sword || this.right) {
-            canvas.drawImage(this.rightClawImg, 28 - this.rightClawImg.width, 69);
+            canvas.drawImage(this.rightClawImg, -this.rightClawImg.width, 40);
         }
     };
 	
 	// Draw the tail
-	enemy.tail = EnemyTail(enemy, GetImage('bossTailMid'), GetImage('bossTailEnd'), 45, 5, 75, 0);
+	enemy.tail = EnemyTail(enemy, GetImage('bossFireSegment'), GetImage('bossFireEnd'), 60, 4, 90, 25);
 	enemy.ApplyDraw = function() {
 		this.tail.Draw();
 	}
@@ -377,4 +377,87 @@ function DragonBoss(x, y) {
     }
 
     return enemy;
+}
+
+// Boss that uses a minigun, mines, and rockets to fight
+function QueenBoss(x, y) {
+    
+    // Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('bossQueen'), 
+        x, 
+        y,
+        300 * ScalePower(c, 1.4) * playerManager.players.length,
+        3 + 0.3 * c,
+        600,
+		BOSS_EXP,
+        600,
+        600
+    );
+    
+	// Boss Stuff
+    enemy.pierceResistant = true;
+    enemy.IsInRange = enemyFunctions.BossInRange;
+	enemy.Knockback = enemyFunctions.BossKnockback;
+    enemy.Slow = enemyFunctions.BossSlow;
+	enemy.ApplyMove = EnemyMoveBasic;
+	
+	var damageScale = ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000);
+	
+	// Stats for collision
+	enemy.scale = 1;
+	enemy.damage = 10 * damageScale;
+	enemy.distance = 400;
+	enemy.chargeDuration = 180;
+    
+	// Attack Pattern 0 - Charging around spawning bees
+	enemy.SetMovement(0, EnemyMoveCharge);
+	enemy.AddWeapon(EnemyWeaponSpawn, {
+        enemies: QUEEN_SPAWNS,
+        max: 20,
+        rate: 45,
+        delay: 45,
+        dx: 0,
+        dy: 0
+    }, 0);
+	
+	// Attack pattern 1 - Backwards shooting
+	enemy.SetMovement(1, EnemyMoveBasic);
+	for (var i = 0; i < 2; i++) {
+		enemy.AddWeapon(EnemyWeaponGun, {
+			sprite: GetImage('stinger'),
+			damage: damageScale * 3,
+			range: 750,
+			rate: 45,
+			spread: 2,
+			dx: -50 + 100 * i,
+			dy: -155,
+			speed: -12
+		}, 1);
+	}
+	
+	// Attack pattern 2 - X Laser
+	enemy.SetMovement(2, EnemyMoveBasic);
+	for (var i = 0; i < 2; i++) {
+		enemy.AddWeapon(EnemyWeaponGun, {
+			sprite: GetImage('bossLaser'),
+			damage: damageScale * 0.2,
+			pierce: true,
+			range: 750,
+			rate: 1,
+			dx: -85 + 170 * i,
+			dy: 90,
+			angleOffset: -10 + 20 * i
+		}, 2);
+	}
+	
+	// Draw the wings
+	enemy.wings = EnemyWings(enemy, 'bossQueen', -15, -30);
+	enemy.ApplyDraw = function() {
+		this.wings.draw();
+		this.backwards = this.pattern == 1;
+	};
+	
+	return enemy;
 }

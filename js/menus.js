@@ -54,8 +54,6 @@ function LoadingScreen() {
         'bossLaser',
         'bossMine',
         'bossPunch',
-        'bossTailEnd',
-        'bossTailMid',
         'bullet',
         'controlBtn',
         'controlBtnHover',

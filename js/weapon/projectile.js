@@ -98,7 +98,8 @@ function SwordProjectile(sprite, source, x, y, r, angle, damage, arc, knockback,
     var projectile = ProjectileBase(sprite, source, source.x + x, source.y + y, 0, 0, source.angle, damage, 9999, true, true);
     projectile.Update = projectileFunctions.updateSword;
     projectile.Hit = projectileFunctions.hitSword;
-    projectile.arc = arc;
+    projectile.stop = projectileFunctions.stopSword;
+	projectile.arc = arc;
     projectile.knockback = knockback;
     projectile.initial = Vector(x, y);
     projectile.start = Vector(-r * Math.sin(arc / 2), r * Math.cos(arc / 2));
@@ -106,20 +107,22 @@ function SwordProjectile(sprite, source, x, y, r, angle, damage, arc, knockback,
     projectile.state = 0;
     projectile.initialAngle = angle;
     projectile.lifesteal = lifesteal;
-    return projectile;
+	return projectile;
 }
 
 // Boss fist projectile
 function FistProjectile(source, x, y, velX, velY, angle, damage, range, delay, side) {
     var projectile = ProjectileBase(GetImage('fist' + side), source, x, y, velX, velY, angle, damage, 99999, true, true);
-    projectile.speed = Distance(0, 0, velX, velY);
+    projectile.ApplyUpdate = projectileFunctions.UpdateFist;
+    projectile.stop = projectileFunctions.stopFist;
+	projectile.speed = Distance(0, 0, velX, velY);
     projectile.delay = delay;
     projectile.fistRange = range;
     projectile.side = side.toLowerCase();
     projectile.tx = x;
-    projectile.ApplyUpdate = projectileFunctions.UpdateFist;
-    projectile.returning = false;
+	projectile.returning = false;
     projectile.actualDamage = damage;
+	
     return projectile;
 }
 
@@ -128,7 +131,8 @@ function GrappleProjectile(sprite, source, damage, range, stun, self) {
     var projectile = ProjectileBase(sprite, source, 0, 0, source.cos * 20, source.sin * 20, source.angle, damage, range, true, true);
     projectile.Update = projectileFunctions.updateGrapple;
     projectile.Hit = projectileFunctions.hitGrapple;
-    projectile.speed = Math.sqrt(DistanceSq(0, 0, projectile.velX, projectile.velY));
+    projectile.stop = projectileFunctions.stopGrapple;
+	projectile.speed = Math.sqrt(DistanceSq(0, 0, projectile.velX, projectile.velY));
     projectile.stun = stun;
 	projectile.self = self;
     return projectile;
@@ -336,6 +340,12 @@ var projectileFunctions = {
             this.damage = 0;
         }
     },
+	
+	// Stops a fist projectile
+	stopFist: function() {
+		this.expired = true;
+		this.source[this.side + 'Fist'] = true;
+	},
     
     // Updates a sword projectile
     updateSword: function() {
@@ -418,6 +428,12 @@ var projectileFunctions = {
 			target.Knockback(k.x, k.y);
 		}
     },
+	
+	// Stops a sword projectile
+	stopSword: function() {
+		this.source.sword = true;
+        this.expired = true;
+	},
 	
     // Updates a rocket projectile
     updateRocket: function() {
@@ -556,15 +572,18 @@ var projectileFunctions = {
     hitGrapple: function(target) {
         if (this.target) return;
     
-        target.Damage(this.damage, this.source);
-        
+		// Damage the target if applicable
+		if (target.Damage) {
+			target.Damage(this.damage, this.source);
+        }
+		
         // Player damage dealt progress
         if (this.source.damageDealt !== undefined) {
             this.source.damageDealt += this.damage;
         }
     
         // Can't grapple bosses
-        if (!this.self && target.exp >= 300) {
+        if (this.self || (target.isBoss && target.isBoss()) || (!target.health && target.health != 0)) {
             this.returning = true;
 			this.target = target;
 			this.self = true;
@@ -578,5 +597,10 @@ var projectileFunctions = {
             this.target = target;
             this.returning = true;
         }
-    }
+    },
+	
+	// Stops a grapple projectile
+	stopGrapple: function(cause) {
+		this.Hit(cause);
+	}
 };

@@ -6,15 +6,16 @@
 //    rate - the delay between shots
 //
 // Optional data values:
-//  spread - the spread of the gun
-//  sprite - the sprite used by the gun (default 'bullet')
-//   delay - the delay before firing when in range (optional)
-//  pierce - whether or not to fire piercing bullets
-//   speed - speed of the bullets
-//  offScreen - whether or not the bullet can go off screen
-//      dx - horizontal offset for the bullet spawn location
-//      dy - vertical offset for the bullet spawn location
-//   angle - max angle of deviation from a straight shot
+//      spread - the spread of the gun
+//      sprite - the sprite used by the gun (default 'bullet')
+//       delay - the delay before firing when in range (optional)
+//      pierce - whether or not to fire piercing bullets
+//       speed - speed of the bullets
+//   offScreen - whether or not the bullet can go off screen
+//          dx - horizontal offset for the bullet spawn location
+//          dy - vertical offset for the bullet spawn location
+//       angle - max angle of deviation from a straight shot
+// angleOffset - angle offset of the projectile
 function EnemyWeaponGun(data) {
 
     // Initialize data
@@ -35,9 +36,17 @@ function EnemyWeaponGun(data) {
             return;
         }
         var vel = Vector(this.cos * (data.speed || BULLET_SPEED), this.sin * (data.speed || BULLET_SPEED));
-        if (data.angle) {
-            vel.Rotate((Rand(2 * data.angle + 1) - data.angle) * Math.PI / 180);
+        var bonusAngle = 0;
+		if (data.angle) {
+			var a = (Rand(2 * data.angle + 1) - data.angle) * Math.PI / 180;
+            vel.Rotate(a);
+			bonusAngle += a;
         }
+		if (data.angleOffset) {
+			var a = data.angleOffset * Math.PI / 180;
+			vel.Rotate(a);
+			bonusAngle += a;
+		}
         var bullet = ProjectileBase(
             data.sprite || GetImage('bullet'),
             this,
@@ -45,7 +54,7 @@ function EnemyWeaponGun(data) {
             data.dy, 
             vel.x, 
             vel.y, 
-            this.angle,
+            this.angle + bonusAngle,
             data.damage, 
             data.range * 1.5, 
             data.pierce,
