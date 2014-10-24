@@ -183,7 +183,7 @@ function EnemyManager(screen) {
                 if (this.enemies[i].exp >= 300) {
                 
                     // More drops for bosses
-					screen.dropManager.Drop(this.enemies[i].x, this.enemies[i].y, BOSS_DROPS);
+					//screen.dropManager.Drop(this.enemies[i].x, this.enemies[i].y, BOSS_DROPS);
                 
                     // Remove all enemies with explosions
                     for (var j = 0; j < this.enemies.length; j++) {
@@ -210,7 +210,7 @@ function EnemyManager(screen) {
                         screen.score++;
                         
                         // Drop one item
-                        screen.dropManager.Drop(this.enemies[i].x, this.enemies[i].y, 1);
+                        //screen.dropManager.Drop(this.enemies[i].x, this.enemies[i].y, 1);
                     }
 					
 					// Remove the enemy

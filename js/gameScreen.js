@@ -18,6 +18,12 @@ function GameScreen(bossRush) {
     this.playerMinY = 0;
     this.playerMaxX = 9999;
     this.playerMaxY = 9999;
+    this.pads = [
+        HealingPad(GAME_WIDTH / 3, GAME_HEIGHT / 3), 
+        HealingPad(GAME_WIDTH * 2 / 3, GAME_HEIGHT / 3), 
+        HealingPad(GAME_WIDTH / 3, GAME_HEIGHT * 2 / 3), 
+        HealingPad(GAME_WIDTH * 2 / 3, GAME_HEIGHT * 2 / 3)
+    ];
     
     // Update function
     this.Update = function() {
@@ -28,7 +34,7 @@ function GameScreen(bossRush) {
         pageScrollX = (doc && doc.scrollLeft || body && body.scrollLeft || 0);
         pageScrollY = (doc && doc.scrollTop  || body && body.scrollTop  || 0);
         
-        // Players and enemies don't need to update if the game is over
+        // Update when not paused
         playerManager.update(this.paused);
         if (!this.paused) {
             this.enemyManager.UpdateEnemies();
@@ -38,6 +44,11 @@ function GameScreen(bossRush) {
             }
             else {
                 this.enemyManager.CheckSpawns();
+            }
+            
+            // Update healing pads
+            for (var i = 0; i < this.pads.length; i++) {
+                this.pads[i].update();
             }
 		
             this.UpdateBullets();
@@ -86,6 +97,10 @@ function GameScreen(bossRush) {
         canvas.translate(-this.scrollX, -this.scrollY);
         
         this.dropManager.Draw();
+        
+        for (var i = 0; i < this.pads.length; i++) {
+            this.pads[i].draw();
+        }
         
         // Players
         for (var i = 0; i < playerManager.players.length; i++) {    

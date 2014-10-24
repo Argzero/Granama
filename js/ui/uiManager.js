@@ -1,14 +1,6 @@
 // Handles drawing the UI in the game
 function UIManager(screen) {
 
-    // Health bar images
-    this.healthTop = GetImage("healthTop");
-    this.healthBottom = GetImage("healthBottom");
-    this.healthRed = GetImage("healthr");
-    this.healthGreen = GetImage("healthg");
-    this.healthYellow = GetImage("healthy");
-    this.healthBlue = GetImage("healthb");
-	
 	this.screen = screen;
 	this.ready = undefined;
 	this.hovered = undefined;
