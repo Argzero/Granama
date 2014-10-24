@@ -22,6 +22,7 @@ function HeavyBoss(x, y) {
     enemy.Slow = enemyFunctions.BossSlow;
     enemy.coverRight = GetImage('bossHeavyCoverRight');
     enemy.coverLeft = GetImage('bossHeavyCoverLeft');
+    enemy.coverOffset = 0;
     
     var damageScale = ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000);
     
@@ -96,10 +97,14 @@ function HeavyBoss(x, y) {
     
     // Drawing covers
     enemy.ApplySprite = function() {
-        if (this.pattern == 0) {
-            canvas.drawImage(this.coverRight, 88, 56);
-            canvas.drawImage(this.coverLeft, this.sprite.width - 88 - this.coverLeft.width, 56);
+        if (this.pattern != 0 && this.coverOffset < 45) {
+            this.coverOffset++;
         }
+        else if (this.pattern == 0 && this.coverOffset > 0) {
+            this.coverOffset--;
+        }
+        canvas.drawImage(this.coverRight, 88 - this.coverOffset, 56);
+        canvas.drawImage(this.coverLeft, this.sprite.width - 88 - this.coverLeft.width + this.coverOffset, 56);
     };
 	
 	return enemy;
