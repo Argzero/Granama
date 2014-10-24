@@ -9,7 +9,13 @@
 //
 // Optional data values: 
 //  duration - how long the mines last for
+//        dx - horizontal offset
+//        dy - vertical offset
 function EnemyWeaponMines(data) {
+
+    // Initialize data
+    if (data.dx === undefined) data.dx = 0;
+    if (data.dy === undefined) data.dy = 0;
 
     // See if it's in range while ignoring the direction being faced
     var player = playerManager.getClosest(this.x, this.y);
@@ -18,7 +24,9 @@ function EnemyWeaponMines(data) {
         
     // Drop mines
     if (inRange && data.cd <= 0) {
-        var mine = new Mine(this.x, this.y, data.damage, data.type);
+        var offset = Vector(data.dx, data.dy);
+        offset.Rotate(this.sin, -this.cos);
+        var mine = new Mine(this.x + offset.x, this.y + offset.y, data.damage, data.type);
         gameScreen.enemyManager.mines.push(mine);
         if (data.duration) {
             mine.lifespan = data.duration;

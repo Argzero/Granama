@@ -328,7 +328,7 @@ var projectileFunctions = {
         
         // When returning, reattach to the boss if close by
         if (this.returning) {
-            if (DistanceSq(this.x, this.y, this.source.x, this.source.y) < 10000) {
+            if (DistanceSq(this.x, this.y, this.source.x, this.source.y) < 22500) {
                 this.expired = true;
                 this.source[this.side + 'Fist'] = true;
             }

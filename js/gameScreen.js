@@ -272,7 +272,7 @@ function GameScreen(bossRush) {
         
         // Fade out and then stop when the player dies
         else if (this.music) {
-            var newVolume = this.music.volume - 0.001;
+            var newVolume = this.music.volume - 0.002;
             if (newVolume <= 0) {
                 this.music.pause();
                 this.music = false;

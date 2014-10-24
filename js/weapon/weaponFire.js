@@ -10,6 +10,7 @@
 //   speed - speed of the fire
 //      dx - horizontal offset for the bullet spawn location
 //      dy - vertical offset for the bullet spawn location
+//   angle - angle offset of the projectile
 function EnemyWeaponFire(data) {
 
     // Initialize data
@@ -25,14 +26,21 @@ function EnemyWeaponFire(data) {
 
     // Fire when in range and off cooldown
     if (this.IsInRange(data.range) && data.cd <= 0) {
+        var vel = Vector(this.cos * (data.speed || BULLET_SPEED), this.sin * (data.speed || BULLET_SPEED));
+        var bonusAngle = 0;
+        if (data.angle) {
+			var a = data.angle * Math.PI / 180;
+			vel.Rotate(a);
+			bonusAngle += a;
+		}
         var fire = FireProjectile(
             data.sprite,
             this,
             data.dx,
             data.dy, 
-            this.cos * (data.speed || BULLET_SPEED), 
-            this.sin * (data.speed || BULLET_SPEED), 
-            this.angle,
+            vel.x, 
+            vel.y, 
+            this.angle + bonusAngle,
             data.damage, 
             data.range * 1.5
         );

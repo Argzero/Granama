@@ -20,18 +20,22 @@ function HeavyBoss(x, y) {
     enemy.pierceResistant = true;
     enemy.Knockback = enemyFunctions.BossKnockback;
     enemy.Slow = enemyFunctions.BossSlow;
+    enemy.coverRight = GetImage('bossHeavyCoverRight');
+    enemy.coverLeft = GetImage('bossHeavyCoverLeft');
     
     var damageScale = ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000);
     
     // Attack pattern 0 - Orbiting mines/spawning
-    enemy.SetRange(0, 350);
+    enemy.SetRange(0, 450);
     enemy.SetMovement(0, EnemyMoveOrbit);
     enemy.AddWeapon(EnemyWeaponMines, {
         type: 'boss',
         damage: 8 * damageScale,
         rate: 30,
         range: 9999,
-        duration: 2700
+        duration: 2700,
+        dx: 0,
+        dy: -105
     });
 	enemy.AddWeapon(EnemyWeaponSpawn, {
 		enemies: c < 4 ? HEAVY_EASY_SPAWNS : HEAVY_SPAWNS,
@@ -43,15 +47,15 @@ function HeavyBoss(x, y) {
 	});
 	
     // Attack pattern 1 - Minigun/Rockets
-    enemy.SetRange(1, 300);
+    enemy.SetRange(1, 400);
     enemy.SetMovement(1, EnemyMoveBasic);
 	for (var i = 0; i < 2; i++) {
 		enemy.AddWeapon(EnemyWeaponGun, {
 			damage: 0.5 * damageScale,
-			range: 350,
+			range: 450,
 			rate: 10,
-			dx: -60 + 120 * i,
-			dy: 100,
+			dx: -130 + 260 * i,
+			dy: 130,
 			angle: 20,
 			delay: 5 * i
 		}, 1);
@@ -61,34 +65,42 @@ function HeavyBoss(x, y) {
 			sprite: GetImage('rocket'),
             lists: [playerManager.getRobots()],
 			damage: 4 * damageScale,
-			range: 350,
+			range: 450,
             radius: 100,
             knockback: 150,
 			rate: 120,
-			dx: -46 + 92 * i,
-			dy: 18,
+			dx: -60 + 120 * i,
+			dy: -35,
 			delay: 60 * i,
             speed: 15
 		}, 1);
 	}
     
     // Attack pattern 2 - Homing rockets
-    enemy.SetRange(2, 500);
+    enemy.SetRange(2, 600);
     enemy.SetMovement(2, EnemyMoveBasic);
     for (var i = 0; i < 2; i++) {
 		enemy.AddWeapon(EnemyWeaponHomingRocket, {
 			sprite: GetImage('rocket'),
 			damage: 4 * damageScale,
-			range: 550,
+			range: 650,
             radius: 100,
             knockback: 150,
 			rate: 60,
-			dx: -46 + 92 * i,
-			dy: 18,
+			dx: -60 + 120 * i,
+			dy: -35,
 			delay: 30 * i,
             speed: 8
 		}, 2);
 	}
+    
+    // Drawing covers
+    enemy.ApplySprite = function() {
+        if (this.pattern == 0) {
+            canvas.drawImage(this.coverRight, 88, 56);
+            canvas.drawImage(this.coverLeft, this.sprite.width - 88 - this.coverLeft.width, 56);
+        }
+    };
 	
 	return enemy;
 }
@@ -117,6 +129,8 @@ function FireBoss(x, y) {
     // Specific stuff
     enemy.leftClawImg = GetImage('bossFireClawLeft');
     enemy.rightClawImg = GetImage('bossFireClawRight');
+    enemy.clawRotation = Vector(1, 0);
+    enemy.clawRotCount = 0;
     enemy.sword = true;
     enemy.right = true;
     
@@ -132,8 +146,9 @@ function FireBoss(x, y) {
 			damage: 0.02 * damageScale,
 			range: 200,
 			rate: 3,
-			dx: -115 + 230 * i,
-			dy: 80
+            angle: -30 + 60 * i,
+			dx: -120 + 240 * i,
+			dy: 15
 		});
 	}
 	for (var i = 0; i < 3; i++) {
@@ -175,11 +190,27 @@ function FireBoss(x, y) {
     
     // Drawing claws
     enemy.ApplySprite = function() {
+        if (this.pattern == 0 && this.clawRotCount < 30) {
+            this.clawRotation.Rotate(COS_1, SIN_1);
+            this.clawRotCount++;
+        }
+        else if (this.pattern != 0 && this.clawRotCount > 0) {
+            this.clawRotation.Rotate(COS_1, -SIN_1);
+            this.clawRotCount--;
+        }
         if (this.sword || !this.right) {
-            canvas.drawImage(this.leftClawImg, this.sprite.width, 40);
+            canvas.save();
+            canvas.translate(this.leftClawImg.width / 2 + this.sprite.width, 40 + this.leftClawImg.height / 2);
+            canvas.transform(this.clawRotation.x, this.clawRotation.y, -this.clawRotation.y, this.clawRotation.x, 0, 0);
+            canvas.drawImage(this.leftClawImg, -this.leftClawImg.width / 2, -this.leftClawImg.height / 2);
+            canvas.restore();
         }
         if (this.sword || this.right) {
-            canvas.drawImage(this.rightClawImg, -this.rightClawImg.width, 40);
+            canvas.save();
+            canvas.translate(-this.leftClawImg.width / 2, 40 + this.leftClawImg.height / 2);
+            canvas.transform(this.clawRotation.x, -this.clawRotation.y, this.clawRotation.y, this.clawRotation.x, 0, 0);
+            canvas.drawImage(this.rightClawImg, -this.rightClawImg.width / 2, -this.rightClawImg.height / 2);
+            canvas.restore();
         }
     };
 	

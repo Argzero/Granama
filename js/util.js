@@ -136,19 +136,30 @@ function BulletCollides(bullet, robot) {
 }
 
 function arcCollides(target, x, y, radius, thickness, start, end) {
-	var dx = target.x - x;
-	var dy = target.y - y;
-	var dSq = Sq(dx) + Sq(dy);
-	var thickness = (thickness + target.sprite.width) / 2;
-	var minVec = Vector(Math.cos(start), Math.sin(start));
-	var maxVec = Vector(Math.cos(end), Math.sin(end));
-	if (dSq > Sq(radius - thickness) && dSq < Sq(radius + thickness)) {
-		var minDot = minVec.y * dx - minVec.x * dy;
-		var maxDot = maxVec.y * dx - maxVec.x * dy;
-		
-		return maxDot >= 0 && minDot <= 0;
-	}
-	else return false;
+    var dx = target.x - x;
+    var dy = target.y - y;
+    var dSq = Sq(dx) + Sq(dy);
+    var minVec = Vector(Math.cos(start), Math.sin(start));
+    var maxVec = Vector(Math.cos(end), Math.sin(end));
+    if (!target.sprite) {
+        return false;
+        /*
+        if (dSq > Sq(radius + target.radius)) {
+            
+        }
+        else return false;
+        */
+    }
+    else {
+        var thickness = (thickness + target.sprite.width) / 2;
+        if (dSq > Sq(radius - thickness) && dSq < Sq(radius + thickness)) {
+            var minDot = minVec.y * dx - minVec.x * dy;
+            var maxDot = maxVec.y * dx - maxVec.x * dy;
+            
+            return maxDot >= 0 && minDot <= 0;
+        }
+        else return false;
+    }
 }
 
 // Squares a number
