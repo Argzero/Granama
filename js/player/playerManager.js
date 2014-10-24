@@ -54,7 +54,7 @@ var playerManager = {
     
     // Adds players so that there's 4
     setMultiplayer: function() {
-        while (this.players.length < 4) {
+        while (this.players.length < 4 && (this.players.length < 1 || gamepads)) {
             this.players.push(Player(this.players.length - 1));
         }
     },

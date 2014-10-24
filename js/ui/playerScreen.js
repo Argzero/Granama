@@ -4,7 +4,7 @@ function PlayerScreen() {
 	this.selection = [0, 0, 0, 0];
 	this.frame = 0;
     this.playerSet = [false, false, false, false];
-    this.joined = [true, false, false, false];
+    this.joined = [!gamepads, false, false, false];
     this.ready = [false, false, false, false];
     this.abilityId = [0, 0, 0, 0];
     this.open = [0, 1, 2, 3, 4];
@@ -54,9 +54,10 @@ function PlayerScreen() {
         canvas.textBaseline = 'top';
         canvas.fillText("Choose A Robot", x, y - 300);
         
+        var baseX = x - (playerManager.players.length - 1) * 135;
         for (var i = 0; i < playerManager.players.length; i++) {
         
-            x = element.width / 2 - 405 + 270 * i;
+            x = baseX + 270 * i;
             
             // Draw the boxes for the options
             canvas.fillStyle = '#484848';
@@ -80,12 +81,17 @@ function PlayerScreen() {
                 canvas.fillStyle = 'white';
                 canvas.font = '24px Flipbash';
                 canvas.textAlign = 'center';
-                canvas.fillText('Press "Start"', x, y);
-                canvas.fillText('to join...', x, y + 30);
+                canvas.fillText('Press "Space"', x, y);
+                canvas.fillText('or "Start"', x, y + 30);
+                canvas.fillText('to join...', x, y + 60);
                 
                 // Joining
-                if (input.pause == 1) {
+                if ((input.id !== undefined && input.pause == 1) 
+                    || (input.id === undefined && input.ability == 1)) {
                     this.joined[i] = true;
+                }
+                if (input.id === undefined && input.cancel == 1) {
+                    gameScreen = new TitleScreen();
                 }
             }
             else {
@@ -215,6 +221,9 @@ function PlayerScreen() {
                                 }
                             }
                         }
+                    }
+                    if (input.cancel == 1) {
+                        this.joined[i] = false;
                     }
                 }
                 

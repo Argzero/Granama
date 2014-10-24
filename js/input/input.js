@@ -1,6 +1,6 @@
 var keysDown = new Array(false, false, false, false, false, false, false, false, false, false, false, false);
 var mouseX = 0, mouseY = 0, mx, my;
-var gamepads = navigator.getGamepads();
+var gamepads = (navigator.getGamepads ? navigator.getGamepads() : undefined);
 
 // Key down event
 document.addEventListener('keydown', function(event) {
@@ -18,21 +18,27 @@ document.addEventListener('keyup', function(event) {
     }
 });
 
-// Gamepad connected
-window.addEventListener('gamepadconnected', function(e) {
-	console.log("Pad connected at index "  + e.gamepad.index + " and ID " + e.gamepad.id);
-	gamepads[e.gamepad.index] = e.gamepad;
-});
+if (gamepads) {
+    
+    // Gamepad connected
+    window.addEventListener('gamepadconnected', function(e) {
+        console.log("Pad connected at index "  + e.gamepad.index + " and ID " + e.gamepad.id);
+        gamepads[e.gamepad.index] = e.gamepad;
+    });
 
-// Gamepad disconnected
-window.addEventListener('gamepaddisconnected', function(e) {
-	console.log("Pad disconnected at index " + e.gamepad.index);
-	gamepads[e.gamepad.index] = undefined;
-});
+    // Gamepad disconnected
+    window.addEventListener('gamepaddisconnected', function(e) {
+        console.log("Pad disconnected at index " + e.gamepad.index);
+        gamepads[e.gamepad.index] = undefined;
+    });
+}
 
 // Updates the mouse according to the client mouse position
-document.addEventListener('mousemove', function(event) {
-    
+document.addEventListener('mousemove', function(e) {
+    e = e || event;
+    mx = e.pageX - e.target.offsetLeft;
+    my = e.pageY - e.target.offsetTop;
+    /*
     // Firefox/Chrome
     if (event) {
         mx = event.clientX;
@@ -44,6 +50,7 @@ document.addEventListener('mousemove', function(event) {
         mx = window.event.clientX;
         my = window.event.clientY;
     }
+    */
 });
 
 // Tells when the mouse button is no longer pressed
