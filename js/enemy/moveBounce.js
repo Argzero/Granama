@@ -11,13 +11,9 @@ function EnemyMoveBounce() {
 	
 	// Looking direction
 	var player = playerManager.getClosest(this.x, this.y);
-	var a = Math.atan((player.y - this.y) / (this.x - player.x));
-	if (this.x < player.x) {
-		this.angle = -HALF_PI - a;
-	}
-	else {
-		this.angle = HALF_PI - a;
-	}
+	this.angle = AngleTo(player, this);
+    this.cos = -Math.sin(this.angle);
+    this.sin = Math.cos(this.angle);
 	
 	// Bounds
 	if (this.x - this.sprite.width / 2 <= 0) {

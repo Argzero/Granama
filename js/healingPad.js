@@ -17,7 +17,7 @@ function HealingPad(x, y) {
             var players = [];
             for (var i = 0; i < playerManager.players.length; i++) {
                 var robot = playerManager.players[i].robot;
-                if (robot.health < robot.maxHealth && this.charge > 0 && DistanceSq(robot.x, robot.y, this.x, this.y) < Sq(this.sprite.width / 2)) {
+                if (robot.health > 0 && robot.health < robot.maxHealth && this.charge > 0 && DistanceSq(robot.x, robot.y, this.x, this.y) < Sq(this.sprite.width / 2)) {
                     players.push(robot);
                 }
             }

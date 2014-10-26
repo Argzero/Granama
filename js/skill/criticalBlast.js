@@ -4,7 +4,7 @@ function SkillCriticalBlast(player) {
         // Activating the ability
         if (this.IsSkillCast()) {
             this.skillDuration = 5;
-            this.skillCd = 1200;
+            this.skillCd = 1200 * this.cdm;
         }
         
         // Active ability effects

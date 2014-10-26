@@ -671,8 +671,9 @@ function HeavyGrabberEnemy(x, y) {
     enemy.ApplyMove = EnemyMoveBasic;
 	
 	var damageScale = ((c + 1) / 2) * (c + 2);
-	enemy.claw = GetImage('enemyHeavyGrabberArm');
-
+	enemy.clawLeft = GetImage('enemyHeavyGrabberArmLeft');
+    enemy.clawRight = GetImage('enemyHeavyGrabberArmRight');
+    
 	// Slowing melee attack
 	enemy.AddWeapon(EnemyWeaponMelee, {
 		damage: damageScale,
@@ -684,7 +685,7 @@ function HeavyGrabberEnemy(x, y) {
 	
 	// Grapple arm
 	enemy.AddWeapon(EnemyWeaponGrapple, {
-		sprite: enemy.claw,
+		sprite: enemy.clawLeft,
 		rate: 120,
 		range: 600,
 		damage: damageScale,
@@ -695,9 +696,9 @@ function HeavyGrabberEnemy(x, y) {
 	// Drawing claws
     enemy.ApplySprite = function() {
         if (!this.grapple) {
-            canvas.drawImage(this.claw, 5 + this.sprite.width, 10);
+            canvas.drawImage(this.clawLeft, 5 + this.sprite.width, 10);
         }
-        canvas.drawImage(this.claw, -5 - this.claw.width, 10);
+        canvas.drawImage(this.clawRight, -5 - this.clawRight.width, 10);
     };
 	
 	return enemy;
@@ -721,11 +722,12 @@ function SnatcherEnemy(x, y) {
     enemy.ApplyMove = EnemyMoveBasic;
 	
 	var damageScale = ((c + 1) / 2) * (c + 2);
-	enemy.claw = GetImage('enemySnatcherArm');
-	
+	enemy.clawLeft = GetImage('enemySnatcherArmLeft');
+	enemy.clawRight = GetImage('enemySnatcherArmRight');
+    
 	// Grapple arm
 	enemy.AddWeapon(EnemyWeaponGrapple, {
-		sprite: enemy.claw,
+		sprite: enemy.clawLeft,
 		rate: 180,
 		range: 500,
 		damage: 5 * damageScale,
@@ -736,9 +738,9 @@ function SnatcherEnemy(x, y) {
 	// Drawing claws
     enemy.ApplySprite = function() {
         if (!this.grapple) {
-            canvas.drawImage(this.claw, 5 + this.sprite.width, 10);
+            canvas.drawImage(this.clawLeft, 5 + this.sprite.width, 10);
         }
-        canvas.drawImage(this.claw, -5 - this.claw.width, 10);
+        canvas.drawImage(this.clawRight, -5 - this.clawRight.width, 10);
     };
 	
 	return enemy;
