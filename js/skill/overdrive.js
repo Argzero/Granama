@@ -8,7 +8,11 @@ function SkillOverdrive(player) {
         // Activating the ability
         if (this.IsSkillCast()) {
             this.skillDuration = 300;
-            this.skillCd = 480 * this.cdm;
+            this.skillCd = 960 * this.cdm;
+            this.rm = 0.75;
+        }
+        if (this.skillDuration <= 0) {
+            this.rm = 1;
         }
         
         // Update the alphas of copies and remove them when fully transparent
@@ -32,7 +36,7 @@ function SkillOverdrive(player) {
             }
             
             // Double the speed
-            return speed * 2;
+            return speed * 1.5;
         }
     };
     

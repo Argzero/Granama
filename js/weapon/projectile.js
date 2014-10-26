@@ -249,6 +249,14 @@ var projectileFunctions = {
             this.source.damageDealt += damage;
         }
 	},
+    
+    // Deals extra damage if slowed
+    hitCritical: function(target) {
+        if (target.speedMDuration > 0) {
+            this.damage *= 1.5;
+        }
+        this.hitBase(target);
+    },
 	
 	// Exp hitting something
 	HitExp: function(target) {

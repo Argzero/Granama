@@ -23,6 +23,7 @@ function HeavyBoss(x, y) {
     enemy.coverRight = GetImage('bossHeavyCoverRight');
     enemy.coverLeft = GetImage('bossHeavyCoverLeft');
     enemy.coverOffset = 0;
+    enemy.stun = undefined;
     
     var damageScale = ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000);
     
@@ -130,6 +131,7 @@ function FireBoss(x, y) {
     enemy.pierceDamage = 0.2;
     enemy.Knockback = enemyFunctions.BossKnockback;
     enemy.Slow = enemyFunctions.BossSlow;
+    enemy.stun = undefined;
     
     // Specific stuff
     enemy.leftClawImg = GetImage('bossFireClawLeft');
@@ -248,6 +250,7 @@ function PunchBoss(x, y) {
     enemy.pierceDamage = 0.2;
     enemy.Knockback = enemyFunctions.BossKnockback;
     enemy.Slow = enemyFunctions.BossSlow;
+    enemy.stun = undefined;
     
     // Specific values
     enemy.leftFist = true;
@@ -332,6 +335,7 @@ function DragonBoss(x, y) {
     enemy.pierceDamage = 0.4;
     enemy.Knockback = undefined;
     enemy.Slow = undefined;
+    enemy.stun = undefined;
     enemy.IsInRange = enemyFunctions.DragonRange;
     
     // Specific values
@@ -438,6 +442,7 @@ function QueenBoss(x, y) {
 	enemy.Knockback = enemyFunctions.BossKnockback;
     enemy.Slow = enemyFunctions.BossSlow;
 	enemy.ApplyMove = EnemyMoveBasic;
+    enemy.stun = undefined;
 	
 	var damageScale = ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000);
 	

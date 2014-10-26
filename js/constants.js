@@ -80,7 +80,7 @@ PLAYER_DATA = [
 		weapons: [ 'Static Gun', 'Shotgun' ],
 		skills: [
 			{ name: 'Blink', callback: SkillBlink },
-			{ name: 'Overdrive', callback: SkillBlitz },
+			{ name: 'Critical Blast', callback: SkillCriticalBlast },
 			{ name: 'Overdrive', callback: SkillOverdrive }
 		]
 	},
