@@ -155,7 +155,7 @@ SPAWN_DATA = [
     45, 1, HeavyRangedEnemy,
     60, 0, LightArtilleryEnemy,
     30, 1, HeavyArtilleryEnemy,
-    15, 0, LightMeleeEnemy,
+    25, 0, LightMeleeEnemy,
     15, 1, HeavyMeleeEnemy,
     30, 0, LightBomberEnemy,
     15, 1, HeavyBomberEnemy,

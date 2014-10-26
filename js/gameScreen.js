@@ -180,7 +180,7 @@ function GameScreen(bossRush) {
                 // Colliding with turrets
                 for (var j = 0; j < this.enemyManager.turrets.length; j++) {
                     var turret = this.enemyManager.turrets[j];
-                    if (BulletCollides(player.bullets[i], turret)) {
+                    if (player.bullets[i].Collides(turret)) {
                         player.bullets[i].Hit(turret);
                         
                         // See if the turret is destroyed
@@ -203,7 +203,8 @@ function GameScreen(bossRush) {
                 for (var j = 0; j < this.enemyManager.enemies.length; j++) {
                 
                     // See if the bullet hit the enemy
-                    if (BulletCollides(player.bullets[i], this.enemyManager.enemies[j])) {
+                    if (player.bullets[i].Collides(this.enemyManager.enemies[j])) {
+                        
                         player.bullets[i].Hit(this.enemyManager.enemies[j]);
                         
                         // If the bullet is not a piercing bullet, remove it

@@ -6,6 +6,8 @@ function SkillIonicThunder(player) {
         // Activating the ability
         if (this.IsSkillCast() && this.charge > 0 && this.skillDuration <= 0) {
             this.skillDuration = this.charge * 2;
+            this.nextWave = 60;
+            this.nextWaveIncrement = 50;
         }
         
         // Active skill effects
@@ -19,16 +21,55 @@ function SkillIonicThunder(player) {
                 this.cos * 10, 
                 this.sin * 10, 
                 this.angle, 
-                elapsed * this.GetDamageMultiplier() / 50, 
+                elapsed * this.GetDamageMultiplier() / 100, 
                 399 + 50 * this.upgrades[RAIL_ID] + elapsed / 2,
                 true,
                 true
             );
-            laser.scale = 0.01 * elapsed
+            laser.scale = 0.01 * elapsed;
+            this.bullets.push(laser);
+            
+            if (elapsed >= this.nextWave) {
+                this.nextWave += this.nextWaveIncrement;
+                this.nextWaveIncrement -= 10;
+                for (var i = 0; i < 2; i++) {
+                    var shockwave = Shockwave(
+                        this,
+                        '#0ff',
+                        '#0bb',
+                        this.x,
+                        this.y,
+                        10,
+                        Math.PI * i,
+                        Math.PI * (i + 1),
+                        30,
+                        20,
+                        this.GetDamageMultiplier(),
+                        100 + elapsed * 2,
+                        0
+                    );
+                    this.bullets.push(shockwave);
+                }
+            }
+            /*var shockwave = Shockwave(
+                this,
+                data.color1 || '#ff9933',
+                data.color2 || '#f70',
+                this.x + data.dx,
+                this.y + data.dy,
+                data.speed || 5,
+                data.start + this.angle,
+                data.end + this.angle,
+                data.radius,
+                data.thickness || 20, 
+                data.damage,
+                data.range,
+                data.knockback
+            );*/
+            
             this.x -= this.cos * elapsed / 50;
             this.y -= this.sin * elapsed / 50;
             this.clamp();
-			this.bullets.push(laser);
             if (this.skillDuration <= 1) {
                 this.charge = 0;
             }

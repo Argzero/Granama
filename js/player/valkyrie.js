@@ -1,7 +1,7 @@
 function PlayerValkyrieType() {
     var p = BasePlayer(
         GetImage('pValkyrieBody'),
-		5,
+		10,
 		0.2,
         1,
         1.5

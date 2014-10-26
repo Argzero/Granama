@@ -184,9 +184,9 @@ function UIManager(screen) {
             x = baseX + 270 * i;
             
             // Draw the boxes for the options
-            canvas.fillStyle = (this.ready[i] ? '#666' : '#484848');
+            canvas.fillStyle = '#484848';
             canvas.fillRect(x - 125, y - 280, 250, 600);
-            canvas.fillStyle = '#000';
+            canvas.fillStyle = (this.ready[i] ? '#666' : '#000');
             canvas.fillRect(x - 115, y - 270, 230, 580);
             
             // Input
@@ -231,7 +231,7 @@ function UIManager(screen) {
 				this.hovered[i]++;
 			}
 			
-            if (input.confirm == 1 || input.right == 1) {
+            if (input.confirm == 1 || (input.right == 1 && input.id === undefined)) {
                 if (this.hovered[i] < 5) {
 					if (player.points > 0 && player.upgrades[this.hovered[i]] < 10) {	
 						player.upgrades[this.hovered[i]]++;
@@ -251,7 +251,7 @@ function UIManager(screen) {
 					}
 				}
             }
-			if (input.cancel == 1 || input.left == 1) {
+			if (input.cancel == 1 || (input.left == 1 && input.id === undefined)) {
 				if (this.hovered[i] < 5) {
 					if (player.upgrades[this.hovered[i]] > this.start[i][this.hovered[i]]) {
 						player.upgrades[this.hovered[i]]--;

@@ -19,10 +19,15 @@ function EnemyMoveCharge() {
 		for (var i = 0; i < playerManager.players.length; i++) {
 			var player = playerManager.players[i].robot;
 			if (player.health > 0 && BulletCollides(this, player)) {
-				var direction = Vector(player.x - this.x, player.y - this.y);
-				direction.SetLength(this.distance);
+                var direction = Vector(player.x - this.x, player.y - this.y);
+                var dot = this.sin * direction.x - this.cos * direction.y;
+				if (dot > 0) {
+                    player.Knockback(this.sin * this.distance, -this.cos * this.distance);
+                }
+                else {
+                    player.Knockback(-this.sin * this.distance, this.cos * this.distance);
+                }
 				player.Damage(this.damage, this);
-				player.Knockback(direction.x, direction.y);
 			}
 		}
 	}

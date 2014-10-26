@@ -213,9 +213,9 @@ function LightMeleeEnemy(x, y) {
         GetImage('enemyLightMelee'), 
         x, 
         y,
-        35 * ScalePower(c, 0.9),
+        50 * ScalePower(c, 0.9),
         3.5 + 0.4 * c,
-        50,
+        400,
 		LIGHT_EXP
     );
     
@@ -223,7 +223,7 @@ function LightMeleeEnemy(x, y) {
 	enemy.scale = 1;
 	enemy.damage = 3 * ((c + 1) / 2) * (c + 2);
 	enemy.distance = 200;
-	enemy.chargeDuration = 240;
+	enemy.chargeDuration = 180;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveCharge;
@@ -239,17 +239,17 @@ function HeavyMeleeEnemy(x, y) {
         GetImage('enemyHeavyMelee'), 
         x, 
         y,
-        45 * ScalePower(c, 0.9),
+        75 * ScalePower(c, 0.9),
         3 + 0.3 * c,
-        50,
+        400,
 		HEAVY_EXP
     );
 	
 	// Stats for collision
 	enemy.scale = 1;
-	enemy.damage = 5 * damageScale;
+	enemy.damage = 5 * ((c + 1) / 2) * (c + 2);
 	enemy.distance = 250;
-	enemy.chargeDuration = 240;
+	enemy.chargeDuration = 180;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveCharge;

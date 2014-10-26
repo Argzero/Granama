@@ -17,7 +17,7 @@ function HeavyBoss(x, y) {
         400
     );
     
-    enemy.pierceResistant = true;
+    enemy.pierceDamage = 0.1;
     enemy.Knockback = enemyFunctions.BossKnockback;
     enemy.Slow = enemyFunctions.BossSlow;
     enemy.coverRight = GetImage('bossHeavyCoverRight');
@@ -127,7 +127,7 @@ function FireBoss(x, y) {
         400
     );
 	
-    enemy.pierceResistant = true;
+    enemy.pierceDamage = 0.2;
     enemy.Knockback = enemyFunctions.BossKnockback;
     enemy.Slow = enemyFunctions.BossSlow;
     
@@ -245,7 +245,7 @@ function PunchBoss(x, y) {
 		400
     );
     
-    enemy.pierceResistant = true;
+    enemy.pierceDamage = 0.2;
     enemy.Knockback = enemyFunctions.BossKnockback;
     enemy.Slow = enemyFunctions.BossSlow;
     
@@ -329,7 +329,7 @@ function DragonBoss(x, y) {
         750
     );
     
-    enemy.pierceResistant = true;
+    enemy.pierceDamage = 0.4;
     enemy.Knockback = undefined;
     enemy.Slow = undefined;
     enemy.IsInRange = enemyFunctions.DragonRange;
@@ -433,7 +433,7 @@ function QueenBoss(x, y) {
     );
     
 	// Boss Stuff
-    enemy.pierceResistant = true;
+    enemy.pierceDamage = 0.2;
     enemy.IsInRange = enemyFunctions.BossInRange;
 	enemy.Knockback = enemyFunctions.BossKnockback;
     enemy.Slow = enemyFunctions.BossSlow;
@@ -446,6 +446,7 @@ function QueenBoss(x, y) {
 	enemy.damage = 10 * damageScale;
 	enemy.distance = 400;
 	enemy.chargeDuration = 180;
+    enemy.patternTimer = enemy.patternMax;
     
 	// Attack Pattern 0 - Charging around spawning bees
 	enemy.SetMovement(0, EnemyMoveCharge);

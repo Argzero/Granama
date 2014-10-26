@@ -241,12 +241,12 @@ var projectileFunctions = {
 	// Hits the target robot, damaging it
 	Hit: function(target) {
         var damage = this.damage;
-        if (this.pierce && target.pierceResistant) damage /= 2;
+        if (this.pierce && target.pierceDamage) damage *= target.pierceDamage;
 		target.Damage(damage, this.source);
         
         // Player damage dealt progress
         if (this.source.damageDealt !== undefined) {
-            this.source.damageDealt += this.damage;
+            this.source.damageDealt += damage;
         }
 	},
 	

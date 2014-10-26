@@ -20,7 +20,7 @@ function SkillReflector(player) {
                     0, 
                     m * this.sin * BULLET_SPEED, 
                     m * this.cos * BULLET_SPEED, 
-                    amount, 
+                    amount * 2, 
                     damager
                 );
                 this.bullets.push(reflection);
