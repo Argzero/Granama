@@ -343,15 +343,16 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
                 var healthPercent = this.health / this.maxHealth;
                 var shieldPercent = this.shield / (this.maxHealth * SHIELD_MAX);
                 canvas.beginPath();
-                canvas.arc(this.x, this.y, 75, -Math.PI * 9 / 10, -((1 - healthPercent) * Math.PI * 9 / 10), false);
+                canvas.arc(this.x, this.y, 75, ((1 - healthPercent) * Math.PI * 8 / 10) - Math.PI * 9 / 10, -Math.PI / 10, false);
                 if (healthPercent > 0.66) canvas.strokeStyle = '#0f0';
                 else if (healthPercent > 0.33) canvas.strokeStyle = '#ff0';
                 else canvas.strokeStyle = '#f00';
                 canvas.stroke();
                 canvas.beginPath();
-                canvas.arc(this.x, this.y, 75, (1 - shieldPercent) * Math.PI * 9 / 10, Math.PI * 9 / 10);
+                canvas.arc(this.x, this.y, 75, Math.PI / 10, Math.PI / 10 + shieldPercent * Math.PI * 8 / 10);
                 canvas.strokeStyle = '#00f';
                 canvas.stroke();
+                canvas.drawImage(GetImage('healthBarSymbol'), this.x + 50, this.y - 20);
 				
                 // Draw skill icon
                 if (this.ability) {

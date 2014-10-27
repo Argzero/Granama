@@ -102,8 +102,8 @@ PLAYER_DATA = [
 		player: PlayerKnightType,
 		preview: 'pKnight',
 		name: 'Knight',
-		ups: ['ArrowVolleyCount', 'SwordSwingArc', 'SwordLifeSteal', 'ShieldRecharge', 'MovementSpeed'],
-		icons: ['Arrow', 'Slash', 'Lifesteal', 'Shield', 'Speed'],
+		ups: ['GrappleStun', 'SwordSwingArc', 'SwordLifeSteal', 'ShieldRecharge', 'MovementSpeed'],
+		icons: ['Grapple', 'Slash', 'Lifesteal', 'Shield', 'Speed'],
         color: '#fcf',
 		weapons: [ 'Quiver Gun', 'Sword' ],
 		skills: [

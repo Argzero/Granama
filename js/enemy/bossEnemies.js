@@ -448,7 +448,7 @@ function QueenBoss(x, y) {
 	
 	// Stats for collision
 	enemy.scale = 1;
-	enemy.damage = 10 * damageScale;
+	enemy.damage = 6 * damageScale;
 	enemy.distance = 400;
 	enemy.chargeDuration = 180;
     enemy.patternTimer = enemy.patternMax;

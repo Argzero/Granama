@@ -151,10 +151,13 @@ function EnemyManager(screen) {
                     var num = Math.round(this.enemies[i].exp * this.expM[playerManager.players.length - 1]);
                     for (var e = 0; e < this.expData.length; e++) {
                         var data = this.expData[e];
-                        while (data.value * playerManager.players.length <= num) {
-							for (var player = 0; player < playerManager.players.length; player++) {
+                        var allDead = false;
+                        while (!allDead && data.value * playerManager.players.length <= num) {
+                            allDead = true;
+                            for (var player = 0; player < playerManager.players.length; player++) {
                                 var robot = playerManager.players[player % playerManager.players.length].robot;
                                 if (robot.health <= 0) continue;
+                                allDead = false;
 								num -= data.value;
 								var direction = Vector(0, BULLET_SPEED);
 								direction.Rotate(Rand(360) * Math.PI / 180);

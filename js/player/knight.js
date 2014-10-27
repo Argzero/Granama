@@ -1,7 +1,7 @@
 function PlayerKnightType() {
     var p = BasePlayer(
         GetImage('pKnightBody'),
-		20,
+		25,
 		0.1,
 		3
     );
@@ -93,7 +93,7 @@ function PlayerKnightType() {
         this.Grapple(this.grappleData);
         
         // Sword
-        this.swordData.damage = 5 * m;
+        this.swordData.damage = 8 * m;
         this.swordData.arc = Math.PI / 3 + this.upgrades[SLASH_ID] * Math.PI / 18;
         this.swordData.lifesteal = 0.1 + this.upgrades[LIFESTEAL_ID] * 0.04;
         this.Slash(this.swordData);
