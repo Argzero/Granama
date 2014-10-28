@@ -65,6 +65,7 @@ function LoadingScreen() {
         'bossQueenWingLeft',
         'bossQueenWingRight',
         'bullet',
+        'CommandoBar',
         'CommandoDroneRangeUI',
         'CommandoDroneRangeUISelected',
         'CommandoDroneShotsUI',
