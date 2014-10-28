@@ -125,6 +125,20 @@ PLAYER_DATA = [
 			{ name: 'Lock Down', callback: SkillLockdown },
 			{ name: 'Artillery', callback: SkillArtillery }
         ]
+    },
+	{
+        player: PlayerCommandoType,
+        preview: 'pCommando',
+        name: 'Commando',
+        ups: ['DroneRange', 'DroneShots', 'LMGBaseDamage', 'ShieldRecharge', 'MovementSpeed'],
+        icons: ['DroneRange', 'DroneShots', 'LMGDamage', 'Shield', 'Speed'],
+        color: '#070',
+        weapons: [ 'Drone Kit', 'Light Machine Gun' ],
+        skills: [
+            { name: 'Missile Barrage', callback: SkillMissileBarrage },
+			{ name: 'Targeter', callback: SkillLockdown },
+			{ name: 'Laser Detonation', callback: SkillArtillery }
+        ]
     }
 ],
 
@@ -239,16 +253,19 @@ COOLDOWN_ID = 0,
 MINIGUN_ID = 0,
 ARROW_ID = 0,
 CHARGE_ID = 0,
+DRONE_RANGE_ID = 0,
 SPREAD_ID = 1,
 SHOTGUN_ID = 1,
 EXPLOSION_ID = 1,
 SLASH_ID = 1,
 RAIL_ID = 1,
+DRONE_SHOTS_ID = 1,
 FLAME_ID = 2,
 SLOW_ID = 2,
 KNOCKBACK_ID = 2,
 LIFESTEAL_ID = 2,
 DUAL_ID = 2,
+LMG_DAMAGE_ID = 2,
 SHIELD_ID = 3,
 SPEED_ID = 4,
 DAMAGE_ID = 5,

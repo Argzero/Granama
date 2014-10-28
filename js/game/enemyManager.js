@@ -136,6 +136,21 @@ function EnemyManager(screen) {
         }
     };
     
+    // Gets the nearest enemy to a point
+    this.getNearest = function(x, y) {
+        var dSq;
+        var enemy;
+        for (var i = 0; i < this.enemies.length; i++) {
+            var e = this.enemies[i];
+            var d = DistanceSq(e.x, e.y, x, y);
+            if (!dSq || d < dSq) {
+                dSq = d;
+                enemy = e;
+            }
+        }
+        return enemy;
+    }
+    
     // Checks for enemy deaths
     this.CheckDeaths = function() {
         for (var i = 0; i < this.enemies.length; i++) {

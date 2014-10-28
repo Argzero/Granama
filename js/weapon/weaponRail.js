@@ -8,6 +8,7 @@
 //  discharge - how quickly the rail gun discharges when not able to fire
 //
 // Optional data values:
+//   interval - how long between shots
 //      angle - max angle of deviation from a straight shot
 //     sprite - sprite of the bullets
 //    bullets - bullets per round
@@ -34,6 +35,10 @@ function EnemyWeaponRail(data) {
         
         // Fire when charged up
         if (data.cd < 0) {
+            if (data.intervalTimer > 1) {
+                data.intervalTimer--;
+                return;
+            }
             for (var i = 0; i < (data.bullets || 1); i++) {
                 var vel = Vector(this.cos * (data.speed || BULLET_SPEED), this.sin * (data.speed || BULLET_SPEED));
                 if (data.angle) {
@@ -57,6 +62,7 @@ function EnemyWeaponRail(data) {
                     data.offScreen
                 );
                 data.list.push(laser);
+                data.intervalTimer = data.interval;
             }
             
             // "Overheating" resets the charge countdown

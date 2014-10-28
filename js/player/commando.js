@@ -1,0 +1,185 @@
+function PlayerCommandoType() {
+    var p = BasePlayer(
+        GetImage('pCommandoBody'),
+		20
+    );
+	
+    // Sprites
+	p.drawObjects.push({
+		sprite: GetImage('pCommandoShield'),
+		xOffset: 3,
+		yOffset: -21
+	});
+	p.drawObjects.push({
+		sprite: GetImage('pCommandoLMG'),
+		xOffset: -46,
+		yOffset: -15
+	});
+	p.drawObjects.push({
+		sprite: GetImage('pCommandoDroneKit'),
+		xOffset: -10,
+		yOffset: -35
+	});
+	
+	// Weapon data
+	p.lmgData = { 
+        cd: 0, 
+        range: 499, 
+        angle: 5, 
+        dx: -30, 
+        dy: 45, 
+		rate: 5,
+        sprite: GetImage('minigunBullet'), 
+        list: p.bullets 
+    };
+	p.shootLMG = EnemyWeaponGun;
+    
+    // Drone data
+    p.drones = [CommandoDrone(p, 0)];
+    
+    // Drawing drones
+    p.onDraw = function() {
+    
+        canvas.translate(this.x, this.y);
+    
+        // Draw drones
+		for (i = 0; i < this.drones.length; i++) {
+			this.drones[i].draw();
+		}
+        
+        ResetTransform(canvas);
+    };
+    
+    // Updates the player
+    p.Update = function() {
+        this.UpdateBase();
+        
+        // Get damage multiplier
+        var m = this.GetDamageMultiplier();
+		
+		// LMG
+        this.lmgData.damage = m * (5 + this.upgrades[LMG_DAMAGE_ID]);
+        this.shootLMG(this.lmgData);
+        
+        // Update Drones
+        var totalAngle = Math.min(Math.PI, this.drones.length * Math.PI / 8);
+        var increment = Math.PI / 8;
+        var angle = -totalAngle / 2;
+        for (var i = 0; i < this.drones.length; i++) {
+            this.drones[i].setAngle(angle + this.angle);
+            this.drones[i].update();
+            angle += increment;
+        }
+    };
+	
+    // Gaining drones on leveling
+	p.onLevel = function() {
+        if ((this.level - 1) % 4 == 0 && this.drones.length < 8) {
+            this.drones.push(CommandoDrone(this, totalAngle / 2));
+        }
+	};
+    
+    return p;
+}
+
+var COMMANDO_DRONE_RADIUS = 100;
+
+// A drone for the Commando class
+function CommandoDrone(player, angle) {
+    var cos = Math.cos(angle);
+    var sin = Math.sin(angle);
+	return {
+	
+		player: player,
+		sprite: GetImage('drone'),
+		direction: Vector(cos, sin),
+        dirAngle: angle,
+        targetAngle: angle,
+		angle: 0,
+        cos: 0,
+        sin: 1,
+        targetRadius: COMMANDO_DRONE_RADIUS,
+        radius: 0,
+        x: player.x,
+        y: player.y,
+        
+        gunData: {  
+            cd: 0,
+            rate: 90,
+            discharge: 0,
+            interval: 5,
+            sprite: GetImage('minigunBullet'),
+            initial: true,
+            speed: 10,
+            dx: -6,
+            dy: 15,
+            list: player.bullets
+        },
+        shoot: EnemyWeaponRail,
+        
+        // Sets the new target angle of the drone
+        setAngle: function(angle) {
+            while (angle < this.dirAngle - Math.PI) {
+                this.dirAngle -= Math.PI * 2;
+            }
+            while (angle > this.dirAngle + Math.PI) {
+                this.dirAngle += Math.PI * 2;
+            }
+            this.targetAngle = angle;
+        },
+		
+		// Updates the drone
+		update: function() {
+        
+            // Move outward after spawning to the desired radius
+			if (this.radius < this.targetRadius) {
+				this.radius = Math.min(this.radius + 1, this.targetRadius);
+			}
+            
+            // Move to the correct angle when the player turns
+            if (this.dirAngle <= this.targetAngle - Math.PI / 180) {
+                this.direction.Rotate(COS_1, SIN_1);
+                this.dirAngle += Math.PI / 180;
+            }
+            else if (this.dirAngle >= this.targetAngle + Math.PI / 180) {
+                this.direction.Rotate(COS_1, -SIN_1);
+                this.dirAngle -= Math.PI / 180;
+            }
+            
+            // Update position
+            this.x = this.player.x + this.direction.y * this.radius;
+            this.y = this.player.y - this.direction.x * this.radius;
+            
+            // Update rotation
+            var enemy = gameScreen.enemyManager.getNearest(this.x, this.y);
+            if (enemy) {
+                this.angle = AngleTowards(enemy, this, 0.05);
+                this.cos = -Math.sin(this.angle);
+                this.sin = Math.cos(this.angle);
+            }
+            
+            // Drone weapon
+            this.gunData.damage = 2 * this.player.GetDamageMultiplier();
+            this.gunData.range = 249 + 25 * this.player.upgrades[DRONE_RANGE_ID];
+            this.gunData.duration = (5 + this.player.upgrades[DRONE_SHOTS_ID]) * this.gunData.interval;
+            this.shoot(this.gunData);
+		},
+		
+		// Draws the drone around the player
+		draw: function() {
+			canvas.save();
+			canvas.transform(this.direction.x, this.direction.y, -this.direction.y, this.direction.x, 0, 0);
+            canvas.translate(0, -this.radius);
+            canvas.transform(this.direction.x, -this.direction.y, this.direction.y, this.direction.x, 0, 0);
+            canvas.transform(this.sin, -this.cos, this.cos, this.sin, 0, 0);
+			canvas.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
+			canvas.restore();
+		},
+        
+        // Checks if the drone is in range of an enemy
+        IsInRange: function(range) {
+            var enemy = gameScreen.enemyManager.getNearest(this.x, this.y);
+            return enemy && DistanceSq(enemy.x, enemy.y, this.x, this.y) < Sq(range);
+        }
+	};
+}

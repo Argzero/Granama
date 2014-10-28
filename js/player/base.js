@@ -7,6 +7,7 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 		onDraw: undefined,
         onPreDraw: undefined,
         onFire: undefined,
+		onLevel: undefined,
 	
 		// Fields
 		x: GAME_WIDTH / 2,
@@ -64,6 +65,11 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 				this.health += this.healthScale * this.level;
 				this.damage += this.damageScale * this.level;
 				this.levelFrame = 0;
+				
+				// Level up event
+				if (this.onLevel) {
+					this.onLevel();
+				}
 			}
 		},
 		
