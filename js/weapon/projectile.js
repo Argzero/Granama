@@ -494,7 +494,7 @@ var projectileFunctions = {
 		}
         var ex = new Explosion(this.x, this.y, this.radius / 150);
         if (this.lists.length > 1) ex.c = 10;
-        gameScreen.explosions.push(ex);
+        gameScreen.particles.push(ex);
 	},
     
     // Hits a target and slows it

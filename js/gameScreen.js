@@ -6,7 +6,6 @@ function GameScreen(bossRush) {
     this.gameOver = false;
     
     this.damageOverlay = GetImage("damage");
-    this.explosions = new Array();
     
     this.damageAlpha;
     this.paused = undefined;
@@ -24,6 +23,7 @@ function GameScreen(bossRush) {
         HealingPad(GAME_WIDTH / 3, GAME_HEIGHT * 2 / 3), 
         HealingPad(GAME_WIDTH * 2 / 3, GAME_HEIGHT * 2 / 3)
     ];
+	this.particles = [];
     
     // Update function
     this.Update = function() {
@@ -37,8 +37,11 @@ function GameScreen(bossRush) {
         // Update when not paused
         playerManager.update(this.paused);
         if (!this.paused) {
+		
+			// Update enemies
             this.enemyManager.UpdateEnemies();
         
+			// Spawn enemies
 			if (bossRush) {
                 this.enemyManager.CheckBosses();
             }
@@ -51,9 +54,11 @@ function GameScreen(bossRush) {
                 this.pads[i].update();
             }
 		
+			// Update environmental objects
             this.UpdateBullets();
             this.dropManager.Update();
             
+			// Update the scroll position
             this.ApplyScrolling();
         }
         
@@ -108,13 +113,14 @@ function GameScreen(bossRush) {
             player.Draw(canvas);
         }
         
+		// Enemies
         this.enemyManager.Draw();
         
-        // Explosions
-        for (var i = 0; i < this.explosions.length; i++) {
-            this.explosions[i].Draw(canvas);
-            if (this.explosions[i].frame >= 10) {
-                this.explosions.splice(i, 1);
+        // Particles
+        for (var i = 0; i < this.particles.length; i++) {
+            this.particles[i].draw();
+            if (this.particles[i].expired) {
+                this.particles.splice(i, 1);
                 i--;
             }
         }

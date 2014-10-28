@@ -378,7 +378,7 @@ function DragonBoss(x, y) {
         delay: 300,
         dx: 0,
         dy: -100
-    });
+    }, 1);
 	
 	// Attack pattern 2 - Homing missiles
 	enemy.SetMovement(2, EnemyMoveDragon);
@@ -448,7 +448,7 @@ function QueenBoss(x, y) {
 	
 	// Stats for collision
 	enemy.scale = 1;
-	enemy.damage = 6 * damageScale;
+	enemy.damage = 3 * damageScale;
 	enemy.distance = 400;
 	enemy.chargeDuration = 180;
     enemy.patternTimer = enemy.patternMax;

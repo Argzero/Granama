@@ -136,8 +136,8 @@ PLAYER_DATA = [
         weapons: [ 'Drone Kit', 'Light Machine Gun' ],
         skills: [
             { name: 'Missile Barrage', callback: SkillMissileBarrage },
-			{ name: 'Targeter', callback: SkillLockdown },
-			{ name: 'Laser Detonation', callback: SkillArtillery }
+			{ name: 'Targeter', callback: SkillTargeter },
+			{ name: 'Laser Bomb', callback: SkillLaserBomb }
         ]
     }
 ],
@@ -169,8 +169,8 @@ SPAWN_DATA = [
     45, 1, HeavyRangedEnemy,
     60, 0, LightArtilleryEnemy,
     30, 1, HeavyArtilleryEnemy,
-    25, 0, LightMeleeEnemy,
-    15, 1, HeavyMeleeEnemy,
+    15, 0, LightMeleeEnemy,
+    10, 1, HeavyMeleeEnemy,
     30, 0, LightBomberEnemy,
     15, 1, HeavyBomberEnemy,
 	20, 0, LightOrbiterEnemy,

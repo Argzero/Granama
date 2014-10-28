@@ -221,7 +221,7 @@ function LightMeleeEnemy(x, y) {
     
     // Stats for collision
 	enemy.scale = 1;
-	enemy.damage = 3 * ((c + 1) / 2) * (c + 2);
+	enemy.damage = ((c + 1) / 2) * (c + 2);
 	enemy.distance = 200;
 	enemy.chargeDuration = 180;
     
@@ -247,7 +247,7 @@ function HeavyMeleeEnemy(x, y) {
 	
 	// Stats for collision
 	enemy.scale = 1;
-	enemy.damage = 5 * ((c + 1) / 2) * (c + 2);
+	enemy.damage = 2 * ((c + 1) / 2) * (c + 2);
 	enemy.distance = 250;
 	enemy.chargeDuration = 180;
     

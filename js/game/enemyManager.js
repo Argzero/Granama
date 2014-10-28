@@ -153,6 +153,16 @@ function EnemyManager(screen) {
     
     // Checks for enemy deaths
     this.CheckDeaths = function() {
+	
+		// Turrets blowing up
+        for (var i = 0; i < this.turrets.length; i++) {
+			if (this.turrets[i].health <= 0) {
+				this.turrets.splice(i, 1);
+				i--;
+			}
+        }
+	
+		// Enemy deaths
         for (var i = 0; i < this.enemies.length; i++) {
             if (this.enemies[i].health <= 0) {
             
@@ -195,7 +205,7 @@ function EnemyManager(screen) {
                 }
                 
                 // Create an explosion
-                screen.explosions.push(new Explosion(this.enemies[i].x, this.enemies[i].y, this.enemies[i].sprite.width / 150));
+                screen.particles.push(new Explosion(this.enemies[i].x, this.enemies[i].y, this.enemies[i].sprite.width / 150));
 				
                 // Boss effects
                 if (this.enemies[i].exp >= 300) {
@@ -206,7 +216,7 @@ function EnemyManager(screen) {
                     // Remove all enemies with explosions
                     for (var j = 0; j < this.enemies.length; j++) {
                         if (i == j) continue;
-                        screen.explosions.push(new Explosion(this.enemies[j].x, this.enemies[j].y, this.enemies[j].sprite.width / 150));
+                        screen.particles.push(new Explosion(this.enemies[j].x, this.enemies[j].y, this.enemies[j].sprite.width / 150));
                     }
                     this.enemies.splice(0, this.enemies.length);
                 

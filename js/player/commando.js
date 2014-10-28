@@ -29,13 +29,15 @@ function PlayerCommandoType() {
         dx: -30, 
         dy: 45, 
 		rate: 5,
-        sprite: GetImage('minigunBullet'), 
+        sprite: GetImage('lmgBullet'), 
         list: p.bullets 
     };
 	p.shootLMG = EnemyWeaponGun;
     
     // Drone data
     p.drones = [CommandoDrone(p, 0)];
+	p.nextDroneLevel = 4;
+	p.droneRangeM = 1;
     
     // Drawing drones
     p.onDraw = function() {
@@ -74,8 +76,9 @@ function PlayerCommandoType() {
 	
     // Gaining drones on leveling
 	p.onLevel = function() {
-        if ((this.level - 1) % 4 == 0 && this.drones.length < 8) {
-            this.drones.push(CommandoDrone(this, totalAngle / 2));
+        if (this.level >= this.nextDroneLevel && this.drones.length < 8) {
+            this.drones.push(CommandoDrone(this, 0));
+			this.nextDroneLevel += 3;
         }
 	};
     
@@ -108,14 +111,28 @@ function CommandoDrone(player, angle) {
             rate: 90,
             discharge: 0,
             interval: 5,
-            sprite: GetImage('minigunBullet'),
+            sprite: GetImage('lmgBullet'),
             initial: true,
             speed: 10,
             dx: -6,
             dy: 15,
             list: player.bullets
         },
+		chargeData: {
+			damage: 0,
+			cd: 0,
+			rate: 1,
+			discharge: 0,
+			interval: 1,
+			sprite: GetImage('pCommandoChargeLaser'),
+			initial: true,
+			speed: 20,
+			dx: -6,
+			dy: 15,
+			list: player.bullets
+		},
         shoot: EnemyWeaponRail,
+		charge: EnemyWeaponRail,
         
         // Sets the new target angle of the drone
         setAngle: function(angle) {
@@ -137,32 +154,48 @@ function CommandoDrone(player, angle) {
 			}
             
             // Move to the correct angle when the player turns
-            if (this.dirAngle <= this.targetAngle - Math.PI / 180) {
-                this.direction.Rotate(COS_1, SIN_1);
-                this.dirAngle += Math.PI / 180;
-            }
-            else if (this.dirAngle >= this.targetAngle + Math.PI / 180) {
-                this.direction.Rotate(COS_1, -SIN_1);
-                this.dirAngle -= Math.PI / 180;
-            }
+			if (this.player.charging) {
+				this.angle = AngleTo({ x: this.player.x + this.player.cos * LASER_BOMB_OFFSET, y: this.player.y + this.player.sin * LASER_BOMB_OFFSET }, this);
+				this.cos = -Math.sin(this.angle);
+                this.sin = Math.cos(this.angle);
+			}
+			else {
+				if (this.dirAngle <= this.targetAngle - Math.PI / 180) {
+					this.direction.Rotate(COS_1, SIN_1);
+					this.dirAngle += Math.PI / 180;
+				}
+				else if (this.dirAngle >= this.targetAngle + Math.PI / 180) {
+					this.direction.Rotate(COS_1, -SIN_1);
+					this.dirAngle -= Math.PI / 180;
+				}
+			}
             
             // Update position
             this.x = this.player.x + this.direction.y * this.radius;
             this.y = this.player.y - this.direction.x * this.radius;
             
-            // Update rotation
-            var enemy = gameScreen.enemyManager.getNearest(this.x, this.y);
-            if (enemy) {
-                this.angle = AngleTowards(enemy, this, 0.05);
-                this.cos = -Math.sin(this.angle);
-                this.sin = Math.cos(this.angle);
-            }
-            
             // Drone weapon
-            this.gunData.damage = 2 * this.player.GetDamageMultiplier();
-            this.gunData.range = 249 + 25 * this.player.upgrades[DRONE_RANGE_ID];
-            this.gunData.duration = (5 + this.player.upgrades[DRONE_SHOTS_ID]) * this.gunData.interval;
-            this.shoot(this.gunData);
+			if (this.player.charging) {
+				var dx = this.player.x + this.player.cos * LASER_BOMB_OFFSET - this.x;
+				var dy = this.player.y + this.player.sin * LASER_BOMB_OFFSET - this.y;
+				this.chargeData.range = Math.sqrt(Sq(dx) + Sq(dy)) / 1.5;
+				this.charge(this.chargeData);
+			}
+			else {
+			
+				// Update rotation
+				var enemy = this.getTarget();
+				if (enemy) {
+					this.angle = AngleTowards(enemy, this, 0.05);
+					this.cos = -Math.sin(this.angle);
+					this.sin = Math.cos(this.angle);
+				}
+			
+				this.gunData.damage = 2 * this.player.GetDamageMultiplier();
+				this.gunData.range = 349 + 25 * this.player.upgrades[DRONE_RANGE_ID];
+				this.gunData.duration = (5 + this.player.upgrades[DRONE_SHOTS_ID]) * this.gunData.interval;
+				this.shoot(this.gunData);
+			}
 		},
 		
 		// Draws the drone around the player
@@ -178,8 +211,16 @@ function CommandoDrone(player, angle) {
         
         // Checks if the drone is in range of an enemy
         IsInRange: function(range) {
-            var enemy = gameScreen.enemyManager.getNearest(this.x, this.y);
-            return enemy && DistanceSq(enemy.x, enemy.y, this.x, this.y) < Sq(range);
-        }
+            var enemy = this.getTarget();
+            return this.player.charging || (enemy && DistanceSq(enemy.x, enemy.y, this.x, this.y) < Sq(range * this.player.droneRangeM));
+        },
+		
+		// Gets the target of the drone
+		getTarget: function() {
+			if (this.player.particle && this.player.skillDuration > 0) {
+				return this.player.particle.target;
+			}
+			else return gameScreen.enemyManager.getNearest(this.x, this.y);
+		}
 	};
 }
