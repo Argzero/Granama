@@ -451,7 +451,8 @@ function TitleScreen() {
             if (playHovered) {
                 //gameScreen = new SelectScreen();
                 playerManager.setMultiplayer();
-				gameScreen = new PlayerScreen();
+				//gameScreen = new PlayerScreen();
+                gameScreen = new SelectScreen();
             }
             else if (rushHovered) {
                 playerManager.setSingleplayer();

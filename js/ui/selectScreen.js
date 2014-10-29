@@ -1,13 +1,37 @@
+var PARTS = {
+    DISCONNECTED: 0,
+    CONNECTED: 1,
+    ROBOT: 2,
+    ABILITy: 3,
+    PROFILE: 4,
+    READY: 5
+};
+
+function PlayerSettings() {
+    return {
+        robot: 0,
+        ability: 0,
+        frame: 0,
+        part: PARTS.DISCONNECTED
+    };
+}
+
 // The character selection screen of the game
 function SelectScreen() {
 
-	this.selection = [0, 0, 0, 0];
 	this.frame = 0;
-    this.playerSet = [false, false, false, false];
-    this.joined = [!gamepads, false, false, false];
-    this.ready = [false, false, false, false];
-    this.abilityId = [0, 0, 0, 0];
-    this.open = [0, 1, 2, 3, 4];
+    this.settings = [];
+    this.open = [];
+    
+    // Initialize player settings
+    for (var i = 0; i < playerManager.players.length; i++) {
+        this.settings.push(PlayerSettings());
+    }
+    
+    // Start off with all classes available
+    for (var i = 0; i < PLAYER_DATA.length; i++) {
+        this.open.push(i);
+    }
     
     // Checks if a robot ID is still open
     this.isOpen = function(id) {
