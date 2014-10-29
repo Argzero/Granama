@@ -31,6 +31,7 @@ function LightRangedEnemy(x, y) {
         200,
 		LIGHT_EXP
     );
+    enemy.rank = STAT.LIGHT;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveBasic;
@@ -61,6 +62,7 @@ function HeavyRangedEnemy(x, y) {
         250,
 		HEAVY_EXP
     );
+    enemy.rank = STAT.HEAVY;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveBasic;
@@ -91,6 +93,7 @@ function PaladinEnemy(x, y) {
         300,
 		MINIBOSS_EXP
     );
+    enemy.rank = STAT.MINIBOSS;
 	
 	enemy.Knockback = enemyFunctions.MinibossKnockback;
     
@@ -124,6 +127,7 @@ function LightArtilleryEnemy(x, y) {
         400,
 		LIGHT_EXP
     );
+    enemy.rank = STAT.LIGHT;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveBasic;
@@ -154,6 +158,7 @@ function HeavyArtilleryEnemy(x, y) {
         400,
 		HEAVY_EXP
     );
+    enemy.rank = STAT.HEAVY;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveBasic;
@@ -184,6 +189,7 @@ function RailerEnemy(x, y) {
         550,
 		MINIBOSS_EXP
     );
+    enemy.rank = STAT.MINIBOSS;
 	
 	enemy.Knockback = enemyFunctions.MinibossKnockback;
     
@@ -218,6 +224,7 @@ function LightMeleeEnemy(x, y) {
         400,
 		LIGHT_EXP
     );
+    enemy.rank = STAT.LIGHT;
     
     // Stats for collision
 	enemy.scale = 1;
@@ -244,6 +251,7 @@ function HeavyMeleeEnemy(x, y) {
         400,
 		HEAVY_EXP
     );
+    enemy.rank = STAT.HEAVY;
 	
 	// Stats for collision
 	enemy.scale = 1;
@@ -270,6 +278,7 @@ function LightBomberEnemy(x, y) {
         400,
 		LIGHT_EXP
     );
+    enemy.rank = STAT.LIGHT;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveOrbit;
@@ -298,6 +307,7 @@ function HeavyBomberEnemy(x, y) {
         500,
 		HEAVY_EXP
     );
+    enemy.rank = STAT.HEAVY;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveOrbit;
@@ -326,6 +336,7 @@ function TurretEnemy(x, y) {
         550,
 		MINIBOSS_EXP
     );
+    enemy.rank = STAT.MINIBOSS;
 	
 	enemy.Knockback = enemyFunctions.MinibossKnockback;
     
@@ -356,6 +367,7 @@ function LightOrbiterEnemy(x, y) {
         300,
 		LIGHT_EXP
     );
+    enemy.rank = STAT.LIGHT;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveOrbit;
@@ -390,6 +402,7 @@ function HeavyOrbiterEnemy(x, y) {
         300,
 		HEAVY_EXP
     );
+    enemy.rank = STAT.HEAVY;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveOrbit;
@@ -424,6 +437,7 @@ function HunterEnemy(x, y) {
         350,
 		MINIBOSS_EXP
     );
+    enemy.rank = STAT.MINIBOSS;
 	
 	enemy.Knockback = enemyFunctions.MinibossKnockback;
     
@@ -472,6 +486,7 @@ function LightBouncerEnemy(x, y) {
         0,
 		LIGHT_EXP
     );
+    enemy.rank = STAT.LIGHT;
     
     // Movement pattern
 	var angle = Rand(360 * Math.PI / 180);
@@ -506,6 +521,7 @@ function HeavyBouncerEnemy(x, y) {
         0,
 		HEAVY_EXP
     );
+    enemy.rank = STAT.HEAVY;
     
     // Movement pattern
 	var angle = Rand(360 * Math.PI / 180);
@@ -540,6 +556,7 @@ function SolarEnemy(x, y) {
         0,
 		MINIBOSS_EXP
     );
+    enemy.rank = STAT.MINIBOSS;
     
     // Movement pattern
 	var angle = Rand(360 * Math.PI / 180);
@@ -574,6 +591,7 @@ function LightMedicEnemy(x, y) {
         50,
 		LIGHT_EXP
     );
+    enemy.rank = STAT.LIGHT;
     
     // Movement pattern
     enemy.heal = enemy.health / 500;
@@ -595,6 +613,7 @@ function HeavyMedicEnemy(x, y) {
         50,
 		HEAVY_EXP
     );
+    enemy.rank = STAT.HEAVY;
     
     // Movement pattern
     enemy.heal = enemy.health / 500;
@@ -616,6 +635,7 @@ function LightGrabberEnemy(x, y) {
         75,
 		LIGHT_EXP
     );
+    enemy.rank = STAT.LIGHT;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveBasic;
@@ -666,6 +686,7 @@ function HeavyGrabberEnemy(x, y) {
         75,
 		HEAVY_EXP
     );
+    enemy.rank = STAT.HEAVY;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveBasic;
@@ -717,6 +738,7 @@ function SnatcherEnemy(x, y) {
         500,
 		MINIBOSS_EXP
     );
+    enemy.rank = STAT.MINIBOSS;
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveBasic;

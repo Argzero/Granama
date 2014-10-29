@@ -245,8 +245,8 @@ var projectileFunctions = {
 		target.Damage(damage, this.source);
         
         // Player damage dealt progress
-        if (this.source.damageDealt !== undefined) {
-            this.source.damageDealt += damage;
+        if (this.source.creditDamage) {
+            this.source.creditDamage(this.damage);
         }
 	},
     
@@ -417,8 +417,8 @@ var projectileFunctions = {
         target.Damage(this.damage, this.source);
         
         // Player damage dealt progress
-        if (this.source.damageDealt !== undefined) {
-            this.source.damageDealt += this.damage;
+        if (this.source.creditDamage) {
+            this.source.creditDamage(this.damage);
         }
         
         // Lifesteal
@@ -486,8 +486,8 @@ var projectileFunctions = {
 					target.Damage(this.damage, this.source);
                     
                     // Player damage dealt progress
-                    if (this.source.damageDealt !== undefined) {
-                        this.source.damageDealt += this.damage;
+                    if (this.source.creditDamage) {
+                        this.source.creditDamage(this.damage);
                     }
 				}
 			}
@@ -502,8 +502,8 @@ var projectileFunctions = {
         target.Damage(this.damage, this.source);
         
         // Player damage dealt progress
-        if (this.source.damageDealt !== undefined) {
-            this.source.damageDealt += this.damage;
+        if (this.source.creditDamage) {
+            this.source.creditDamage(this.damage);
         }
         
         // Slow the target
@@ -586,8 +586,8 @@ var projectileFunctions = {
         }
 		
         // Player damage dealt progress
-        if (this.source.damageDealt !== undefined) {
-            this.source.damageDealt += this.damage;
+        if (this.source.creditDamage) {
+            this.source.creditDamage(this.damage);
         }
     
         // Can't grapple bosses

@@ -2,8 +2,8 @@ function EnemyManager(screen) {
 
     // Boss data
     this.bossStatus = ACTIVE_NONE;
-    this.bossScore = Math.floor(BOSS_SPAWN_BASE * (0.6 + 0.4 * playerManager.players.length));
-    this.bossIncrement = Math.floor(BOSS_SPAWN_BASE * (0.6 + 0.4 * playerManager.players.length));
+    this.bossScore = Math.floor(BOSS_SPAWN_BASE * (0.8 + 0.2 * playerManager.players.length));
+    this.bossIncrement = Math.floor(BOSS_SPAWN_BASE * (0.8 + 0.2 * playerManager.players.length));
     this.bossCount = 0;
 	this.timer = 0;
     this.expM = [1, 4/3, 3/2, 5/3];
@@ -168,11 +168,18 @@ function EnemyManager(screen) {
             
                 // Credit the killer
                 if (this.enemies[i].killer) {
-                    this.enemies[i].killer.enemiesKilled++;
+                    var p = this.enemies[i].killer;
+                    p.enemiesKilled++;
+                    p.profile.addStat(p.name, STAT.TOTAL_KILLS, 1);
+                    p.profile.setBest(p.name, STAT.MOST_KILLS, p.enemiesKilled);
+                    
+                    if (this.enemies[i].rank) {
+                        p.profile.addStat(p.name, this.enemies[i].rank, 1);
+                    }
                 }
 				
 				// Spawn experience
-                if (this.enemies[i].exp >= 300 || this.bossStatus == ACTIVE_NONE) { 
+                if (this.bossStatus == ACTIVE_NONE || this.enemies[i].isBoss()) { 
                     var num = Math.round(this.enemies[i].exp * this.expM[playerManager.players.length - 1]);
                     for (var e = 0; e < this.expData.length; e++) {
                         var data = this.expData[e];

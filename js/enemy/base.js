@@ -55,7 +55,7 @@ var enemyFunctions = {
 
     // Checks whether or not this enemy is a boss
     isBoss: function() {
-        return this.exp >= 300;
+        return this.rank == STAT.BOSS || this.rank == STAT.DRAGON;
     },
     
     // Stuns the enemy for a duration

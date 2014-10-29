@@ -46,6 +46,7 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
         damageTaken: 0,
         damageDealt: 0,
         deaths: 0,
+        rescues: 0,
         enemiesKilled: 0,
 		damageAlpha: 0,
 		levelFrame: -1,
@@ -54,14 +55,20 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 		
 		// Gives the player experience and checks for level ups
 		GiveExp: function(amount) {
-			this.exp += amount;
+			
+            this.exp += amount;
+            this.profile.addStat(this.name, STAT.TOTAL_EXP, amount);
+            
 			while (this.exp >= this.level * 200) {
 				this.exp -= this.level * 200;
 				if (this.level <= 25) {
 					this.points += 2;
 				}
-				this.level++;
-				this.maxHealth += this.healthScale * this.level;
+				
+                this.level++;
+                this.profile.setBest(this.name, STAT.HIGHEST_LEVEL, this.level);
+				
+                this.maxHealth += this.healthScale * this.level;
 				this.health += this.healthScale * this.level;
 				this.damage += this.damageScale * this.level;
 				this.levelFrame = 0;
@@ -81,8 +88,9 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
         
 		// Damages the player using an optional damage source
 		Damage: function(amount, damager) {
-            //return;
+            
             this.damageAbsorbed += amount;
+            this.profile.addStat(this.name, STAT.TOTAL_ABSORBED, amount);
             
 			// Damage event
 			if (this.onDamaged) {
@@ -111,13 +119,26 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 			
 			// Health damage
 			if (amount) {
+                
                 this.damageAbsorbed -= amount;
                 this.damageTaken += amount;
-				this.health = Math.max(0, this.health - amount);
+                
+                this.profile.addStat(this.name, STAT.TOTAL_ABSORBED, -amount);
+                this.profile.addStat(this.name, STAT.TOTAL_TAKEN, amount);
+                
+                this.health = Math.max(0, this.health - amount);
+                
                 if (this.health == 0) {
+                    
                     this.deaths++;
+                    
+                    this.profile.addStat(this.name, STAT.TOTAL_DEATHS, 1);
+                    this.profile.setBest(this.name, STAT.MOST_DEATHS, this.deaths);
                 }
 			}
+            
+            this.profile.setBest(this.name, STAT.MOST_ABSORBED, this.damageAbsorbed);
+            this.profile.setBest(this.name, STAT.MOST_TAKEN, this.damageTaken);
 		},
 		
 		// Knocks back the enemy the given distance
@@ -244,6 +265,16 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
                 if (this.rescue <= 0) {
                     this.health = this.maxHealth * 0.5;
                     this.rescue = 1;
+                    
+                    for (var i = 0; i < playerManager.players.length; i++) {
+                        var p = playerManager.players[i].robot;
+                        if (p.health <= 0) continue;
+                        if (DistanceSq(p.x, p.y, this.x, this.y) < 10000) {
+                            p.rescues++;
+                            p.profile.addStat(this.name, STAT.TOTAL_RESCUES, 1);
+                            p.profile.setBest(this.name, STAT.MOST_RESCUES, p.rescues);
+                        }
+                    }
                 }
             }
             else if (this.rescue < 1) {
@@ -420,6 +451,13 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
         // Function for telling weapons when they can fire
         IsInRange: function() {
 			return this.input.shoot;
+        },
+        
+        // Credits the player with damage dealt
+        creditDamage: function(amount) {
+            this.damageDealt += amount;
+            this.profile.addStat(this.name, STAT.TOTAL_DEALT, amount);
+            this.profile.setBest(this.name, STAT.MOST_DEALT, this.damageDealt);
         }
 	}
 }
