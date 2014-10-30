@@ -56,7 +56,7 @@ function targeterProjectileHit(target) {
 
 // Damage increase effect for the Targeter ability
 function targeterHit(amount, source) {
-	amount *= 1.25;
+	amount *= 2;
 	this.hitNormally(amount, source);
 }
 

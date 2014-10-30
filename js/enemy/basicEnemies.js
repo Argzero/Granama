@@ -811,7 +811,7 @@ function HiveDefenderEnemy(x, y) {
         y,
         35 * ScalePower(c, 0.9),
         5 + 0.5 * c,
-        50,
+        200,
 		0
     );
     

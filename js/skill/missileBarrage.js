@@ -22,6 +22,7 @@ function SkillMissileBarrage(player) {
                     300,
                     [gameScreen.enemyManager.enemies, gameScreen.enemyManager.turrets]
                 );
+                rocket.source = this;
                 this.bullets.push(rocket);
             }
         }

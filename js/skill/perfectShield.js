@@ -9,8 +9,8 @@ function SkillPerfectShield(player) {
 	
 		// Cast the skill
 		if (this.IsSkillCast()) {
-			this.skillDuration = 480;
-            this.skillCd = 600;
+			this.skillDuration = 600;
+            this.skillCd = 300;
 			this.shieldCos = this.sin;
 			this.shieldSin = -this.cos;
 		}

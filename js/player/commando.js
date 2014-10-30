@@ -194,7 +194,11 @@ function CommandoDrone(player, angle) {
 				this.gunData.damage = 2 * this.player.GetDamageMultiplier();
 				this.gunData.range = 349 + 25 * this.player.upgrades[DRONE_RANGE_ID];
 				this.gunData.duration = (5 + this.player.upgrades[DRONE_SHOTS_ID]) * this.gunData.interval;
+                var prevLength = this.player.bullets.length;
 				this.shoot(this.gunData);
+                for (var i = prevLength; i < this.player.bullets.length; i++) {
+                    this.player.bullets[i].source = this.player;
+                }
 			}
 		},
 		
