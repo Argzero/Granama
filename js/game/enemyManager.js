@@ -2,8 +2,8 @@ function EnemyManager(screen) {
 
     // Boss data
     this.bossStatus = ACTIVE_NONE;
-    this.bossScore = Math.floor(BOSS_SPAWN_BASE * (0.8 + 0.2 * playerManager.players.length));
-    this.bossIncrement = Math.floor(BOSS_SPAWN_BASE * (0.8 + 0.2 * playerManager.players.length));
+    this.bossScore = Math.floor(BOSS_SPAWN_BASE * (0.8 + 0.4 * playerManager.players.length));
+    this.bossIncrement = Math.floor(BOSS_SPAWN_BASE * (0.8 + 0.4 * playerManager.players.length));
     this.bossCount = 0;
 	this.timer = 0;
     this.expM = [1, 4/3, 3/2, 5/3];
@@ -283,7 +283,7 @@ function EnemyManager(screen) {
         // Don't spawn enemies if there are too many or one has just spawned
         if (this.bossStatus == ACTIVE_NONE 
                 && this.spawnCd <= 0 
-                && this.enemies.length < MAX_ENEMIES * (0.7 + 0.3 * playerManager.players.length) 
+                && this.enemies.length < MAX_ENEMIES * (0.85 + 0.15 * playerManager.players.length) 
                 && this.enemies.length + screen.score < this.bossScore) {
             
             // Get a spawn point off of the gameScreen
