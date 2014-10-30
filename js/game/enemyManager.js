@@ -297,7 +297,7 @@ function EnemyManager(screen) {
             this.SpawnEnemy(SPAWN_DATA, x, y);
             
             // Apply the cooldown
-            this.spawnCd = (SPAWN_RATE - SPAWN_SCALE * screen.score) / (0.6 + playerManager.players.length * 0.4);
+            this.spawnCd = (SPAWN_RATE - SPAWN_SCALE * screen.score) / (0.7 + playerManager.players.length * 0.3);
         }
         else if (this.spawnCd > 0) {
             this.spawnCd--;
