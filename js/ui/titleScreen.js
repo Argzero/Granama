@@ -1,6 +1,8 @@
 // The title gameScreen for the game
 function TitleScreen() {
 
+    delete PROFILE_DATA['Overall'];
+
     this.imgTitle = GetImage("title");
     this.buttons = [
         TitleButton("Play", -140, 500, 600, 75, function() {

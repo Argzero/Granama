@@ -1,4 +1,7 @@
 function StatScreen() {
+    
+    PROFILE_DATA['Overall'] = {};
+
     var obj = {
         
         boxes: [],
