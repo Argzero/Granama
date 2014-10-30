@@ -66,7 +66,15 @@ function GameScreen(bossRush) {
         for (var i = 0; i < playerManager.players.length; i++) {
             if (playerManager.players[i].robot.health > 0) return;
         }
-        this.gameOver = true;
+        if (!this.gameOver) {
+            this.gameOver = true;
+            
+            for (var i = 0; i < playerManager.players.length; i++) {
+                var p = playerManager.players[i].robot;
+                p.profile.setBest(p.name, STAT.BEST_SCORE, this.score);
+                p.profile.addList(p.name, STAT.LAST_10, 10, this.score);
+            }
+        }
     };
 	
 	// Pauses the game

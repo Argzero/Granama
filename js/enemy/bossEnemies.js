@@ -16,6 +16,7 @@ function HeavyBoss(x, y) {
         300,
         400
     );
+    enemy.rank = STAT.BOSS;
     
     enemy.pierceDamage = 0.1;
     enemy.Knockback = enemyFunctions.BossKnockback;
@@ -127,6 +128,7 @@ function FireBoss(x, y) {
         300,
         400
     );
+    enemy.rank = STAT.BOSS;
 	
     enemy.pierceDamage = 0.2;
     enemy.Knockback = enemyFunctions.BossKnockback;
@@ -246,6 +248,7 @@ function PunchBoss(x, y) {
 		300,
 		400
     );
+    enemy.rank = STAT.BOSS;
     
     enemy.pierceDamage = 0.2;
     enemy.Knockback = enemyFunctions.BossKnockback;
@@ -331,6 +334,7 @@ function DragonBoss(x, y) {
         600,
         750
     );
+    enemy.rank = STAT.DRAGON;
     
     enemy.pierceDamage = 0.4;
     enemy.Knockback = undefined;
@@ -435,6 +439,7 @@ function QueenBoss(x, y) {
         600,
         600
     );
+    enemy.rank = STAT.BOSS;
     
 	// Boss Stuff
     enemy.pierceDamage = 0.2;

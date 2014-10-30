@@ -1,13 +1,53 @@
+var ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+var PARTS = {
+    DISCONNECTED: 0,
+    CONNECTED: 1,
+    PROFILE: 2,
+	NEW_PROFILE: 2.5,
+    ROBOT: 3,
+    ABILITY: 4,
+    READY: 5
+};
+
+function PlayerSettings(id) {
+    return {
+        id: id,
+        robot: 0,
+        ability: 0,
+        frame: 0,
+		profile: 0,
+		newProfile: '',
+        error: '',
+        part: PARTS.DISCONNECTED
+    };
+}
+
 // The character selection screen of the game
 function SelectScreen() {
 
-	this.selection = [0, 0, 0, 0];
 	this.frame = 0;
-    this.playerSet = [false, false, false, false];
-    this.joined = [!gamepads, false, false, false];
-    this.ready = [false, false, false, false];
-    this.abilityId = [0, 0, 0, 0];
-    this.open = [0, 1, 2, 3, 4];
+    this.settings = [];
+    this.open = [];
+	this.profilesArray = [];
+	
+	var i = 0;
+	for (var profile in PROFILE_DATA) {
+		this.profilesArray[i++] = profile;
+	}
+    this.profilesArray.sort();
+	this.profilesArray.push('Guest');
+	this.profilesArray.push('New Profile');
+    
+    // Initialize player settings
+    for (var i = 0; i < playerManager.players.length; i++) {
+        this.settings.push(PlayerSettings(i));
+    }
+    
+    // Start off with all classes available
+    for (var i = 0; i < PLAYER_DATA.length; i++) {
+        this.open.push(i);
+    }
     
     // Checks if a robot ID is still open
     this.isOpen = function(id) {
@@ -18,6 +58,40 @@ function SelectScreen() {
         }
         return false;
     };
+    
+    this.prevPart = function(settings) {
+    
+        settings.part--;
+        
+        switch (settings.part)
+        {
+        
+            // Make a profile available again when a player no longer selects it
+            case PARTS.PROFILE:
+                
+                if (settings.profile != 'Guest') {
+                    this.profilesArray.push(settings.newProfile);
+                    this.profilesArray.sort(function(a, b) {
+                        if (a == 'New Profile') return 1;
+                        if (b == 'New Profile') return -1;
+                        if (a == 'Guest') return 1;
+                        if (b == 'Guest') return -1;
+                        return a.localeCompare(b);
+                    });
+                }
+                settings.profile = 0;
+                
+                break;
+                
+            // Make a robot available again when a player no longer selects it
+            case PARTS.ROBOT:
+            
+                playerManager.players[settings.id].robot = undefined;
+                this.open.push(settings.robot);
+                
+                break;
+        }
+    }
 	
     // Draws the selection gameScreen
     this.Draw = function() {
@@ -56,190 +130,416 @@ function SelectScreen() {
         
         var baseX = x - (playerManager.players.length - 1) * 135;
         for (var i = 0; i < playerManager.players.length; i++) {
-        
+    
             x = baseX + 270 * i;
-            
+			var settings = this.settings[i];
+			var robot = PLAYER_DATA[settings.robot];
+	
             // Draw the boxes for the options
             canvas.fillStyle = '#484848';
             canvas.fillRect(x - 125, y - 170, 250, 500);
-            canvas.fillStyle = this.ready[i] ? '#aaa' : '#000';
+            canvas.fillStyle = settings.part == PARTS.READY ? '#333' : '#000';
             canvas.fillRect(x - 115, y - 160, 230, 480);
             
             // Input
             var input = playerManager.players[i].input;
             input.update();
-            
-            // Prompt to plug in controllers if not done so
-            if (!input.valid) {
-                canvas.fillStyle = 'white';
-                canvas.font = '24px Flipbash';
-                canvas.textAlign = 'center';
-                canvas.fillText('Connect a', x, y);
-                canvas.fillText('controller...', x, y + 30);
-            }
-            
-            // Prompt to press the buttons to join when a controller is connected
-            else if (!this.joined[i]) {
-                canvas.fillStyle = 'white';
-                canvas.font = '24px Flipbash';
-                canvas.textAlign = 'center';
-                canvas.fillText('Press "Space"', x, y);
-                canvas.fillText('or "Start"', x, y + 30);
-                canvas.fillText('to join...', x, y + 60);
+			
+			// Valid/invalid input switches parts
+			if (input.valid && settings.part == PARTS.DISCONNECTED) {
+				settings.part = PARTS.CONNECTED;
+				settings.frame = 0;
+			}
+			else if (!input.valid) {
+				settings.part = PARTS.DISCONNECTED;
+				settings.frame = 0;
+			}
+			
+			// Display information based on the UI part the player is at
+			switch(settings.part)
+			{
+				// Controller is disconnected and awaiting connection
+				case PARTS.DISCONNECTED:
+				
+					// Prompt to connect a controller
+					canvas.fillStyle = 'white';
+					canvas.font = '24px Flipbash';
+					canvas.textAlign = 'center';
+					canvas.fillText('Connect a', x, y);
+					canvas.fillText('controller...', x, y + 30);
+				
+					break;
+				
+				// Controller is connected and awaiting the player to join
+				case PARTS.CONNECTED:
+				
+					// Prompt to press a button to join
+					canvas.fillStyle = 'white';
+					canvas.font = '24px Flipbash';
+					canvas.textAlign = 'center';
+					if (input.id === undefined) {
+						canvas.fillText('Press "Space"', x, y);
+					}
+					else {
+						canvas.fillText('Press "Start"', x, y);
+					}
+					canvas.fillText('to join...', x, y + 30);
+					
+					// Joining the game
+					if ((input.id !== undefined && input.pause == 1) 
+							|| (input.id === undefined && input.ability == 1)) {
+						settings.part++;
+                        settings.profile = 0;
+					}
+					
+					// Returning to main menu
+					if (input.id === undefined && input.cancel == 1) {
+						gameScreen = new TitleScreen();
+					}
+				
+					break;
+				
+                // Player is choosing a profile
+				case PARTS.PROFILE:
                 
-                if ((input.id !== undefined && input.pause == 1) 
-                    || (input.id === undefined && input.ability == 1)) {
-                    this.joined[i] = true;
-                }
-                if (input.id === undefined && input.cancel == 1) {
-                    gameScreen = new TitleScreen();
-                }
-            }
-            
-            // When a player has joined, the robot will be displayed
-            else {
-            
-                // Draw the selected option
-                var data = PLAYER_DATA[this.selection[i]];
+					// Profile options
+					var min = Math.max(0, settings.profile - 5);
+					var max = Math.min(this.profilesArray.length - 1, settings.profile + 5);
+					canvas.fillStyle = 'white';
+					var ty = y + 50 + (min - settings.profile) * 30;
+					for (var j = min; j <= max; j++) {
+						var dif = j - settings.profile;
+						var abs = Math.abs(dif);
+                        if (abs == 0) canvas.font = '32px Flipbash';
+                        else canvas.font = (26 - abs * 2) + 'px Flipbash';
+                        if (abs == 0) canvas.globalAlpha = 1;
+						else canvas.globalAlpha = 0.6 - abs * 0.1;
+                        canvas.fillText(this.profilesArray[j], x, ty);
+                        if (abs == 0) ty += 40;
+                        else ty += 36 - abs * 2;
+					}
+					canvas.globalAlpha = 1;
+					
+					// Next option
+					if (input.down == 1) {
+						settings.profile = Math.min(settings.profile + 1, this.profilesArray.length - 1);
+					}
+					
+					// Previous option
+					if (input.up == 1) {
+						settings.profile = Math.max(0, settings.profile - 1);
+					}
+				
+					// Next screen
+					if (input.confirm == 1) {
+					
+						if (settings.profile < this.profilesArray.length - 1) {
+							settings.part++;
+                            var num = settings.profile;
+                            settings.profile = this.profilesArray[num];
+                            if (num < this.profilesArray.length - 2) {
+                                this.profilesArray.splice(num, 1);
+                                for (var j = 0; j < this.settings.length; j++) {
+                                    if (j != i && this.settings[j].part == PARTS.PROFILE && this.settings[j].profile >= num) {
+                                        this.settings[j].profile--;
+                                    }
+                                }
+                            }
+						}
+						
+						else {
+							settings.part += 0.5;
+                            settings.newProfile = '';
+						}
+					}
+					
+					// Returning to previous screen
+					if (input.cancel == 1) {
+						settings.part--;
+					}
+				
+					break;
+					
+                // Player is creating a new profile
+				case PARTS.NEW_PROFILE: 
                 
-                // Preview image
-                var preview = GetImage(data.preview);
-                canvas.drawImage(preview, x - preview.width / 2, y - 70 - preview.height / 2);
-
-                // Name
-                canvas.font = '32px Flipbash';
-                canvas.fillStyle = data.color;
-                canvas.textAlign = 'center';
-                canvas.textBaseline = 'top';
-                canvas.fillText(data.name, x, y);
-                
-                // Weapon titles
-                canvas.font = '24px Flipbash';
-                canvas.fillStyle = 'white';
-                canvas.textAlign = 'left';
-                canvas.fillText('Primary', x - 100, y + 50);
-                canvas.fillText('Secondary', x - 100, y + 120);
-                canvas.fillRect(x - 100, y + 82, 105, 2);
-                canvas.fillRect(x - 100, y + 152, 150, 2);
-                
-                // Weapon names
-                canvas.font = '18px Flipbash';
-                canvas.fillText(data.weapons[0], x - 100, y + 85);
-                canvas.fillText(data.weapons[1], x - 100, y + 155);
-            
-                // When ready, wait for further input in case of cancelling
-                if (this.ready[i]) {
-                
-                    canvas.fillStyle = 'red';
-                    canvas.fillRect(x - 110 + this.abilityId[i] * 75, y + 195, 70, 70);
-                
-                    if (input.cancel == 1) {
-                        playerManager.players[i].robot = undefined;
-                        this.ready[i] = false;
-                    }
-                }
-                
-                // If the robot is selected, have them select a skill
-                else if (this.playerSet[i]) {
+                    // Current name display
+                    canvas.fillStyle = '#ccc';
+                    canvas.font = '32px Flipbash';
+                    var text = '[' + settings.newProfile + ']';
+                    canvas.fillText(text, x, y - 75);
                     
-                    // Highlight
-                    canvas.fillStyle = 'red';
-                    canvas.fillRect(x - 110 + this.abilityId[i] * 75, y + 195, 70, 70);
-                    
-                    // Skill name
-                    canvas.textAlign = 'center';
-                    canvas.fillStyle = 'white';
+                    // Draw the letter grid
+                    var perRow = 5;
+                    var interval = 230 / 5;
+                    var rows = Math.ceil((4 + ALPHABET.length) / perRow);
                     canvas.font = '24px Flipbash';
-                    canvas.fillText(data.skills[this.abilityId[i]].name, x, y + 270);
+                    for (var j = 0; j < ALPHABET.length; j++) {
+                        var row = Math.floor(j / perRow);
+                        var column = j % perRow;
+                        canvas.fillStyle = j == settings.frame ? 'white' : '#666';
+                        canvas.fillText(ALPHABET[j], x - 115 + interval * (column + 0.5), y + 30 * row);
+                    }
+                
+                    // Del button
+                    canvas.fillStyle = settings.frame == ALPHABET.length ? 'white' : '#666';
+                    canvas.fillText('Del', x + 115 - 3 * interval, y + 30 * (rows - 1));
                     
-                    // Controls
+                    // Done button
+                    canvas.fillStyle = settings.frame > ALPHABET.length ? 'white' : '#666';
+                    canvas.fillText('Done', x + 115 - interval, y + 30 * (rows - 1));
+				
+                    // Errors
+                    canvas.fillStyle = 'red';
+                    canvas.fillText(settings.error, x, y + 30 * (rows + 1));
+                
+                    // Input for navigating the letter grid
+                    var r = Math.floor(settings.frame / perRow);
+                    var c = settings.frame % perRow;
                     if (input.left == 1) {
-                        this.abilityId[i] = (this.abilityId[i] + 2) % 3;
+                        c = (c + perRow - 1) % perRow;
+                        if (settings.frame > ALPHABET.length) {
+                            c = ALPHABET.length % perRow;
+                        }
                     }
                     if (input.right == 1) {
-                        this.abilityId[i] = (this.abilityId[i] + 1) % 3;
+                        c = (c + 1) % perRow;
+                        if (settings.frame == ALPHABET.length) {
+                            settings.frame += 2;
+                        }
+                        else if (settings.frame > ALPHABET.length) {
+                            c = 0;
+                        }
                     }
+                    if (input.down == 1) {
+                        r = (r + 1) % rows;
+                    }
+                    if (input.up == 1) {
+                        r = (r + rows - 1) % rows;
+                    }
+                    settings.frame = c + r * perRow;
+                
+                    // Choosing a letter/finishing
                     if (input.confirm == 1) {
-                        input.locked = true;
-                        var robot = data.player();
-                        robot.color = data.color;
-                        robot.name = data.name;
-                        var skill = data.skills[this.abilityId[i]];
-                        robot.ability = skill.name;
-                        robot.input = input;
-						robot.ups = data.ups;
-						robot.icons = data.icons;
-                        skill.callback(robot);
-                        playerManager.players[i].robot = robot;
-                        this.ready[i] = true;
-                        
-                        var allReady = true;
-                        for (var k = 0; k < 4; k++) {
-                            if (!this.ready[k] && this.joined[k]) {
-                                allReady = false;
+                        if (settings.frame < ALPHABET.length && settings.newProfile.length < 6) {
+                            settings.newProfile += ALPHABET[settings.frame];
+                        }
+                        else if (settings.frame == ALPHABET.length && settings.newProfile.length > 0) {
+                            settings.newProfile = settings.newProfile.substring(0, settings.newProfile.length - 1);
+                        }
+                        else if (settings.frame > ALPHABET.length) {
+                            if (settings.newProfile.length == 0) {
+                                settings.error = 'Invalid Name';
+                            }
+                            else if (PROFILE_DATA[settings.newProfile]) {
+                                settings.error = 'Name in use';
+                            }
+                            else {
+                                settings.part += 0.5;
+                                settings.profile = settings.newProfile;
+                                PROFILE_DATA[settings.newProfile] = {};
                             }
                         }
-                        if (allReady) {
-                            playerManager.clean();
-                            gameScreen = new GameScreen(false);
-                        }
                     }
-                    else if (input.cancel == 1) {
-                        this.playerSet[i] = false;
-                        this.open.push(this.selection[i]);
-                    }
-                }
-                
-                // Have the player select a robot
-                else {
-                
-                    // Indicator
-                    var dx = Math.cos(this.frame * Math.PI / 15);
-                    canvas.drawImage(GetImage('uiArrowLeft'), x - 130 - 5 * dx, y + 10);
-                    canvas.drawImage(GetImage('uiArrowRight'), x + 79 + 5 * dx, y + 10);
                     
-                    // Controls
+                    // Returning to profile select
+                    if (input.cancel == 1) {
+                        settings.part -= 0.5;
+                    }
+                
+					break;
+                
+				// Player joined and is selecting a robot type
+				case PARTS.ROBOT:
+                    
+                    // Profile name
+                    canvas.fillStyle = 'white';
+                    canvas.font = '32px Flipbash';
+                    canvas.fillText(settings.profile, x, y - 160);
+                
+					canvas.globalAlpha = 0.5;
+                    
+                    // Next/previous options
+                    var next = settings.robot, prev = settings.robot;
+                    do { next = (next + 1) % PLAYER_DATA.length; } while (!this.isOpen(next));
+					do { prev = (prev + PLAYER_DATA.length - 1) % PLAYER_DATA.length; } while (!this.isOpen(prev));
+                    
+					// Previous image
+					var preview = GetImage(PLAYER_DATA[prev].preview);
+					var scale = 75 / preview.height;
+					canvas.drawImage(preview, preview.width / 2, 0, preview.width / 2, preview.height, x - 115, y + 20, preview.width * scale / 2, 75);
+					
+					// Next image
+					preview = GetImage(PLAYER_DATA[next].preview);
+					var scale = 50 / preview.height;
+					canvas.drawImage(preview, 0, 0, preview.width / 2, preview.height, x + 115 - preview.width * scale / 2, y + 20, preview.width * scale / 2, 75);
+				
+					canvas.globalAlpha = 1;
+				
+					// Preview image
+				    preview = GetImage(robot.preview);
+					canvas.drawImage(preview, x - preview.width / 2 + 10, y - preview.height / 2);
+
+					// Name
+					canvas.font = '32px Flipbash';
+					canvas.fillStyle = robot.color;
+					canvas.textAlign = 'center';
+					canvas.textBaseline = 'top';
+					canvas.fillText(robot.name, x, y + 80);
+					
+					// Weapon titles
+					canvas.font = '24px Flipbash';
+					canvas.fillStyle = 'white';
+					canvas.textAlign = 'left';
+					canvas.fillText('Primary', x - 100, y + 180);
+					canvas.fillText('Secondary', x - 100, y + 250);
+					canvas.fillRect(x - 100, y + 212, 105, 2);
+					canvas.fillRect(x - 100, y + 282, 150, 2);
+					
+					// Weapon names
+					canvas.font = '18px Flipbash';
+					canvas.fillText(robot.weapons[0], x - 100, y + 215);
+					canvas.fillText(robot.weapons[1], x - 100, y + 285);
+				
+					// Indicator
+                    var dx = Math.cos(this.frame * Math.PI / 15);
+                    canvas.drawImage(GetImage('uiArrowLeft'), x - 130 - 5 * dx, y - 10);
+                    canvas.drawImage(GetImage('uiArrowRight'), x + 79 + 5 * dx, y - 10);
+				
+					// Switch to next robot
                     if (input.left == 1) {
-                        do {
-                            this.selection[i] = (this.selection[i] + PLAYER_DATA.length - 1) % PLAYER_DATA.length;
-                        }
-                        while (!this.isOpen(this.selection[i]));
-                        input.locked = true;
+                        settings.robot = prev;
                     }
+					
+					// Switch to previous robot
                     if (input.right == 1) {
-                        do {
-                            this.selection[i] = (this.selection[i] + 1) % PLAYER_DATA.length;
-                        }
-                        while (!this.isOpen(this.selection[i]));
-                        input.locked = true;
+                        settings.robot = next;
                     }
+					
+					// Choose the robot
                     if (input.confirm == 1) {
-                        input.locked = true;
-                        this.playerSet[i] = true;
+                        settings.part++;
                         for (var k = 0; k < this.open.length; k++) {
-                            if (this.open[k] == this.selection[i]) {
+                            if (this.open[k] == settings.robot) {
                                 this.open.splice(k, 1);
                                 break;
                             }
                         }
-                        for (var k = 0; k < 4; k++) {
-                            if (!this.playerSet[k]) {
-                                if (!this.isOpen(this.selection[k])) {
-                                    this.selection[k] = this.open[0];
-                                }
-                            }
+                        for (var k = 0; k < this.settings.length; k++) {
+							if (k != i) {
+								if (this.settings[k].part >= PARTS.ROBOT) {
+									if (!this.isOpen(this.settings[k].robot)) {
+										this.settings[k].robot = this.open[0];
+									}
+								}
+							}
                         }
                     }
+					
+					// Quitting
                     if (input.cancel == 1) {
-                        this.joined[i] = false;
+                        this.prevPart(settings);
                     }
-                }
+				
+					break;
+				
+				// Player is selecting an ability
+				case PARTS.ABILITY:
+				
+                    // Profile name
+                    canvas.fillStyle = 'white';
+                    canvas.font = '32px Flipbash';
+                    canvas.fillText(settings.profile, x, y - 160);
                 
-                // Ability icons
-                for (var j = 0; j < 3; j++) {
-                    canvas.drawImage(GetImage('ability' + data.skills[j].name), x - 105 + 75 * j, y + 200, 60, 60);
-                }
-            }
+					// Preview image
+				    var preview = GetImage(robot.preview);
+					canvas.drawImage(preview, x - preview.width / 2 + 10, y - preview.height / 2);
+
+					// Name
+					canvas.font = '32px Flipbash';
+					canvas.fillStyle = robot.color;
+					canvas.textAlign = 'center';
+					canvas.textBaseline = 'top';
+					canvas.fillText(robot.name, x, y + 80);
+					
+					// Hovered ability
+					canvas.drawImage(GetImage('ability' + robot.skills[settings.ability].name), x - 45, y + 160, 90, 90);
+					
+					// Other abilities
+					canvas.globalAlpha = 0.5;
+					canvas.drawImage(GetImage('ability' + robot.skills[(settings.ability + 2) % 3].name), x - 105, y + 205, 45, 45);
+					canvas.drawImage(GetImage('ability' + robot.skills[(settings.ability + 1) % 3].name), x + 60, y + 205, 45, 45);
+					canvas.globalAlpha = 1;
+					
+					// Skill name
+                    canvas.textAlign = 'center';
+                    canvas.fillStyle = 'white';
+                    canvas.font = '24px Flipbash';
+                    canvas.fillText(robot.skills[settings.ability].name, x, y + 250);
+					
+					// Indicator
+                    var dx = Math.cos(this.frame * Math.PI / 15);
+                    canvas.drawImage(GetImage('uiArrowLeft'), x - 130 - 5 * dx, y  + 170);
+                    canvas.drawImage(GetImage('uiArrowRight'), x + 79 + 5 * dx, y + 170);
+					
+					// Next Ability
+                    if (input.left == 1) {
+                        settings.ability = (settings.ability + 2) % 3;
+                    }
+					
+					// Previous ability
+                    if (input.right == 1) {
+                        settings.ability = (settings.ability + 1) % 3;
+                    }
+					
+					// Choose the ability
+                    if (input.confirm == 1) {
+					
+						// Apply the options to get ready for playing
+                        var player = robot.player();
+                        player.profile = Profile(settings.profile);
+                        player.color = robot.color;
+                        player.name = robot.name;
+                        var skill = robot.skills[settings.ability];
+                        player.ability = skill.name;
+                        player.input = input;
+						player.ups = robot.ups;
+						player.icons = robot.icons;
+                        skill.callback(player);
+                        playerManager.players[i].robot = player;
+                        settings.part++;
+                    }
+					
+					// Return to robot selection
+                    else if (input.cancel == 1) {
+                        this.prevPart(settings);
+                    }
+				
+					break;
+					
+				// Player is ready to play
+				case PARTS.READY:
+									
+					// Preview image
+					var preview = GetImage(robot.preview);
+					canvas.drawImage(preview, x - preview.width / 2, y - 40 - preview.height / 2);
+
+					// Name
+					canvas.font = '32px Flipbash';
+					canvas.fillStyle = robot.color;
+					canvas.textAlign = 'center';
+					canvas.textBaseline = 'top';
+					canvas.fillText(robot.name, x, y + 40);
+					
+					canvas.fillText('Ready', x, y + 150);
+					
+					// Return to profile select
+					if (input.cancel == 1) {
+                        settings.part--;
+                    }
+				
+					break;
+			}
         }
         
         this.frame = (this.frame + 1) % 60;
@@ -249,5 +549,26 @@ function SelectScreen() {
         
         canvas.textBaseline = 'alphabetic';
         canvas.textAlign = 'left';
+        
+        // Start the game when everyone is ready
+        var allReady = true;
+        var oneReady = false;
+        for (var k = 0; k < playerManager.players.length; k++) {
+            if (this.settings[k].part != PARTS.READY && this.settings[k].part >= PARTS.ROBOT) {
+                allReady = false;
+            }
+            else if (this.settings[k].part == PARTS.READY) {
+                oneReady = true;
+            }
+        }
+        if (allReady && oneReady) {
+            playerManager.clean();
+            for (var i = 0; i < playerManager.players.length; i++) {
+                var robot = playerManager.players[i].robot;
+                robot.profile.addStat(robot.name, STAT.GAMES, 1);
+                robot.profile.addStat(robot.name, robot.ability, 1);
+            }
+            gameScreen = new GameScreen(false);
+        }
     };
 }

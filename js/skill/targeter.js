@@ -74,7 +74,7 @@ function TargeterParticle(target) {
 			// Switching targets when the current dies
 			if (this.target.health <= 0) {
 				var newTarget = gameScreen.enemyManager.getNearest(this.target.x, this.target.y);
-				if (DistanceSq(newTarget.x, newTarget.y, this.target.x, this.target.y) < Sq(TARGET_INFECT_RADIUS)) {
+				if (newTarget && DistanceSq(newTarget.x, newTarget.y, this.target.x, this.target.y) < Sq(TARGET_INFECT_RADIUS)) {
 					this.target = newTarget;
 				}
 				else {
