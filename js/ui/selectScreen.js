@@ -446,36 +446,41 @@ function SelectScreen() {
 				// Player is selecting an ability
 				case PARTS.ABILITY:
 				
+                    // Profile name
+                    canvas.fillStyle = 'white';
+                    canvas.font = '32px Flipbash';
+                    canvas.fillText(settings.profile, x, y - 160);
+                
 					// Preview image
-					var preview = GetImage(robot.preview);
-					canvas.drawImage(preview, x - preview.width / 2, y - 40 - preview.height / 2);
+				    var preview = GetImage(robot.preview);
+					canvas.drawImage(preview, x - preview.width / 2 + 10, y - preview.height / 2);
 
 					// Name
 					canvas.font = '32px Flipbash';
 					canvas.fillStyle = robot.color;
 					canvas.textAlign = 'center';
 					canvas.textBaseline = 'top';
-					canvas.fillText(robot.name, x, y + 40);
+					canvas.fillText(robot.name, x, y + 80);
 					
 					// Hovered ability
-					canvas.drawImage(GetImage('ability' + robot.skills[settings.ability].name), x - 45, y + 150, 90, 90);
+					canvas.drawImage(GetImage('ability' + robot.skills[settings.ability].name), x - 45, y + 160, 90, 90);
 					
 					// Other abilities
 					canvas.globalAlpha = 0.5;
-					canvas.drawImage(GetImage('ability' + robot.skills[(settings.ability + 2) % 3].name), x - 105, y + 195, 45, 45);
-					canvas.drawImage(GetImage('ability' + robot.skills[(settings.ability + 1) % 3].name), x + 60, y + 195, 45, 45);
+					canvas.drawImage(GetImage('ability' + robot.skills[(settings.ability + 2) % 3].name), x - 105, y + 205, 45, 45);
+					canvas.drawImage(GetImage('ability' + robot.skills[(settings.ability + 1) % 3].name), x + 60, y + 205, 45, 45);
 					canvas.globalAlpha = 1;
 					
 					// Skill name
                     canvas.textAlign = 'center';
                     canvas.fillStyle = 'white';
                     canvas.font = '24px Flipbash';
-                    canvas.fillText(robot.skills[settings.ability].name, x, y + 240);
+                    canvas.fillText(robot.skills[settings.ability].name, x, y + 250);
 					
 					// Indicator
                     var dx = Math.cos(this.frame * Math.PI / 15);
-                    canvas.drawImage(GetImage('uiArrowLeft'), x - 130 - 5 * dx, y  + 160);
-                    canvas.drawImage(GetImage('uiArrowRight'), x + 79 + 5 * dx, y + 160);
+                    canvas.drawImage(GetImage('uiArrowLeft'), x - 130 - 5 * dx, y  + 170);
+                    canvas.drawImage(GetImage('uiArrowRight'), x + 79 + 5 * dx, y + 170);
 					
 					// Next Ability
                     if (input.left == 1) {

@@ -363,6 +363,7 @@ function LoadingScreen() {
     }
 }
 
+/*
 // The title gameScreen for the game
 function TitleScreen() {
 
@@ -371,7 +372,8 @@ function TitleScreen() {
     this.imgControls = GetImage("controls");
     this.imgPlay = GetImage("play");
     this.imgRush = GetImage('rush');
-
+    this.titleButton = TitleButton("Testing", 100, 500, 600, 90);
+    
     // Draws the title gameScreen
     this.Draw = Draw;
     function Draw() {
@@ -439,6 +441,9 @@ function TitleScreen() {
         canvas.fillRect(x1 + 10, wy + 230, 600, 20 + this.imgCredits.height);
         canvas.drawImage(this.imgCredits, wx - this.imgCredits.width / 2, wy + 240);
         
+        // Draw the test
+        this.titleButton.draw();
+       
         canvas.translate(0, -15);
         
         // Unmarks the left mouse button as pressed
@@ -476,6 +481,7 @@ function TitleScreen() {
         canvas.drawImage(cursor, cx - cursor.width / 2, cy - cursor.height / 2);
     }
 }
+*/
 
 // The controls gameScreen
 function CreditsScreen() {

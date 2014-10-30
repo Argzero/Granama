@@ -1,5 +1,5 @@
 PROFILE_DATA_KEY = 'profiles';
-PROFILE_DATA = userData.getObject(PROFILE_DATA_KEY) || {};
+PROFILE_DATA = userData.getObject(PROFILE_DATA_KEY) || { Overall: {} };
 
 // Available stats
 var STAT = {

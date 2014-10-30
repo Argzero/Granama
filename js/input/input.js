@@ -36,8 +36,8 @@ if (gamepads) {
 // Updates the mouse according to the client mouse position
 document.addEventListener('mousemove', function(e) {
     e = e || event;
-    mx = e.pageX - e.target.offsetLeft;
-    my = e.pageY - e.target.offsetTop;
+    mx = e.pageX - e.target.offsetLeft + 10;
+    my = e.pageY - e.target.offsetTop + 10;
     /*
     // Firefox/Chrome
     if (event) {
