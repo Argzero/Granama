@@ -37,6 +37,9 @@ window.addEventListener('beforeunload', function() {
 
 // Handles managing the data for a profile
 function Profile(name) {    
+    if (PROFILE_DATA[name] === undefined) {
+        PROFILE_DATA[name] = {};
+    }
     return {
         
         // Profile data
@@ -48,6 +51,19 @@ function Profile(name) {
         setBest: profileFunctions.setBest,
         getStat: profileFunctions.getStat,
         getRobotStat: profileFunctions.getRobotStat
+    };
+}
+
+// Handles retrieving the data for a profile's robot specific data
+function RobotProfile(name, robot) {
+    return {
+    
+        profile: Profile(name),
+        name: robot,
+        
+        getStat: function(stat) {
+            return this.profile.getRobotStat(this.name, stat);
+        }
     };
 }
 

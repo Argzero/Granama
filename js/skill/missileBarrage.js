@@ -20,6 +20,7 @@ function SkillMissileBarrage(player) {
                     449,
                     200,
                     300,
+					this.name,
                     [gameScreen.enemyManager.enemies, gameScreen.enemyManager.turrets]
                 );
                 rocket.source = this;

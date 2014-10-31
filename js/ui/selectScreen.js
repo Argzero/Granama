@@ -70,7 +70,7 @@ function SelectScreen() {
             case PARTS.PROFILE:
                 
                 if (settings.profile != 'Guest') {
-                    this.profilesArray.push(settings.newProfile);
+                    this.profilesArray.push(settings.profile);
                     this.profilesArray.sort(function(a, b) {
                         if (a == 'New Profile') return 1;
                         if (b == 'New Profile') return -1;
@@ -206,6 +206,7 @@ function SelectScreen() {
 					var min = Math.max(0, settings.profile - 5);
 					var max = Math.min(this.profilesArray.length - 1, settings.profile + 5);
 					canvas.fillStyle = 'white';
+					canvas.textAlign = 'center';
 					var ty = y + 50 + (min - settings.profile) * 30;
 					for (var j = min; j <= max; j++) {
 						var dif = j - settings.profile;
@@ -240,7 +241,7 @@ function SelectScreen() {
                             if (num < this.profilesArray.length - 2) {
                                 this.profilesArray.splice(num, 1);
                                 for (var j = 0; j < this.settings.length; j++) {
-                                    if (j != i && this.settings[j].part == PARTS.PROFILE && this.settings[j].profile >= num) {
+                                    if (j != i && this.settings[j].part == PARTS.PROFILE && this.settings[j].profile >= num && this.settings[j].profile > 0) {
                                         this.settings[j].profile--;
                                     }
                                 }
@@ -265,6 +266,7 @@ function SelectScreen() {
                 
                     // Current name display
                     canvas.fillStyle = '#ccc';
+					canvas.textAlign = 'center';
                     canvas.font = '32px Flipbash';
                     var text = '[' + settings.newProfile + ']';
                     canvas.fillText(text, x, y - 75);
@@ -355,6 +357,7 @@ function SelectScreen() {
                     // Profile name
                     canvas.fillStyle = 'white';
                     canvas.font = '32px Flipbash';
+					canvas.textAlign = 'center';
                     canvas.fillText(settings.profile, x, y - 160);
                 
 					canvas.globalAlpha = 0.5;
@@ -383,7 +386,6 @@ function SelectScreen() {
 					// Name
 					canvas.font = '32px Flipbash';
 					canvas.fillStyle = robot.color;
-					canvas.textAlign = 'center';
 					canvas.textBaseline = 'top';
 					canvas.fillText(robot.name, x, y + 80);
 					
@@ -427,7 +429,7 @@ function SelectScreen() {
                         }
                         for (var k = 0; k < this.settings.length; k++) {
 							if (k != i) {
-								if (this.settings[k].part >= PARTS.ROBOT) {
+								if (this.settings[k].part <= PARTS.ROBOT) {
 									if (!this.isOpen(this.settings[k].robot)) {
 										this.settings[k].robot = this.open[0];
 									}
@@ -554,7 +556,7 @@ function SelectScreen() {
         var allReady = true;
         var oneReady = false;
         for (var k = 0; k < playerManager.players.length; k++) {
-            if (this.settings[k].part != PARTS.READY && this.settings[k].part >= PARTS.ROBOT) {
+            if (this.settings[k].part != PARTS.READY && this.settings[k].part > PARTS.CONNECTED) {
                 allReady = false;
             }
             else if (this.settings[k].part == PARTS.READY) {

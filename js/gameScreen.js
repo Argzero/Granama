@@ -199,7 +199,7 @@ function GameScreen(bossRush) {
                         
                         // See if the turret is destroyed
                         if (turret.health <= 0) {
-                            this.explosions[this.explosions.length] = new Explosion(turret.x, turret.y, 0.25);
+                            this.particles.push(new Explosion(turret.x, turret.y, 0.25));
                             this.enemyManager.turrets.splice(j, 1);
                             j--;
                         }

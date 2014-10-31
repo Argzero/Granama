@@ -154,14 +154,6 @@ function EnemyManager(screen) {
     // Checks for enemy deaths
     this.CheckDeaths = function() {
 	
-		// Turrets blowing up
-        for (var i = 0; i < this.turrets.length; i++) {
-			if (this.turrets[i].health <= 0) {
-				this.turrets.splice(i, 1);
-				i--;
-			}
-        }
-	
 		// Enemy deaths
         for (var i = 0; i < this.enemies.length; i++) {
             if (this.enemies[i].health <= 0) {

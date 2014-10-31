@@ -67,6 +67,7 @@ var vectorMethods = {
         var tx = this.x * cos - this.y * sin;
         this.y = this.x * sin + this.y * cos;
         this.x = tx;
+		return this;
     },
     
     // Sets the components of the vector

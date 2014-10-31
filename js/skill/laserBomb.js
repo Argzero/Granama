@@ -26,6 +26,7 @@ function SkillLaserBomb(player) {
 				499,
 				160 + this.drones.length * 30,
 				180 + this.drones.length * 40,
+				this.name,
 				[gameScreen.enemyManager.enemies, gameScreen.enemyManager.turrets]
 			);
 			bomb.scale = (LASER_BOMB_SIZE_SCALE * this.drones.length + 40) / bomb.sprite.width;

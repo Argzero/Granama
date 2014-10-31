@@ -13,6 +13,7 @@
 //   speed - speed of the bullets
 //      dx - horizontal offset for the bullet spawn location
 //      dy - vertical offset for the bullet spawn location
+//    type - type of explosion from the rocket
 function EnemyWeaponHomingRocket(data) {
 
     // Initialize data
@@ -50,6 +51,7 @@ function EnemyWeaponHomingRocket(data) {
             data.range * 1.5, 
 			data.radius,
             data.knockback,
+			data.type || 'Enemy',
             [playerManager.getRobots()]        
         );
         data.list.push(rocket);

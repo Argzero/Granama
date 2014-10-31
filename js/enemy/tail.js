@@ -61,23 +61,20 @@ function EnemyTail(source, segment, end, offset, length, base, endOffset) {
             // Draw the tail
             canvas.save();
             ResetTransform(canvas);
-            var j;
-            for (var i = 0; i < this.length - 1; i++) {
+            var j = this.index;
+            canvas.translate(this.orientations[j * 3], this.orientations[j * 3 + 1]);
+            canvas.rotate(this.orientations[j * 3 + 2]);
+            canvas.drawImage(this.end, -this.end.width / 2, -this.end.height / 2);
+            ResetTransform(canvas);
+            for (var i = this.length - 2; i >= 0; i--) {
                 j = (this.index - i * this.offset - this.base + this.maxIndex) % this.maxIndex;
                 canvas.translate(this.orientations[j * 3], this.orientations[j * 3 + 1]);
                 canvas.rotate(this.orientations[j * 3 + 2]);
                 canvas.drawImage(this.segment, -this.segment.width / 2, -this.segment.height / 2);
                 ResetTransform(canvas);
-            }
-            j = this.index;
-            canvas.translate(this.orientations[j * 3], this.orientations[j * 3 + 1]);
-            canvas.rotate(this.orientations[j * 3 + 2]);
-            canvas.drawImage(this.end, -this.end.width / 2, -this.end.height / 2);
-            ResetTransform(canvas);
-            
-            // Draw the turrets
-            for (var i = 0; i < this.turrets.length; i++) {
-                this.turrets[i].Draw();
+                if (this.turrets[i]) {
+                    this.turrets[i].Draw();
+                }
             }
             canvas.restore();
 		}

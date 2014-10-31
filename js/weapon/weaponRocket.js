@@ -14,6 +14,7 @@
 //   speed - speed of the bullets
 //      dx - horizontal offset for the bullet spawn location
 //      dy - vertical offset for the bullet spawn location
+//    type - type of explosion
 function EnemyWeaponRocket(data) {
 
     // Initialize data
@@ -49,6 +50,7 @@ function EnemyWeaponRocket(data) {
             data.range * 1.5, 
 			data.radius,
             data.knockback,
+			data.type || 'Enemy',
             data.lists
         );
         data.list.push(rocket);

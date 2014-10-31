@@ -2,32 +2,35 @@
 function TitleScreen() {
 
     delete PROFILE_DATA['Overall'];
+    delete PROFILE_DATA['Guest'];
 
-    this.imgTitle = GetImage("title");
-    this.buttons = [
-        TitleButton("Play", -140, 500, 600, 75, function() {
-            playerManager.setMultiplayer();
-            gameScreen = new SelectScreen();
-        }),
-        TitleButton("Boss Rush", -30, 500, 600, 75, function() {
-            playerManager.setSingleplayer();
-            player = PlayerTraitorType();
-            player.color = '#f80';
-            player.name = 'Traitor';
-            playerManager.players[0].robot = player;
-            player.input = playerManager.players[0].input;
-            gameScreen = new GameScreen(player, true);
-        }),
-        TitleButton("Stats", 80, 500, 600, 75, function() {
-            gameScreen = new StatScreen();
-        }),
-        TitleButton("Controls", 190, 500, 600, 75, function() {
-            gameScreen = new ControlsScreen();
-        }),
-        TitleButton("Credits", 300, 500, 600, 75, function() {
-            gameScreen = new CreditsScreen();
-        })
-    ];
+	// Setup UI
+	this.ui = UIGrid(600, 75);
+	this.ui.addTitle('Granama', -300, 100);
+	this.ui.addButton('Play', -140, function() {
+		playerManager.setMultiplayer();
+		gameScreen = new SelectScreen();
+	});
+	this.ui.addButton('Boss Rush', -30,  function() {
+		playerManager.setSingleplayer();
+		player = PlayerTraitorType();
+		player.color = '#f80';
+		player.name = 'Traitor';
+		playerManager.players[0].robot = player;
+		PROFILE_DATA['Overall'] = {};
+		playerManager.players[0].robot.profile = Profile('Overall');
+		player.input = playerManager.players[0].input;
+		gameScreen = new GameScreen(player, true);
+	});
+	this.ui.addButton('Stats', 80, function() {
+		gameScreen = new StatScreen();
+	});
+	this.ui.addButton('Controls', 190, function() {
+		gameScreen = new ControlsScreen();
+	});
+	this.ui.addButton('Credits', 300, function() {
+		gameScreen = new CreditsScreen();
+	});
     
     // Draws the title gameScreen
     this.Draw = Draw;
@@ -46,23 +49,7 @@ function TitleScreen() {
             }
         }
         
-        // Draw the title image
-        var x = element.width / 2 - 325;
-        var y = element.height / 2;
-        canvas.fillStyle = BUTTON_BORDER;
-        canvas.fillRect(x, y - 350, 620, 40 + this.imgTitle.height);
-        canvas.fillRect(x, y - 310 + this.imgTitle.height, 25, element.height);
-        canvas.fillStyle = '#878787'
-        canvas.fillRect(x + 8, y - 310 + this.imgTitle.height, 9, element.height);
-        canvas.fillStyle = BUTTON_BG;
-        canvas.fillRect(x + 10, y - 340, 600, 20 + this.imgTitle.height);
-        canvas.drawImage(this.imgTitle, element.width / 2 - this.imgTitle.width / 2, y - 330);
-        
-        // Draw the buttons
-        canvas.setTransform(1, 0, 0, 1, 0, 0);
-        for (var i = 0; i < this.buttons.length; i++) {
-            this.buttons[i].draw();
-        }
+		this.ui.draw();
         
         // Draw the cursor
         canvas.drawImage(cursor, mx - cursor.width / 2, my - cursor.height / 2);

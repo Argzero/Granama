@@ -48,6 +48,7 @@ function SkillArtillery(player) {
                     0,
                     50 + used * 6,
                     1,
+					this.name,
                     [gameScreen.enemyManager.enemies, gameScreen.enemyManager.turrets]
                 );
                 this.bullets.push(rocket);

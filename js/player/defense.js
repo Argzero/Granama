@@ -30,7 +30,7 @@ function PlayerDefenseType() {
         sprite: GetImage('missile'), 
         speed: 15, 
         dx: 0, 
-        dy: 0, 
+        dy: 0,
         list: p.bullets 
     };
 	p.minigunData = { 
@@ -63,6 +63,7 @@ function PlayerDefenseType() {
 		if (!this.rocketData.lists) {
 			this.rocketData.lists = [gameScreen.enemyManager.enemies, gameScreen.enemyManager.turrets];
 		}
+		this.rocketData.type = this.name;
 		this.rocketData.damage = 12 * m;
 		this.rocketData.knockback = 30 + 25 * this.upgrades[KNOCKBACK_ID];
 		this.rocketData.radius = 100 + 25 * this.upgrades[EXPLOSION_ID];

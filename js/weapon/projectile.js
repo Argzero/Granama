@@ -56,7 +56,7 @@ function ReflectionProjectile(sprite, source, x, y, velX, velY, damage, target) 
 }
 
 // Rocket projectile with knockback and AOE damage
-function RocketProjectile(sprite, source, x, y, velX, velY, angle, damage, range, radius, knockback, lists) {
+function RocketProjectile(sprite, source, x, y, velX, velY, angle, damage, range, radius, knockback, type, lists) {
 	var projectile = ProjectileBase(sprite, source, x, y, velX, velY, angle, damage, 9999, false, false);
 	projectile.Hit = projectileFunctions.RocketHit;
     projectile.updateBase = projectile.Update;
@@ -64,12 +64,13 @@ function RocketProjectile(sprite, source, x, y, velX, velY, angle, damage, range
     projectile.actualRange = range;
 	projectile.radius = radius;
 	projectile.lists = lists;
+	projectile.type = type;
 	projectile.knockback = knockback;
 	return projectile;
 }
 
 // Rocket projectile with knockback, AOE damage, and homing properties
-function HomingRocketProjectile(sprite, source, target, x, y, velX, velY, angle, damage, range, radius, knockback, lists) {
+function HomingRocketProjectile(sprite, source, target, x, y, velX, velY, angle, damage, range, radius, knockback, type, lists) {
     var projectile = ProjectileBase(sprite, source, x, y, velX, velY, angle, damage, 9999, false, true);
 	projectile.Hit = projectileFunctions.RocketHit;
     projectile.ApplyUpdate = projectileFunctions.updateHomingRocket;
@@ -80,6 +81,7 @@ function HomingRocketProjectile(sprite, source, target, x, y, velX, velY, angle,
     projectile.speed = Math.sqrt(velX * velX + velY * velY);
     projectile.rotSpeed = 0.02;
     projectile.lifespan = range / (Math.abs(velX) + Math.abs(velY) * HALF_RT_2);
+	projectile.type = type;
 	projectile.knockback = knockback;
     return projectile;
 }
@@ -492,8 +494,7 @@ var projectileFunctions = {
 				}
 			}
 		}
-        var ex = new Explosion(this.x, this.y, this.radius / 150);
-        if (this.lists.length > 1) ex.c = 10;
+        var ex = new RocketExplosion(this.type, this.x, this.y, this.radius);
         gameScreen.particles.push(ex);
 	},
     

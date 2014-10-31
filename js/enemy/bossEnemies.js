@@ -359,8 +359,8 @@ function DragonBoss(x, y) {
 			damage: 0.1 * damageScale,
 			range: 1000,
 			rate: 30,
-			dx: -133 + 266 * i,
-			dy: -23,
+			dx: -185 + 370 * i,
+			dy: 17,
             speed: 15,
             pierce: true
 		});
@@ -370,7 +370,7 @@ function DragonBoss(x, y) {
         range: 300,
         rate: 3,
         dx: 0,
-        dy: 42
+        dy: 100
     });
     
     // Attack pattern 1 - Spawning minibosses
@@ -401,23 +401,25 @@ function DragonBoss(x, y) {
             radius: 100,
             knockback: 150,
 			rate: 90,
-			dx: -223 + 446 * i,
-			dy: -33,
+			dx: -238 + 476 * i,
+			dy: -10,
             speed: 8
 		}, 2);
 	}
     
     // Dragon's tail
-	enemy.tail = EnemyTail(enemy, GetImage('bossDragonSegment'), GetImage('bossDragonEnd'), 90, 5, 120, 30);
+    enemy.tail2 = EnemyTail(enemy, GetImage('bossDragonEnd'), GetImage('bossDragonEnd'), 0, 1, 0, 90);
+	enemy.tail = EnemyTail(enemy, GetImage('bossDragonEnd'), GetImage('bossDragonEnd'), 150, 5, 240, 0);
     enemy.tail.SetTurrets(GetImage('bossDragonTurret'), GetImage('bullet'), damageScale, 60, false, 0, 48);
 	enemy.ApplyDraw = function() {
-		this.tail.Draw();
+        this.tail.Draw();
+        this.tail2.Draw();
 	}
     
     // Drawing wings
     enemy.ApplySprite = function() {
-        canvas.drawImage(this.leftWing, this.sprite.width, -100);
-        canvas.drawImage(this.rightWing, -this.rightWing.width, -100);
+        canvas.drawImage(this.leftWing, this.sprite.width - 10, -50);
+        canvas.drawImage(this.rightWing, 10 - this.rightWing.width, -50);
     }
 
     return enemy;
