@@ -7,12 +7,19 @@ function UIGrid(width, buttonHeight) {
 		
 		addButton: function(text, yOffset, callback) {
 			this.elements.push(UIButton(text, yOffset, this.width * 5 / 6, this.width, this.buttonHeight, callback));
+            return this;
 		},
 		
 		addTitle: function(content, yOffset, height) {
 			this.elements.push(UITitle(content, yOffset, this.width, height));
+            return this;
 		},
-		
+        
+        add: function(element) {
+            this.elements.push(element);
+            return this;
+        },
+        
 		draw: function() {
 	
 			var x = (element.width - this.width) / 2;
@@ -33,6 +40,55 @@ function UIGrid(width, buttonHeight) {
 	};
 }
 
+function UIRow(yOffset, width, height) {
+    return {
+        
+        yOffset: yOffset,
+        height: height,
+        width: width,
+        usedWidth: 0,
+        elements: [],
+        widths: [],
+        
+        addButton: function(text, width, callback) {
+			this.elements.push(UIButton(text, this.yOffset, width, width, this.height, callback));
+            this.usedWidth += width;
+            this.widths.push(width);
+            return this;
+		},
+		
+		addTitle: function(content, width) {
+			this.elements.push(UITitle(content, this.yOffset, width, this.height));
+            this.usedWidth += width;
+            this.widths.push(width);
+            return this;
+		},
+       
+        draw: function() {
+        
+            var x = (element.width - this.width) / 2;
+            var spacing = (this.width - this.usedWidth) / (this.elements.length + 1);
+        
+            // Connecting rail
+            canvas.fillStyle = '#333';
+            canvas.fillRect(x, element.height / 2 + this.yOffset - 10, this.width, 20);
+            canvas.fillStyle = '#878787';
+            canvas.fillRect(x - 8, element.height / 2 + this.yOffset - 5, this.width + 16, 10);
+        
+            // Draw the content
+            x = spacing - this.width / 2;
+            for (var i = 0; i < this.elements.length; i++) {	
+                this.elements[i].x = x + this.widths[i] / 2;
+                if (this.elements[i].box) {
+                    this.elements[i].box.x = x;
+                }
+                this.elements[i].draw();
+                x += spacing + this.widths[i];
+			}
+        }
+    };
+}
+
 // An expanding background box for UI elements
 function UIBox(center, yOffset, minWidth, maxWidth, height) {
     return {
@@ -44,6 +100,7 @@ function UIBox(center, yOffset, minWidth, maxWidth, height) {
         // Fields
         center: center,
         y: yOffset,
+        x: 0,
         width: minWidth,
         minWidth: minWidth,
         maxWidth: maxWidth,
@@ -56,7 +113,7 @@ function UIBox(center, yOffset, minWidth, maxWidth, height) {
             // Calculations
             var midX = element.width / 2;
             var midY = element.height / 2;
-            var x = this.center ? midX - this.maxWidth / 2 : 0;
+            var x = (this.center ? midX - this.maxWidth / 2 : 0) + this.x;
             var y = (this.center ? midY - this.height / 2 : 0) + this.y;
             
             // Hover updates
@@ -88,6 +145,7 @@ function UITitle(content, yOffset, width, height) {
 		yOffset: yOffset,
 		width: width,
 		height: height,
+        x: 0,
 		
 		// Draws the button
         draw: function() {
@@ -101,7 +159,7 @@ function UITitle(content, yOffset, width, height) {
 			// Calculations
             var midX = element.width / 2;
             var midY = element.height / 2;
-			var x = midX - this.width / 2;
+			var x = midX - this.width / 2 + this.x;
             var y = midY + this.yOffset - this.height / 2;
 		
 			// Draw the box
@@ -117,7 +175,7 @@ function UITitle(content, yOffset, width, height) {
 				canvas.textAlign = this.align;
 				canvas.textBaseline = 'middle';
 				canvas.textAlign = 'center';
-				canvas.fillText(this.content, midX, y + this.height * 4 / 9);
+				canvas.fillText(this.content, midX + this.x, y + this.height * 4 / 9);
 			}
 			
 			// Draw the clamps
@@ -148,6 +206,7 @@ function UIButton(text, yOffset, minWidth, maxWidth, height, callback) {
         hovered: false,
         clicking: false,
         callback: callback,
+        x: 0,
         
         // Draws the button
         draw: function() {
@@ -159,7 +218,7 @@ function UIButton(text, yOffset, minWidth, maxWidth, height, callback) {
             // Calculations
             var midX = element.width / 2;
             var midY = element.height / 2;
-            var x = midX - this.box.maxWidth / 2;
+            var x = midX - this.box.maxWidth / 2 + this.x;
             var y = midY - this.height / 2 + this.y;
             var w = this.box.width;
             var h = this.height;

@@ -364,125 +364,6 @@ function LoadingScreen() {
 }
 
 /*
-// The title gameScreen for the game
-function TitleScreen() {
-
-    this.imgTitle = GetImage("title");
-    this.imgCredits = GetImage("credits");
-    this.imgControls = GetImage("controls");
-    this.imgPlay = GetImage("play");
-    this.imgRush = GetImage('rush');
-    this.titleButton = TitleButton("Testing", 100, 500, 600, 90);
-    
-    // Draws the title gameScreen
-    this.Draw = Draw;
-    function Draw() {
-        
-        // Prevent IE bugs
-        canvas.setTransform(1, 0, 0, 1, 0, 0);
-        
-        var cx = mx - element.offsetLeft + pageScrollX;
-        var cy = my - element.offsetTop + pageScrollY;
-        
-        var wx = element.width / 2;
-        var wy = element.height / 2;
-        
-        var x1 = wx - 310;
-        var xBounds = cx > x1 && cx < x1 + 620;
-        
-        // Draw the background
-        if (tile && tile.width) {
-            for (var i = 0; i < element.width / tile.width + 1; i++) {
-                var x = i * tile.width;
-                for (var j = 0; j < element.height / tile.height + 1; j++) {
-                    canvas.drawImage(tile, x, j * tile.height);
-                }
-            }
-        }
-        
-        canvas.translate(0, 15);
-        
-        // Draw the title image
-        canvas.fillStyle = BUTTON_BORDER;
-        canvas.fillRect(x1, wy - 330, 620, 40 + this.imgTitle.height);
-        canvas.fillStyle = BUTTON_BG;
-        canvas.fillRect(x1 + 10, wy - 320, 600, 20 + this.imgTitle.height);
-        canvas.drawImage(this.imgTitle, wx - this.imgTitle.width / 2, wy - 310);
-        
-        // Draw the play button
-        var playHovered = xBounds && cy > wy - 120 && cy < wy - 80 + this.imgPlay.height;
-        canvas.fillStyle = BUTTON_BORDER;
-        canvas.fillRect(x1, wy - 140, 620, 40 + this.imgPlay.height);
-        canvas.fillStyle = playHovered ? BUTTON_HOVER : BUTTON_BG;
-        canvas.fillRect(x1 + 10, wy - 130, 600, 20 + this.imgPlay.height);
-        canvas.drawImage(this.imgPlay, wx - this.imgPlay.width / 2, wy - 120);
-        
-        // Draw the boss rush button
-        var rushHovered = xBounds && cy > wy && cy < wy + 40 + this.imgRush.height;
-        canvas.fillStyle = BUTTON_BORDER;
-        canvas.fillRect(x1, wy - 20, 620, 40 + this.imgRush.height);
-        canvas.fillStyle = rushHovered ? BUTTON_HOVER : BUTTON_BG;
-        canvas.fillRect(x1 + 10, wy - 10, 600, 20 + this.imgRush.height);
-        canvas.drawImage(this.imgRush, wx - this.imgRush.width / 2, wy);
-        
-        // Draw the controls button
-        var controlsHovered = xBounds && cy > wy + 120 && cy < wy + 160 + this.imgControls.height;
-        canvas.fillStyle = BUTTON_BORDER;
-        canvas.fillRect(x1, wy + 100, 620, 40 + this.imgControls.height);
-        canvas.fillStyle = controlsHovered ? BUTTON_HOVER : BUTTON_BG;
-        canvas.fillRect(x1 + 10, wy + 110, 600, 20 + this.imgControls.height);
-        canvas.drawImage(this.imgControls, wx - this.imgControls.width / 2, wy + 120);
-        
-        // Draw the credits button
-        var creditsHovered = xBounds && cy > wy + 240 && cy < wy + 280 + this.imgCredits.height;
-        canvas.fillStyle = BUTTON_BORDER;
-        canvas.fillRect(x1, wy + 220, 620, 40 + this.imgCredits.height);
-        canvas.fillStyle = creditsHovered ? BUTTON_HOVER : BUTTON_BG;
-        canvas.fillRect(x1 + 10, wy + 230, 600, 20 + this.imgCredits.height);
-        canvas.drawImage(this.imgCredits, wx - this.imgCredits.width / 2, wy + 240);
-        
-        // Draw the test
-        this.titleButton.draw();
-       
-        canvas.translate(0, -15);
-        
-        // Unmarks the left mouse button as pressed
-        if (!KeyPressed(KEY_LMB)) {
-            escDown = false;
-        }
-        
-        // Button interactions
-        if (KeyPressed(KEY_LMB) && !escDown) {
-            if (playHovered) {
-                //gameScreen = new SelectScreen();
-                playerManager.setMultiplayer();
-				//gameScreen = new PlayerScreen();
-                gameScreen = new SelectScreen();
-            }
-            else if (rushHovered) {
-                playerManager.setSingleplayer();
-                player = PlayerTraitorType();
-                player.color = '#f80';
-                player.name = 'Traitor';
-                playerManager.players[0].robot = player;
-                player.input = playerManager.players[0].input;
-                gameScreen = new GameScreen(player, true);
-            }
-            else if (controlsHovered) {
-                gameScreen = new ControlsScreen();
-            }
-            else if (creditsHovered) {
-                gameScreen = new CreditsScreen();
-            }
-            escDown = true;
-        }
-        
-        // Draw the cursor
-        canvas.drawImage(cursor, cx - cursor.width / 2, cy - cursor.height / 2);
-    }
-}
-*/
-
 // The controls gameScreen
 function CreditsScreen() {
 
@@ -565,7 +446,7 @@ function CreditsScreen() {
         canvas.drawImage(cursor, cx - cursor.width / 2, cy - cursor.height / 2);
     }
 }
-
+*/
 // The controls gameScreen
 function ControlsScreen() {
 

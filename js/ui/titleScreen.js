@@ -5,32 +5,32 @@ function TitleScreen() {
     delete PROFILE_DATA['Guest'];
 
 	// Setup UI
-	this.ui = UIGrid(600, 75);
-	this.ui.addTitle('Granama', -300, 100);
-	this.ui.addButton('Play', -140, function() {
-		playerManager.setMultiplayer();
-		gameScreen = new SelectScreen();
-	});
-	this.ui.addButton('Boss Rush', -30,  function() {
-		playerManager.setSingleplayer();
-		player = PlayerTraitorType();
-		player.color = '#f80';
-		player.name = 'Traitor';
-		playerManager.players[0].robot = player;
-		PROFILE_DATA['Overall'] = {};
-		playerManager.players[0].robot.profile = Profile('Overall');
-		player.input = playerManager.players[0].input;
-		gameScreen = new GameScreen(player, true);
-	});
-	this.ui.addButton('Stats', 80, function() {
-		gameScreen = new StatScreen();
-	});
-	this.ui.addButton('Controls', 190, function() {
-		gameScreen = new ControlsScreen();
-	});
-	this.ui.addButton('Credits', 300, function() {
-		gameScreen = new CreditsScreen();
-	});
+	this.ui = UIGrid(600, 75)
+        .addTitle('Granama', -300, 100)
+        .addButton('Play', -140, function() {
+            playerManager.setMultiplayer();
+            gameScreen = new SelectScreen();
+        })
+        .addButton('Boss Rush', -30,  function() {
+            playerManager.setSingleplayer();
+            player = PlayerTraitorType();
+            player.color = '#f80';
+            player.name = 'Traitor';
+            playerManager.players[0].robot = player;
+            PROFILE_DATA['Overall'] = {};
+            playerManager.players[0].robot.profile = Profile('Overall');
+            player.input = playerManager.players[0].input;
+            gameScreen = new GameScreen(player, true);
+        })
+        .addButton('Stats', 80, function() {
+            gameScreen = new StatScreen();
+        })
+        .addButton('Controls', 190, function() {
+            gameScreen = new ControlsScreen();
+        })
+        .addButton('Credits', 300, function() {
+            gameScreen = new CreditsScreen();
+        });
     
     // Draws the title gameScreen
     this.Draw = Draw;
