@@ -49,11 +49,13 @@ var playerManager = {
     
     // Sets up the list for single player
     setSingleplayer: function() {
+		this.players = [];
         this.players.splice(1, this.players.length - 1);
     },
     
     // Adds players so that there's 4
     setMultiplayer: function() {
+		this.players = [];
         while (this.players.length < 4 && (this.players.length < 1 || gamepads)) {
             this.players.push(Player(this.players.length - 1));
         }

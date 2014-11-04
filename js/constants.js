@@ -219,7 +219,7 @@ FIRE_SPAWNS = [
 	1, 0, SnatcherEnemy
 ],
 QUEEN_SPAWNS = [
-	1, 0, HiveDroneEnemy,
+	4, 0, HiveDroneEnemy,
 	1, 0, HiveDefenderEnemy
 ],
 

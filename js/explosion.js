@@ -50,7 +50,7 @@ var explosionFunctions = {
 	draw: function() {
 	
 		// Add new bits occasionally
-		if (this.frame < 15) {
+		if (this.frame < 7) {
 			var angle = Rand(360) * Math.PI / 180;
 			var speed = this.size * (Rand(10) + 5) / 600;
 			var dir = Vector(speed * Math.cos(angle), speed * Math.sin(angle));
@@ -99,7 +99,7 @@ var explosionFunctions = {
 		this.size = (0.5 + (0.5 * this.alpha / this.oAlpha)) * this.oSize;
 		
 		// Spawn smoke trail
-		if (this.alpha > 0.4 && this.frame % 2 == 0) {
+		if (this.alpha > 0.4 && this.frame % 3 == 0) {
 			var e = explosionFunctions;
 			explosion.pieces.splice(8, 0, e.Piece(e.randSmoke(), 8, this.x, this.y, this.size, Vector(0, 0), this.alpha, 0.02, 20, false));
 		}

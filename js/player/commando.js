@@ -1,7 +1,7 @@
 function PlayerCommandoType() {
     var p = BasePlayer(
         GetImage('pCommandoBody'),
-		20
+		26
     );
 	
     // Sprites
@@ -60,7 +60,7 @@ function PlayerCommandoType() {
         var m = this.GetDamageMultiplier();
 		
 		// LMG
-        this.lmgData.damage = m * (5 + this.upgrades[LMG_DAMAGE_ID]);
+        this.lmgData.damage = m * (5 + 2 * this.upgrades[LMG_DAMAGE_ID]);
         this.shootLMG(this.lmgData);
         
         // Update Drones
@@ -191,7 +191,7 @@ function CommandoDrone(player, angle) {
 					this.sin = Math.cos(this.angle);
 				}
 			
-				this.gunData.damage = 2 * this.player.GetDamageMultiplier();
+				this.gunData.damage = 5 * this.player.GetDamageMultiplier();
 				this.gunData.range = 349 + 25 * this.player.upgrades[DRONE_RANGE_ID];
 				this.gunData.duration = (5 + this.player.upgrades[DRONE_SHOTS_ID]) * this.gunData.interval;
                 var prevLength = this.player.bullets.length;

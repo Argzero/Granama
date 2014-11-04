@@ -366,7 +366,7 @@ function DragonBoss(x, y) {
 		});
 	}
     enemy.AddWeapon(EnemyWeaponFire, {
-        damage: 0.05 * damageScale,
+        damage: 0.1 * damageScale,
         range: 300,
         rate: 3,
         dx: 0,
@@ -377,7 +377,7 @@ function DragonBoss(x, y) {
     enemy.SetMovement(1, EnemyMoveDragonCenter);
     enemy.AddWeapon(EnemyWeaponSpawn, {
         enemies: DRAGON_SPAWNS,
-        max: 5,
+        max: 8,
         rate: 120,
         delay: 300,
         dx: 0,
@@ -464,7 +464,7 @@ function QueenBoss(x, y) {
 	enemy.SetMovement(0, EnemyMoveCharge);
 	enemy.AddWeapon(EnemyWeaponSpawn, {
         enemies: QUEEN_SPAWNS,
-        max: 20,
+        max: 15,
         rate: 45,
         delay: 45,
         dx: 0,

@@ -513,7 +513,7 @@ var projectileFunctions = {
         }
     },
     
-    // Updates a grabble hook projectile
+    // Updates a grapple hook projectile
     updateGrapple: function() {
     
 		// Pull in the user if applicable
@@ -550,6 +550,11 @@ var projectileFunctions = {
                 dir.SetLength(this.speed);
                 this.x += dir.x;
                 this.y += dir.y;
+				
+				// Debug if not a number
+				if (isNaN(this.y) || isNaN(this.x)) {
+					debugger;
+				}
                 
                 // Drag target with the grapple
                 if (this.target && lengthSq >= 10000) {
@@ -567,8 +572,13 @@ var projectileFunctions = {
             // Move according to its velocity
             this.x += this.velX;
             this.y += this.velY;
+			
+			// Debug if not a number
+			if (isNaN(this.y) || isNaN(this.x)) {
+				debugger;
+			}
             
-            // Mark as expired when outside its range
+            // Mark as returning when outside its range
             var dx = this.x - this.ox;
             var dy = this.y - this.oy;
             if (dx * dx + dy * dy >= this.range * this.range) {
