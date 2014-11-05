@@ -330,7 +330,7 @@ function LoadingScreen() {
         'ValkyrieRailGunRangeUI',
         'ValkyrieRailGunRangeUISelected',
         'ValkyrieShieldRechargeUI',
-        'ValkyrieShieldRechargeUISelected',
+        'ValkyrieShieldRechargeUISelected'
     );
     this.index = 0;
     this.loading = false;
