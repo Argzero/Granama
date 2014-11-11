@@ -3,7 +3,7 @@ function EnemyMoveBasic() {
 
     // Turn towards the player
     var player = playerManager.getClosest(this.x, this.y);
-    this.angle = AngleTowards(player, this, this.speed / 50.0, this.backwards);
+    this.angle = AngleTowards(player, this, this.speed / this.turnDivider, this.backwards);
     
     // Update the angle values
 	this.cos = -Math.sin(this.angle);

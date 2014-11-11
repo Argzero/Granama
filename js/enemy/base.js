@@ -27,6 +27,7 @@ function EnemyBase(sprite, x, y, health, speed, range, exp, patternMin, patternM
 		patternMax: patternMax,
 		patternTimer: 0,
         pierceDamage: 1,
+        turnDivider: 50,
         
         // Components to be set for specific enemy types
         ApplyMove: undefined,

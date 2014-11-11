@@ -87,6 +87,12 @@ var vectorMethods = {
         var l = this.Length();
         this.x *= length / l;
         this.y *= length / l;
+    },
+    
+    Normalize: function() {
+        var l = this.Length();
+        this.x /= l;
+        this.y /= l;
     }
 };
 

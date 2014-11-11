@@ -274,7 +274,8 @@ function PunchBoss(x, y) {
         damage: damageScale
     });
     enemy.AddWeapon(EnemyWeaponRail, {
-        damage: 0.05 * damageScale,
+        sprite: GetImage('bossLaser'),
+        damage: 0.15 * damageScale,
         rate: 150,
         range: 500,
         discharge: 0.1,
@@ -507,6 +508,192 @@ function QueenBoss(x, y) {
 		this.wings.draw();
 		this.backwards = this.pattern == 1;
 	};
+	
+	return enemy;
+}
+
+function TankBoss(x, y) {
+
+    // Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('bossTank'), 
+        x, 
+        y,
+        600 * ScalePower(c, 1.4) * playerManager.players.length,
+        1 + 0.1 * c,
+        300,
+		BOSS_EXP,
+        600,
+        600
+    );
+    enemy.rank = STAT.BOSS;
+    
+	// Boss Stuff
+    enemy.pierceDamage = 0.1;
+    enemy.IsInRange = enemyFunctions.BossInRange;
+	enemy.Knockback = enemyFunctions.BossKnockback;
+    enemy.Slow = enemyFunctions.BossSlow;
+	enemy.ApplyMove = EnemyMoveBasic;
+    enemy.stun = undefined;
+    enemy.turnDivider = 100;
+	
+    enemy.cover = GetImage('bossTankCover');
+    enemy.cannon = GetImage('bossTankCannon');
+    enemy.chainFlat = GetImage('chainFlat');
+    enemy.chainUp = GetImage('chainUp');
+    enemy.hook = GetImage('bossTankGrapple');
+    
+    enemy.hooks = [
+        { root: Vector(-132, -100), pos: Vector(-132, -100), rot: Vector(-1, 0) },
+        { root: Vector(-132, -30), pos: Vector(-132, -30), rot: Vector(-1, 0) },
+        { root: Vector(-132, 40), pos: Vector(-132, 40), rot: Vector(-1, 0) },
+        { root: Vector(132, -100), pos: Vector(132, -100), rot: Vector(1, 0) },
+        { root: Vector(132, -30), pos: Vector(132, -30), rot: Vector(1, 0) },
+        { root: Vector(132, 40), pos: Vector(132, 40), rot: Vector(1, 0) }
+    ];
+    enemy.nextHook = Rand(6);
+    enemy.hookCd = 300;
+    enemy.hookDur = 480;
+    
+    
+	var damageScale = ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000);
+	
+	// Attack Pattern 0 - Rocket barrage
+	enemy.AddWeapon(EnemyWeaponRail, {
+    
+        sprite: GetImage('rocket'),
+        lists: [playerManager.getRobots()],
+        damage: 4 * damageScale,
+        radius: 150,
+        knockback: 200,
+        dx: 0,
+        dy: 0,
+        speed: 10,
+        angle: 180,
+    
+        subWeapon: EnemyWeaponRocket,
+        rate: 120,
+        range: 500,
+        discharge: 0.1,
+        duration: 120,
+        interval: 6
+    }, 0);
+    
+    // Attack pattern 1 - Shield/Cannon
+    // Attack Pattern 0 - Rocket barrage
+	enemy.AddWeapon(EnemyWeaponRail, {
+        sprite: GetImage('bossCannon'),
+        damage: 0.5 * damageScale,
+        rate: 150,
+        range: 500,
+        discharge: 0.1,
+        duration: 120,
+        dy: 180
+    }, 1);
+    
+	// Draw the wings
+    /*
+	enemy.wings = EnemyWings(enemy, 'bossQueen', -15, -30);
+	enemy.ApplyDraw = function() {
+		this.wings.draw();
+		this.backwards = this.pattern == 1;
+	};
+    */
+    
+    // Draw spite stuff (cannon and whatnot)
+    enemy.ApplySprite = function() {
+    
+        this.turnDivider = this.pattern == 1 ? 250 : 100;
+        
+        playerManager.players[0].robot.x = this.x;
+        playerManager.players[0].robot.y = this.y;
+        playerManager.players[0].robot.health = 9999;
+    
+        canvas.translate(this.sprite.width / 2, this.sprite.height / 2);
+        
+        for (var i = 0; i < this.hooks.length; i++) {
+            var hook = this.hooks[i];
+            var root = Vector(hook.root.x, hook.root.y);
+            root.Rotate(this.sin, -this.cos);
+            root.Add(this.x, this.y);
+            
+            // Launching hooks
+            if (this.nextHook == i && --this.hookCd == 0) {
+                this.hookCd = 300;
+                var num;
+                do {
+                    num = Rand(this.hooks.length);
+                }
+                while (num == i);
+                this.nextHook = num;
+                
+                hook.active = true;
+                hook.dur = this.hookDur;
+                hook.arot = Vector(hook.rot.x, hook.rot.y);
+                hook.arot.Rotate(this.sin, -this.cos);
+                hook.vel = Vector(hook.arot.x * 15, hook.arot.y * 15);
+                hook.pos = root;
+            }
+            
+            canvas.save();
+            
+            // Active hooks are absolute coordinates
+            if (hook.active) {
+            
+                hook.pos.x += hook.vel.x;
+                hook.pos.y += hook.vel.y;
+                if (hook.pos.DistanceSq(root) > 250000) {
+                    hook.vel.x = 0;
+                    hook.vel.y = 0;
+                }
+                
+                ResetTransform(canvas);
+                canvas.translate(hook.pos.x, hook.pos.y);
+                canvas.transform(hook.arot.x, hook.arot.y, -hook.arot.y, hook.arot.x, 0, 0);
+            }
+            
+            // Inactive hooks are relative coordinates
+            else {
+                canvas.translate(hook.root.x, hook.root.y);
+                canvas.transform(hook.rot.x, hook.rot.y, -hook.rot.y, hook.rot.x, 0, 0);
+            }
+            
+            canvas.drawImage(this.hook, -this.hook.width / 2, -this.hook.height / 2);
+            canvas.restore();
+            
+            // Chain drawing
+            if (hook.active) {
+                var rotPos = Vector(-45, 0);
+                rotPos.Rotate(hook.arot.x, hook.arot.y);
+                var x = root.x - hook.pos.x - rotPos.x;
+                var y = root.y - hook.pos.y - rotPos.y;
+                var dir = Vector(x, y);
+                dir.SetLength(30);
+            
+                canvas.save();
+                ResetTransform(canvas);
+                canvas.translate(hook.pos.x + rotPos.x, hook.pos.y + rotPos.y);
+                var angle = AngleTo(dir, { x: 0, y: 0 });
+                var cos = Math.cos(angle + Math.PI / 2);
+                var sin = Math.sin(angle + Math.PI / 2);
+                canvas.transform(cos, sin, -sin, cos, 0, 0);
+                
+                var xo = 0;
+                var xt = -2 * dir.x;
+                while ((x - xt) * dir.x > 0) {
+                    canvas.drawImage(this.chainFlat, xo + 30 - this.chainFlat.width / 2, -this.chainFlat.height / 2);
+                    canvas.drawImage(this.chainUp, xo - this.chainUp.width / 2, -this.chainUp.height / 2);
+                    xo += 60;
+                    xt += 2 * dir.x;
+                }
+                canvas.restore();
+            }
+        }
+    
+        canvas.drawImage(this.cover, -this.cover.width / 2, -this.cover.height / 2 - 30);
+        canvas.drawImage(this.cannon, -this.cannon.width / 2, -this.cannon.height / 2 + 50);
+    }
 	
 	return enemy;
 }
