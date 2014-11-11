@@ -666,8 +666,8 @@ function TankBoss(x, y) {
             if (hook.active) {
                 var rotPos = Vector(-45, 0);
                 rotPos.Rotate(hook.arot.x, hook.arot.y);
-                var x = root.x - hook.pos.x - rotPos.x;
-                var y = root.y - hook.pos.y - rotPos.y;
+                var x = this.x - hook.pos.x - rotPos.x;
+                var y = this.y - hook.pos.y - rotPos.y;
                 var dir = Vector(x, y);
                 dir.SetLength(30);
             
@@ -680,7 +680,7 @@ function TankBoss(x, y) {
                 canvas.transform(cos, sin, -sin, cos, 0, 0);
                 
                 var xo = 0;
-                var xt = -2 * dir.x;
+                var xt = 0;
                 while ((x - xt) * dir.x > 0) {
                     canvas.drawImage(this.chainFlat, xo + 30 - this.chainFlat.width / 2, -this.chainFlat.height / 2);
                     canvas.drawImage(this.chainUp, xo - this.chainUp.width / 2, -this.chainUp.height / 2);
