@@ -522,7 +522,7 @@ function TankBoss(x, y) {
         y,
         600 * ScalePower(c, 1.4) * playerManager.players.length,
         1 + 0.1 * c,
-        300,
+        450,
 		BOSS_EXP,
         600,
         600
@@ -543,6 +543,8 @@ function TankBoss(x, y) {
     enemy.chainFlat = GetImage('chainFlat');
     enemy.chainUp = GetImage('chainUp');
     enemy.hook = GetImage('bossTankGrapple');
+    enemy.armLeft = GetImage('bossTankArmLeft');
+    enemy.armRight = GetImage('bossTankArmRight');
     
     enemy.hooks = [
         { root: Vector(-132, -100), pos: Vector(-132, -100), rot: Vector(-1, 0) },
@@ -592,25 +594,16 @@ function TankBoss(x, y) {
         dy: 180
     }, 1);
     
-	// Draw the wings
-    /*
-	enemy.wings = EnemyWings(enemy, 'bossQueen', -15, -30);
-	enemy.ApplyDraw = function() {
-		this.wings.draw();
-		this.backwards = this.pattern == 1;
-	};
-    */
-    
     // Draw spite stuff (cannon and whatnot)
     enemy.ApplySprite = function() {
     
         this.turnDivider = this.pattern == 1 ? 250 : 100;
         
-        playerManager.players[0].robot.x = this.x;
-        playerManager.players[0].robot.y = this.y;
-        playerManager.players[0].robot.health = 9999;
-    
         canvas.translate(this.sprite.width / 2, this.sprite.height / 2);
+        
+        var armOX = this.sprite.width / 2 + 175;
+        canvas.drawImage(this.armLeft, -armOX, 30);
+        canvas.drawImage(this.armRight, armOX - this.armLeft.width, 30);
         
         for (var i = 0; i < this.hooks.length; i++) {
             var hook = this.hooks[i];
