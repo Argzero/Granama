@@ -641,11 +641,16 @@ function TankBoss(x, y) {
             // Active hooks are absolute coordinates
             if (hook.active) {
             
-                hook.pos.x += hook.vel.x;
-                hook.pos.y += hook.vel.y;
-                if (hook.pos.DistanceSq(root) > 250000) {
-                    hook.vel.x = 0;
-                    hook.vel.y = 0;
+                if (hook.vel.x || hook.vel.y) {
+                    hook.pos.x += hook.vel.x;
+                    hook.pos.y += hook.vel.y;
+                    if (hook.pos.DistanceSq(root) > 250000) {
+                        hook.vel.x = 0;
+                        hook.vel.y = 0;
+                    }
+                }
+                else if (hook.dur > 0) {
+                    hook.dur--;
                 }
                 
                 ResetTransform(canvas);
@@ -688,6 +693,15 @@ function TankBoss(x, y) {
                     xt += 2 * dir.x;
                 }
                 canvas.restore();
+                
+                if (hook.dur <= 0) {
+                    hook.pos.x += 3 * dir.x / 5;
+                    hook.pos.y += 3 * dir.y / 5;
+                    
+                    if (hook.pos.DistanceSq({ x: this.x, y: this.y }) < 2500) {
+                        hook.active = false;
+                    }
+                }
             }
         }
     
