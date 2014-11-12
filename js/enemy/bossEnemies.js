@@ -597,14 +597,17 @@ function TankBoss(x, y) {
     // Draw spite stuff (cannon and whatnot)
     enemy.ApplySprite = function() {
     
+        // Update turn speed
         this.turnDivider = this.pattern == 1 ? 250 : 100;
         
         canvas.translate(this.sprite.width / 2, this.sprite.height / 2);
         
+        // Draw arms
         var armOX = this.sprite.width / 2 + 175;
         canvas.drawImage(this.armLeft, -armOX, 30);
         canvas.drawImage(this.armRight, armOX - this.armLeft.width, 30);
         
+        // Update/draw hooks
         for (var i = 0; i < this.hooks.length; i++) {
             var hook = this.hooks[i];
             var root = Vector(hook.root.x, hook.root.y);
@@ -658,8 +661,13 @@ function TankBoss(x, y) {
                 canvas.restore();
             }
             
+            // Movement and damage while not paused
             if (!gameScreen.paused) {
-                if (hook.active) {    
+            
+                // Active effects
+                if (hook.active) {
+
+                    // Movement outwards
                     if (hook.vel.x || hook.vel.y) {
                         hook.pos.x += hook.vel.x;
                         hook.pos.y += hook.vel.y;
@@ -668,9 +676,13 @@ function TankBoss(x, y) {
                             hook.vel.y = 0;
                         }
                     }
+                    
+                    // Lifespan counter
                     else if (hook.dur > 0) {
                         hook.dur--;
                     }
+                    
+                    // Retreating
                     else {
                         hook.pos.x += 3 * dir.x / 5;
                         hook.pos.y += 3 * dir.y / 5;
