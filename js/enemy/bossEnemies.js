@@ -611,41 +611,10 @@ function TankBoss(x, y) {
             root.Rotate(this.sin, -this.cos);
             root.Add(this.x, this.y);
             
-            // Launching hooks
-            if (this.nextHook == i && --this.hookCd == 0) {
-                this.hookCd = 300;
-                var num;
-                do {
-                    num = Rand(this.hooks.length);
-                }
-                while (num == i);
-                this.nextHook = num;
-                
-                hook.active = true;
-                hook.dur = this.hookDur;
-                hook.arot = Vector(hook.rot.x, hook.rot.y);
-                hook.arot.Rotate(this.sin, -this.cos);
-                hook.vel = Vector(hook.arot.x * 15, hook.arot.y * 15);
-                hook.pos = root;
-            }
-            
             canvas.save();
             
             // Active hooks are absolute coordinates
             if (hook.active) {
-            
-                if (hook.vel.x || hook.vel.y) {
-                    hook.pos.x += hook.vel.x;
-                    hook.pos.y += hook.vel.y;
-                    if (hook.pos.DistanceSq(root) > 250000) {
-                        hook.vel.x = 0;
-                        hook.vel.y = 0;
-                    }
-                }
-                else if (hook.dur > 0) {
-                    hook.dur--;
-                }
-                
                 ResetTransform(canvas);
                 canvas.translate(hook.pos.x, hook.pos.y);
                 canvas.transform(hook.arot.x, hook.arot.y, -hook.arot.y, hook.arot.x, 0, 0);
@@ -686,14 +655,47 @@ function TankBoss(x, y) {
                     xt += 2 * dir.x;
                 }
                 canvas.restore();
-                
-                if (hook.dur <= 0) {
-                    hook.pos.x += 3 * dir.x / 5;
-                    hook.pos.y += 3 * dir.y / 5;
-                    
-                    if (hook.pos.DistanceSq({ x: this.x, y: this.y }) < 2500) {
-                        hook.active = false;
+            }
+            
+            if (!gameScreen.paused) {
+                if (hook.active) {    
+                    if (hook.vel.x || hook.vel.y) {
+                        hook.pos.x += hook.vel.x;
+                        hook.pos.y += hook.vel.y;
+                        if (hook.pos.DistanceSq(root) > 250000) {
+                            hook.vel.x = 0;
+                            hook.vel.y = 0;
+                        }
                     }
+                    else if (hook.dur > 0) {
+                        hook.dur--;
+                    }
+                    else {
+                        hook.pos.x += 3 * dir.x / 5;
+                        hook.pos.y += 3 * dir.y / 5;
+                        
+                        if (hook.pos.DistanceSq({ x: this.x, y: this.y }) < 2500) {
+                            hook.active = false;
+                        }
+                    }
+                }
+                
+                // Launching hooks
+                if (this.nextHook == i && --this.hookCd == 0) {
+                    this.hookCd = 300;
+                    var num;
+                    do {
+                        num = Rand(this.hooks.length);
+                    }
+                    while (num == i);
+                    this.nextHook = num;
+                    
+                    hook.active = true;
+                    hook.dur = this.hookDur;
+                    hook.arot = Vector(hook.rot.x, hook.rot.y);
+                    hook.arot.Rotate(this.sin, -this.cos);
+                    hook.vel = Vector(hook.arot.x * 15, hook.arot.y * 15);
+                    hook.pos = root;
                 }
             }
         }
