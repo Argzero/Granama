@@ -15,6 +15,8 @@ function Vector(x, y) {
         Dot: vectorMethods.Dot,
         Distance: vectorMethods.Distance,
         DistanceSq: vectorMethods.DistanceSq,
+        SegmentDistance: vectorMethods.SegmentDistance,
+        SegmentDistanceSq: vectorMethods.SegmentDistanceSq,
         Length: vectorMethods.Length,
         LengthSq: vectorMethods.LengthSq,
         Rotate: vectorMethods.Rotate,
@@ -45,6 +47,20 @@ var vectorMethods = {
         var dx = this.x - vector.x;
         var dy = this.y - vector.y;
         return dx * dx + dy * dy;
+    },
+    
+    // Distance to the line segment
+    SegmentDistance: function(p1, p2) {
+        return Math.sqrt(this.SegmentDistanceSq(p1, p2));
+    },
+    
+    // Squared distance to the line segment
+    SegmentDistanceSq: function(p1, p2) {
+        var l2 = p1.DistanceSq(p2);
+        var t = ((this.x - p1.x) * (p2.x - p1.x) + (this.y - p1.y) * (p2.y - p1.y)) / l2;
+        if (t <= 0) return this.DistanceSq(p1);
+        if (t >= 1) return this.DistanceSq(p2);
+        return this.DistanceSq({ x: p1.x + t * (p2.x - p1.x), y: p1.y + t * (p2.y - p1.y) });
     },
     
     // Length of the vector
@@ -93,7 +109,7 @@ var vectorMethods = {
         var l = this.Length();
         this.x /= l;
         this.y /= l;
-    }
+    },
 };
 
 // Returns a modified value clamped to the given bounds

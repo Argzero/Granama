@@ -630,14 +630,15 @@ function TankBoss(x, y) {
             canvas.restore();
             
             // Chain drawing
+            var dir;
             if (hook.active) {
                 var rotPos = Vector(-45, 0);
                 rotPos.Rotate(hook.arot.x, hook.arot.y);
                 var x = this.x - hook.pos.x - rotPos.x;
                 var y = this.y - hook.pos.y - rotPos.y;
-                var dir = Vector(x, y);
+                dir = Vector(x, y);
                 dir.SetLength(30);
-            
+                
                 canvas.save();
                 ResetTransform(canvas);
                 canvas.translate(hook.pos.x + rotPos.x, hook.pos.y + rotPos.y);
@@ -676,6 +677,17 @@ function TankBoss(x, y) {
                         
                         if (hook.pos.DistanceSq({ x: this.x, y: this.y }) < 2500) {
                             hook.active = false;
+                        }
+                    }
+                    
+                    // Collision
+                    for (var i = 0; i < playerManager.players.length; i++) {
+                        var player = playerManager.players[i].robot;
+                        var p1 = Vector(this.x, this.y);
+                        var p2 = Vector(player.x, player.y);
+                        var r = player.sprite.width / 2 + this.chainFlat.height / 2;
+                        if (p2.SegmentDistanceSq(p1, hook.pos) < r * r) {
+                            player.Slow(0.2, 60);
                         }
                     }
                 }
