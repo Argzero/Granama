@@ -185,7 +185,7 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 			// Shield regeneration
 			if(this.shieldRechargeBuff > 0)
 			{
-				this.shieldCd -= (this.shieldRechargeBuff - 1);
+				this.shieldCd -= this.shieldRechargeBuff;
 			}
 			else
 			{

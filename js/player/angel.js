@@ -65,7 +65,7 @@ function PlayerAngelType() {
 		this.prismData.sprite = m2 > 1 ? GetImage('abilityPrismBeam') : GetImage('prismBeam');
 		
 		// Beam
-        this.prismData.damage = m * m2 * (1.5 + .4 * this.upgrades[PRISM_POWER_ID]);
+        this.prismData.damage = m * m2 * (2 + .8 * this.upgrades[PRISM_POWER_ID]);
         this.shootPrism(this.prismData);
 		
 		//checks all bullets for collisions with players
@@ -103,14 +103,14 @@ function PlayerAngelType() {
 		{
 			p.activeRadius = 100 + (20 * this.upgrades[STATIC_AURA_ID]);
 			//shield recharge buff
-			p.shieldBuff = 1 + this.upgrades[STATIC_AURA_ID];
+			p.shieldBuff = 2 + 0.5 * this.upgrades[STATIC_AURA_ID];
 		}
 		else
 		{
 			p.activeRadius = 100 + (20 * this.upgrades[POWER_AURA_ID]);
 			
 			//power buff
-			p.powerBuff = .02 + .03 * this.upgrades[POWER_AURA_ID];
+			p.powerBuff = .1 + .04 * this.upgrades[POWER_AURA_ID];
 		}
 		
 		//checks to see if allies are in aura range
