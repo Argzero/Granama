@@ -547,12 +547,12 @@ function TankBoss(x, y) {
     enemy.armRight = GetImage('bossTankArmRight');
     
     enemy.hooks = [
-        { root: Vector(-132, -100), pos: Vector(-132, -100), rot: Vector(-1, 0) },
-        { root: Vector(-132, -30), pos: Vector(-132, -30), rot: Vector(-1, 0) },
-        { root: Vector(-132, 40), pos: Vector(-132, 40), rot: Vector(-1, 0) },
-        { root: Vector(132, -100), pos: Vector(132, -100), rot: Vector(1, 0) },
-        { root: Vector(132, -30), pos: Vector(132, -30), rot: Vector(1, 0) },
-        { root: Vector(132, 40), pos: Vector(132, 40), rot: Vector(1, 0) }
+        new TankBossHook(enemy, Vector(-132, -100), Vector(-1, 0)),
+		new TankBossHook(enemy, Vector(-132, -30), Vector(-1, 0)),
+		new TankBossHook(enemy, Vector(-132, 40), Vector(-1, 0)),
+		new TankBossHook(enemy, Vector(132, -100), Vector(1, 0)),
+		new TankBossHook(enemy, Vector(132, -30), Vector(1, 0)),
+		new TankBossHook(enemy, Vector(132, 40), Vector(1, 0))
     ];
     enemy.nextHook = Rand(6);
     enemy.hookCd = 300;
@@ -593,6 +593,14 @@ function TankBoss(x, y) {
         duration: 120,
         dy: 180
     }, 1);
+	
+	enemy.getHookCos = function() {
+		return this.sin;
+	}
+	
+	enemy.getHookSin = function() {
+		return -this.cos;
+	}
     
     // Draw spite stuff (cannon and whatnot)
     enemy.ApplySprite = function() {
@@ -610,6 +618,20 @@ function TankBoss(x, y) {
         // Update/draw hooks
         for (var i = 0; i < this.hooks.length; i++) {
             var hook = this.hooks[i];
+			hook.update();
+			hook.draw();
+			
+			if (this.nextHook == i && --this.hookCd == 0) {
+				this.hookCd = 300;
+				var num;
+				do {
+					num = Rand(this.hooks.length);
+				}
+				while (num == i);
+				this.nextHook = num;
+				hook.launch();
+			}
+			/*
             var root = Vector(hook.root.x, hook.root.y);
             root.Rotate(this.sin, -this.cos);
             root.Add(this.x, this.y);
@@ -722,6 +744,7 @@ function TankBoss(x, y) {
                     hook.pos = root;
                 }
             }
+			*/
         }
     
         canvas.drawImage(this.cover, -this.cover.width / 2, -this.cover.height / 2 - 30);
