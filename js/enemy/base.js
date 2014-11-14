@@ -27,6 +27,10 @@ function EnemyBase(sprite, x, y, health, speed, range, exp, patternMin, patternM
 		patternMax: patternMax,
 		patternTimer: 0,
         pierceDamage: 1,
+		
+		//the higher this number, the more damage it takes. 1 is normal.
+		weaknessMultiplier: 1,
+		weaknessTimer: 0,
         
         // Components to be set for specific enemy types
         ApplyMove: undefined,
@@ -121,6 +125,16 @@ var enemyFunctions = {
             this.stunDuration--;
             return;
         }
+		
+		//power defuff updater
+		if(this.weaknessTimer > 0)
+		{
+			this.weaknessTimer--;
+		}
+		else
+		{
+			this.weaknessMultiplier = 1;
+		}
     
 		// Pattern switching
 		if (this.patterns.length > 1) {
@@ -254,7 +268,7 @@ var enemyFunctions = {
 	
 	// Damages the enemy
 	Damage: function(amount, source) {
-		this.health -= amount;
+		this.health -= (amount * this.weaknessMultiplier);
         this.killer = source;
 	},
     

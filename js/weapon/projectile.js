@@ -95,6 +95,16 @@ function SlowProjectile(sprite, source, x, y, velX, velY, angle, damage, range, 
     return projectile;
 }
 
+// Rotating projectile
+function RotatingProjectile(sprite, source, x, y, velX, velY, angle, damage, range, rotSpeed) {
+    var projectile = ProjectileBase(sprite, source, x, y, velX, velY, angle, damage, range); 
+	projectile.rotSpeed = Rand(rotSpeed);
+	projectile.scale = (Rand(3))/3 + 1;
+	projectile.updateBase = projectile.Update;
+	projectile.ApplyUpdate = projectileFunctions.UpdateSpinningProjectile;
+    return projectile;
+}
+
 // Sword projectile
 function SwordProjectile(sprite, source, x, y, r, angle, damage, arc, knockback, lifesteal) {
     var projectile = ProjectileBase(sprite, source, source.x + x, source.y + y, 0, 0, source.angle, damage, 9999, true, true);
@@ -270,6 +280,11 @@ var projectileFunctions = {
     ScaleFire: function() {
         this.scale = 0.1 + 0.9 * DistanceSq(this.x, this.y, this.ox, this.oy) / Sq(this.range * 3 / 4);
     },
+	
+	// Scales prism projectiles on update
+    ScalePrism: function() {
+        this.scale = 1 + 0.6 * DistanceSq(this.x, this.y, this.ox, this.oy) / Sq(this.range * 3 / 4);
+    },
     
     // Reflection ability projectiles' homing behavior
     UpdateHoming: function() {
@@ -355,6 +370,14 @@ var projectileFunctions = {
 	stopFist: function() {
 		this.expired = true;
 		this.source[this.side + 'Fist'] = true;
+	},
+	
+	UpdateSpinningProjectile: function() {
+		
+		this.angle = this.angle += this.rotSpeed;
+		this.cos = Math.cos(this.angle);
+		this.sin = Math.sin(this.angle);
+	
 	},
     
     // Updates a sword projectile
