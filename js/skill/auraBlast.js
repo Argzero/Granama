@@ -10,7 +10,7 @@ function SkillAuraBlast(player) {
 		
 		if(this.skillDuration > 0)
 		{
-			var color1;
+			var color1, color2;
 			var thickness;
 			var damage;
 			
@@ -18,12 +18,14 @@ function SkillAuraBlast(player) {
 			if(player.staticActive)
 			{
 				color1 = '#0ff';
-				damage = this.GetDamageMultiplier() + (.1 * player.upgrades[STATIC_AURA_ID]);
+                color2 = '#06c';
+				damage = this.GetDamageMultiplier() * (2 + .2 * player.upgrades[STATIC_AURA_ID]);
 			}
 			else
 			{
-				color1 = '#0ff';
-				damage = this.GetDamageMultiplier() + (.1 * player.upgrades[POWER_AURA_ID]);
+				color1 = '#f0f';
+                color2 = '#c06';
+				damage = this.GetDamageMultiplier() * (2 + .2 * player.upgrades[POWER_AURA_ID]);
 			}
 			
 			//thickness of waves is half that of the active aura
@@ -34,7 +36,7 @@ function SkillAuraBlast(player) {
 				var shockwave = Shockwave(
 					this,
 					color1,
-					color1,
+					color2,
 					this.x,
 					this.y,
 					10,

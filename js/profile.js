@@ -43,6 +43,7 @@ function Profile(name) {
     return {
         
         // Profile data
+        name: name,
         data: PROFILE_DATA[name],
         
         // Total stats

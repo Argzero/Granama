@@ -30,7 +30,7 @@ function Mine(x, y, damage, type) {
         gameScreen.particles.push(new RocketExplosion('Enemy', this.x, this.y, this.sprite.width * 2));
         for (var i = 0; i < playerManager.players.length; i++) {
             var player = playerManager.players[i].robot;
-            if (DistanceSq(this.x, this.y, player.x, player.y) < Sq(this.sprite.width)) {
+            if (DistanceSq(this.x, this.y, player.x, player.y) < Sq(2 * this.sprite.width)) {
                 player.Damage(this.damage);
             }
         }

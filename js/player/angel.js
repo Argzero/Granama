@@ -196,7 +196,7 @@ function PlayerAngelType() {
 		{
 			canvas.beginPath();
             canvas.arc(this.x, this.y, p.activeRadius, 0, Math.PI * 2);
-            canvas.fillStyle = '#f00';
+            canvas.fillStyle = '#f0f';
             canvas.fill();
 		}
 		canvas.restore();
