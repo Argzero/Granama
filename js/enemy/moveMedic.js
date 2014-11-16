@@ -36,7 +36,7 @@ function EnemyMoveMedic() {
         }
     }
     
-    this.angle = AngleTowards(target, this, this.speed / 50.0);
+    this.angle = AngleTowards(target, this, this.speed / this.turnDivider);
     
     // Update the angle values
     this.cos = -Math.sin(this.angle);

@@ -15,6 +15,8 @@ function Vector(x, y) {
         Dot: vectorMethods.Dot,
         Distance: vectorMethods.Distance,
         DistanceSq: vectorMethods.DistanceSq,
+        SegmentDistance: vectorMethods.SegmentDistance,
+        SegmentDistanceSq: vectorMethods.SegmentDistanceSq,
         Length: vectorMethods.Length,
         LengthSq: vectorMethods.LengthSq,
         Rotate: vectorMethods.Rotate,
@@ -45,6 +47,20 @@ var vectorMethods = {
         var dx = this.x - vector.x;
         var dy = this.y - vector.y;
         return dx * dx + dy * dy;
+    },
+    
+    // Distance to the line segment
+    SegmentDistance: function(p1, p2) {
+        return Math.sqrt(this.SegmentDistanceSq(p1, p2));
+    },
+    
+    // Squared distance to the line segment
+    SegmentDistanceSq: function(p1, p2) {
+        var l2 = p1.DistanceSq(p2);
+        var t = ((this.x - p1.x) * (p2.x - p1.x) + (this.y - p1.y) * (p2.y - p1.y)) / l2;
+        if (t <= 0) return this.DistanceSq(p1);
+        if (t >= 1) return this.DistanceSq(p2);
+        return this.DistanceSq({ x: p1.x + t * (p2.x - p1.x), y: p1.y + t * (p2.y - p1.y) });
     },
     
     // Length of the vector
@@ -87,7 +103,13 @@ var vectorMethods = {
         var l = this.Length();
         this.x *= length / l;
         this.y *= length / l;
-    }
+    },
+    
+    Normalize: function() {
+        var l = this.Length();
+        this.x /= l;
+        this.y /= l;
+    },
 };
 
 // Returns a modified value clamped to the given bounds
@@ -274,7 +296,7 @@ function AngleTo(target, source) {
 // Calculates a new angle towards the target using a turn speed
 function AngleTowards(target, source, turnSpeed, backwards) {
 	var a = AngleTo(target, source);
-	
+    
 	var dx, dy;
 	if (backwards) {
 		a = a + Math.PI;
@@ -285,18 +307,17 @@ function AngleTowards(target, source, turnSpeed, backwards) {
 		var dx = target.x - source.x;
 		var dy = target.y - source.y;
 	}
-	var dot = source.sin * dx + -source.cos * dy;
-	
-	var result = source.angle;
-	
-	// Turning to the left
-	var m = dot < 0 ? 1 : -1;
-	while (m * (a - result) < 0) {
-		a += m * 2 * Math.PI;
-	}
-	result += m * turnSpeed;
-	if (m * (result - a) > 0) {
-		result = a;
-	}
+    
+    var result = source.angle;
+    while (result - a > Math.PI) result -= Math.PI * 2;
+    while (a - result > Math.PI) result += Math.PI * 2;
+    if (result < a) {
+        result += turnSpeed;
+        if (result > a) result = a;
+    }
+    else {
+        result -= turnSpeed;
+        if (result < a) result = a;
+    }
 	return result;
 }

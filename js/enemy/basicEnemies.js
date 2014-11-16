@@ -198,6 +198,7 @@ function RailerEnemy(x, y) {
     
     // Rail weapon
     enemy.AddWeapon(EnemyWeaponRail, {
+        sprite: GetImage('bossLaser'),
         damage: 0.2 * ((c + 1) / 2) * (c + 2),
         rate: 60,
         range: 600,

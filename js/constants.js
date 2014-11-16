@@ -212,7 +212,8 @@ BOSS_SPAWNS = [
 	HeavyBoss,
 	FireBoss,
     PunchBoss,
-	QueenBoss,
+    QueenBoss,
+    TankBoss,
     DragonBoss
 ],
 DRAGON_SPAWNS = [

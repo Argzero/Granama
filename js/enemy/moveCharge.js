@@ -37,7 +37,7 @@ function EnemyMoveCharge() {
 	
 		// Turn towards the player
 		var player = playerManager.getClosest(this.x, this.y);
-		this.angle = AngleTowards(player, this, this.speed / 50.0);
+		this.angle = AngleTowards(player, this, this.speed / this.turnDivider);
 		var exactAngle = AngleTo(player, this);
 		
 		// Update the angle values

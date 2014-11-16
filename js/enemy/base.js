@@ -27,6 +27,7 @@ function EnemyBase(sprite, x, y, health, speed, range, exp, patternMin, patternM
 		patternMax: patternMax,
 		patternTimer: 0,
         pierceDamage: 1,
+        turnDivider: 50,
 		
 		//the higher this number, the more damage it takes. 1 is normal.
 		weaknessMultiplier: 1,
