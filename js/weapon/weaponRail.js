@@ -25,9 +25,16 @@ function EnemyWeaponRail(data) {
     if (!data.subWeapon) {
         data.subWeapon = EnemyWeaponGun;
     }
+    if (data.railDelayTimer === undefined) {
+        data.railDelayTimer = 0;
+    }
 
     // Charge up when in range
     if (this.IsInRange(data.range) || data.cd < 0) {
+        if (data.railDelay && data.railDelayTimer < data.railDelay) {
+            data.railDelayTimer++;
+            return;
+        }
         data.cd--;
         
         // Fire when charged up

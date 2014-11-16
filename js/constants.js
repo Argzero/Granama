@@ -162,10 +162,9 @@ BOSS_SPAWN_SCALE = 25,
 //BOSS_SPAWN_SCALE = 0,
 SPAWN_RATE = 180,
 SPAWN_SCALE = 0.3,
-MAX_ENEMIES = 1,
+MAX_ENEMIES = 30,
 MINIBOSS_START = 8,
 SPAWN_DATA = [
-    99999999, 0, TankBoss,
     90, 0, LightRangedEnemy,
     45, 1, HeavyRangedEnemy,
     60, 0, LightArtilleryEnemy,
@@ -199,7 +198,8 @@ BOSS_SPAWNS = [
 	HeavyBoss,
 	FireBoss,
     PunchBoss,
-	QueenBoss,
+    QueenBoss,
+    TankBoss,
     DragonBoss
 ],
 DRAGON_SPAWNS = [

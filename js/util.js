@@ -296,7 +296,7 @@ function AngleTo(target, source) {
 // Calculates a new angle towards the target using a turn speed
 function AngleTowards(target, source, turnSpeed, backwards) {
 	var a = AngleTo(target, source);
-	
+    
 	var dx, dy;
 	if (backwards) {
 		a = a + Math.PI;
@@ -307,18 +307,17 @@ function AngleTowards(target, source, turnSpeed, backwards) {
 		var dx = target.x - source.x;
 		var dy = target.y - source.y;
 	}
-	var dot = source.sin * dx + -source.cos * dy;
-	
-	var result = source.angle;
-	
-	// Turning to the left
-	var m = dot < 0 ? 1 : -1;
-	while (m * (a - result) < 0) {
-		a += m * 2 * Math.PI;
-	}
-	result += m * turnSpeed;
-	if (m * (result - a) > 0) {
-		result = a;
-	}
+    
+    var result = source.angle;
+    while (result - a > Math.PI) result -= Math.PI * 2;
+    while (a - result > Math.PI) result += Math.PI * 2;
+    if (result < a) {
+        result += turnSpeed;
+        if (result > a) result = a;
+    }
+    else {
+        result -= turnSpeed;
+        if (result < a) result = a;
+    }
 	return result;
 }

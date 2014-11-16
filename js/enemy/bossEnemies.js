@@ -524,8 +524,8 @@ function TankBoss(x, y) {
         1 + 0.1 * c,
         450,
 		BOSS_EXP,
-        600,
-        600
+        300,
+        400
     );
     enemy.rank = STAT.BOSS;
     
@@ -546,6 +546,8 @@ function TankBoss(x, y) {
     enemy.armLeft = GetImage('bossTankArmLeft');
     enemy.armRight = GetImage('bossTankArmRight');
     
+    var damageScale = ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000);
+    
     enemy.hooks = [
         new TankBossHook(enemy, Vector(-132, -100), Vector(-1, 0)),
 		new TankBossHook(enemy, Vector(-132, -30), Vector(-1, 0)),
@@ -554,45 +556,68 @@ function TankBoss(x, y) {
 		new TankBossHook(enemy, Vector(132, -30), Vector(1, 0)),
 		new TankBossHook(enemy, Vector(132, 40), Vector(1, 0))
     ];
-    enemy.nextHook = Rand(6);
     enemy.hookCd = 300;
-    enemy.hookDur = 480;
+    enemy.hookDur = 600;
+    enemy.hookDmg = damageScale / 20;
     
+    enemy.armRot = Vector(1, 0);
+    enemy.armRotCount = 0;
+    enemy.armRotCos = COS_3;
+    enemy.armRotSin = SIN_3;
     
-	var damageScale = ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000);
-	
+    enemy.cannonCos = COS_10;
+    enemy.cannonSin = SIN_10;
+    enemy.cannonRot = { x: 0, y: 0, cos: 0, sin: 1, angle: Math.PI / 2 };
+    enemy.cannonTarget = undefined;
+    
 	// Attack Pattern 0 - Rocket barrage
-	enemy.AddWeapon(EnemyWeaponRail, {
+    for (var i = 0; i < 2; i++) {
+        enemy.AddWeapon(EnemyWeaponRail, {
+        
+            sprite: GetImage('rocket'),
+            lists: [playerManager.getRobots()],
+            damage: 4 * damageScale,
+            radius: 150,
+            knockback: 200,
+            dx: -300 + 600 * i,
+            dy: 0,
+            speed: 10,
+            angle: 20,
+            angleOffset: -35 + i * 70,
+            railDelay: i * 80,
+            
+            subWeapon: EnemyWeaponRocket,
+            rate: 120,
+            range: 500,
+            discharge: 0.1,
+            duration: 40,
+            interval: 10
+        }, 0);
+    }
     
-        sprite: GetImage('rocket'),
-        lists: [playerManager.getRobots()],
-        damage: 4 * damageScale,
-        radius: 150,
-        knockback: 200,
-        dx: 0,
-        dy: 0,
-        speed: 10,
-        angle: 180,
+    // Attack pattern 1, Shield
+    enemy.AddWeapon(EnemyWeaponRail, {
+        discharge: 1,
+        duration: 0,
+        interval: 10,
+        rate: 10,
+        range: 0,
+        damage: 0
+    }, 1);
     
-        subWeapon: EnemyWeaponRocket,
-        rate: 120,
-        range: 500,
-        discharge: 0.1,
-        duration: 120,
-        interval: 6
-    }, 0);
-    
-    // Attack pattern 1 - Shield/Cannon
-    // Attack Pattern 0 - Rocket barrage
-	enemy.AddWeapon(EnemyWeaponRail, {
+	enemy.cannonRot.fire = EnemyWeaponRail;
+    enemy.cannonRot.IsInRange = enemy.IsInRange.bind(enemy);
+    enemy.cannonData = {
         sprite: GetImage('bossCannon'),
         damage: 0.5 * damageScale,
         rate: 150,
         range: 500,
         discharge: 0.1,
         duration: 120,
-        dy: 180
-    }, 1);
+        dy: 180,
+        cd: 0,
+        list: gameScreen.enemyManager.bullets
+    };
 	
 	enemy.getHookCos = function() {
 		return this.sin;
@@ -602,153 +627,119 @@ function TankBoss(x, y) {
 		return -this.cos;
 	}
     
+    enemy.ApplyDraw = function() {
+        if (!gameScreen.paused) {
+            this.cannonRot.fire(this.cannonData);
+        }
+    }
+    
     // Draw spite stuff (cannon and whatnot)
     enemy.ApplySprite = function() {
     
         // Update turn speed
-        this.turnDivider = this.pattern == 1 ? 250 : 100;
+        this.turnDivider = this.pattern == 1 ? 500 : 250;
         
         canvas.translate(this.sprite.width / 2, this.sprite.height / 2);
         
+        // Update arm rotation
+        if (!gameScreen.paused) {
+            if (this.pattern == 1) {
+                if (this.armRotCount > -6) {
+                    this.armRot.Rotate(this.armRotCos, -this.armRotSin);
+                    this.armRotCount--;
+                }
+            }
+            else if (this.armRotCount < 15) {
+                this.armRot.Rotate(this.armRotCos, this.armRotSin);
+                this.armRotCount++;
+            }
+        }
+        
         // Draw arms
         var armOX = this.sprite.width / 2 + 175;
-        canvas.drawImage(this.armLeft, -armOX, 30);
-        canvas.drawImage(this.armRight, armOX - this.armLeft.width, 30);
+        canvas.save();
+        canvas.translate(-armOX + 210, 70);
+        canvas.transform(this.armRot.x, this.armRot.y, -this.armRot.y, this.armRot.x, 0, 0);
+        canvas.drawImage(this.armLeft, -210, -40);
+        canvas.restore();
+        canvas.save();
+        canvas.translate(armOX - 210, 70);
+        canvas.transform(this.armRot.x, -this.armRot.y, this.armRot.y, this.armRot.x, 0, 0);
+        canvas.drawImage(this.armRight, 210 - this.armLeft.width, -40);
+        canvas.restore();
+        
+        // Draw overlay if applicable
+        if (this.armRotCount == -6) {
+            var overlay = GetImage('bossTankShield');
+            canvas.drawImage(overlay, -overlay.width / 2, this.sprite.height / 2);
+            
+            for (var i = 0; i < playerManager.players.length; i++) {
+                var player = playerManager.players[i].robot;
+                for (var j = 0; j < player.bullets.length; j++) {
+                    var b = player.bullets[j];
+                    
+                    var pm = Vector(0, this.sprite.height / 2 + 50);
+                    pm.Rotate(this.sin, -this.cos);
+                    var po = Vector(300, 0);
+                    po.Rotate(this.sin, -this.cos);
+                    
+                    var p1 = Vector(pm.x, pm.y);
+                    var p2 = Vector(pm.x, pm.y);
+                    p1.Add(this.x + po.x, this.y + po.y);
+                    p2.Add(this.x - po.x, this.y - po.y);
+                    
+                    canvas.save();
+                    ResetTransform(canvas);
+                    canvas.fillStyle = 'blue';
+                    canvas.beginPath();
+                    canvas.arc(p1.x, p1.y, 50, 0, Math.PI * 2);
+                    canvas.arc(p2.x, p2.y, 50, 0, Math.PI * 2);
+                    canvas.fill();
+                    canvas.restore();
+                    
+                    var bp = Vector(b.x, b.y);
+                    if (bp.SegmentDistanceSq(p1, p2) < 2500) {
+                        b.expired = true;
+                    }
+                }
+            }
+        }
         
         // Update/draw hooks
         for (var i = 0; i < this.hooks.length; i++) {
             var hook = this.hooks[i];
 			hook.update();
 			hook.draw();
-			
-			if (this.nextHook == i && --this.hookCd == 0) {
-				this.hookCd = 300;
-				var num;
-				do {
-					num = Rand(this.hooks.length);
-				}
-				while (num == i);
-				this.nextHook = num;
-				hook.launch();
-			}
-			/*
-            var root = Vector(hook.root.x, hook.root.y);
-            root.Rotate(this.sin, -this.cos);
-            root.Add(this.x, this.y);
-            
-            canvas.save();
-            
-            // Active hooks are absolute coordinates
-            if (hook.active) {
-                ResetTransform(canvas);
-                canvas.translate(hook.pos.x, hook.pos.y);
-                canvas.transform(hook.arot.x, hook.arot.y, -hook.arot.y, hook.arot.x, 0, 0);
-            }
-            
-            // Inactive hooks are relative coordinates
-            else {
-                canvas.translate(hook.root.x, hook.root.y);
-                canvas.transform(hook.rot.x, hook.rot.y, -hook.rot.y, hook.rot.x, 0, 0);
-            }
-            
-            canvas.drawImage(this.hook, -this.hook.width / 2, -this.hook.height / 2);
-            canvas.restore();
-            
-            // Chain drawing
-            var dir;
-            if (hook.active) {
-                var rotPos = Vector(-45, 0);
-                rotPos.Rotate(hook.arot.x, hook.arot.y);
-                var x = this.x - hook.pos.x - rotPos.x;
-                var y = this.y - hook.pos.y - rotPos.y;
-                dir = Vector(x, y);
-                dir.SetLength(30);
-                
-                canvas.save();
-                ResetTransform(canvas);
-                canvas.translate(hook.pos.x + rotPos.x, hook.pos.y + rotPos.y);
-                var angle = AngleTo(dir, { x: 0, y: 0 });
-                var cos = Math.cos(angle + Math.PI / 2);
-                var sin = Math.sin(angle + Math.PI / 2);
-                canvas.transform(cos, sin, -sin, cos, 0, 0);
-                
-                var xo = 0;
-                var xt = 0;
-                while ((x - xt) * dir.x > 0) {
-                    canvas.drawImage(this.chainFlat, xo + 30 - this.chainFlat.width / 2, -this.chainFlat.height / 2);
-                    canvas.drawImage(this.chainUp, xo - this.chainUp.width / 2, -this.chainUp.height / 2);
-                    xo += 60;
-                    xt += 2 * dir.x;
+        }
+        
+        // Launch hooks
+        if (!gameScreen.paused) {
+            if (--this.hookCd <= 0) {
+                this.hookCd = 150;
+                var num;
+                do {
+                    num = Rand(this.hooks.length);
                 }
-                canvas.restore();
+                while (this.hooks[num].active);
+                this.hooks[num].launch();
             }
-            
-            // Movement and damage while not paused
-            if (!gameScreen.paused) {
-            
-                // Active effects
-                if (hook.active) {
-
-                    // Movement outwards
-                    if (hook.vel.x || hook.vel.y) {
-                        hook.pos.x += hook.vel.x;
-                        hook.pos.y += hook.vel.y;
-                        if (hook.pos.DistanceSq(root) > 250000) {
-                            hook.vel.x = 0;
-                            hook.vel.y = 0;
-                        }
-                    }
-                    
-                    // Lifespan counter
-                    else if (hook.dur > 0) {
-                        hook.dur--;
-                    }
-                    
-                    // Retreating
-                    else {
-                        hook.pos.x += 3 * dir.x / 5;
-                        hook.pos.y += 3 * dir.y / 5;
-                        
-                        if (hook.pos.DistanceSq({ x: this.x, y: this.y }) < 2500) {
-                            hook.active = false;
-                        }
-                    }
-                    
-                    // Collision
-                    for (var i = 0; i < playerManager.players.length; i++) {
-                        var player = playerManager.players[i].robot;
-                        var p1 = Vector(this.x, this.y);
-                        var p2 = Vector(player.x, player.y);
-                        var r = player.sprite.width / 2 + this.chainFlat.height / 2;
-                        if (p2.SegmentDistanceSq(p1, hook.pos) < r * r) {
-                            player.Slow(0.2, 60);
-                        }
-                    }
-                }
-                
-                // Launching hooks
-                if (this.nextHook == i && --this.hookCd == 0) {
-                    this.hookCd = 300;
-                    var num;
-                    do {
-                        num = Rand(this.hooks.length);
-                    }
-                    while (num == i);
-                    this.nextHook = num;
-                    
-                    hook.active = true;
-                    hook.dur = this.hookDur;
-                    hook.arot = Vector(hook.rot.x, hook.rot.y);
-                    hook.arot.Rotate(this.sin, -this.cos);
-                    hook.vel = Vector(hook.arot.x * 15, hook.arot.y * 15);
-                    hook.pos = root;
-                }
-            }
-			*/
         }
     
         canvas.drawImage(this.cover, -this.cover.width / 2, -this.cover.height / 2 - 30);
+        
+        var target = this.cannonTarget || playerManager.getClosest(this.x, this.y);
+        this.cannonRot.x = this.x;
+        this.cannonRot.y = this.y
+        var ca = AngleTowards(target, this.cannonRot, 0.08);
+        this.cannonRot.angle = ca;
+        this.cannonRot.cos = -Math.sin(ca);
+        this.cannonRot.sin = Math.cos(ca);
+        canvas.save();
+        ResetTransform(canvas);
+        canvas.translate(this.x, this.y);
+        canvas.transform(this.cannonRot.sin, -this.cannonRot.cos, this.cannonRot.cos, this.cannonRot.sin, 0, 0);
         canvas.drawImage(this.cannon, -this.cannon.width / 2, -this.cannon.height / 2 + 50);
+        canvas.restore();
     }
 	
 	return enemy;
