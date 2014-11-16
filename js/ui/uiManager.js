@@ -69,7 +69,7 @@ function UIManager(screen) {
             canvas.font = '32px Flipbash';
             canvas.fillStyle = player.color;
             canvas.textAlign = 'left';
-            canvas.fillText(player.name, 10, y);
+            canvas.fillText(player.profile.name, 10, y);
             
 			// Level
 			canvas.fillStyle = 'white';

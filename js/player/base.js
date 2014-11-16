@@ -26,6 +26,10 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 		speed: PLAYER_SPEED,
 		speedM: 1,
 		speedMDuration: 0,
+		damageBuff: 0,
+		damageBuffTimer: 0,
+		shieldRechargeBuff: 0,
+		shieldRechargeBuffTimer: 0,
 		health: PLAYER_HEALTH,
 		maxHealth: PLAYER_HEALTH,
 		healthScale: healthScale || 1,
@@ -148,7 +152,7 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
         
         // Retrieves the damage multiplier for the player
         GetDamageMultiplier: function() {
-            return this.damage;
+            return this.damage + this.damageBuff;
         },
 		
 		// Updates the player
@@ -156,8 +160,37 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
         
 			this.UpdatePause();
 			
+			//Update Buffs
+			
+			//shield recharge rate buff check
+			if(this.shieldRechargeBuffTimer > 0)
+			{
+				this.shieldRechargeBuffTimer--;
+			}
+			else
+			{
+				this.shieldRechargeBuff = 0;
+			}
+			
+			//power (damage) buff check
+			if(this.damageBuffTimer > 0)
+			{
+				this.damageBuffTimer--;
+			}
+			else
+			{
+				this.damageBuff = 0;
+			}
+			
 			// Shield regeneration
-			this.shieldCd--;
+			if(this.shieldRechargeBuff > 0)
+			{
+				this.shieldCd -= this.shieldRechargeBuff;
+			}
+			else
+			{
+				this.shieldCd--;
+			}
 			if (this.shieldCd <= 0) {
 				this.shieldCd += 60 / (this.shieldScale * (this.upgrades[SHIELD_ID] + 1) * 1 / 10);
 				this.shield += this.maxHealth * SHIELD_GAIN;

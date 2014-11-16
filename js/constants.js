@@ -105,7 +105,7 @@ PLAYER_DATA = [
 		ups: ['GrappleStun', 'SwordSwingArc', 'SwordLifeSteal', 'ShieldRecharge', 'MovementSpeed'],
 		icons: ['Grapple', 'Slash', 'Lifesteal', 'Shield', 'Speed'],
         color: '#fcf',
-		weapons: [ 'Quiver Gun', 'Sword' ],
+		weapons: [ 'Grappling Hook', 'Sword' ],
 		skills: [
 			{ name: 'Piercing Arrow', callback: SkillPiercingArrow },
 			{ name: 'Gyro Slash', callback: SkillGyroSlash },
@@ -138,6 +138,20 @@ PLAYER_DATA = [
             { name: 'Missile Barrage', callback: SkillMissileBarrage },
 			{ name: 'Targeter', callback: SkillTargeter },
 			{ name: 'Laser Bomb', callback: SkillLaserBomb }
+        ]
+    },
+	{
+        player: PlayerAngelType,
+        preview: 'pAngel',
+        name: 'Angel',
+        ups: ['StaticAura', 'PowerAura', 'PrismBeamPower', 'ShieldRecharge', 'MovementSpeed'],
+        icons: ['DroneRange', 'DroneShots', 'LMGDamage', 'Shield', 'Speed'],
+        color: '#fff',
+        weapons: [ 'Prism Beam', 'Healing Kit' ],
+        skills: [
+            { name: 'Angelic Assault', callback: SkillAngelicAssault },
+			{ name: 'Aura Blast', callback: SkillAuraBlast },
+			{ name: 'Medic', callback: SkillMedic }
         ]
     }
 ],
@@ -255,18 +269,21 @@ MINIGUN_ID = 0,
 ARROW_ID = 0,
 CHARGE_ID = 0,
 DRONE_RANGE_ID = 0,
+STATIC_AURA_ID = 0,
 SPREAD_ID = 1,
 SHOTGUN_ID = 1,
 EXPLOSION_ID = 1,
 SLASH_ID = 1,
 RAIL_ID = 1,
 DRONE_SHOTS_ID = 1,
+POWER_AURA_ID = 1,
 FLAME_ID = 2,
 SLOW_ID = 2,
 KNOCKBACK_ID = 2,
 LIFESTEAL_ID = 2,
 DUAL_ID = 2,
 LMG_DAMAGE_ID = 2,
+PRISM_POWER_ID = 2,
 SHIELD_ID = 3,
 SPEED_ID = 4,
 DAMAGE_ID = 5,

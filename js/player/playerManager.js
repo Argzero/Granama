@@ -56,14 +56,14 @@ var playerManager = {
     // Adds players so that there's 4
     setMultiplayer: function() {
 		this.players = [];
-        while (this.players.length < 4 && (this.players.length < 1 || gamepads)) {
+        while (this.players.length < 5 && (this.players.length < 1 || gamepads)) {
             this.players.push(Player(this.players.length - 1));
         }
     },
     
     // Cleans inactive player objects from the list
     clean: function() {
-        for (var i = 1; i < this.players.length; i++) {
+        for (var i = 0; i < this.players.length; i++) {
             if (!this.players[i].robot) {
                 this.players.splice(i, 1);
                 i--;
