@@ -50,7 +50,7 @@ var playerManager = {
     // Sets up the list for single player
     setSingleplayer: function() {
 		this.players = [];
-        this.players.splice(1, this.players.length - 1);
+		this.players.push(Player(-1));
     },
     
     // Adds players so that there's 4

@@ -224,9 +224,9 @@ function FireBoss(x, y) {
     };
 	
 	// Draw the tail
-	enemy.tail = EnemyTail(enemy, GetImage('bossFireSegment'), GetImage('bossFireEnd'), 60, 4, 90, 25);
+	enemy.tail = new RopeTail(enemy, GetImage('bossFireSegment'), GetImage('bossFireEnd'), 4, 60, 90, 25, 30);
 	enemy.ApplyDraw = function() {
-		this.tail.Draw();
+		this.tail.update();
 	}
 	
 	return enemy;
@@ -673,29 +673,20 @@ function TankBoss(x, y) {
             var overlay = GetImage('bossTankShield');
             canvas.drawImage(overlay, -overlay.width / 2, this.sprite.height / 2);
             
+			var pm = Vector(0, this.sprite.height / 2 + 50);
+			pm.Rotate(this.sin, -this.cos);
+			var po = Vector(300, 0);
+			po.Rotate(this.sin, -this.cos);
+			
+			var p1 = Vector(pm.x, pm.y);
+			var p2 = Vector(pm.x, pm.y);
+			p1.Add(this.x + po.x, this.y + po.y);
+			p2.Add(this.x - po.x, this.y - po.y);
+			
             for (var i = 0; i < playerManager.players.length; i++) {
                 var player = playerManager.players[i].robot;
                 for (var j = 0; j < player.bullets.length; j++) {
                     var b = player.bullets[j];
-                    
-                    var pm = Vector(0, this.sprite.height / 2 + 50);
-                    pm.Rotate(this.sin, -this.cos);
-                    var po = Vector(300, 0);
-                    po.Rotate(this.sin, -this.cos);
-                    
-                    var p1 = Vector(pm.x, pm.y);
-                    var p2 = Vector(pm.x, pm.y);
-                    p1.Add(this.x + po.x, this.y + po.y);
-                    p2.Add(this.x - po.x, this.y - po.y);
-                    
-                    canvas.save();
-                    ResetTransform(canvas);
-                    canvas.fillStyle = 'blue';
-                    canvas.beginPath();
-                    canvas.arc(p1.x, p1.y, 50, 0, Math.PI * 2);
-                    canvas.arc(p2.x, p2.y, 50, 0, Math.PI * 2);
-                    canvas.fill();
-                    canvas.restore();
                     
                     var bp = Vector(b.x, b.y);
                     if (bp.SegmentDistanceSq(p1, p2) < 2500) {

@@ -76,7 +76,7 @@ var vectorMethods = {
     // Rotates the vector using the cos/sin values 
     // or an angle if one argument is provided
     Rotate: function(cos, sin) {
-        if (!sin) {
+        if (sin == undefined) {
             sin = Math.sin(cos);
             cos = Math.cos(cos);
         }
