@@ -45,7 +45,7 @@ function SkillArtillery(player) {
                     this.angle, 
                     25 * this.GetDamageMultiplier() * used / 25 * (1 + this.bonus),
                     0,
-                    100 + used * 25,
+                    150 + used * 10,
                     1,
 					this.name,
                     [gameScreen.enemyManager.enemies, gameScreen.enemyManager.turrets]
