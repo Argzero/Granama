@@ -11,7 +11,7 @@ TankBossHook.prototype.update = function() {
         if (this.vel.x || this.vel.y) {
             this.pos.x += this.vel.x;
             this.pos.y += this.vel.y;
-            if (this.pos.DistanceSq({ x: this.boss.x, y: this.boss.y }) > 250000) {
+            if (this.pos.DistanceSq({ x: this.boss.x, y: this.boss.y }) > 490000) {
                 this.vel.x = 0;
                 this.vel.y = 0;
             }

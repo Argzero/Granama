@@ -611,7 +611,7 @@ function TankBoss(x, y) {
         sprite: GetImage('bossCannon'),
         damage: 0.5 * damageScale,
         rate: 150,
-        range: 500,
+        range: 750,
         discharge: 0.1,
         duration: 120,
         dy: 180,
