@@ -6,12 +6,14 @@ function EnemyManager(screen) {
     this.bossIncrement = Math.floor(BOSS_SPAWN_BASE * (0.6 + 0.4 * playerManager.players.length));
     this.bossCount = 0;
 	this.timer = 0;
-    this.expM = [1, 1.6, 2, 2.3, 2.5];
+    this.expM = [1, 5/3, 9/4, 8/3, 35/12];
     
     // Experience data
     this.expData = [
         { value: 25, sprite: GetImage('exp25') },
+        { value: 10, sprite: GetImage('exp10') },
         { value: 5, sprite: GetImage('exp5') },
+        { value: 3, sprite: GetImage('exp3') },
         { value: 1, sprite: GetImage('exp1') }
     ];
     
