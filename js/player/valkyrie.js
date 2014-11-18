@@ -1,10 +1,10 @@
 function PlayerValkyrieType() {
     var p = BasePlayer(
         GetImage('pValkyrieBody'),
-		10,
+		14,
 		0.2,
         1,
-        1.5
+        2
     );
     
     // Sprites
@@ -46,6 +46,13 @@ function PlayerValkyrieType() {
         if (this.charge < 50) return 49;
         else if (this.charge < 100) return 73;
         else return 94;
+    }
+	
+	// Damage reduction while locked
+    p.onDamaged = function(amount, damager) {
+        if (this.locked > 0) {
+            return amount * 0.5;
+        }
     }
     
     // Update function

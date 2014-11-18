@@ -34,7 +34,6 @@ function SkillArtillery(player) {
             
             // Firing the artillery
             if (this.input.ability == 1 || this.timer == 30) {
-                //sprite, source, x, y, velX, velY, angle, damage, range, radius, knockback, lists
                 var used = Math.min(25, this.charge);
                 var rocket = RocketProjectile(
                     GetImage('missile'),
@@ -44,9 +43,9 @@ function SkillArtillery(player) {
                     0, 
                     0, 
                     this.angle, 
-                    20 * this.GetDamageMultiplier() * used / 25 * (1 + this.bonus),
+                    25 * this.GetDamageMultiplier() * used / 25 * (1 + this.bonus),
                     0,
-                    50 + used * 6,
+                    100 + used * 25,
                     1,
 					this.name,
                     [gameScreen.enemyManager.enemies, gameScreen.enemyManager.turrets]
