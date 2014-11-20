@@ -199,8 +199,10 @@ var enemyFunctions = {
     
     // Clamps the enemy to the map
     clamp: function() {
-        this.x = clamp(this.x, this.sprite.width / 2, GAME_WIDTH - this.sprite.width / 2);
-        this.y = clamp(this.y, this.sprite.height / 2, GAME_HEIGHT - this.sprite.height / 2);
+        if (!this.disableClamp) {
+            this.x = clamp(this.x, this.sprite.width / 2, GAME_WIDTH - this.sprite.width / 2);
+            this.y = clamp(this.y, this.sprite.height / 2, GAME_HEIGHT - this.sprite.height / 2);
+        }
     },
     
     // Draws the enemy
