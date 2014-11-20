@@ -173,8 +173,10 @@ function GameScreen(bossRush) {
 		}
         
         // Draw the cursor
-        canvas.setTransform(1, 0, 0, 1, 0, 0);
-        canvas.drawImage(cursor, mx - element.offsetLeft + pageScrollX - cursor.width / 2, my - element.offsetTop + pageScrollY - cursor.height / 2);
+        if (playerManager.keyboardActive) {
+            canvas.setTransform(1, 0, 0, 1, 0, 0);
+            canvas.drawImage(cursor, mx - element.offsetLeft + pageScrollX - cursor.width / 2, my - element.offsetTop + pageScrollY - cursor.height / 2);
+        }
     }
 
     // Updates bullets, checking for collisions

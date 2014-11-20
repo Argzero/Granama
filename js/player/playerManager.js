@@ -4,6 +4,9 @@ var playerManager = {
     // The list of players
     players: [Player(-1)],
     
+    keyboardActive: true,
+    gamepadActive: true,
+    
     // Updates all the players
     update: function(paused) {
         for (var i = 0; i < this.players.length; i++) {
@@ -51,6 +54,9 @@ var playerManager = {
     setSingleplayer: function() {
 		this.players = [];
 		this.players.push(Player(-1));
+        
+        this.keyboardActive = true;
+        this.gamepadActive = false;
     },
     
     // Adds players so that there's 4
@@ -59,15 +65,24 @@ var playerManager = {
         while (this.players.length < 5 && (this.players.length < 1 || gamepads)) {
             this.players.push(Player(this.players.length - 1));
         }
+        
+        this.keyboardActive = true;
+        this.gamepadActive = true;
     },
     
     // Cleans inactive player objects from the list
     clean: function() {
+        this.keyboardActive = false;
+        this.gamepadActive = false;
         for (var i = 0; i < this.players.length; i++) {
             if (!this.players[i].robot) {
                 this.players.splice(i, 1);
                 i--;
             }
+            else if (this.players[i].input.id === undefined) {
+                this.keyboardActive = true;
+            }
+            else this.gamepadActive = true;
         }
     }
 };
