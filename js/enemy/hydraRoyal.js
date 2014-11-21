@@ -51,8 +51,22 @@ function RoyalHydra(x, y) {
         canvas.restore();
 	}
     
+    // Hydra's heads
+    enemy.head = new RopeTail(enemy, GetImage('hydraRoyalNeck'), GetImage('hydraRoyalHeadLarge'), 3, 125, 150, 0, 0);
+    enemy.headLeft = new RopeTail(enemy, GetImage('hydraRoyalNeck'), GetImage('hydraRoyalHeadSmall'), 4, 125, 300, 0, 20);
+    enemy.headRight = new RopeTail(enemy, GetImage('hydraRoyalNeck'), GetImage('hydraRoyalHeadSmall'), 4, 125, 300, 50, 20);
+    enemy.head.reverse = enemy.headLeft.reverse = enemy.headRight.reverse = true;
+    enemy.headLeft.rel = Vector(COS_60, SIN_60);
+    enemy.headRight.rel = Vector(COS_60, -SIN_60);
     enemy.ApplySprite = function() {
+        this.head.update();
         
+        this.headLeft.followParent();
+        this.headRight.followParent();
+        this.headLeft.turnTowards(this.head.dir, 0.02, ROPE_TURN_END);
+        this.headRight.turnTowards(this.head.dir, 0.02, ROPE_TURN_END);
+        this.headLeft.update();
+        this.headRight.update();
     }
 
     return enemy;

@@ -277,7 +277,7 @@ function GameScreen(bossRush) {
     // Updates the music depending on the state of the game
     this.UpdateMusic = UpdateMusic;
     function UpdateMusic() {
-
+        return;
         // Player must be alive for the music to play
         if (!this.gameOver) {
         

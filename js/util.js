@@ -20,6 +20,7 @@ function Vector(x, y) {
         Length: vectorMethods.Length,
         LengthSq: vectorMethods.LengthSq,
         Rotate: vectorMethods.Rotate,
+        RotateAround: vectorMethods.RotateAround,
         Set: vectorMethods.Set,
         Add: vectorMethods.Add,
         SetLength: vectorMethods.SetLength,
@@ -83,6 +84,23 @@ var vectorMethods = {
         var tx = this.x * cos - this.y * sin;
         this.y = this.x * sin + this.y * cos;
         this.x = tx;
+		return this;
+    },
+    
+    // Rotates the vector using the cos/sin values 
+    // or an angle if one argument is provided around
+    // the given coordinates
+    RotateAround: function(cos, sin, pos) {
+        if (pos == undefined) {
+            pos = sin;
+            sin = Math.sin(cos);
+            cos = Math.cos(cos);
+        }
+        this.x -= pos.x;
+        this.y -= pos.y;
+        this.Rotate(cos, sin);
+        this.x += pos.x;
+        this.y += pos.y;
 		return this;
     },
     
