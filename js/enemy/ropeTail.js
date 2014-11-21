@@ -100,6 +100,7 @@ ROPE_TURN_ROOT = 2;
 RopeTail.prototype.turnTowards = function(dir, speed, mode) {
     
     var d = this.getEndDir();
+    if (d.Dot(dir) > 0.95) return;
     d.Rotate(0, 1);
     var m = d.Dot(dir) > 0 ? 1 : -1;
     
