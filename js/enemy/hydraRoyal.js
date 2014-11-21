@@ -7,7 +7,7 @@ function RoyalHydra(x, y) {
         x, 
         y,
         2500 * ScalePower(c, 1.4) * playerManager.players.length,
-        4 + 0.3 * c,
+        6,
         750,
 		2388,
         600,
