@@ -67,7 +67,7 @@ var input = {
     /**
      * Checks whether or not a key is currently pressed
      *
-     * @param {Number} keyId - the ID of the key to check
+     * @param {number} keyId - the ID of the key to check
      *
      * @returns {boolean} true if pressed, false otherwise
      */
@@ -79,8 +79,8 @@ var input = {
      * Maps a basic button press
      *
      * @param {string} key      - the access key for the control
-     * @param {Number} keyId    - the ID of the keyboard key to map
-     * @param {Number} buttonId - the ID of the gamepad button to map
+     * @param {number} keyId    - the ID of the keyboard key to map
+     * @param {number} buttonId - the ID of the gamepad button to map
      */
     mapButton: function(key, keyId, buttonId) {
         this.mapping.button[key] = { key: keyId, button: buttonId };
@@ -93,7 +93,7 @@ var input = {
      *
      * @param {string} key    - the access key for the control
      * @param {Object} obj    - an object with an 'x' and 'y' value
-     * @param {Number} axisId - the ID of the gamepad axis to map
+     * @param {number} axisId - the ID of the gamepad axis to map
      */
     mapAxisMouse: function(key, obj, axisId) {
         this.mapping.axis[key] = { obj: obj, axis: axisId };
@@ -104,9 +104,9 @@ var input = {
      * Maps a directional axis using multiple keyboard keys
      * 
      * @param {string} key    - the access key for the control
-     * @param {Number} keyId1 - the ID of the negative keyboard key to map
-     * @param {Number} keyId2 - the ID of the positive keyboard key to map
-     * @param {Number} axisId - the ID of the gamepad axis to map
+     * @param {number} keyId1 - the ID of the negative keyboard key to map
+     * @param {number} keyId2 - the ID of the positive keyboard key to map
+     * @param {number} axisId - the ID of the gamepad axis to map
      */
     mapAxisKey: function(key, keyId1, keyId2, axisId) {
         this.mapping.axis[key] = { key1: keyId1, key2: keyId2, axis: axisId };
@@ -121,8 +121,8 @@ var input = {
      * @param {string}  key     - the access key for the control
      * @param {Object}  obj     - an object with an 'x' and 'y' value
      * @param {boolean} mouseX  - whether or not to use the horizontal relative position
-     * @param {Number}  axisId1 - the ID of the gamepad axis to map horizontally
-     * @param {Number}  axisId2 - the ID of the gamepad axis to map vertically
+     * @param {number}  axisId1 - the ID of the gamepad axis to map horizontally
+     * @param {number}  axisId2 - the ID of the gamepad axis to map vertically
      */
     mapDirectionMouse: function(key, obj, mouseX, axisId1, axisId2) {
         this.mapping.axis[key] = { obj: obj, x: mouseX, axis1: axisId1, axis2: axisId2 };
@@ -134,12 +134,12 @@ var input = {
      * Maps a directional axis using multiple keyboard keys
      * 
      * @param {string} key    - the access key for the control
-     * @param {Number} keyId1 - the ID of the negative horizontal keyboard key to map
-     * @param {Number} keyId2 - the ID of the positive horizontal keyboard key to map
-     * @param {Number} keyId3 - the ID of the negative vertical keyboard key to map
-     * @param {Number} keyId4 - the ID of the positive vertical keyboard key to map
-     * @param {Number} axisId1 - the ID of the gamepad axis to map horizontally
-     * @param {Number} axisId2 - the ID of the gamepad axis to map vertically
+     * @param {number} keyId1 - the ID of the negative horizontal keyboard key to map
+     * @param {number} keyId2 - the ID of the positive horizontal keyboard key to map
+     * @param {number} keyId3 - the ID of the negative vertical keyboard key to map
+     * @param {number} keyId4 - the ID of the positive vertical keyboard key to map
+     * @param {number} axisId1 - the ID of the gamepad axis to map horizontally
+     * @param {number} axisId2 - the ID of the gamepad axis to map vertically
      */
     mapDirectionKey: function(key, keyId1, keyId2, keyId3, keyId4, axisId1, axisId2) {
         this.mapping.axis[key] = { key1: keyId1, key2: keyId2, key3: keyId3, key4: keyId4, axis1: axisId1, axis2: axisId2 };
@@ -195,7 +195,7 @@ KeyboardInput.prototype.update = function() {
  *
  * @param {string} key - button value key
  *
- * @returns {Number} number of updates it has been pressed
+ * @returns {number} number of updates it has been pressed
  */
 KeyboardInput.prototype.button = function(key) {
     var mapping = input.mapping.button[key];
@@ -209,7 +209,7 @@ KeyboardInput.prototype.button = function(key) {
  *
  * @param {string} key - axis value key
  *
- * @returns {Number} the current direction the axis is pointing
+ * @returns {number} the current direction the axis is pointing
  */
 KeyboardInput.prototype.axis = function(key) {
     var mapping = input.mapping.axis[key];
@@ -275,7 +275,7 @@ GamepadInput.prototype.update = function() {
  *
  * @param {string} key - button value key
  *
- * @returns {Number} number of updates it has been pressed
+ * @returns {number} number of updates it has been pressed
  */
 GamepadInput.prototype.button = function(key) {
     if (!this.valid) return 0;
@@ -290,7 +290,7 @@ GamepadInput.prototype.button = function(key) {
  *
  * @param {string} key - axis value key
  *
- * @returns {Number} the current direction the axis is pointing
+ * @returns {number} the current direction the axis is pointing
  */
 GamepadInput.prototype.axis = function(key) {
     if (!this.valid) return 0;

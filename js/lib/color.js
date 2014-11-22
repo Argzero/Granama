@@ -5,10 +5,10 @@ depend('lib/math');
  *
  * @constructor
  *
- * @param {Number} r - Red component
- * @param {Number} g - Green component
- * @param {Number} b - Blue component
- * @param {Number} a - Alpha component
+ * @param {number} r - Red component
+ * @param {number} g - Green component
+ * @param {number} b - Blue component
+ * @param {number} a - Alpha component
  */
 function Color(r, g, b, a) {
     this.r = clamp(r, 0, 255);
@@ -20,7 +20,7 @@ function Color(r, g, b, a) {
 /**
  * Converts an integer to a color
  *
- * @param {Number} num - the integer to convert to a color
+ * @param {number} num - the integer to convert to a color
  *
  * @returns {Color} the resulting color
  */
@@ -31,7 +31,7 @@ Color.fromRGBInt = function(num) {
 /**
  * Converts an integer to a color
  *
- * @param {Number} num - the integer to convert to a color
+ * @param {number} num - the integer to convert to a color
  *
  * @returns {Color} the resulting color
  */

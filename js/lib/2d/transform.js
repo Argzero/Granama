@@ -14,8 +14,8 @@ function Transform() {
 /**
  * Translates to the given point
  * 
- * @param {Number} x - the new horizontal pos
- * @param {Number} y - the new vertical pos
+ * @param {number} x - the new horizontal pos
+ * @param {number} y - the new vertical pos
  * 
  * @returns {Transform} the Transform object
  */
@@ -28,8 +28,8 @@ Transform.prototype.moveTo = function(x, y) {
 /**
  * Translates relatively
  * 
- * @param {Number} x - the amount to add to the horizontal pos
- * @param {Number} y - the amount to add to the vertical pos
+ * @param {number} x - the amount to add to the horizontal pos
+ * @param {number} y - the amount to add to the vertical pos
  * 
  * @returns {Transform} the Transform object
  */
@@ -42,7 +42,7 @@ Transform.prototype.move = function(x, y) {
 /**
  * Sets the angle using precalculated sin/cos values
  *
- * @param {Number} angle - the new angle of rotation
+ * @param {number} angle - the new angle of rotation
  * 
  * @returns {Transform} the Transform object
  */
@@ -55,8 +55,8 @@ Transform.prototype.setAngle = function(angle) {
 /**
  * Sets the rotation using precalculated sin/cos values
  * 
- * @param {Number} cos - the cosine of the new angle of rotation
- * @param {Number} sin - the sine of the new angle of rotation
+ * @param {number} cos - the cosine of the new angle of rotation
+ * @param {number} sin - the sine of the new angle of rotation
  * 
  * @returns {Transform} the Transform object
  */
@@ -69,7 +69,7 @@ Transform.prototype.setRotation = function(cos, sin) {
 /**
  * Rotates relatively by an angle
  * 
- * @param {Number} angle - the angle to rotate the transform by
+ * @param {number} angle - the angle to rotate the transform by
  * 
  * @returns {Transform} the Transform object
  */
@@ -81,8 +81,8 @@ Transform.prototype.rotateAngle = function(angle) {
 /**
  * Rotates relatively using precalculated sin/cos values
  * 
- * @param {Number} cos - the cosine of the angle to rotate the transform by
- * @param {Number} sin - the sine of the angle to rotate the transform by
+ * @param {number} cos - the cosine of the angle to rotate the transform by
+ * @param {number} sin - the sine of the angle to rotate the transform by
  * 
  * @returns {Transform} the Transform object
  */
@@ -94,7 +94,7 @@ Transform.prototype.rotate = function(cos, sin) {
 /**
  * Rotates about an origin by the given angle
  * 
- * @param {Number} angle  - the angle to rotate the transform by
+ * @param {number} angle  - the angle to rotate the transform by
  * @param {Vector} origin - the point to rotate about
  * 
  * @returns {Transform} the Transform object
@@ -107,8 +107,8 @@ Transform.prototype.rotateAngleAbout = function(angle, origin) {
 /**
  * Rotates about an origin using precalculated cos/sin values
  * 
- * @param {Number} cos    - the cosine of the angle to rotate the transform by
- * @param {Number} sin    - the sine of the angle to rotate the transform by
+ * @param {number} cos    - the cosine of the angle to rotate the transform by
+ * @param {number} sin    - the sine of the angle to rotate the transform by
  * @param {Vector} origin - the point to rotate about
  * 
  * @returns {Transform} the Transform object
@@ -124,8 +124,8 @@ Transform.prototype.rotateAbout = function(cos, sin, origin) {
 /**
  * Scales the transform
  * 
- * @param {Number} x - the horizontal scale multiplier
- * @param {Number} y - the vertical scale multiplier
+ * @param {number} x - the horizontal scale multiplier
+ * @param {number} y - the vertical scale multiplier
  * 
  * @returns {Transform} the Transform object
  */
@@ -138,8 +138,8 @@ Transform.prototype.scale = function(x, y) {
 /**
  * Sets the scale of the transform
  * 
- * @param {Number} x - the new horizontal scale
- * @param {Number} y - the new vertical scale
+ * @param {number} x - the new horizontal scale
+ * @param {number} y - the new vertical scale
  */
 Transform.prototype.setScale = function(x, y) {
     this.size.x = x;

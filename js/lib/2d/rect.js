@@ -5,10 +5,10 @@ depend('lib/2d/vector');
  * 
  * @constructor
  *
- * @param {Number} x - the top left horizontal coordinate of the rectangle
- * @param {Number} y - the top left vertical coordinate of the rectangle
- * @param {Number} w - the width of the rectangle
- * @param {Number} h - the height of the rectangle
+ * @param {number} x - the top left horizontal coordinate of the rectangle
+ * @param {number} y - the top left vertical coordinate of the rectangle
+ * @param {number} w - the width of the rectangle
+ * @param {number} h - the height of the rectangle
  */
 function Rect(x, y, w, h) {
     this.width = w;
@@ -58,8 +58,8 @@ Rect.fromCorners = function(p1, p2) {
 /**
  * Moves the rectangle relatively
  * 
- * @param {Number} x - amount to move horizontally
- * @param {Number} y - amount to move vertically
+ * @param {number} x - amount to move horizontally
+ * @param {number} y - amount to move vertically
  * 
  * @returns {Rect} the Rect object
  */
@@ -74,8 +74,8 @@ Rect.prototype.move = function(x, y) {
 /**
  * Scales the rectangle
  * 
- * @param {Number} x - the horizontal multiplier
- * @param {Number} y - the vertical multiplier
+ * @param {number} x - the horizontal multiplier
+ * @param {number} y - the vertical multiplier
  * 
  * @returns {Rect} the Rect object
  */
@@ -92,7 +92,7 @@ Rect.prototype.scale = function(x, y) {
 /**
  * Rotates the rectangle by an angle
  * 
- * @param {Number} angle - the angle of rotation
+ * @param {number} angle - the angle of rotation
  * 
  * @returns {Rect} the Rect object
  */
@@ -106,8 +106,8 @@ Rect.prototype.rotateAngle = function(angle) {
 /**
  * Rotates the rectangle using precalculated sin/cos values
  * 
- * @param {Number} cos - the cosine of the angle of rotation
- * @param {Number} sin - the sine of the angle of rotation
+ * @param {number} cos - the cosine of the angle of rotation
+ * @param {number} sin - the sine of the angle of rotation
  * 
  * @returns {Rect} the Rect object
  */
@@ -122,7 +122,7 @@ Rect.prototype.rotate = function(cos, sin) {
 /**
  * Retrieves the minimum X coordinate of the rectangle
  * 
- * @returns {Number} the minimum X coordinate of the rectangle
+ * @returns {number} the minimum X coordinate of the rectangle
  */
 Rect.prototype.minX = function() {
     return Math.min(this.topLeft.x, Math.min(this.topRight.x, Math.min(this.bottomLeft.x, this.bottomRight.x)));
@@ -131,7 +131,7 @@ Rect.prototype.minX = function() {
 /**
  * Retrieves the minimum Y coordinate of the rectangle
  * 
- * @returns {Number} the minimum Y coordinate of the rectangle
+ * @returns {number} the minimum Y coordinate of the rectangle
  */
 Rect.prototype.minY = function() {
     return Math.min(this.topLeft.y, Math.min(this.topRight.y, Math.min(this.bottomLeft.y, this.bottomRight.y)));
@@ -140,7 +140,7 @@ Rect.prototype.minY = function() {
 /**
  * Retrieves the maximum X coordinate of the rectangle
  * 
- * @returns {Number} the maximum X coordinate of the rectangle
+ * @returns {number} the maximum X coordinate of the rectangle
  */
 Rect.prototype.maxX = function() {
     return Math.max(this.topLeft.x, Math.max(this.topRight.x, Math.max(this.bottomLeft.x, this.bottomRight.x)));
@@ -149,7 +149,7 @@ Rect.prototype.maxX = function() {
 /**
  * Retrieves the maximum Y coordinate of the rectangle
  * 
- * @returns {Number} the maxiamum Y coordinate of the rectangle
+ * @returns {number} the maxiamum Y coordinate of the rectangle
  */
 Rect.prototype.maxY = function() {
     return Math.max(this.topLeft.y, Math.max(this.topRight.y, Math.max(this.bottomLeft.y, this.bottomRight.y)));

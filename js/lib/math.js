@@ -1,11 +1,11 @@
 /**
  * Clamps a value within a given range
  *
- * @param {Number} value - the value to clamp
- * @param {Number} min   - the lower bound
- * @param {Number} max   - the upper bound
+ * @param {number} value - the value to clamp
+ * @param {number} min   - the lower bound
+ * @param {number} max   - the upper bound
  *
- * @returns {Number} the clamped value
+ * @returns {number} the clamped value
  */
 function clamp(value, min, max) {
     return Math.min(Math.max(value, min), max) 
@@ -15,10 +15,10 @@ function clamp(value, min, max) {
  * Randoms an integer within the range [min, max) or within
  * [0, max) if the min is not provided
  *
- * @param {Number} min - (optional) lower bound
- * @param {Number} max - upper bound
+ * @param {number} [min] - lower bound
+ * @param {number} max   - upper bound
  *
- * @returns {Number} the random number
+ * @returns {number} the random number
  */
 function rand(min, max) {
     if (max === undefined) {
@@ -31,9 +31,9 @@ function rand(min, max) {
 /**
  * Squares a number
  * 
- * @param {Number} num - number to square
+ * @param {number} num - number to square
  *
- * @returns {Number} the squared number
+ * @returns {number} the squared number
  */
 function sq(num) {
     return num * num;
@@ -42,10 +42,10 @@ function sq(num) {
 /**
  * Solves an equation in the form "0 = ax^3 + bx^2 + cx + d" for x
  *
- * @param {Number} a - cubic coefficient
- * @param {Number} b - quadratic coefficient
- * @param {Number} c - linear coefficient
- * @param {Number} d - constant
+ * @param {number} a - cubic coefficient
+ * @param {number} b - quadratic coefficient
+ * @param {number} c - linear coefficient
+ * @param {number} d - constant
  */ 
 function solveEq(a, b, c, d) 
 {

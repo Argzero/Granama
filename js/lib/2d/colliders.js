@@ -32,8 +32,8 @@ ConvexCollider.typeId = 0;
 /**
  * Moves the collider relatively
  *
- * @param {Number} x - horizontal offset
- * @param {Number} y - vertical offset
+ * @param {number} x - horizontal offset
+ * @param {number} y - vertical offset
  */
 ConvexCollider.prototype.move = function(x, y) {
     for (var i = 0; i < this.points.length; i++) {
@@ -131,7 +131,7 @@ ConvexCollider.prototype.isInside = function(point) {
  *
  * @constructor
  *
- * @param {Number} r - the radius of the circle
+ * @param {number} r - the radius of the circle
  */
 function CircleCollider(r) {
     this.pos = new Vector(0, 0);
@@ -144,8 +144,8 @@ CircleCollider.typeId = 1;
 /**
  * Moves the collider relatively
  *
- * @param {Number} x - horizontal offset
- * @param {Number} y - vertical offset
+ * @param {number} x - horizontal offset
+ * @param {number} y - vertical offset
  */
 CircleCollider.prototype.move = function(x, y) {
     this.pos.add(x, y);

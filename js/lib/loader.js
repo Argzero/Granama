@@ -1,4 +1,3 @@
-
 // The table of loaded scripts
 var SCRIPT_TAGS = {
     scriptCount: 0,
@@ -12,70 +11,60 @@ var SCRIPT_TAGS = {
 };
 
 // The pending extensions
-var EXTENSIONS = [];
-
-// The pending implements
-var IMPLEMENTS = [];
+var EXTENSIONS = {};
 
 /**
  * Makes the subclass extend the base class by copying
  * prototype methods over. Also provides a superconstructor
- * using "this.super(<params>)" which is overwritten when
- * extending multiple classes. Use implement instead if
- * not wanting the superconstructor.
+ * using "this.super(<params>)".
  *
  * @param {string} sub  - the sub class doing the extending
  * @param {string} base - the base class being extended
  */
 function extend(sub, base) {
-    EXTENSIONS.push(sub, base);
-}
-
-/**
- * Makes the subclass implement the base class by copying
- * prototype methods over. This does not provide a
- * superconstructor. If you need one, use extend instead.
- *
- * @param {string} sub  - the sub class doing the implementing
- * @param {string} base - the base class being implemented
- */
-function implement(sub, base) {
-    IMPLEMENTS.push(sub, base);
+    if (!EXTENSIONS[sub]) EXTENSIONS[sub] = [];
+    EXTENSIONS[sub].push(base);
 }
 
 /**
  * Updates the loader, launching an event when done
  */
 function updateLoader() {
-
-    var i, x, sub, base;
+    if (SCRIPT_TAGS.scriptCount > 0) return;
 
     // Extensions
-    for (i = 0; i < EXTENSIONS.length; i += 2) {
-        sub = window[EXTENSIONS[i]];
-        base = window[EXTENSIONS[i + 1]];
-        if (base && sub) {
-            sub.prototype.super = base;
-            for (x in base.prototype) {
-                sub.prototype[x] = base.prototype[x];
-            }
-        }
-    }
-
-    // Implements
-    for (i = 0; i < IMPLEMENTS.length; i += 2) {
-        sub = window[EXTENSIONS[i]];
-        base = window[EXTENSIONS[i + 1]];
-        if (base && sub) {
-            for (x in base.prototype) {
-                sub.prototype[x] = base.prototype[x];
-            }
-        }
+    for (var subName in EXTENSIONS) {
+        applyExtensions(subName);
     }
 
     // Done event
     if (window['onLoaderDone']) {
         window['onLoaderDone']();
+    }
+}
+
+/**
+ * Applies the queued extensions for the class name
+ *
+ * @param key class name
+ */
+function applyExtensions(key) {
+    var sub = window[key];
+    var list = EXTENSIONS[key];
+    for (var i = 0; i < list.length; i++) {
+        var baseName = list[i];
+        if (EXTENSIONS[baseName]) {
+            applyExtensions(baseName);
+        }
+        var base = window[baseName];
+        if (base && sub) {
+            sub.prototype.super = base;
+            for (x in base.prototype) {
+                if (!sub.prototype[x]) {
+                    sub.prototype[x] = base.prototype[x];
+                }
+            }
+        }
     }
 }
 
@@ -116,5 +105,6 @@ function depend(script, callback) {
         SCRIPT_TAGS[script] = { tag: scriptTag, loaded: false };
         scriptTag.src = 'js/' + script + '.js';
         document.querySelector('head').appendChild(scriptTag);
+        SCRIPT_TAGS.scriptCount++;
     }
 }
