@@ -2,6 +2,8 @@
   <dictionary name="Steven">
     <words>
       <w>knockback</w>
+      <w>lifesteal</w>
+      <w>shockwave</w>
     </words>
   </dictionary>
 </component>
