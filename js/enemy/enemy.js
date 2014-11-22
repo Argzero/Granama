@@ -1,3 +1,5 @@
+depend('weapon/weapons');
+
 /**
  * An enemy robot in the game
  *
@@ -86,7 +88,7 @@ Enemy.prototype.switchPattern = function() {
     this.pattern = rand(this.patterns.length);
     this.range = this.ranges[this.pattern] || this.range;
     this.movement = this.movements[this.pattern] || this.ApplyMove;
-    this.patternTimer = rand(this.patternMin, this.patternMax - this.patternMin);
+    this.patternTimer = rand(this.patternMin, this.patternMax);
 };
 
 /**

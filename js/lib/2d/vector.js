@@ -231,7 +231,7 @@ Vector.prototype.rotateAround = function(x, y, cos, sin) {
  *
  * @returns {Vector} the modified vector
  */
-Vector.prototype.rotateAround = function(pos, dir) {
+Vector.prototype.rotateAroundv = function(pos, dir) {
 	return this.rotateAround(pos.x, pos.y, dir.x, dir.y);
 };
 

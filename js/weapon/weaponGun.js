@@ -1,3 +1,5 @@
+var weapon = weapon || {};
+
 // A basic gun that fires regular bullets
 //
 // Required data values:

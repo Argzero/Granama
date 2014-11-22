@@ -112,6 +112,28 @@ var vectorMethods = {
     },
 };
 
+/**
+ * Gets the nearest robot in the lists to the given position
+ *
+ * @param {Robot[][]} lists - lists to check through
+ * @param {Vector}    pos   - position to check against
+ */
+function getNearest(lists, pos) {
+    var list, i, j, nearest, dSq;
+    var min = 0;
+    for (i = 0; i < lists.length; i++) {
+        list = lists[i];
+        for (j = 0; j < list.length; j++) {
+            dSq = list[j].pos.distanceSq(pos);
+            if (!min || dSq < min) {
+                min = dSq;
+                nearest = list[j];
+            }
+        }
+    }
+    return nearest;
+}
+
 // Returns a modified value clamped to the given bounds
 function clamp(value, min, max) {
     if (value < min) return min;
