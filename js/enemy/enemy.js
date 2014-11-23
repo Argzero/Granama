@@ -128,6 +128,7 @@ Enemy.prototype.setMovement = function(pattern, movement) {
  * Switches to a random attack pattern
  */
 Enemy.prototype.switchPattern = function() {
+    if (this.patterns.length <= 1) return;
     this.pattern = rand(this.patterns.length);
     this.range = this.ranges[this.pattern] || this.range;
     this.movement = this.movements[this.pattern] || this.ApplyMove;

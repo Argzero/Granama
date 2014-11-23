@@ -1,6 +1,3 @@
-depend('enemy/enemy');
-depend('lib/math');
-
 /**
  * An enemy that orbits players while shooting bullets sideways
  *

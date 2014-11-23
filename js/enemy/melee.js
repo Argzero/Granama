@@ -1,5 +1,3 @@
-depend('enemy/enemy');
-
 /**
  * A robot that charges at players, knocking them out of the way upon collision
  *

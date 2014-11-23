@@ -1,6 +1,3 @@
-depend('enemy/enemy');
-depend('lib/math');
-
 /**
  * An enemy that drops either mines or turrets while orbiting the players
  *

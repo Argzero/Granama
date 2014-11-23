@@ -1,6 +1,3 @@
-depend('enemy/enemy');
-depend('enemy/gunner');
-
 /**
  * A light artillery enemy
  *
@@ -19,15 +16,22 @@ function LightArtillery(x, y) {
         /* speed       */ 2 + 0.1 * enemyManager.bossCount,
         /* range       */ 400,
         /* exp         */ Enemy.LIGHT_EXP,
-        /* rank        */ Enemy.LIGHT_ENEMY,
-        /* pattern min */ 0,
-        /* pattern max */ 0,
-        /* attack rate */ 45,
-        /* spread      */ rand((enemyManager.bossScore + 1) / 3),
-        /* dx          */ 0,
-        /* dy          */ 38,
-        /* bullet      */ 'bullet'
+        /* rank        */ Enemy.LIGHT_ENEMY
     );
+
+    // Weapon data
+    this.addWeapon(weapon.gun, {
+        sprite: 'bullet',
+        damage: Enemy.sum(),
+        rate  : 45,
+        range : 400,
+        spread: rand((enemyManager.bossScore + 1) / 3),
+        dx    : 0,
+        dy    : 38
+    });
+
+    // Movement
+    this.movement = movement.basic;
 }
 
 /**
@@ -48,15 +52,22 @@ function HeavyArtillery(x, y) {
         /* speed       */ 1.5 + 0.1 * enemyManager.bossCount,
         /* range       */ 425,
         /* exp         */ Enemy.HEAVY_EXP,
-        /* rank        */ Enemy.HEAVY_ENEMY,
-        /* pattern min */ 0,
-        /* pattern max */ 0,
-        /* attack rate */ 35,
-        /* spread      */ rand((enemyManager.bossScore + 1) / 3),
-        /* dx          */ 0,
-        /* dy          */ 53,
-        /* bullet      */ 'bullet'
+        /* rank        */ Enemy.HEAVY_ENEMY
     );
+
+    // Weapon data
+    this.addWeapon(weapon.gun, {
+        sprite: 'bullet',
+        damage: 2 * Enemy.sum(),
+        rate  : 35,
+        range : 425,
+        spread: rand((enemyManager.bossScore + 1) / 3),
+        dx    : 0,
+        dy    : 53
+    });
+
+    // Movement
+    this.movement = movement.basic;
 }
 
 /**
@@ -82,11 +93,6 @@ function Railer(x, y) {
         /* pattern max */ 0
     );
 
-    this.knockbackFactor = 0.4;
-
-    // Movement pattern
-    this.movement = movement.basic;
-
     // Rail weapon
     this.addWeapon(weapon.rail, {
         sprite   : 'bossLaser',
@@ -99,4 +105,10 @@ function Railer(x, y) {
         dy       : 68,
         dx       : 0
     });
+
+    // Movement pattern
+    this.movement = movement.basic;
+
+    // Knockback reduction
+    this.knockbackFactor = 0.4;
 }
