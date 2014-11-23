@@ -58,6 +58,30 @@ Vector.prototype.reflect = function(vector) {
 };
 
 /**
+ * Turns the vector towards the target vector
+ *
+ * @param {Vector} target   - target direction to rotate towards
+ * @param {Vector} rotation - rotation vector representing the max rotation
+ *
+ * @returns {Vector} the modified vector
+ */
+Vector.prototype.rotateTowards = function(target, rotation) {
+
+    var n = target.clone().rotate(0, -1);
+    var d = n.dot(this);
+
+    if (d > 0) this.rotatev(rotation);
+    else this.rotate(rotation.x, -rotation.y);
+
+    if (n.dot(this) * d <= 0) {
+        this.x = target.x;
+        this.y = target.y;
+    }
+
+    return this;
+};
+
+/**
  * Adds to the components of the vector
  *
  * @param {number} x - the amount to add to the horizontal component

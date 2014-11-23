@@ -125,3 +125,48 @@ Sprite.prototype.show = function() {
 Sprite.prototype.setVisible = function(visible) {
     this.hidden = !visible;
 };
+
+/**
+ * Calculates the x coordinate of the min of the sprite bounds
+ *
+ * @returns {number} the x coordinate of the min of the sprite bounds
+ */
+Sprite.prototype.xMin = function() {
+    return this.pos.x - this.sprite.width / 2;
+};
+
+/**
+ * Calculates the x coordinate of the max of the sprite bounds
+ *
+ * @returns {number} the x coordinate of the max of the sprite bounds
+ */
+Sprite.prototype.xMax = function() {
+    return this.pos.x + this.sprite.width / 2;
+};
+
+/**
+ * Calculates the y coordinate of the min of the sprite bounds
+ *
+ * @returns {number} the y coordinate of the min of the sprite bounds
+ */
+Sprite.prototype.yMin = function() {
+    return this.pos.y - this.sprite.height / 2;
+};
+
+/**
+ * Calculates the y coordinate of the max of the sprite bounds
+ *
+ * @returns {number} the y coordinate of the max of the sprite bounds
+ */
+Sprite.prototype.yMax = function() {
+    return this.pos.y + this.sprite.height / 2;
+};
+
+/**
+ * Checks whether or not this collides with the other sprite using circular collision
+ *
+ * @param {Sprite} sprite - sprite to compare against
+ */
+Sprite.prototype.collides = function(sprite) {
+    return sprite.pos.distanceSq(this.pos) < sq((sprite.sprite.width * sprite.size.x + this.sprite.width * this.size.x) / 2);
+};

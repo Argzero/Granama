@@ -122,6 +122,35 @@ Transform.prototype.moveTo = function(x, y) {
     };
 
 /**
+ * Rotates the transform to look at the target position
+ *
+ * @param {Vector} target - target position to look at
+ */
+Transform.prototype.lookAt = function(target) {
+    this.rotation = target.clone().subtractv(this.pos).rotate(0, -1).normalize();
+};
+
+/**
+ * Rotates the transform towards looking at the target position
+ *
+ * @param {Vector} target   - target position to look towards
+ * @param {Vector} rotation - rotation vector representing the max rotation
+ */
+Transform.prototype.lookTowards = function(target, rotation) {
+    this.rotation.rotateTowards(target.clone().subtractv(this.pos).rotate(0, -1).normalize(), rotation);
+};
+
+/**
+ * Rotates the transform towards looking at the target position
+ *
+ * @param {Vector} target   - target position to look towards
+ * @param {Vector} rotation - rotation vector representing the max rotation
+ */
+Transform.prototype.lookAway = function(target, rotation) {
+    this.rotation.rotateTowards(target.clone().subtractv(this.pos).rotate(0, 1).normalize(), rotation);
+};
+
+/**
  * Scales the transform
  *
  * @param {number} x - the horizontal scale multiplier
