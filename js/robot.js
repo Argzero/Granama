@@ -35,6 +35,7 @@ function Robot(name, x, y, health, speed) {
 
     this.defense = 1;
     this.damage = 1;
+    this.knockbackFactor = 1;
     this.knockbackSpeed = 10;
     this.dead = false;
 
@@ -141,7 +142,7 @@ Robot.prototype.stun = function(duration) {
  * @param {Vector} knockback - the relative offset to push
  */
 Robot.prototype.knockback = function(knockback) {
-    this.knockback = knockback;
+    this.knockback = knockback.multiply(this.knockbackFactor, this.knockbackFactor);
 };
 
 /**

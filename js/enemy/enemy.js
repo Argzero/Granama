@@ -3,16 +3,16 @@ depend('weapon/weapons');
 /**
  * An enemy robot in the game
  *
- * @param {string} name
- * @param {number} x
- * @param {number} y
- * @param {number} health
- * @param {number} speed
- * @param {number} range
- * @param {number} exp
- * @param {string} rank
- * @param {number} [patternMin]
- * @param {number} [patternMax]
+ * @param {string} name         - name of the enemy sprite image
+ * @param {number} x            - initial horizontal position
+ * @param {number} y            - initial vertical position
+ * @param {number} health       - max health
+ * @param {number} speed        - movement speed
+ * @param {number} range        - attack range
+ * @param {number} exp          - experience yield
+ * @param {string} rank         - difficulty rank
+ * @param {number} [patternMin] - minimum time between switching attack patterns
+ * @param {number} [patternMax] - maximum time between switching attack patterns
  *
  * @constructor
  */
@@ -35,21 +35,64 @@ function Enemy(name, x, y, health, speed, range, exp, rank, patternMin, patternM
     this.turnDivider = 50;
 }
 
+// Experience constants
+Enemy.LIGHT_EXP = 24;
+Enemy.HEAVY_EXP = 36;
+Enemy.MINIBOSS_EXP = 120;
+Enemy.BOSS_EXP = 588;
+Enemy.DRAGON_EXP = 1188;
+Enemy.HYDRA_EXP = 8880;
+
+// Experience constants
+Enemy.LIGHT_ENEMY = '';
+Enemy.HEAVY_ENEMY = '';
+Enemy.MINIBOSS_ENEMY = '';
+Enemy.BOSS_ENEMY = '';
+Enemy.DRAGON_ENEMY = '';
+Enemy.HYDRA_ENEMY = '';
+
+/**
+ * Exponential scaling formula
+ *
+ * @param {number} pow - power ratio
+ *
+ * @returns {number} the scale multiplier
+ */
+Enemy.pow = function(pow) {
+    var score = enemyManager.bossCount;
+    if (score > 4) {
+        return Math.pow(2, pow * (2 + score / 2));
+    }
+    else {
+        return Math.pow(2, pow * score);
+    }
+};
+
+/**
+ * Summation scaling formula
+ *
+ * @returns {number} the scale multiplier
+ */
+Enemy.sum = function() {
+    var score = enemyManager.bossCount + 1;
+    return (score / 2) * (score + 1);
+};
+
 /**
  * Checks whether or not the enemy is a boss
  *
  * @returns {boolean} true if a boss, false otherwise
  */
 Enemy.prototype.isBoss = function() {
-    return this.rank == STAT.BOSS || this.rank == STAT.DRAGON;
+    return false;
 };
 
 /**
  * Adds a weapon to the enemy for a given attack pattern
  *
- * @param {function} weapon  - the weapon function
- * @param {object}   data    - the weapon data set
- * @param {number}   pattern - the attack pattern ID
+ * @param {function} weapon    - the weapon function
+ * @param {object}   data      - the weapon data set
+ * @param {number}   [pattern] - the attack pattern ID
  */
 Enemy.prototype.addWeapon = function(weapon, data, pattern) {
     if (pattern === undefined) pattern = 0;
@@ -116,20 +159,18 @@ Enemy.prototype.onUpdate = function() {
     }
 
     // Move away from other enemies
-    /*
     if (!this.isBoss()) {
-        if (gameScreen.enemyManager.enemies.length > 0) {
-            for (i = 0; i < gameScreen.enemyManager.enemies.length; i++) {
-                var enemy = gameScreen.enemyManager.enemies[i];
-                if (DistanceSq(this.x, this.y, enemy.x, enemy.y) < Sq(this.sprite.width) && DistanceSq(this.x, this.y, enemy.x, enemy.y) > 0) {
-                    if (this.sin * (enemy.x - this.x) - this.cos * (enemy.y - this.y) > 0) {
-                        this.x -= this.speed * this.sin / 2;
-                        this.y += this.speed * this.cos / 2;
+        if (enemyManager.enemies.length > 0) {
+            for (i = 0; i < enemyManager.enemies.length; i++) {
+                var enemy = enemyManager.enemies[i];
+                var d = enemy.pos.clone().subtractv(this.pos);
+                if (d.lengthSq() < Sq(this.sprite.width) && d.lengthSq() > 0) {
+                    if (this.rotation.dot(d) > 0) {
+                        this.pos.subtractv(this.rotation.clone().multiply(0.5, 0.5));
                         break;
                     }
                     else {
-                        this.x += this.speed * this.sin / 2;
-                        this.y -= this.speed * this.cos / 2;
+                        this.pos.addv(this.rotation.clone().multiply(0.5, 0.5));
                         break;
                     }
                 }
@@ -138,7 +179,6 @@ Enemy.prototype.onUpdate = function() {
     }
 
     this.clamp();
-    */
 };
 
 /**
