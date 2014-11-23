@@ -58,7 +58,12 @@ function applyExtensions(key) {
         }
         var base = window[baseName];
         if (base && sub) {
-            sub.prototype.super = base;
+            sub.prototype.super = superConstructor;
+            sub.prototype.childConstructors = sub.prototype.childConstructors || [];
+            for (var j = 0; base.prototype.childConstructors && j < base.prototype.childConstructors.length; j++){
+                sub.prototype.childConstructors.push(base.prototype.childConstructors[j]);
+            }
+            sub.prototype.childConstructors.push(base);
             for (x in base.prototype) {
                 if (!sub.prototype[x]) {
                     sub.prototype[x] = base.prototype[x];
@@ -66,6 +71,19 @@ function applyExtensions(key) {
             }
         }
     }
+}
+
+/**
+ * Super constructor function for extended classes
+ */
+var superConstructorEnabled = true;
+function superConstructor() {
+    if (!superConstructorEnabled) return;
+    superConstructorEnabled = false;
+    for (var i = 0; i < this.childConstructors.length; i++) {
+        this.childConstructors[i].apply(this, arguments);
+    }
+    superConstructorEnabled = true;
 }
 
 /**

@@ -36,8 +36,10 @@ function Sprite(name, x, y, parent, before, rotate) {
     this.moveTo(x, y);
 
     // Add itself to the parent
-    if (before) this.parent.preChildren.push(this);
-    else this.parent.postChildren.push(this);
+    if (parent) {
+        if (before) this.parent.preChildren.push(this);
+        else this.parent.postChildren.push(this);
+    }
 }
 
 /**
