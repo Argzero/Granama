@@ -48,6 +48,7 @@ TankBossHook.prototype.update = function() {
             if (p2.SegmentDistanceSq(p1, this.pos) < r * r) {
                 player.Slow(0.2, 60);
                 player.Damage(this.boss.hookDmg, this.boss);
+				this.boss.priority = player;
             }
         }
     }

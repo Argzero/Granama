@@ -588,7 +588,7 @@ function TankBoss(x, y) {
             
             subWeapon: EnemyWeaponRocket,
             rate: 120,
-            range: 500,
+            range: 750,
             discharge: 0.1,
             duration: 40,
             interval: 10
@@ -697,6 +697,7 @@ function TankBoss(x, y) {
         }
         
         // Update/draw hooks
+		this.priority = undefined;
         for (var i = 0; i < this.hooks.length; i++) {
             var hook = this.hooks[i];
 			hook.update();
@@ -718,7 +719,7 @@ function TankBoss(x, y) {
     
         canvas.drawImage(this.cover, -this.cover.width / 2, -this.cover.height / 2 - 30);
         
-        var target = this.cannonTarget || playerManager.getClosest(this.x, this.y);
+        var target = this.priority || playerManager.getClosest(this.x, this.y);
         this.cannonRot.x = this.x;
         this.cannonRot.y = this.y
         var ca = AngleTowards(target, this.cannonRot, 0.08);

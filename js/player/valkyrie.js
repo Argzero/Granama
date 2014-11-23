@@ -51,7 +51,7 @@ function PlayerValkyrieType() {
 	// Damage reduction while locked
     p.onDamaged = function(amount, damager) {
         if (this.locked || this.skillDuration > 0) {
-            return amount * 0.5;
+            return amount * 0.1;
         }
     }
     
