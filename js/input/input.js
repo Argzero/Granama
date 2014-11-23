@@ -19,10 +19,10 @@ document.addEventListener('keyup', function(event) {
 });
 
 if (gamepads) {
-    
+
     // Gamepad connected
     window.addEventListener('gamepadconnected', function(e) {
-        console.log("Pad connected at index "  + e.gamepad.index + " and ID " + e.gamepad.id);
+        console.log("Pad connected at index " + e.gamepad.index + " and ID " + e.gamepad.id);
         gamepads[e.gamepad.index] = e.gamepad;
     });
 
@@ -39,18 +39,18 @@ document.addEventListener('mousemove', function(e) {
     mx = e.pageX - e.target.offsetLeft + 10;
     my = e.pageY - e.target.offsetTop + 10;
     /*
-    // Firefox/Chrome
-    if (event) {
-        mx = event.clientX;
-        my = event.clientY;
-    }
-    
-    // IE
-    else {
-        mx = window.event.clientX;
-        my = window.event.clientY;
-    }
-    */
+     // Firefox/Chrome
+     if (event) {
+     mx = event.clientX;
+     my = event.clientY;
+     }
+
+     // IE
+     else {
+     mx = window.event.clientX;
+     my = window.event.clientY;
+     }
+     */
 });
 
 // Tells when the mouse button is no longer pressed
@@ -72,18 +72,30 @@ function KeyPressed(key) {
 // Converts a key code to an array index for storage
 // keyCode - the code of the key to convert
 function KeyCodeToIndex(keyCode) {
-    switch(keyCode) {
-        case 87: return KEY_W;
-        case 65: return KEY_A;
-        case 68: return KEY_D;
-        case 83: return KEY_S;
-		case 32: return KEY_SPACE;
-        case 27: return KEY_ESC;
-		case 38: return KEY_UP;
-		case 40: return KEY_DOWN;
-		case 37: return KEY_LEFT;
-		case 39: return KEY_RIGHT;
-		case 13: return KEY_ENTER;
-        default: return KEY_UNUSED;
+    switch (keyCode) {
+        case 87:
+            return KEY_W;
+        case 65:
+            return KEY_A;
+        case 68:
+            return KEY_D;
+        case 83:
+            return KEY_S;
+        case 32:
+            return KEY_SPACE;
+        case 27:
+            return KEY_ESC;
+        case 38:
+            return KEY_UP;
+        case 40:
+            return KEY_DOWN;
+        case 37:
+            return KEY_LEFT;
+        case 39:
+            return KEY_RIGHT;
+        case 13:
+            return KEY_ENTER;
+        default:
+            return KEY_UNUSED;
     }
 }

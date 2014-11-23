@@ -28,11 +28,11 @@ function Gunner(name, x, y, health, speed, range, exp, rank, patternMin, pattern
     this.addWeapon(weapon.gun, {
         sprite: bullet,
         damage: Enemy.sum(),
-        rate: rate,
-        range: range,
+        rate  : rate,
+        range : range,
         spread: spread,
-        dx: dx,
-        dy: dy
+        dx    : dx,
+        dy    : dy
     });
 }
 
@@ -47,21 +47,21 @@ function Gunner(name, x, y, health, speed, range, exp, rank, patternMin, pattern
 extend('LightGunner', 'Gunner');
 function LightGunner(x, y) {
     this.super(
-    /* sprite name */ 'enemyLightRanged',
-    /* x position  */ x,
-    /* y position  */ y,
-    /* health      */ 20 * Enemy.pow(0.9),
-    /* speed       */ 2.5 + 0.2 * enemyManager.bossCount,
-    /* range       */ 200,
-    /* exp         */ Enemy.LIGHT_EXP,
-    /* rank        */ Enemy.LIGHT_ENEMY,
-    /* pattern min */ 0,
-    /* pattern max */ 0,
-    /* attack rate */ 20,
-    /* spread      */ rand(enemyManager.bossCount / 2 + 0.4),
-    /* dx          */ 23,
-    /* dy          */ 30,
-    /* bullet      */ 'bullet'
+        /* sprite name */ 'enemyLightRanged',
+        /* x position  */ x,
+        /* y position  */ y,
+        /* health      */ 20 * Enemy.pow(0.9),
+        /* speed       */ 2.5 + 0.2 * enemyManager.bossCount,
+        /* range       */ 200,
+        /* exp         */ Enemy.LIGHT_EXP,
+        /* rank        */ Enemy.LIGHT_ENEMY,
+        /* pattern min */ 0,
+        /* pattern max */ 0,
+        /* attack rate */ 20,
+        /* spread      */ rand(enemyManager.bossCount / 2 + 0.4),
+        /* dx          */ 23,
+        /* dy          */ 30,
+        /* bullet      */ 'bullet'
     );
 }
 
@@ -76,21 +76,21 @@ function LightGunner(x, y) {
 extend('HeavyGunner', 'Gunner');
 function HeavyGunner(x, y) {
     this.super(
-    /* sprite name */ 'enemyHeavyRanged',
-    /* x position  */ x,
-    /* y position  */ y,
-    /* health      */ 30 * Enemy.pow(0.9),
-    /* speed       */ 2 + 0.2 * enemyManager.bossCount,
-    /* range       */ 250,
-    /* exp         */ Enemy.HEAVY_EXP,
-    /* rank        */ Enemy.HEAVY_ENEMY,
-    /* pattern min */ 0,
-    /* pattern max */ 0,
-    /* attack rate */ 15,
-    /* spread      */ rand(enemyManager.bossCount / 2 + 0.4),
-    /* dx          */ 0,
-    /* dy          */ 35,
-    /* bullet      */ 'bullet'
+        /* sprite name */ 'enemyHeavyRanged',
+        /* x position  */ x,
+        /* y position  */ y,
+        /* health      */ 30 * Enemy.pow(0.9),
+        /* speed       */ 2 + 0.2 * enemyManager.bossCount,
+        /* range       */ 250,
+        /* exp         */ Enemy.HEAVY_EXP,
+        /* rank        */ Enemy.HEAVY_ENEMY,
+        /* pattern min */ 0,
+        /* pattern max */ 0,
+        /* attack rate */ 15,
+        /* spread      */ rand(enemyManager.bossCount / 2 + 0.4),
+        /* dx          */ 0,
+        /* dy          */ 35,
+        /* bullet      */ 'bullet'
     );
 }
 
@@ -105,21 +105,21 @@ function HeavyGunner(x, y) {
 extend('PaladinEnemy', 'Gunner');
 function Paladin(x, y) {
     this.super(
-    /* sprite name */ 'enemyPaladin',
-    /* x position  */ x,
-    /* y position  */ y,
-    /* health      */ 100 * Enemy.pow(1.1),
-    /* speed       */ 3 + 0.25 * enemyManager.bossCount,
-    /* range       */ 300,
-    /* exp         */ Enemy.MINIBOSS_EXP,
-    /* rank        */ Enemy.MINIBOSS_ENEMY,
-    /* pattern min */ 0,
-    /* pattern max */ 0,
-    /* attack rate */ 60,
-    /* spread      */ Math.min((enemyManager.bossCount - 3) / 4, 2),
-    /* dx          */ 0,
-    /* dy          */ 45,
-    /* bullet      */ 'hammer'
+        /* sprite name */ 'enemyPaladin',
+        /* x position  */ x,
+        /* y position  */ y,
+        /* health      */ 100 * Enemy.pow(1.1),
+        /* speed       */ 3 + 0.25 * enemyManager.bossCount,
+        /* range       */ 300,
+        /* exp         */ Enemy.MINIBOSS_EXP,
+        /* rank        */ Enemy.MINIBOSS_ENEMY,
+        /* pattern min */ 0,
+        /* pattern max */ 0,
+        /* attack rate */ 60,
+        /* spread      */ Math.min((enemyManager.bossCount - 3) / 4, 2),
+        /* dx          */ 0,
+        /* dy          */ 45,
+        /* bullet      */ 'hammer'
     );
 
     this.knockbackFactor = 0.4;

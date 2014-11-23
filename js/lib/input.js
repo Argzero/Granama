@@ -7,63 +7,63 @@ var input = {
 
     GAMEPADS_SUPPORTED: navigator.getGamepads !== undefined,
 
-    KEY_UNUSED: -1,
+    KEY_UNUSED   : -1,
 
     // Letter keys
-    KEY_A: 65, KEY_B: 66, KEY_C: 67, KEY_D: 68, KEY_E: 69,
-    KEY_F: 70, KEY_G: 71, KEY_H: 72, KEY_I: 73, KEY_J: 74,
-    KEY_K: 75, KEY_L: 76, KEY_M: 77, KEY_N: 78, KEY_O: 79,
-    KEY_P: 80, KEY_Q: 81, KEY_R: 82, KEY_S: 83, KEY_T: 84,
-    KEY_U: 85, KEY_V: 86, KEY_W: 87, KEY_X: 88, KEY_Y: 89,
-    KEY_Z: 90,
-    
+    KEY_A        : 65, KEY_B: 66, KEY_C: 67, KEY_D: 68, KEY_E: 69,
+    KEY_F        : 70, KEY_G: 71, KEY_H: 72, KEY_I: 73, KEY_J: 74,
+    KEY_K        : 75, KEY_L: 76, KEY_M: 77, KEY_N: 78, KEY_O: 79,
+    KEY_P        : 80, KEY_Q: 81, KEY_R: 82, KEY_S: 83, KEY_T: 84,
+    KEY_U        : 85, KEY_V: 86, KEY_W: 87, KEY_X: 88, KEY_Y: 89,
+    KEY_Z        : 90,
+
     // Number keys
-    KEY_0: 48, KEY_1: 49, KEY_2: 50, KEY_3: 51, KEY_4: 52,
-    KEY_5: 53, KEY_6: 54, KEY_7: 55, KEY_8: 56, KEY_9: 57,
-    
+    KEY_0        : 48, KEY_1: 49, KEY_2: 50, KEY_3: 51, KEY_4: 52,
+    KEY_5        : 53, KEY_6: 54, KEY_7: 55, KEY_8: 56, KEY_9: 57,
+
     // Arrow keys
-    KEY_LEFT: 37,  KEY_UP: 38, KEY_RIGHT: 39, KEY_DOWN: 40,    KEY_DEL: 46,
-    
+    KEY_LEFT     : 37, KEY_UP: 38, KEY_RIGHT: 39, KEY_DOWN: 40, KEY_DEL: 46,
+
     // Special keys
-    KEY_BACK: 8,   KEY_TAB: 9,      KEY_ENTER: 13, KEY_SHIFT: 16,
-    KEY_CTRL: 17,  KEY_ALT: 18,     KEY_ESC: 27,   KEY_SPACE: 32,
-    KEY_PG_UP: 33, KEY_PG_DOWN: 34, 
-    
+    KEY_BACK     : 8, KEY_TAB: 9, KEY_ENTER: 13, KEY_SHIFT: 16,
+    KEY_CTRL     : 17, KEY_ALT: 18, KEY_ESC: 27, KEY_SPACE: 32,
+    KEY_PG_UP    : 33, KEY_PG_DOWN: 34,
+
     // Mouse buttons
-    MOUSE_LEFT: 998, MOUSE_RIGHT: 999,
-    
+    MOUSE_LEFT   : 998, MOUSE_RIGHT: 999,
+
     // Gamepad buttons
-    BUTTON_DOWN: 0,   BUTTON_RIGHT: 1,   BUTTON_LEFT: 2,    BUTTON_UP: 3,
-    BUTTON_LB: 4,     BUTTON_RB: 5,      BUTTON_LT: 6,      BUTTON_RT: 7,
-    BUTTON_SELECT: 8, BUTTON_START: 9,   BUTTON_LS: 10,     BUTTON_RS: 11,
-    BUTTON_D_UP: 12,  BUTTON_D_DOWN: 13, BUTTON_D_LEFT: 14, BUTTON_D_RIGHT: 15,
+    BUTTON_DOWN  : 0, BUTTON_RIGHT: 1, BUTTON_LEFT: 2, BUTTON_UP: 3,
+    BUTTON_LB    : 4, BUTTON_RB: 5, BUTTON_LT: 6, BUTTON_RT: 7,
+    BUTTON_SELECT: 8, BUTTON_START: 9, BUTTON_LS: 10, BUTTON_RS: 11,
+    BUTTON_D_UP  : 12, BUTTON_D_DOWN: 13, BUTTON_D_LEFT: 14, BUTTON_D_RIGHT: 15,
     BUTTON_CENTER: 16,
-    
+
     // Gamepad axes
-    AXIS_LX: 0, AXIS_LY: 1,
-    AXIS_RX: 2, AXIS_RY: 3,
-    
+    AXIS_LX      : 0, AXIS_LY: 1,
+    AXIS_RX      : 2, AXIS_RY: 3,
+
     // Mapping data
-    mapping: {
+    mapping      : {
         button: {},
-        axis: {},
-        dir: {}
+        axis  : {},
+        dir   : {}
     },
-    
+
     // Enabled data
-    enabled: {
-        key: {},
-        mouse: {},
+    enabled      : {
+        key   : {},
+        mouse : {},
         button: {},
-        axis: {}
+        axis  : {}
     },
-    
+
     // Current keys down
-    keysDown: [],
-    
+    keysDown     : [],
+
     // The mouse data
-    mouse: { x: 0, y: 0, left: false, right: false },
-    
+    mouse        : {x: 0, y: 0, left: false, right: false},
+
     /**
      * Checks whether or not a key is currently pressed
      *
@@ -74,7 +74,7 @@ var input = {
     keyPressed: function(keyId) {
         return keysDown[keyId];
     },
-    
+
     /**
      * Maps a basic button press
      *
@@ -83,11 +83,11 @@ var input = {
      * @param {number} buttonId - the ID of the gamepad button to map
      */
     mapButton: function(key, keyId, buttonId) {
-        this.mapping.button[key] = { key: keyId, button: buttonId };
+        this.mapping.button[key] = {key: keyId, button: buttonId};
         this.enabled.key[keyId] = true;
         this.enabled.button[buttonId] = true;
     },
-    
+
     /**
      * Maps a directional axis using the mouse's relative position
      *
@@ -96,25 +96,25 @@ var input = {
      * @param {number} axisId - the ID of the gamepad axis to map
      */
     mapAxisMouse: function(key, obj, axisId) {
-        this.mapping.axis[key] = { obj: obj, axis: axisId };
+        this.mapping.axis[key] = {obj: obj, axis: axisId};
         this.enabled.axis[axisId] = true;
     },
-    
+
     /**
      * Maps a directional axis using multiple keyboard keys
-     * 
+     *
      * @param {string} key    - the access key for the control
      * @param {number} keyId1 - the ID of the negative keyboard key to map
      * @param {number} keyId2 - the ID of the positive keyboard key to map
      * @param {number} axisId - the ID of the gamepad axis to map
      */
     mapAxisKey: function(key, keyId1, keyId2, axisId) {
-        this.mapping.axis[key] = { key1: keyId1, key2: keyId2, axis: axisId };
+        this.mapping.axis[key] = {key1: keyId1, key2: keyId2, axis: axisId};
         this.enabled.axis[axisId] = true;
         this.enabled.key[keyId1] = true;
         this.enabled.key[keyId2] = true;
     },
-    
+
     /**
      * Maps a directional axis using the mouse's relative position
      *
@@ -125,14 +125,14 @@ var input = {
      * @param {number}  axisId2 - the ID of the gamepad axis to map vertically
      */
     mapDirectionMouse: function(key, obj, mouseX, axisId1, axisId2) {
-        this.mapping.axis[key] = { obj: obj, x: mouseX, axis1: axisId1, axis2: axisId2 };
+        this.mapping.axis[key] = {obj: obj, x: mouseX, axis1: axisId1, axis2: axisId2};
         this.enabled.axis[axisId1] = true;
         this.enabled.axis[axisId2] = true;
     },
-    
+
     /**
      * Maps a directional axis using multiple keyboard keys
-     * 
+     *
      * @param {string} key    - the access key for the control
      * @param {number} keyId1 - the ID of the negative horizontal keyboard key to map
      * @param {number} keyId2 - the ID of the positive horizontal keyboard key to map
@@ -142,7 +142,14 @@ var input = {
      * @param {number} axisId2 - the ID of the gamepad axis to map vertically
      */
     mapDirectionKey: function(key, keyId1, keyId2, keyId3, keyId4, axisId1, axisId2) {
-        this.mapping.axis[key] = { key1: keyId1, key2: keyId2, key3: keyId3, key4: keyId4, axis1: axisId1, axis2: axisId2 };
+        this.mapping.axis[key] = {
+            key1 : keyId1,
+            key2 : keyId2,
+            key3 : keyId3,
+            key4 : keyId4,
+            axis1: axisId1,
+            axis2: axisId2
+        };
         this.enabled.axis[axisId1] = true;
         this.enabled.axis[axisId2] = true;
         this.enabled.key[keyId1] = true;
@@ -155,7 +162,7 @@ var input = {
 /**
  * An input type for keyboard and mouse
  */
-function KeyboardInput() { 
+function KeyboardInput() {
     this.data = {};
     this.valid = true;
 }
@@ -165,7 +172,7 @@ function KeyboardInput() {
  */
 KeyboardInput.prototype.update = function() {
     var x;
-    
+
     // Keyboard keys
     for (x in input.enabled.key) {
         if (input.keyPressed(x)) {
@@ -174,14 +181,14 @@ KeyboardInput.prototype.update = function() {
         }
         else this.data[x] = 0;
     }
-    
+
     // Left mouse button
     if (input.mouse.left) {
         if (this.data[input.MOUSE_LEFT]) this.data[input.MOUSE_LEFT]++;
         else this.data[input.MOUSE_LEFT] = 1;
     }
     else this.data[input.MOUSE_LEFT] = 0;
-    
+
     // Right mouse button
     if (input.mouse.right) {
         if (this.data[input.MOUSE_RIGHT]) this.data[input.MOUSE_RIGHT]++;
@@ -246,7 +253,7 @@ KeyboardInput.prototype.direction = function(key) {
  *
  * @constructor
  */
-function GamepadInput(index) { 
+function GamepadInput(index) {
     this.data = {};
     this.valid = navigator.getGamepads()[index];
 }
@@ -257,9 +264,9 @@ function GamepadInput(index) {
 GamepadInput.prototype.update = function() {
     this.valid = navigator.getGamepads()[index];
     if (!this.valid) return;
-    
+
     var x;
-    
+
     // Gamepad buttons
     for (x in input.enabled.button) {
         if (this.valid.buttons) {
@@ -324,7 +331,7 @@ window.addEventListener('mouseup', function(e) {
     if (e.which == 1) input.mouse.left = false;
     else if (e.which == 3) input.mouse.right = false;
 });
-    
+
 // Mouse move event
 window.addEventListener('mousemove', function(event) {
     input.mouse.x = event.pageX - event.target.offsetLeft;
@@ -338,7 +345,7 @@ window.addEventListener('mouseout', function(event) {
     input.mouse.left = false;
     input.mouse.right = false;
 });
-    
+
 // Key down event
 window.addEventListener('keydown', function(event) {
     input.keysDown[event.keyCode] = true;

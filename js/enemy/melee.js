@@ -41,19 +41,19 @@ function Melee(name, x, y, health, speed, range, exp, rank, patternMin, patternM
 extend('LightMelee', 'Melee');
 function LightMelee(x, y) {
     this.super(
-    /* sprite name */ 'enemyLightMelee',
-    /* x position  */ x,
-    /* y position  */ y,
-    /* health      */ 50 * Enemy.pow(0.9),
-    /* speed       */ 3 + 0.3 * enemyManager.bossCount,
-    /* range       */ 400,
-    /* exp         */ Enemy.LIGHT_EXP,
-    /* rank        */ Enemy.LIGHT_ENEMY,
-    /* pattern min */ 0,
-    /* pattern max */ 0,
-    /* damage      */ 1,
-    /* distance    */ 200,
-    /* duration    */ 180
+        /* sprite name */ 'enemyLightMelee',
+        /* x position  */ x,
+        /* y position  */ y,
+        /* health      */ 50 * Enemy.pow(0.9),
+        /* speed       */ 3 + 0.3 * enemyManager.bossCount,
+        /* range       */ 400,
+        /* exp         */ Enemy.LIGHT_EXP,
+        /* rank        */ Enemy.LIGHT_ENEMY,
+        /* pattern min */ 0,
+        /* pattern max */ 0,
+        /* damage      */ 1,
+        /* distance    */ 200,
+        /* duration    */ 180
     );
 }
 
@@ -68,18 +68,18 @@ function LightMelee(x, y) {
 extend('HeavyMelee', 'Melee');
 function HeavyMelee(x, y) {
     this.super(
-    /* sprite name */ 'enemyLightMelee',
-    /* x position  */ x,
-    /* y position  */ y,
-    /* health      */ 75 * Enemy.pow(0.9),
-    /* speed       */ 2.5 + 0.3 * enemyManager.bossCount,
-    /* range       */ 400,
-    /* exp         */ Enemy.HEAVY_EXP,
-    /* rank        */ Enemy.HEAVY_ENEMY,
-    /* pattern min */ 0,
-    /* pattern max */ 0,
-    /* damage      */ 2,
-    /* distance    */ 250,
-    /* duration    */ 180
+        /* sprite name */ 'enemyLightMelee',
+        /* x position  */ x,
+        /* y position  */ y,
+        /* health      */ 75 * Enemy.pow(0.9),
+        /* speed       */ 2.5 + 0.3 * enemyManager.bossCount,
+        /* range       */ 400,
+        /* exp         */ Enemy.HEAVY_EXP,
+        /* rank        */ Enemy.HEAVY_ENEMY,
+        /* pattern min */ 0,
+        /* pattern max */ 0,
+        /* damage      */ 2,
+        /* distance    */ 250,
+        /* duration    */ 180
     );
 }

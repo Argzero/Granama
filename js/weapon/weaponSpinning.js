@@ -44,13 +44,13 @@ function EnemyWeaponRotating(data) {
             data.sprite || GetImage('bullet'),
             this,
             data.dx,
-            data.dy, 
-            vel.x, 
-            vel.y, 
+            data.dy,
+            vel.x,
+            vel.y,
             this.angle,
-            data.damage, 
+            data.damage,
             data.range * 1.5,
-			data.rotSpeed
+            data.rotSpeed
         );
         data.list.push(bullet);
         if (data.spread) {
@@ -58,7 +58,7 @@ function EnemyWeaponRotating(data) {
         }
         data.cd = data.rate;
     }
-    
+
     // Lower cooldown when on cooldown
     else if (data.cd > 0) {
         data.cd--;

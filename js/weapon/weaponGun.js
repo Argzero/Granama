@@ -39,26 +39,26 @@ function EnemyWeaponGun(data) {
         }
         var vel = Vector(this.cos * (data.speed || BULLET_SPEED), this.sin * (data.speed || BULLET_SPEED));
         var bonusAngle = 0;
-		if (data.angle) {
-			var a = (Rand(2 * data.angle + 1) - data.angle) * Math.PI / 180;
+        if (data.angle) {
+            var a = (Rand(2 * data.angle + 1) - data.angle) * Math.PI / 180;
             vel.Rotate(a);
-			bonusAngle += a;
+            bonusAngle += a;
         }
-		if (data.angleOffset) {
-			var a = data.angleOffset * Math.PI / 180;
-			vel.Rotate(a);
-			bonusAngle += a;
-		}
+        if (data.angleOffset) {
+            var a = data.angleOffset * Math.PI / 180;
+            vel.Rotate(a);
+            bonusAngle += a;
+        }
         var bullet = ProjectileBase(
             data.sprite || GetImage('bullet'),
             this,
             data.dx,
-            data.dy, 
-            vel.x, 
-            vel.y, 
+            data.dy,
+            vel.x,
+            vel.y,
             this.angle + bonusAngle,
-            data.damage, 
-            data.range * 1.5, 
+            data.damage,
+            data.range * 1.5,
             data.pierce,
             data.offScreen
         );
@@ -68,11 +68,11 @@ function EnemyWeaponGun(data) {
         }
         data.cd = data.rate;
     }
-    
+
     // Lower cooldown when on cooldown
     else if (data.cd > 0) {
         data.cd--;
     }
-    
+
     else data.delayTimer = 0;
 }

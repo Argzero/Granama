@@ -10,7 +10,7 @@ function Mine(x, y, damage, type) {
     this.damage = damage;
     this.exploded = false;
     this.sprite = GetImage(type + "Mine");
-    
+
     // Updates the mine
     this.Update = Update;
     function Update() {
@@ -19,7 +19,7 @@ function Mine(x, y, damage, type) {
             this.Explode();
         }
     }
-    
+
     // Blows up the mine
     this.Explode = Explode;
     function Explode() {
@@ -35,7 +35,7 @@ function Mine(x, y, damage, type) {
             }
         }
     }
-    
+
     // Draws the mine
     // canvas - context of the canvas to draw to
     this.Draw = Draw;

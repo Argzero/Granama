@@ -4,9 +4,9 @@ function GameScreen(bossRush) {
     this.scrollY = 0;
     this.score = 0;
     this.gameOver = false;
-    
+
     this.damageOverlay = GetImage("damage");
-    
+
     this.damageAlpha;
     this.paused = undefined;
     this.music;
@@ -18,13 +18,13 @@ function GameScreen(bossRush) {
     this.playerMaxX = 9999;
     this.playerMaxY = 9999;
     this.pads = [
-        HealingPad(GAME_WIDTH / 3, GAME_HEIGHT / 3), 
-        HealingPad(GAME_WIDTH * 2 / 3, GAME_HEIGHT / 3), 
-        HealingPad(GAME_WIDTH / 3, GAME_HEIGHT * 2 / 3), 
+        HealingPad(GAME_WIDTH / 3, GAME_HEIGHT / 3),
+        HealingPad(GAME_WIDTH * 2 / 3, GAME_HEIGHT / 3),
+        HealingPad(GAME_WIDTH / 3, GAME_HEIGHT * 2 / 3),
         HealingPad(GAME_WIDTH * 2 / 3, GAME_HEIGHT * 2 / 3)
     ];
-	this.particles = [];
-    
+    this.particles = [];
+
     // Update function
     this.Update = function() {
 
@@ -32,43 +32,43 @@ function GameScreen(bossRush) {
 
         var doc = document.documentElement, body = document.body;
         pageScrollX = (doc && doc.scrollLeft || body && body.scrollLeft || 0);
-        pageScrollY = (doc && doc.scrollTop  || body && body.scrollTop  || 0);
-        
+        pageScrollY = (doc && doc.scrollTop || body && body.scrollTop || 0);
+
         // Update when not paused
         playerManager.update(this.paused);
         if (!this.paused) {
-		
-			// Update enemies
+
+            // Update enemies
             this.enemyManager.UpdateEnemies();
-        
-			// Spawn enemies
-			if (bossRush) {
+
+            // Spawn enemies
+            if (bossRush) {
                 this.enemyManager.CheckBosses();
             }
             else {
                 this.enemyManager.CheckSpawns();
             }
-            
+
             // Update healing pads
             for (var i = 0; i < this.pads.length; i++) {
                 this.pads[i].update();
             }
-		
-			// Update environmental objects
+
+            // Update environmental objects
             this.UpdateBullets();
             this.dropManager.Update();
-            
-			// Update the scroll position
+
+            // Update the scroll position
             this.ApplyScrolling();
         }
-        
+
         // Check for losing
         for (var i = 0; i < playerManager.players.length; i++) {
             if (playerManager.players[i].robot.health > 0) return;
         }
         if (!this.gameOver) {
             this.gameOver = true;
-            
+
             for (var i = 0; i < playerManager.players.length; i++) {
                 var p = playerManager.players[i].robot;
                 p.profile.setBest(p.name, STAT.BEST_SCORE, this.score);
@@ -76,18 +76,18 @@ function GameScreen(bossRush) {
             }
         }
     };
-	
-	// Pauses the game
-	this.Pause = function(player) {
-		if (this.paused) {
-			if (this.paused == player) {	
-				this.paused = undefined;
-			}
-		}
-		else {
-			this.paused = player;
-		}
-	};
+
+    // Pauses the game
+    this.Pause = function(player) {
+        if (this.paused) {
+            if (this.paused == player) {
+                this.paused = undefined;
+            }
+        }
+        else {
+            this.paused = player;
+        }
+    };
 
     // Update function
     this.Draw = Draw;
@@ -105,25 +105,25 @@ function GameScreen(bossRush) {
                 }
             }
         }
-        
+
         // Apply scroll offsets
         canvas.translate(-this.scrollX, -this.scrollY);
-        
+
         this.dropManager.Draw();
-        
+
         for (var i = 0; i < this.pads.length; i++) {
             this.pads[i].draw();
         }
-        
+
         // Players
-        for (var i = 0; i < playerManager.players.length; i++) {    
+        for (var i = 0; i < playerManager.players.length; i++) {
             var player = playerManager.players[i].robot;
             player.Draw(canvas);
         }
-        
-		// Enemies
+
+        // Enemies
         this.enemyManager.Draw();
-        
+
         // Particles
         for (var i = 0; i < this.particles.length; i++) {
             this.particles[i].draw();
@@ -132,9 +132,9 @@ function GameScreen(bossRush) {
                 i--;
             }
         }
-        
+
         canvas.translate(this.scrollX, this.scrollY);
-        
+
         // Damage effect
         if (this.damageAlpha > 0) {
             canvas.save();
@@ -143,9 +143,9 @@ function GameScreen(bossRush) {
             canvas.restore();
             this.damageAlpha -= DAMAGE_ALPHA_DECAY;
         }
-        
+
         canvas.setTransform(1, 0, 0, 1, 0, 0);
-        
+
         // Pause overlay
         if (this.paused && this.paused !== true) {
             //canvas.drawImage(this.pauseOverlay, SIDEBAR_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -160,18 +160,18 @@ function GameScreen(bossRush) {
             canvas.fillStyle = this.paused.color;
             canvas.fillText(this.paused.name, WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 + 20);
         }
-        
+
         this.ui.DrawStatBar();
-        
+
         if (bossRush) {
             this.ui.DrawDroneInfo();
         }
-		
-		// Draw the upgrade screen if applicable
-		if (this.paused == true) {
-			this.ui.DrawUpgradeUI();
-		}
-        
+
+        // Draw the upgrade screen if applicable
+        if (this.paused == true) {
+            this.ui.DrawUpgradeUI();
+        }
+
         // Draw the cursor
         if (playerManager.keyboardActive) {
             canvas.setTransform(1, 0, 0, 1, 0, 0);
@@ -184,28 +184,28 @@ function GameScreen(bossRush) {
     function UpdateBullets() {
 
         this.enemyManager.UpdateBullets();
-        
+
         // Update bullets for each player
         for (var p = 0; p < playerManager.players.length; p++) {
-        
+
             var player = playerManager.players[p].robot;
-        
+
             // Check for collisions between the player's bullets and enemies
             for (var i = 0; i < player.bullets.length; i++) {
-            
+
                 // Colliding with turrets
                 for (var j = 0; j < this.enemyManager.turrets.length; j++) {
                     var turret = this.enemyManager.turrets[j];
                     if (player.bullets[i].Collides(turret)) {
                         player.bullets[i].Hit(turret);
-                        
+
                         // See if the turret is destroyed
                         if (turret.health <= 0) {
                             this.particles.push(new Explosion(turret.x, turret.y, 0.25));
                             this.enemyManager.turrets.splice(j, 1);
                             j--;
                         }
-                        
+
                         // If the bullet is not a piercing bullet, remove it
                         if (!player.bullets[i].pierce) {
                             player.bullets.splice(i, 1);
@@ -214,15 +214,15 @@ function GameScreen(bossRush) {
                         }
                     }
                 }
-                
+
                 // Regular enemy collision
                 for (var j = 0; j < this.enemyManager.enemies.length; j++) {
-                
+
                     // See if the bullet hit the enemy
                     if (player.bullets[i].Collides(this.enemyManager.enemies[j])) {
-                        
+
                         player.bullets[i].Hit(this.enemyManager.enemies[j]);
-                        
+
                         // If the bullet is not a piercing bullet, remove it
                         if (!player.bullets[i].pierce) {
                             player.bullets.splice(i, 1);
@@ -233,7 +233,7 @@ function GameScreen(bossRush) {
                 }
             }
         }
-            
+
         this.enemyManager.CheckDeaths();
     }
 
@@ -246,7 +246,7 @@ function GameScreen(bossRush) {
         var minY = 9999;
         var maxX = 0;
         var maxY = 0;
-        for (var i = 0; i < playerManager.players.length; i++) {    
+        for (var i = 0; i < playerManager.players.length; i++) {
             var r = playerManager.players[i].robot;
             if (r.health <= 0) continue;
             if (r.x < minX) minX = r.x;
@@ -257,18 +257,18 @@ function GameScreen(bossRush) {
         if (minX != 9999) {
             var avgX = (maxX + minX) / 2;
             var avgY = (maxY + minY) / 2;
-            
+
             // Scroll bounds
             this.scrollX = clamp(avgX - WINDOW_WIDTH / 2, 0, GAME_WIDTH - WINDOW_WIDTH);
             this.scrollY = clamp(avgY - WINDOW_HEIGHT / 2, 0, GAME_HEIGHT - WINDOW_HEIGHT);
-            
+
             // player bounds
             this.playerMinX = Math.max(0, Math.min(avgX - WINDOW_WIDTH / 2, this.scrollX) + 100);
             this.playerMinY = Math.max(0, Math.min(avgY - WINDOW_HEIGHT / 2, this.scrollY) + 100);
             this.playerMaxX = Math.min(GAME_WIDTH, Math.max(avgX + WINDOW_WIDTH / 2, this.scrollX + WINDOW_WIDTH) - 100);
             this.playerMaxY = Math.min(GAME_HEIGHT, Math.max(avgY + WINDOW_HEIGHT / 2, this.scrollY + WINDOW_HEIGHT) - 100);
         }
-        
+
         // Apply the scroll amount to the mouse coordinates
         mouseX = mx + this.scrollX - SIDEBAR_WIDTH - element.offsetLeft + pageScrollX;
         mouseY = my + this.scrollY - element.offsetTop + pageScrollY;
@@ -280,7 +280,7 @@ function GameScreen(bossRush) {
 
         // Player must be alive for the music to play
         if (!this.gameOver) {
-        
+
             // Initially load the music if it isn't already
             if (!this.music) {
                 this.music = new Audio("sound/granamaTheme.mp3");
@@ -291,7 +291,7 @@ function GameScreen(bossRush) {
                 this.music.volume = 0;
                 this.music.play();
             }
-            
+
             // Gradually get louder after loading
             else if (this.music.volume < 1) {
                 var newVolume = this.music.volume + 0.005;
@@ -301,14 +301,14 @@ function GameScreen(bossRush) {
                 this.music.volume = newVolume;
             }
         }
-        
+
         // Fade out and then stop when the player dies
         else if (this.music) {
             var newVolume = this.music.volume - 0.002;
             if (newVolume <= 0) {
                 this.music.pause();
                 this.music = false;
-                
+
                 // Move to the end screen
                 endScreen.setup(this);
                 gameScreen = endScreen;

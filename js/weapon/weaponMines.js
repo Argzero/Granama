@@ -21,7 +21,7 @@ function EnemyWeaponMines(data) {
     var player = playerManager.getClosest(this.x, this.y);
     var ds = DistanceSq(this.x, this.y, player.x, player.y);
     var inRange = ds <= Sq(data.range);
-        
+
     // Drop mines
     if (inRange && data.cd <= 0) {
         var offset = Vector(data.dx, data.dy);

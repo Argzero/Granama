@@ -36,7 +36,7 @@ function EnemyWeaponRail(data) {
             return;
         }
         data.cd--;
-        
+
         // Fire when charged up
         if (data.cd < 0) {
             if (data.intervalTimer > 1) {
@@ -50,14 +50,14 @@ function EnemyWeaponRail(data) {
                 data.cd = tempCd;
             }
             data.intervalTimer = data.interval;
-            
+
             // "Overheating" resets the charge countdown
             if (data.cd < -data.duration) {
                 data.cd = data.rate;
             }
         }
     }
-    
+
     // Discharge when unable to attack
     else if (data.cd <= data.rate) {
         if (data.initial) {

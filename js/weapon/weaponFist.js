@@ -18,12 +18,12 @@ function EnemyWeaponFist(data) {
         var fist = FistProjectile(
             this,
             tx,
-            0, 
-            this.cos * data.speed, 
-            this.sin * data.speed, 
+            0,
+            this.cos * data.speed,
+            this.sin * data.speed,
             this.angle,
-            data.damage, 
-            data.range * 1.5, 
+            data.damage,
+            data.range * 1.5,
             120,
             data.side ? 'Right' : 'Left'
         );
@@ -32,7 +32,7 @@ function EnemyWeaponFist(data) {
         data.cd = data.rate;
         data.side = !data.side;
     }
-    
+
     // Lower cooldown when on cooldown
     else if (data.cd > 0) {
         data.cd--;

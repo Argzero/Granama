@@ -7,7 +7,7 @@ function SkillDecimation(player) {
             this.skillCd = 300;
         }
     }
-    
+
     // Damage multiplier when active
     player.onFire = function() {
         if (this.skillDuration > 0) {

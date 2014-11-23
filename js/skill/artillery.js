@@ -1,21 +1,21 @@
 function SkillArtillery(player) {
-    
+
     // Skill effects
     player.onMove = function() {
-    
+
         var chargeRate = 0.1 + 0.04 * this.upgrades[CHARGE_ID];
         this.disabled = this.range;
-        
+
         // Activating the ability
         if (this.IsSkillCast() && this.charge > 0 && !this.range) {
             this.range = 75;
             this.bonus = 0;
             this.timer = 0;
         }
-        
+
         // Active skill effects
         else if (this.range) {
-            
+
             // Successive hits
             if (this.timer) {
                 if (this.charge <= 1) {
@@ -26,12 +26,12 @@ function SkillArtillery(player) {
                     this.timer++;
                 }
             }
-            
+
             // Range increases over time
             else {
                 this.range = Math.min(this.range + 10, 499 + 50 * this.upgrades[RAIL_ID]);
             }
-            
+
             // Firing the artillery
             if (this.input.ability == 1 || this.timer == 30) {
                 var used = Math.min(25, this.charge);
@@ -39,15 +39,15 @@ function SkillArtillery(player) {
                     GetImage('missile'),
                     this,
                     0,
-                    this.range, 
-                    0, 
-                    0, 
-                    this.angle, 
+                    this.range,
+                    0,
+                    0,
+                    this.angle,
                     25 * this.GetDamageMultiplier() * used / 25 * (1 + this.bonus),
                     0,
                     150 + used * 10,
                     1,
-					this.name,
+                    this.name,
                     [gameScreen.enemyManager.enemies, gameScreen.enemyManager.turrets]
                 );
                 this.bullets.push(rocket);
@@ -55,10 +55,10 @@ function SkillArtillery(player) {
                 this.bonus += 0.5;
                 this.timer = 1;
             }
-            
+
             return 0.00001;
         }
-        
+
         // Charging up
         else if (this.charge < 100) {
             this.charge += chargeRate;

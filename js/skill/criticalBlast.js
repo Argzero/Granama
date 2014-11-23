@@ -1,12 +1,12 @@
 function SkillCriticalBlast(player) {
     player.onMove = function() {
-    
+
         // Activating the ability
         if (this.IsSkillCast()) {
             this.skillDuration = 5;
             this.skillCd = 1200 * this.cdm;
         }
-        
+
         // Active ability effects
         if (this.skillDuration > 0) {
             for (var i = 0; i < 15; i++) {
@@ -17,11 +17,11 @@ function SkillCriticalBlast(player) {
                     GetImage('abilityShell'),
                     this,
                     -30,
-                    45, 
-                    cos * 15, 
-                    sin * 15, 
-                    this.angle + bonus, 
-                    3 * this.GetDamageMultiplier(), 
+                    45,
+                    cos * 15,
+                    sin * 15,
+                    this.angle + bonus,
+                    3 * this.GetDamageMultiplier(),
                     449,
                     false,
                     true

@@ -19,7 +19,7 @@ function EnemyWeaponDoubleSword(data) {
     if (data.dx === undefined) {
         data.dx = 0;
     }
-    if (data.dy === undefined ) {
+    if (data.dy === undefined) {
         data.dy = 0;
     }
 
@@ -35,7 +35,7 @@ function EnemyWeaponDoubleSword(data) {
             data.dy,
             data.radius,
             data.angle,
-            data.damage, 
+            data.damage,
             data.arc * m,
             data.knockback,
             0
@@ -44,7 +44,7 @@ function EnemyWeaponDoubleSword(data) {
         this.sword = false;
         data.cd = data.rate;
     }
-    
+
     // Lower cooldown when on cooldown
     else if (data.cd > 0) {
         data.cd--;

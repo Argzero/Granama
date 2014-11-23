@@ -36,28 +36,28 @@ function EnemyWeaponHomingRocket(data) {
             data.delayTimer++;
             return;
         }
-		//sprite, source x, y, velX, velY, angle, damage, range, radius, knockback, lists
+        //sprite, source x, y, velX, velY, angle, damage, range, radius, knockback, lists
         var m = data.dx < 0 ? 1 : -1;
         var rocket = HomingRocketProjectile(
             data.sprite,
             this,
             playerManager.getClosest(this.x, this.y),
             data.dx,
-            data.dy, 
-            HALF_RT_2 * (data.speed || BULLET_SPEED) * (this.cos - m * this.sin), 
-            HALF_RT_2 * (data.speed || BULLET_SPEED) * (this.sin + m * this.cos), 
+            data.dy,
+            HALF_RT_2 * (data.speed || BULLET_SPEED) * (this.cos - m * this.sin),
+            HALF_RT_2 * (data.speed || BULLET_SPEED) * (this.sin + m * this.cos),
             this.angle,
-            data.damage, 
-            data.range * 1.5, 
-			data.radius,
+            data.damage,
+            data.range * 1.5,
+            data.radius,
             data.knockback,
-			data.type || 'Enemy',
-            [playerManager.getRobots()]        
+            data.type || 'Enemy',
+            [playerManager.getRobots()]
         );
         data.list.push(rocket);
         data.cd = data.rate;
     }
-    
+
     // Lower cooldown when on cooldown
     else if (data.cd > 0) {
         data.cd--;

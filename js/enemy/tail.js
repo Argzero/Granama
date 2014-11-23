@@ -2,22 +2,22 @@ function EnemyTail(source, segment, end, offset, length, base, endOffset) {
     offset = Math.round(offset / source.speed);
     base = Math.round(base / source.speed);
     endOffset = Math.round(endOffset / source.speed);
-	var obj = {
-		source: source,
-		segment: segment,
-		end: end,
-		offset: offset,
-		length: length,
-		base: base,
-		index: 0,
-		prevX: source.x,
-		prevY: source.y,
-		maxIndex: offset * (length - 1) + base + endOffset,
-		orientations: [],
-        turrets: [],
-        
+    var obj = {
+        source      : source,
+        segment     : segment,
+        end         : end,
+        offset      : offset,
+        length      : length,
+        base        : base,
+        index       : 0,
+        prevX       : source.x,
+        prevY       : source.y,
+        maxIndex    : offset * (length - 1) + base + endOffset,
+        orientations: [],
+        turrets     : [],
+
         // Sets the turrets along the tail
-        SetTurrets: function(sprite, bulletSprite, damage, rate, pierce, dx, dy) {
+        SetTurrets  : function(sprite, bulletSprite, damage, rate, pierce, dx, dy) {
             this.turrets = [];
             for (var i = 0; i < this.length - 1; i++) {
                 var turret = new Turret(-100, -100, damage, 9999);
@@ -32,13 +32,13 @@ function EnemyTail(source, segment, end, offset, length, base, endOffset) {
                 this.turrets.push(turret);
             }
         },
-		
+
         // Draws the tail
-		Draw: function() {
-        
+        Draw        : function() {
+
             // Update when not paused
             if (!gameScreen.paused) {
-            
+
                 // Update the orientation array
                 if (this.prevX != this.source.x || this.prevY != this.source.y) {
                     this.orientations[this.index * 3] = source.x;
@@ -48,7 +48,7 @@ function EnemyTail(source, segment, end, offset, length, base, endOffset) {
                     this.prevX = this.source.x;
                     this.prevY = this.source.y;
                 }
-            
+
                 // Update the turrets
                 for (var i = 0; i < this.turrets.length; i++) {
                     var j = (this.index - i * this.offset - this.base + this.maxIndex) % this.maxIndex;
@@ -57,7 +57,7 @@ function EnemyTail(source, segment, end, offset, length, base, endOffset) {
                     this.turrets[i].Update();
                 }
             }
-        
+
             // Draw the tail
             canvas.save();
             ResetTransform(canvas);
@@ -77,15 +77,15 @@ function EnemyTail(source, segment, end, offset, length, base, endOffset) {
                 }
             }
             canvas.restore();
-		}
-	};
-    
+        }
+    };
+
     // Populate the orientations array
     for (var i = 0; i < obj.maxIndex; i++) {
         obj.orientations.push(source.x);
         obj.orientations.push(source.y);
         obj.orientations.push(source.angle);
     }
-    
+
     return obj;
 }

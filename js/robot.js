@@ -115,7 +115,7 @@ Robot.prototype.get = function(name) {
  * @param {number} duration   - the duration of the buff in frames
  */
 Robot.prototype.buff = function(name, multiplier, duration) {
-    this.buffs[name] = { multiplier: multiplier, duration: duration };
+    this.buffs[name] = {multiplier: multiplier, duration: duration};
 };
 
 /**
@@ -133,7 +133,7 @@ Robot.prototype.isStunned = function() {
  * @param duration duration of the stun
  */
 Robot.prototype.stun = function(duration) {
-    this.buffs['stun'] = { duration: duration };
+    this.buffs['stun'] = {duration: duration};
 };
 
 /**
@@ -207,17 +207,17 @@ Robot.prototype.isInRange = function(range) {
 
 // Functions
 /*
-isBoss: enemyFunctions.isBoss,
-stun: enemyFunctions.stun,
-AddWeapon: enemyFunctions.AddWeapon,
-SetRange: enemyFunctions.SetRange,
-SetMovement: enemyFunctions.SetMovement,
-Knockback: enemyFunctions.Knockback,
-SwitchPattern: enemyFunctions.SwitchPattern,
-Update: enemyFunctions.Update,
-clamp: enemyFunctions.clamp,
-Draw: enemyFunctions.Draw,
-IsInRange: enemyFunctions.IsInRange,
-Damage: enemyFunctions.Damage,
-Slow: enemyFunctions.Slow
-*/
+ isBoss: enemyFunctions.isBoss,
+ stun: enemyFunctions.stun,
+ AddWeapon: enemyFunctions.AddWeapon,
+ SetRange: enemyFunctions.SetRange,
+ SetMovement: enemyFunctions.SetMovement,
+ Knockback: enemyFunctions.Knockback,
+ SwitchPattern: enemyFunctions.SwitchPattern,
+ Update: enemyFunctions.Update,
+ clamp: enemyFunctions.clamp,
+ Draw: enemyFunctions.Draw,
+ IsInRange: enemyFunctions.IsInRange,
+ Damage: enemyFunctions.Damage,
+ Slow: enemyFunctions.Slow
+ */

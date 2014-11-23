@@ -77,7 +77,7 @@ Color.prototype.toGrayscale = function() {
     return this;
 };
 
-/** 
+/**
  * Inverts the color
  *
  * @returns {Color} the modified color
@@ -106,7 +106,7 @@ Color.prototype.add = function(color) {
     return this;
 };
 
-/** 
+/**
  * Multiplies the color by the given color
  *
  * @param {Color} color - the color to multiply by
@@ -122,7 +122,7 @@ Color.prototype.multiply = function(color) {
     return this;
 };
 
-/** 
+/**
  * Lightens the color by the given color
  *
  * @param {Color} color - the color to lighten with
@@ -138,7 +138,7 @@ Color.prototype.lighten = function(color) {
     return this;
 };
 
-/** 
+/**
  * Darkens the color by the given color
  *
  * @param {Color} color - the color to darken with

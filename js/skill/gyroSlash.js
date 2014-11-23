@@ -1,11 +1,11 @@
 function SkillGyroSlash(player) {
     player.onMove = function(speed) {
-    
+
         // Activating the ability
         if (this.IsSkillCast()) {
             this.skillDuration = 180;
             this.skillCd = 300;
-            
+
             // Spinning sword
             var sword = SwordProjectile(
                 GetImage('abilitySword'),
@@ -21,10 +21,10 @@ function SkillGyroSlash(player) {
             );
             this.bullets.push(sword);
         }
-        
+
         // Effects while active
         if (this.skillDuration > 0) {
-        
+
             // Double the speed
             return speed * 2;
         }

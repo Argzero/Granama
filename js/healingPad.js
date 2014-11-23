@@ -4,16 +4,16 @@ var HEAL_RATE = 0.25;
 
 function HealingPad(x, y) {
     return {
-        
+
         sprite: GetImage('healingPad'),
-        x: x,
-        y: y,
+        x     : x,
+        y     : y,
         charge: HEALING_CAPACITY,
-        
+
         update: function() {
-            
+
             this.charge = Math.min(this.charge + RECHARGE_RATE, HEALING_CAPACITY);
-        
+
             var players = [];
             for (var i = 0; i < playerManager.players.length; i++) {
                 var robot = playerManager.players[i].robot;
@@ -31,7 +31,7 @@ function HealingPad(x, y) {
                 }
             }
         },
-        
+
         draw: function() {
             canvas.strokeStyle = '#0ff';
             canvas.lineWidth = 30;

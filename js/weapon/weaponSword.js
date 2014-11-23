@@ -19,7 +19,7 @@ function EnemyWeaponSword(data) {
             40,
             100,
             data.angle,
-            data.damage, 
+            data.damage,
             data.arc,
             data.knockback,
             data.lifesteal
@@ -28,7 +28,7 @@ function EnemyWeaponSword(data) {
         this.sword = false;
         data.cd = data.rate;
     }
-    
+
     // Lower cooldown when on cooldown
     else if (data.cd > 0) {
         data.cd--;

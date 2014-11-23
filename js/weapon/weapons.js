@@ -19,7 +19,7 @@ var weapon = {
      *
      * @returns {boolean} true when able to fire, false otherwise
      */
-    checkTime: function (data, inRange) {
+    checkTime: function(data, inRange) {
 
         // Initialize data
         if (data.delayTimer === undefined) data.delayTimer = 0;
@@ -58,7 +58,7 @@ var weapon = {
      *
      * @returns {object} the velocity and angle offset of the bullet
      */
-    checkRotation: function (source, data) {
+    checkRotation: function(source, data) {
 
         var forward = source.forward();
         var vel = Vector(forward.x * (data.speed || weapon.DEFAULT_SPEED), forward.y * (data.speed || weapon.DEFAULT_SPEED));
@@ -81,7 +81,7 @@ var weapon = {
         }
 
         // Return the result
-        return {vel: vel, rot: new Vector(c, s).rotatev(source.rotation) };
+        return {vel: vel, rot: new Vector(c, s).rotatev(source.rotation)};
     },
 
     /**
@@ -92,7 +92,7 @@ var weapon = {
      *
      * @returns {Vector} starting position for the bullet
      */
-    getPosition: function (source, data) {
+    getPosition: function(source, data) {
 
         // Initialize values
         if (data.dx === undefined) data.dx = 0;

@@ -11,7 +11,7 @@ depend('lib/math');
 function ConvexCollider(points) {
     this.points = points;
     this.typeId = ConvexCollider.typeId;
-    
+
     // Calculate edges for quicker access during collision checks
     var e = new Vector(points[1].x - points[0].x, points[1].y - points[0].y).rotate(0, 1);
     var e2 = new Vector(points[2].x - points[0].x, points[2].y - points[0].y);
@@ -52,28 +52,28 @@ ConvexCollider.prototype.collides = function(collider) {
 
     var i;
     switch (collider.typeId) {
-    
+
         // Collision with another convex shape
         case ConvexCollider.typeId:
-        
+
             var inside = true;
             for (i = 0; i < this.points.length; i++) {
 
                 var r = this.edges[i];
                 var p = this.points[i];
                 var p2 = this.points[(i + 1) % this.points.length];
-            
+
                 for (var j = 0; j < collider.points.length; j++) {
 
                     var s = collider.edges[j];
                     var q = collider.points[j];
                     var q2 = collider.points[(i + 1) % collider.points.length];
-                    
+
                     var uNumerator = (q.x - p.x) * r.y - (q.y - p.y) * r.x;
                     var denominator = r.cross(s);
 
                     if (uNumerator == 0 && denominator == 0) {
-                        if (((q.x - p.x < 0) != (q.x - p2.x < 0) != (q2.x - p.x < 0) != (q2.x - p2.x < 0)) || 
+                        if (((q.x - p.x < 0) != (q.x - p2.x < 0) != (q2.x - p.x < 0) != (q2.x - p2.x < 0)) ||
                             ((q.y - p.y < 0) != (q.y - p2.y < 0) != (q2.y - p.y < 0) != (q2.y - p2.y < 0))) {
                             return true;
                         }
@@ -88,15 +88,15 @@ ConvexCollider.prototype.collides = function(collider) {
                         }
                     }
                 }
-                
+
                 if ((collider.points[0].x - this.points[i].x) * this.edges[i].x + (collider.points[0].y - this.points[i].y) * this.edges[i].y < 0) {
                     inside = false;
                 }
             }
             return inside || collider.isInside(this.points[0]);
-            
+
             break;
-            
+
         // Collision with a circle
         case CircleCollider.typeId:
 
@@ -161,11 +161,11 @@ CircleCollider.prototype.move = function(x, y) {
 CircleCollider.prototype.collides = function(collider) {
 
     switch (collider.typeId) {
-    
+
         // To avoid duplicate code, just call the convex method
         case ConvexCollider.typeId:
             return collider.collides(this);
-            
+
         // Simple circle collision
         case CircleCollider.typeId:
             return this.pos.distanceSq(collider.pos) < sq(this.r + collider.r);

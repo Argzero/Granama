@@ -1,6 +1,6 @@
 // Clones an object entirely
 function Clone(obj) {
-    var clone = { };
+    var clone = {};
     for (var field in obj) {
         clone[field] = obj[field];
     }
@@ -10,20 +10,20 @@ function Clone(obj) {
 // A vector representation with helpful methods
 function Vector(x, y) {
     return {
-        x: x,
-        y: y,
-        Dot: vectorMethods.Dot,
-        Distance: vectorMethods.Distance,
-        DistanceSq: vectorMethods.DistanceSq,
-        SegmentDistance: vectorMethods.SegmentDistance,
+        x                : x,
+        y                : y,
+        Dot              : vectorMethods.Dot,
+        Distance         : vectorMethods.Distance,
+        DistanceSq       : vectorMethods.DistanceSq,
+        SegmentDistance  : vectorMethods.SegmentDistance,
         SegmentDistanceSq: vectorMethods.SegmentDistanceSq,
-        Length: vectorMethods.Length,
-        LengthSq: vectorMethods.LengthSq,
-        Rotate: vectorMethods.Rotate,
-        Set: vectorMethods.Set,
-        Add: vectorMethods.Add,
-        SetLength: vectorMethods.SetLength,
-        Normalize: vectorMethods.Normalize
+        Length           : vectorMethods.Length,
+        LengthSq         : vectorMethods.LengthSq,
+        Rotate           : vectorMethods.Rotate,
+        Set              : vectorMethods.Set,
+        Add              : vectorMethods.Add,
+        SetLength        : vectorMethods.SetLength,
+        Normalize        : vectorMethods.Normalize
     };
 }
 
@@ -31,51 +31,51 @@ function Vector(x, y) {
 var vectorMethods = {
 
     // Dot product between two vectors
-    Dot: function(vector) {
+    Dot              : function(vector) {
         return this.x * vector.x + this.y * vector.y;
     },
-    
+
     // Distance between two vectors
-    Distance: function(vector) {
+    Distance         : function(vector) {
         var dx = this.x - vector.x;
         var dy = this.y - vector.y;
         return Math.sqrt(dx * dx + dy * dy);
     },
-    
+
     // Squared distance between two vectors
-    DistanceSq: function(vector) {
+    DistanceSq       : function(vector) {
         var dx = this.x - vector.x;
         var dy = this.y - vector.y;
         return dx * dx + dy * dy;
     },
-    
+
     // Distance to the line segment
-    SegmentDistance: function(p1, p2) {
+    SegmentDistance  : function(p1, p2) {
         return Math.sqrt(this.SegmentDistanceSq(p1, p2));
     },
-    
+
     // Squared distance to the line segment
     SegmentDistanceSq: function(p1, p2) {
         var l2 = p1.DistanceSq(p2);
         var t = ((this.x - p1.x) * (p2.x - p1.x) + (this.y - p1.y) * (p2.y - p1.y)) / l2;
         if (t <= 0) return this.DistanceSq(p1);
         if (t >= 1) return this.DistanceSq(p2);
-        return this.DistanceSq({ x: p1.x + t * (p2.x - p1.x), y: p1.y + t * (p2.y - p1.y) });
+        return this.DistanceSq({x: p1.x + t * (p2.x - p1.x), y: p1.y + t * (p2.y - p1.y)});
     },
-    
+
     // Length of the vector
-    Length: function() {
+    Length           : function() {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     },
-    
+
     // Squared length of the vector
-    LengthSq: function() {
+    LengthSq         : function() {
         return this.x * this.x + this.y * this.y;
     },
-    
+
     // Rotates the vector using the cos/sin values 
     // or an angle if one argument is provided
-    Rotate: function(cos, sin) {
+    Rotate           : function(cos, sin) {
         if (sin == undefined) {
             sin = Math.sin(cos);
             cos = Math.cos(cos);
@@ -83,28 +83,28 @@ var vectorMethods = {
         var tx = this.x * cos - this.y * sin;
         this.y = this.x * sin + this.y * cos;
         this.x = tx;
-		return this;
+        return this;
     },
-    
+
     // Sets the components of the vector
-    Set: function(x, y) {
+    Set              : function(x, y) {
         this.x = x;
         this.y = y;
     },
-    
+
     // Adds to the components of the vector
-    Add: function(x, y) {
+    Add              : function(x, y) {
         this.x += x;
         this.y += y;
     },
-    
+
     // Sets the length of the vector
-    SetLength: function(length) {
+    SetLength        : function(length) {
         var l = this.Length();
         this.x *= length / l;
         this.y *= length / l;
     },
-    
+
     Normalize: function() {
         var l = this.Length();
         this.x /= l;
@@ -163,11 +163,11 @@ function WithinScreen(obj) {
 // padding - amount to be off the gameScreen by (0 by default)
 function OffScreen(x, y, padding) {
     if (padding === undefined) padding = 0;
-	if (x - gameScreen.scrollX < -padding) return true;
-	if (x - gameScreen.scrollX > WINDOW_WIDTH + padding) return true;
-	if (y - gameScreen.scrollY < -padding) return true;
-	if (y - gameScreen.scrollY > WINDOW_HEIGHT + padding) return true;
-	return false;
+    if (x - gameScreen.scrollX < -padding) return true;
+    if (x - gameScreen.scrollX > WINDOW_WIDTH + padding) return true;
+    if (y - gameScreen.scrollY < -padding) return true;
+    if (y - gameScreen.scrollY > WINDOW_HEIGHT + padding) return true;
+    return false;
 }
 
 // Checks if a bullet collides with the given robot
@@ -189,18 +189,18 @@ function arcCollides(target, x, y, radius, thickness, start, end) {
     if (!target.sprite) {
         return false;
         /*
-        if (dSq > Sq(radius + target.radius)) {
-            
-        }
-        else return false;
-        */
+         if (dSq > Sq(radius + target.radius)) {
+
+         }
+         else return false;
+         */
     }
     else {
         var thickness = (thickness + target.sprite.width) / 2;
         if (dSq > Sq(radius - thickness) && dSq < Sq(radius + thickness)) {
             var minDot = minVec.y * dx - minVec.x * dy;
             var maxDot = maxVec.y * dx - maxVec.x * dy;
-            
+
             return maxDot >= 0 && minDot <= 0;
         }
         else return false;
@@ -242,14 +242,14 @@ function RotateX(x, y, angle) {
     if (angle >= 10) {
         return x * Math.cos(angle) - y * Math.sin(angle);
     }
-	var m = angle < 0 ? -1 : 1;
-	angle = Math.abs(angle);
-	for (var i = 0; i < angle; i++) {
-		var xt = x * COS_1 - y * SIN_1 * m;
-		y = x * SIN_1 * m + y * COS_1;
-		x = xt;
-	}
-	return x;
+    var m = angle < 0 ? -1 : 1;
+    angle = Math.abs(angle);
+    for (var i = 0; i < angle; i++) {
+        var xt = x * COS_1 - y * SIN_1 * m;
+        y = x * SIN_1 * m + y * COS_1;
+        x = xt;
+    }
+    return x;
 }
 
 // Rotates the x, y pair by the given integer value and returns the y coordinate
@@ -257,14 +257,14 @@ function RotateY(x, y, angle) {
     if (angle >= 10) {
         return x * Math.sin(angle) + y * Math.cos(angle);
     }
-	var m = angle < 0 ? -1 : 1;
-	angle = Math.abs(angle);
-	for (var i = 0; i < angle; i++) {
-		var xt = x * COS_1 - y * SIN_1 * m;
-		y = x * SIN_1 * m + y * COS_1;
-		x = xt;
-	}
-	return y;
+    var m = angle < 0 ? -1 : 1;
+    angle = Math.abs(angle);
+    for (var i = 0; i < angle; i++) {
+        var xt = x * COS_1 - y * SIN_1 * m;
+        y = x * SIN_1 * m + y * COS_1;
+        x = xt;
+    }
+    return y;
 }
 
 // Gets the angle from the first point to the second point
@@ -300,36 +300,36 @@ function YMin(obj) {
 
 // Upper Y bound for a game object
 function YMax(obj) {
-    return obj.y + obj.sprite.height / 2; 
+    return obj.y + obj.sprite.height / 2;
 }
 
 // Calculates the angle to a target from a source
 function AngleTo(target, source) {
-	var a = Math.atan((target.y - source.y) / (source.x - target.x));
-	if (source.x < target.x) {
-		a = -HALF_PI - a;
-	}
-	else {
-		a = HALF_PI - a;
-	}
-	return a;
+    var a = Math.atan((target.y - source.y) / (source.x - target.x));
+    if (source.x < target.x) {
+        a = -HALF_PI - a;
+    }
+    else {
+        a = HALF_PI - a;
+    }
+    return a;
 }
 
 // Calculates a new angle towards the target using a turn speed
 function AngleTowards(target, source, turnSpeed, backwards) {
-	var a = AngleTo(target, source);
-    
-	var dx, dy;
-	if (backwards) {
-		a = a + Math.PI;
-		dx = source.x - target.x;
-		dy = source.y - target.y;
-	}
-	else {
-		var dx = target.x - source.x;
-		var dy = target.y - source.y;
-	}
-    
+    var a = AngleTo(target, source);
+
+    var dx, dy;
+    if (backwards) {
+        a = a + Math.PI;
+        dx = source.x - target.x;
+        dy = source.y - target.y;
+    }
+    else {
+        var dx = target.x - source.x;
+        var dy = target.y - source.y;
+    }
+
     var result = source.angle;
     while (result - a > Math.PI) result -= Math.PI * 2;
     while (a - result > Math.PI) result += Math.PI * 2;
@@ -341,5 +341,5 @@ function AngleTowards(target, source, turnSpeed, backwards) {
         result -= turnSpeed;
         if (result < a) result = a;
     }
-	return result;
+    return result;
 }

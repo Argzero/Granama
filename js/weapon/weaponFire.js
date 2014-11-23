@@ -29,25 +29,25 @@ function EnemyWeaponFire(data) {
         var vel = Vector(this.cos * (data.speed || BULLET_SPEED), this.sin * (data.speed || BULLET_SPEED));
         var bonusAngle = 0;
         if (data.angle) {
-			var a = data.angle * Math.PI / 180;
-			vel.Rotate(a);
-			bonusAngle += a;
-		}
+            var a = data.angle * Math.PI / 180;
+            vel.Rotate(a);
+            bonusAngle += a;
+        }
         var fire = FireProjectile(
             data.sprite,
             this,
             data.dx,
-            data.dy, 
-            vel.x, 
-            vel.y, 
+            data.dy,
+            vel.x,
+            vel.y,
             this.angle + bonusAngle,
-            data.damage, 
+            data.damage,
             data.range * 1.5
         );
         data.list.push(fire);
         data.cd = data.rate;
     }
-    
+
     // Lower cooldown when on cooldown
     else if (data.cd > 0) {
         data.cd--;

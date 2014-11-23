@@ -7,8 +7,8 @@
  * @param {number} y - the vertical component
  */
 function Vector(x, y) {
-	this.x = x ? x : 0;
-	this.y = y ? y : 0;
+    this.x = x ? x : 0;
+    this.y = y ? y : 0;
 }
 
 /**
@@ -19,7 +19,7 @@ function Vector(x, y) {
  * @returns {number} the dot product result
  */
 Vector.prototype.dot = function(vector) {
-	return vector.x * this.x + vector.y * this.y;
+    return vector.x * this.x + vector.y * this.y;
 };
 
 /**
@@ -30,7 +30,7 @@ Vector.prototype.dot = function(vector) {
  * @returns {number} the z component of the cross product result
  */
 Vector.prototype.cross = function(vector) {
-	return this.x * vector.y - this.y * vector.x;
+    return this.x * vector.y - this.y * vector.x;
 };
 
 /**
@@ -66,9 +66,9 @@ Vector.prototype.reflect = function(vector) {
  * @returns {Vector} the modified vector
  */
 Vector.prototype.add = function(x, y) {
-	this.x += x;
-	this.y += y;
-	return this;
+    this.x += x;
+    this.y += y;
+    return this;
 };
 
 /**
@@ -79,9 +79,9 @@ Vector.prototype.add = function(x, y) {
  * @returns {Vector} the modified vector
  */
 Vector.prototype.addv = function(vector) {
-	this.x += vector.x;
-	this.y += vector.y;
-	return this;
+    this.x += vector.x;
+    this.y += vector.y;
+    return this;
 };
 
 /**
@@ -93,9 +93,9 @@ Vector.prototype.addv = function(vector) {
  * @returns {Vector} the modified vector
  */
 Vector.prototype.subtract = function(x, y) {
-	this.x -= x;
-	this.y -= y;
-	return this;
+    this.x -= x;
+    this.y -= y;
+    return this;
 };
 
 /**
@@ -106,9 +106,9 @@ Vector.prototype.subtract = function(x, y) {
  * @returns {Vector} the modified vector
  */
 Vector.prototype.subtractv = function(vector) {
-	this.x -= vector.x;
-	this.y -= vector.y;
-	return this;
+    this.x -= vector.x;
+    this.y -= vector.y;
+    return this;
 };
 
 /**
@@ -120,9 +120,9 @@ Vector.prototype.subtractv = function(vector) {
  * @returns {Vector} the modified vector
  */
 Vector.prototype.multiply = function(x, y) {
-	this.x *= x;
-	this.y *= y;
-	return this;
+    this.x *= x;
+    this.y *= y;
+    return this;
 };
 
 /**
@@ -133,9 +133,9 @@ Vector.prototype.multiply = function(x, y) {
  * @returns {Vector} the modified vector
  */
 Vector.prototype.addv = function(vector) {
-	this.x *= vector.x;
-	this.y *= vector.y;
-	return this;
+    this.x *= vector.x;
+    this.y *= vector.y;
+    return this;
 };
 
 /**
@@ -147,9 +147,9 @@ Vector.prototype.addv = function(vector) {
  * @returns {Vector} the modified vector
  */
 Vector.prototype.divide = function(x, y) {
-	this.x /= x;
-	this.y /= y;
-	return this;
+    this.x /= x;
+    this.y /= y;
+    return this;
 };
 
 /**
@@ -160,9 +160,9 @@ Vector.prototype.divide = function(x, y) {
  * @returns {Vector} the modified vector
  */
 Vector.prototype.addv = function(vector) {
-	this.x /= vector.x;
-	this.y /= vector.y;
-	return this;
+    this.x /= vector.x;
+    this.y /= vector.y;
+    return this;
 };
 
 /**
@@ -188,7 +188,7 @@ Vector.prototype.rotate = function(cos, sin) {
  * @returns {Vector} the modified vector
  */
 Vector.prototype.rotatev = function(vector) {
-	return this.rotate(vector.x, vector.y);
+    return this.rotate(vector.x, vector.y);
 };
 
 /**
@@ -213,8 +213,8 @@ Vector.prototype.rotateAngle = function(angle) {
  * @returns {Vector} the modified vector
  */
 Vector.prototype.rotateAround = function(x, y, cos, sin) {
-	this.x -= x;
-	this.y -= y;
+    this.x -= x;
+    this.y -= y;
     var xt = this.x * cos - this.y * sin;
     this.y = this.x * sin + this.y * cos;
     this.x = xt;
@@ -232,7 +232,7 @@ Vector.prototype.rotateAround = function(x, y, cos, sin) {
  * @returns {Vector} the modified vector
  */
 Vector.prototype.rotateAroundv = function(pos, dir) {
-	return this.rotateAround(pos.x, pos.y, dir.x, dir.y);
+    return this.rotateAround(pos.x, pos.y, dir.x, dir.y);
 };
 
 /**
@@ -243,7 +243,7 @@ Vector.prototype.rotateAroundv = function(pos, dir) {
  * @returns {number} the squared distance between the vector coordinates
  */
 Vector.prototype.distanceSq = function(vector) {
-	return (this.x - vector.x) * (this.x - vector.x) + (this.y - vector.y) * (this.y - vector.y);
+    return (this.x - vector.x) * (this.x - vector.x) + (this.y - vector.y) * (this.y - vector.y);
 };
 
 /**
@@ -254,7 +254,7 @@ Vector.prototype.distanceSq = function(vector) {
  * @returns {number} the distance between the vector coordinates
  */
 Vector.prototype.distance = function(vector) {
-	return Math.sqrt((this.x - vector.x) * (this.x - vector.x) + (this.y - vector.y) * (this.y - vector.y));
+    return Math.sqrt((this.x - vector.x) * (this.x - vector.x) + (this.y - vector.y) * (this.y - vector.y));
 };
 
 /**
@@ -282,7 +282,7 @@ Vector.prototype.segmentDistanceSq = function(p1, p2) {
     var t = ((this.x - p1.x) * (p2.x - p1.x) + (this.y - p1.y) * (p2.y - p1.y)) / l2;
     if (t <= 0) return this.distanceSq(p1);
     if (t >= 1) return this.distanceSq(p2);
-    return this.distanceSq({ x: p1.x + t * (p2.x - p1.x), y: p1.y + t * (p2.y - p1.y) });
+    return this.distanceSq({x: p1.x + t * (p2.x - p1.x), y: p1.y + t * (p2.y - p1.y)});
 };
 
 /**
@@ -291,7 +291,7 @@ Vector.prototype.segmentDistanceSq = function(p1, p2) {
  * @returns {number} the squared length of the vector
  */
 Vector.prototype.lengthSq = function() {
-	return this.x * this.x + this.y * this.y;
+    return this.x * this.x + this.y * this.y;
 };
 
 /**
@@ -300,7 +300,7 @@ Vector.prototype.lengthSq = function() {
  * @returns {number} the length of the vector
  */
 Vector.prototype.length = function() {
-	return Math.sqrt(this.x * this.x + this.y * this.y);
+    return Math.sqrt(this.x * this.x + this.y * this.y);
 }
 
 /**
@@ -309,13 +309,13 @@ Vector.prototype.length = function() {
  * @returns {Vector} the modified vector
  */
 Vector.prototype.normalize = function() {
-	var magSq = this.x * this.x + this.y * this.y;
-	if (magSq != 0 && magSq != 1) {
-		var mag = Math.sqrt(magSq);
-		this.x /= mag;
-		this.y /= mag;
-	}
-	return this;
+    var magSq = this.x * this.x + this.y * this.y;
+    if (magSq != 0 && magSq != 1) {
+        var mag = Math.sqrt(magSq);
+        this.x /= mag;
+        this.y /= mag;
+    }
+    return this;
 };
 
 /**
@@ -325,16 +325,16 @@ Vector.prototype.normalize = function() {
  *
  * @returns {Vector} the modified vector
  */
-Vector.prototype.setMagnitude = function(length) {	
-	var magSq = this.x * this.x + this.y * this.y;
-	if (magSq != 0 && magSq != 1) {
-		var mag = Math.sqrt(magSq);
-		this.x /= mag;
-		this.y /= mag;
-	}
-	this.x *= length;
-	this.y *= length;
-	return this;
+Vector.prototype.setMagnitude = function(length) {
+    var magSq = this.x * this.x + this.y * this.y;
+    if (magSq != 0 && magSq != 1) {
+        var mag = Math.sqrt(magSq);
+        this.x /= mag;
+        this.y /= mag;
+    }
+    this.x *= length;
+    this.y *= length;
+    return this;
 };
 
 /**

@@ -50,7 +50,8 @@ Boss.prototype.isInRange = function(range) {
  *
  * @param duration duration of the stun
  */
-Boss.prototype.stun = function(duration) {};
+Boss.prototype.stun = function(duration) {
+};
 
 /**
  * Applies a buff to the robot, modifying a stat
@@ -60,5 +61,5 @@ Boss.prototype.stun = function(duration) {};
  * @param {number} duration   - the duration of the buff in frames
  */
 Boss.prototype.buff = function(name, multiplier, duration) {
-    this.buffs[name] = { multiplier: multiplier + (1 - multiplier) * 0.8, duration: duration };
+    this.buffs[name] = {multiplier: multiplier + (1 - multiplier) * 0.8, duration: duration};
 };

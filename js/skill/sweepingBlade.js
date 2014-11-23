@@ -1,11 +1,11 @@
 function SkillSweepingBlade(player) {
     player.onMove = function(speed) {
-    
+
         // Activating the ability
         if (this.IsSkillCast()) {
             this.skillDuration = 36;
             this.skillCd = 300;
-            
+
             // Spinning sword
             var sword = SwordProjectile(
                 GetImage('abilitySword'),
@@ -21,10 +21,10 @@ function SkillSweepingBlade(player) {
             );
             this.bullets.push(sword);
         }
-        
+
         // Effects while active
         if (this.skillDuration > 0) {
-        
+
             // Double the speed
             return speed * 2;
         }

@@ -26,15 +26,15 @@ function EnemyWeaponSideGun(data) {
 
     // Fire when in range and off cooldown
     if (this.IsInRange(data.range) && data.cd <= 0) {
-		var player = playerManager.getClosest(this.x, this.y);
-		var dx = player.x - this.x;
-		var dy = player.y - this.y;
-		var right = (dx * this.sin - dy * this.cos) < 0;
-		var m = right ? 1 : -1;
+        var player = playerManager.getClosest(this.x, this.y);
+        var dx = player.x - this.x;
+        var dy = player.y - this.y;
+        var right = (dx * this.sin - dy * this.cos) < 0;
+        var m = right ? 1 : -1;
         var vel = Vector(
-			-m * this.sin * (data.speed || BULLET_SPEED), 
-			m * this.cos * (data.speed || BULLET_SPEED)
-		);
+            -m * this.sin * (data.speed || BULLET_SPEED),
+            m * this.cos * (data.speed || BULLET_SPEED)
+        );
         if (data.angle) {
             vel.Rotate((Rand(2 * data.angle + 1) - data.angle) * Math.PI / 180);
         }
@@ -42,12 +42,12 @@ function EnemyWeaponSideGun(data) {
             data.sprite || GetImage('bullet'),
             this,
             data.dx,
-            data.dy, 
-            vel.x, 
-            vel.y, 
+            data.dy,
+            vel.x,
+            vel.y,
             this.angle,
-            data.damage, 
-            data.range * 1.5, 
+            data.damage,
+            data.range * 1.5,
             data.pierce,
             data.offScreen
         );
@@ -57,7 +57,7 @@ function EnemyWeaponSideGun(data) {
         }
         data.cd = data.rate;
     }
-    
+
     // Lower cooldown when on cooldown
     else if (data.cd > 0) {
         data.cd--;

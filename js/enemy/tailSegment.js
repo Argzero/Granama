@@ -12,7 +12,7 @@ TailSegment.prototype.update = function() {
     var dir = this.parent.dir;
     var limMax = Vector(dir.x, dir.y).Rotate(this.lim.x, this.lim.y).Rotate(0, -1);
     var limMin = Vector(dir.x, dir.y).Rotate(this.lim.x, -this.lim.y).Rotate(0, 1);
-    
+
     // When directly on top of the parent segment, move straight back
     if (this.pos.x == this.parent.pos.x && this.pos.y == this.parent.pos.y) {
         this.pos.x = 0;
@@ -22,7 +22,7 @@ TailSegment.prototype.update = function() {
         this.dir.x = this.parent.dir.x;
         this.dir.y = this.parent.dir.y;
     }
-    
+
     // Otherwise, move according to the current angle to the parent segment
     else {
         this.dir.x = this.parent.pos.x - this.pos.x;

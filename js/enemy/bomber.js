@@ -27,9 +27,9 @@ function Bomber(name, x, y, health, speed, range, exp, rank, patternMin, pattern
     this.movement = movement.orbit;
     this.addWeapon(weapon, {
         damage: damage * Enemy.sum(),
-        rate: rate,
-        range: range + 100,
-        type: other,
+        rate  : rate,
+        range : range + 100,
+        type  : other,
         health: other
     });
 }
@@ -57,20 +57,20 @@ Bomber.prototype.isInRange = function(range) {
 extend('LightBomber', 'Bomber');
 function LightBomber(x, y) {
     this.super(
-    /* sprite name */ 'enemyLightBomber',
-    /* x position  */ x,
-    /* y position  */ y,
-    /* health      */ 15 * Enemy.pow(0.9),
-    /* speed       */ 2.5 + 0.25 * enemyManager.bossCount,
-    /* range       */ 400,
-    /* exp         */ Enemy.LIGHT_EXP,
-    /* rank        */ Enemy.LIGHT_ENEMY,
-    /* pattern min */ 0,
-    /* pattern max */ 0,
-    /* weapon      */ weapon.mine,
-    /* damage      */ 3,
-    /* rate        */ 90,
-    /* type        */ 'LightBomber'
+        /* sprite name */ 'enemyLightBomber',
+        /* x position  */ x,
+        /* y position  */ y,
+        /* health      */ 15 * Enemy.pow(0.9),
+        /* speed       */ 2.5 + 0.25 * enemyManager.bossCount,
+        /* range       */ 400,
+        /* exp         */ Enemy.LIGHT_EXP,
+        /* rank        */ Enemy.LIGHT_ENEMY,
+        /* pattern min */ 0,
+        /* pattern max */ 0,
+        /* weapon      */ weapon.mine,
+        /* damage      */ 3,
+        /* rate        */ 90,
+        /* type        */ 'LightBomber'
     );
 }
 

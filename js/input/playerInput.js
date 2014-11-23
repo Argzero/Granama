@@ -1,39 +1,38 @@
 // Base object for player input
 function PlayerInput(confirmButtonName) {
     return {
-    
+
         // Fields
-        movement: Vector(0, 0),
+        movement : Vector(0, 0),
         direction: Vector(0, 1),
-        
-        up: 0,
-        down: 0,
+
+        up   : 0,
+        down : 0,
         right: 0,
-        left: 0,
-        
+        left : 0,
+
         ability: 0,
-        cancel: 0,
+        cancel : 0,
         confirm: 0,
-        pause: 0,
-        shoot: 0,
-        
-        valid: true,
+        pause  : 0,
+        shoot  : 0,
+
+        valid            : true,
         confirmButtonName: confirmButtonName,
-        player: undefined,
-        
-        
+        player           : undefined,
+
         // Base update for controls
-        setPlayer: inputFunctions.setPlayer,
-        checkKey: inputFunctions.checkKey,
-        checkKeys: inputFunctions.checkKeys,
-        checkButton: inputFunctions.checkButton
+        setPlayer        : inputFunctions.setPlayer,
+        checkKey         : inputFunctions.checkKey,
+        checkKeys        : inputFunctions.checkKeys,
+        checkButton      : inputFunctions.checkButton
     };
 };
 
 // Keyboard/mouse input
 function StandardInput() {
     var obj = PlayerInput('Spacebar');
-    
+
     obj.update = inputFunctions.updateStandard;
     return obj;
 };
@@ -42,7 +41,7 @@ function StandardInput() {
 function GamepadInput(id) {
     var obj = PlayerInput('Start');
     obj.id = id;
-    
+
     obj.update = inputFunctions.updateGamepad;
     return obj;
 };
@@ -51,18 +50,18 @@ function GamepadInput(id) {
 var inputFunctions = {
 
     // Sets the player of the input
-    setPlayer: function(player) {
+    setPlayer     : function(player) {
         this.player = player;
     },
-    
+
     // Checks a key for input
-    checkKey: function(key, property) {
+    checkKey      : function(key, property) {
         if (KeyPressed(key)) this[property]++;
         else this[property] = 0;
     },
-    
+
     // Checks multiple keys for input
-    checkKeys: function(keys, property) {
+    checkKeys     : function(keys, property) {
         for (var i = 0; i < keys.length; i++) {
             if (KeyPressed(keys[i])) {
                 this[property]++;
@@ -71,30 +70,30 @@ var inputFunctions = {
         }
         this[property] = 0;
     },
-    
+
     // Checks a gamepad button for input
-    checkButton: function(gamepad, buttonId, property) {
+    checkButton   : function(gamepad, buttonId, property) {
         if (gamepad.buttons.length > 0 && gamepad.buttons[buttonId].value >= 0.1) {
-			this[property]++;
-		}
+            this[property]++;
+        }
         else this[property] = 0;
     },
-    
+
     // Updates for keyboard input
     updateStandard: function() {
-        
+
         // Weapons
         this.checkKey(KEY_SPACE, 'ability');
         this.checkKey(KEY_ESC, 'cancel');
         this.checkKeys([KEY_ENTER, KEY_SPACE], 'confirm');
         this.checkKey(KEY_ESC, 'pause');
         this.checkKey(KEY_LMB, 'shoot');
-        
+
         // Movement
-		var up = KeyPressed(KEY_W) || KeyPressed(KEY_UP);
-		var down = KeyPressed(KEY_S) || KeyPressed(KEY_DOWN);
-		var left = KeyPressed(KEY_A) || KeyPressed(KEY_LEFT);
-		var right = KeyPressed(KEY_D) || KeyPressed(KEY_RIGHT);
+        var up = KeyPressed(KEY_W) || KeyPressed(KEY_UP);
+        var down = KeyPressed(KEY_S) || KeyPressed(KEY_DOWN);
+        var left = KeyPressed(KEY_A) || KeyPressed(KEY_LEFT);
+        var right = KeyPressed(KEY_D) || KeyPressed(KEY_RIGHT);
         var hor = left != right;
         var vert = up != down;
         this.movement.x = this.movement.y = 0;
@@ -118,7 +117,7 @@ var inputFunctions = {
             this.movement.x += (vert ? HALF_RT_2 : 1);
         }
         else this.right = 0;
-        
+
         // Direction
         if (this.player && (mouseX != this.player.x || mouseY != this.player.y)) {
             this.direction.x = mouseX - this.player.x;
@@ -126,10 +125,10 @@ var inputFunctions = {
             this.direction.SetLength(1);
         }
     },
-    
+
     // Updates for gamepad input
-    updateGamepad: function() {
-        
+    updateGamepad : function() {
+
         // Get the gamepad to read from
         var gamepads = navigator.getGamepads();
         var gamepad = gamepads[this.id];
@@ -138,14 +137,14 @@ var inputFunctions = {
             return;
         }
         else this.valid = true;
-        
+
         // Weapons
         this.checkButton(gamepad, 6, 'ability');
         this.checkButton(gamepad, 1, 'cancel');
         this.checkButton(gamepad, 0, 'confirm');
         this.checkButton(gamepad, 9, 'pause');
         this.checkButton(gamepad, 7, 'shoot');
-        
+
         // Movement
         this.movement.x = gamepad.axes[0];
         this.movement.y = gamepad.axes[1];
@@ -160,7 +159,7 @@ var inputFunctions = {
         else this.down = 0;
         if (this.movement.y < -0.2) this.up++;
         else this.up = 0;
-        
+
         // Direction
         if (this.player && (Math.abs(gamepad.axes[2]) > 0.2 || Math.abs(gamepad.axes[3]) > 0.2)) {
             this.direction.x = gamepad.axes[2];

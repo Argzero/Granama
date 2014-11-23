@@ -1,8 +1,8 @@
 // The title gameScreen for the game
 function CreditsScreen() {
 
-	// Setup UI
-	this.ui = UIGrid(1000, 75)
+    // Setup UI
+    this.ui = UIGrid(1000, 75)
         .addTitle('Credits', -300, 100)
         .add(UIRow(-175, 1000, 75)
             .addTitle('Steven Sucy', 500)
@@ -20,14 +20,14 @@ function CreditsScreen() {
         .addButton('Return', 300, function() {
             gameScreen = new TitleScreen();
         });
-    
+
     // Draws the title gameScreen
     this.Draw = Draw;
     function Draw() {
-        
+
         // Prevent IE bugs
         canvas.setTransform(1, 0, 0, 1, 0, 0);
-        
+
         // Draw the background
         if (tile && tile.width) {
             for (var i = 0; i < element.width / tile.width + 1; i++) {
@@ -37,9 +37,9 @@ function CreditsScreen() {
                 }
             }
         }
-        
-		this.ui.draw();
-        
+
+        this.ui.draw();
+
         // Draw the cursor
         canvas.drawImage(cursor, mx - cursor.width / 2, my - cursor.height / 2);
     }

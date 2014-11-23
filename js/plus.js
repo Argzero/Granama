@@ -9,14 +9,14 @@ function Plus(x, y, velX, velY) {
     this.velX = velX;
     this.velY = velY;
     this.sprite = GetImage("abilityPlus");
-    
+
     // Updates the bullet's position
     this.Update = Update;
     function Update() {
         this.x += this.velX;
         this.y += this.velY;
     }
-    
+
     // Draws the bullet
     // canvas - context of the canvas to draw to
     this.Draw = Draw;

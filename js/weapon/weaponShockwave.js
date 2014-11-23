@@ -24,19 +24,19 @@ function EnemyWeaponShockwave(data) {
 
     // Fire when in range and off cooldown
     if (this.IsInRange(data.range) && data.cd <= 0) {
-        
+
         //source, color, x, y, speed, min, max, radius, thickness, damage, range, knockback
         var shockwave = Shockwave(
             this,
             data.color1 || '#ff9933',
-			data.color2 || '#f70',
+            data.color2 || '#f70',
             this.x + data.dx,
             this.y + data.dy,
             data.speed || 5,
             data.start + this.angle,
             data.end + this.angle,
             data.radius,
-            data.thickness || 20, 
+            data.thickness || 20,
             data.damage,
             data.range,
             data.knockback
@@ -47,7 +47,7 @@ function EnemyWeaponShockwave(data) {
         data.start = temp;
         data.cd = data.rate;
     }
-    
+
     // Lower cooldown when on cooldown
     else if (data.cd > 0) {
         data.cd--;

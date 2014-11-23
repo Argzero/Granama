@@ -2,7 +2,7 @@ depend('lib/2d/vector');
 
 /**
  * A rectangle made of 4 vertices
- * 
+ *
  * @constructor
  *
  * @param {number} x - the top left horizontal coordinate of the rectangle
@@ -21,7 +21,7 @@ function Rect(x, y, w, h) {
 
 /**
  * Constructs a rectangle from four points
- * 
+ *
  * @param {Vector} p1 - top left corner
  * @param {Vector} p2 - top right corner
  * @param {Vector} p3 - bottom left corner
@@ -40,7 +40,7 @@ Rect.fromPoints = function(p1, p2, p3, p4) {
 
 /**
  * Constructs an axis-aligned rectangle from two points
- * 
+ *
  * @param {Vector} p1 - top left corner
  * @param {Vector} p2 - bottom right corner
  *
@@ -57,10 +57,10 @@ Rect.fromCorners = function(p1, p2) {
 
 /**
  * Moves the rectangle relatively
- * 
+ *
  * @param {number} x - amount to move horizontally
  * @param {number} y - amount to move vertically
- * 
+ *
  * @returns {Rect} the Rect object
  */
 Rect.prototype.move = function(x, y) {
@@ -73,10 +73,10 @@ Rect.prototype.move = function(x, y) {
 
 /**
  * Scales the rectangle
- * 
+ *
  * @param {number} x - the horizontal multiplier
  * @param {number} y - the vertical multiplier
- * 
+ *
  * @returns {Rect} the Rect object
  */
 Rect.prototype.scale = function(x, y) {
@@ -91,9 +91,9 @@ Rect.prototype.scale = function(x, y) {
 
 /**
  * Rotates the rectangle by an angle
- * 
+ *
  * @param {number} angle - the angle of rotation
- * 
+ *
  * @returns {Rect} the Rect object
  */
 Rect.prototype.rotateAngle = function(angle) {
@@ -105,10 +105,10 @@ Rect.prototype.rotateAngle = function(angle) {
 
 /**
  * Rotates the rectangle using precalculated sin/cos values
- * 
+ *
  * @param {number} cos - the cosine of the angle of rotation
  * @param {number} sin - the sine of the angle of rotation
- * 
+ *
  * @returns {Rect} the Rect object
  */
 Rect.prototype.rotate = function(cos, sin) {
@@ -121,7 +121,7 @@ Rect.prototype.rotate = function(cos, sin) {
 
 /**
  * Retrieves the minimum X coordinate of the rectangle
- * 
+ *
  * @returns {number} the minimum X coordinate of the rectangle
  */
 Rect.prototype.minX = function() {
@@ -130,7 +130,7 @@ Rect.prototype.minX = function() {
 
 /**
  * Retrieves the minimum Y coordinate of the rectangle
- * 
+ *
  * @returns {number} the minimum Y coordinate of the rectangle
  */
 Rect.prototype.minY = function() {
@@ -139,7 +139,7 @@ Rect.prototype.minY = function() {
 
 /**
  * Retrieves the maximum X coordinate of the rectangle
- * 
+ *
  * @returns {number} the maximum X coordinate of the rectangle
  */
 Rect.prototype.maxX = function() {
@@ -148,7 +148,7 @@ Rect.prototype.maxX = function() {
 
 /**
  * Retrieves the maximum Y coordinate of the rectangle
- * 
+ *
  * @returns {number} the maxiamum Y coordinate of the rectangle
  */
 Rect.prototype.maxY = function() {

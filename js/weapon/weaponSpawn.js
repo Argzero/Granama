@@ -34,15 +34,15 @@ function EnemyWeaponSpawn(data) {
             data.delayTimer++;
             return;
         }
-        
+
         // Spawn the enemy
         var offset = Vector(data.dx, data.dy);
         offset.Rotate(this.sin, -this.cos);
-        gameScreen.enemyManager.SpawnEnemy(data.enemies, this.x + offset.x, this.y + offset.y); 
-        
+        gameScreen.enemyManager.SpawnEnemy(data.enemies, this.x + offset.x, this.y + offset.y);
+
         data.cd = data.rate;
     }
-    
+
     // Lower cooldown when on cooldown
     else if (data.cd > 0) {
         data.cd--;

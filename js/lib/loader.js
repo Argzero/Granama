@@ -1,7 +1,7 @@
 // The table of loaded scripts
 var SCRIPT_TAGS = {
     scriptCount: 0,
-    onload: function(e) {
+    onload     : function(e) {
         SCRIPT_TAGS[e.target.id].loaded = true;
         SCRIPT_TAGS.scriptCount--;
         if (SCRIPT_TAGS.scriptCount == 0) {
@@ -60,7 +60,7 @@ function applyExtensions(key) {
         if (base && sub) {
             sub.prototype.super = superConstructor;
             sub.prototype.childConstructors = sub.prototype.childConstructors || [];
-            for (var j = 0; base.prototype.childConstructors && j < base.prototype.childConstructors.length; j++){
+            for (var j = 0; base.prototype.childConstructors && j < base.prototype.childConstructors.length; j++) {
                 sub.prototype.childConstructors.push(base.prototype.childConstructors[j]);
             }
             sub.prototype.childConstructors.push(base);
@@ -106,13 +106,13 @@ function depend(script, callback) {
         }
         else data.tag.addEventListener('load', callback);
     }
-    
+
     // See if any scripts already have the source
     else if (tag = document.querySelector('script[src="js/' + script + '.js')) {
-        SCRIPT_TAGS[script] = { tag: tag, loaded: true };
+        SCRIPT_TAGS[script] = {tag: tag, loaded: true};
         if (callback) callback();
     }
-    
+
     // Set up the script
     else {
         var scriptTag = document.createElement('script');
@@ -120,7 +120,7 @@ function depend(script, callback) {
         scriptTag.type = 'text/javascript';
         if (callback) scriptTag.addEventListener('load', callback);
         scriptTag.addEventListener('load', SCRIPT_TAGS.onload);
-        SCRIPT_TAGS[script] = { tag: scriptTag, loaded: false };
+        SCRIPT_TAGS[script] = {tag: scriptTag, loaded: false};
         scriptTag.src = 'js/' + script + '.js';
         document.querySelector('head').appendChild(scriptTag);
         SCRIPT_TAGS.scriptCount++;

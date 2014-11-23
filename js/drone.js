@@ -13,7 +13,7 @@ var DRONE_SHIELD_CD = 15 * GAME_FPS;
 var DRONE_SHIELD_RANGE = 0.25;
 
 function Drone(name, angle, mechanics) {
-    
+
     this.mechanics = mechanics;
     this.orbitAngle = angle;
     this.angle = 0;
@@ -23,10 +23,10 @@ function Drone(name, angle, mechanics) {
     this.x = 0;
     this.y = 0;
     this.cd = 0;
-    
+
     // Updates the drone, applying its mechanics and rotates around the player
     this.Update = function(player) {
-        
+
         // Rotate around the player
         this.targetAngle += DRONE_ROTATE_SPEED;
         this.orbitAngle += Math.max(Math.min(MAX_ROT_SPEED, this.targetAngle - this.orbitAngle), MIN_ROT_SPEED);
@@ -34,15 +34,15 @@ function Drone(name, angle, mechanics) {
             this.orbitAngle -= 2 * Math.PI;
             this.targetAngle -= 2 * Math.PI;
         }
-        
+
         // Update the position of this
         this.x = PLAYER_DIST * Math.cos(this.orbitAngle);
         this.y = PLAYER_DIST * Math.sin(this.orbitAngle);
-        
+
         // Apply mechanics
         this.mechanics(player);
     }
-    
+
     // Sets a new target angle for the drone
     this.SetAngle = function(targetAngle) {
         this.targetAngle = targetAngle;
@@ -53,7 +53,7 @@ function Drone(name, angle, mechanics) {
             else this.targetAngle += 2 * Math.PI;
         }
     }
-    
+
     // Draws the drone
     this.Draw = function(canvas) {
         canvas.translate(this.x, this.y);
@@ -85,7 +85,7 @@ function AssaultMechanics(player) {
             laser.y += player.y;
             laser.ox += player.x;
             laser.oy += player.y;
-    		player.bullets[player.bullets.length] = laser;
+            player.bullets[player.bullets.length] = laser;
         }
     }
     else this.cd--;
@@ -95,7 +95,7 @@ function ShieldMechanics(player) {
     this.angle = GetAngle(this.x, this.y, 0, 0);
     if (this.cd <= 0) {
         if (player.health < player.getMaxHealth * DRONE_SHIELD_RANGE) {
-            player.shield = player.maxHealth * SHIELD_MAX;   
+            player.shield = player.maxHealth * SHIELD_MAX;
         }
     }
     else this.cd--;

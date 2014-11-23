@@ -3,31 +3,31 @@ function EnemyMoveMedic() {
 
     // Turn towards the nearest damaged enemy, ignoring faster units and
     // prioritizing non-healers
-	var target, dSq;
-	if (this.forcedTarget) {
-		target = this.forcedTarget;
-		dSq = DistanceSq(target.x, target.y, this.x, this.y);
-	}
-	else {
-		for (var i = 0; i < gameScreen.enemyManager.enemies.length; i++) {
-			var e = gameScreen.enemyManager.enemies[i];
-			if (e == this || e.health >= e.maxHealth || e.speed > this.speed) continue;
-			var temp = DistanceSq(e.x, e.y, this.x, this.y);
-			if (!dSq || ((!e.heal || target.heal) && temp < dSq)) {
-				dSq = temp;
-				target = e;
-			}
-		}
-	}
-    
+    var target, dSq;
+    if (this.forcedTarget) {
+        target = this.forcedTarget;
+        dSq = DistanceSq(target.x, target.y, this.x, this.y);
+    }
+    else {
+        for (var i = 0; i < gameScreen.enemyManager.enemies.length; i++) {
+            var e = gameScreen.enemyManager.enemies[i];
+            if (e == this || e.health >= e.maxHealth || e.speed > this.speed) continue;
+            var temp = DistanceSq(e.x, e.y, this.x, this.y);
+            if (!dSq || ((!e.heal || target.heal) && temp < dSq)) {
+                dSq = temp;
+                target = e;
+            }
+        }
+    }
+
     // Run from nearest player if no enemies can be healed
-	if (!target) {
+    if (!target) {
         if (!this.backup || DistanceSq(this.x, this.y, this.backup.x, this.backup.y) < Sq(this.range + 100)) {
-            this.backup = { x: Rand(GAME_WIDTH), y: Rand(GAME_HEIGHT) };
+            this.backup = {x: Rand(GAME_WIDTH), y: Rand(GAME_HEIGHT)};
         }
         target = this.backup;
     }
-    
+
     // Heal the enemy if close enough
     else if (dSq <= Sq(this.range + 10)) {
         target.health += this.heal;
@@ -35,19 +35,19 @@ function EnemyMoveMedic() {
             target.health = target.maxHealth;
         }
     }
-    
+
     this.angle = AngleTowards(target, this, this.speed / this.turnDivider);
-    
+
     // Update the angle values
     this.cos = -Math.sin(this.angle);
     this.sin = Math.cos(this.angle);
-    
+
     // Get the direction to move
     var m = 1;
     if (this.cos * (target.x - this.x) + this.sin * (target.y - this.y) < 0) {
         m = -1;
     }
-    
+
     // Move the enemy to their preferred range
     var speed = this.speed;
     if (this.speedMDuration) {

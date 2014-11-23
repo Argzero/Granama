@@ -1,5 +1,5 @@
 function SkillBlitz(player) {
-    
+
     // Activating the ability
     player.onMove = function() {
         if (this.IsSkillCast()) {

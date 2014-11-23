@@ -11,7 +11,7 @@ function Drop(x, y, type, id, player) {
     this.scale = 1;
     this.sprite = new Image();
     this.sprite.src = "images/upgrade" + type + ".png";
-    
+
     // Draws the drop
     // canvas - context of the canvas to draw to
     this.Draw = Draw;

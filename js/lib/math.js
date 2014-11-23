@@ -8,7 +8,7 @@
  * @returns {number} the clamped value
  */
 function clamp(value, min, max) {
-    return Math.min(Math.max(value, min), max) 
+    return Math.min(Math.max(value, min), max)
 }
 
 /**
@@ -30,7 +30,7 @@ function rand(min, max) {
 
 /**
  * Squares a number
- * 
+ *
  * @param {number} num - number to square
  *
  * @returns {number} the squared number
@@ -46,19 +46,18 @@ function sq(num) {
  * @param {number} b - quadratic coefficient
  * @param {number} c - linear coefficient
  * @param {number} d - constant
- */ 
-function solveEq(a, b, c, d) 
-{
+ */
+function solveEq(a, b, c, d) {
     var solutions = [];
-    
+
     // Cubic equations
     if (a !== 0) {
-    
+
         // Divide by a to simplify math
         b /= a;
         c /= a;
         d /= a;
-        
+
         // Uses the Cardan formula
         // http://en.wikipedia.org/wiki/Cubic_function#Cardano.27s_method
         var p = c - b * b / 3;
@@ -66,18 +65,18 @@ function solveEq(a, b, c, d)
         var p3 = p * p * p;
         var disc = q * q + 4 * p3 / 27;
         var offset = -b / 3;
-        
+
         // One real root
         if (disc > 0) {
             z = Math.sqrt(disc);
             var u = ( -q + z) / 2;
             var v = ( -q - z) / 2;
-            u = (u >= 0) ? Math.pow(u, 1/3) : -Math.pow( -u, 1/3);
-            v = (v >= 0) ? Math.pow(v, 1/3) : -Math.pow( -v, 1/3);
+            u = (u >= 0) ? Math.pow(u, 1 / 3) : -Math.pow(-u, 1 / 3);
+            v = (v >= 0) ? Math.pow(v, 1 / 3) : -Math.pow(-v, 1 / 3);
             solution.push(u + v + offset);
             return solution;
-        } 
-        
+        }
+
         // Three real roots
         else if (disc < 0) {
             var u = 2 * Math.sqrt(-p / 3);
@@ -86,13 +85,13 @@ function solveEq(a, b, c, d)
             solution.push(u * Math.cos(v + 2 * Math.PI / 3) + offset);
             solution.push(u * Math.cos(v + 4 * Math.PI / 3) + offset);
             return solution;
-        } 
-        
+        }
+
         // Two real roots
         else {
             var u;
-            if (q < 0) u = Math.pow(-q / 2, 1/3);
-            else u = -Math.pow(q / 2, 1/3);
+            if (q < 0) u = Math.pow(-q / 2, 1 / 3);
+            else u = -Math.pow(q / 2, 1 / 3);
             solution.push(2 * u + offset);
             solution.push(-u + offset);
             return solution;
@@ -101,13 +100,13 @@ function solveEq(a, b, c, d)
 
     // Non-cubics
     else {
-    
+
         // Linear equation
         if (b === 0) {
-        
+
             // Horizontal line - no solution
             if (c === 0) return solution;
-            
+
             // Linear equation
             else {
                 solution.push(-d / c);
@@ -117,20 +116,20 @@ function solveEq(a, b, c, d)
 
         // Quadratic equation
         else {
-        
+
             var disc = c * c - 4 * b * d;
-            
+
             // No real roots
             if (disc < 0) return solution;
-            
+
             // Multiple real roots
             if (disc > 0) {
                 disc = Math.sqrt(disc);
                 solution.push((-c - disc) / (2 * b));
                 solution.push((-c + disc) / (2 * b));
                 return solution;
-            } 
-            
+            }
+
             // One real root
             else {
                 solution.push(-c / (2 * b));
