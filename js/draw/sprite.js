@@ -49,18 +49,21 @@ function Sprite(name, x, y, parent, before, rotate) {
  */
 Sprite.prototype.drawSprite = function(camera) {
     if (this.hidden) return;
+    if (this.rotate && this.parent) this.parent.applyRotation(camera);
 
     camera.ctx.globalAlpha = this.alpha;
     camera.ctx.translate(this.x, this.y);
-    if (this.onPreDraw) this.onPreDraw();
+    if (this.onPreDraw) this.onPreDraw(camera);
     this.drawList(camera, this.preChildren);
     this.applyRotation(camera, false);
     camera.ctx.drawImage(this.sprite, -this.sprite.width / 2 - this.pivot.x, -this.sprite.height / 2 - this.pivot.y);
     this.applyRotation(camera, true);
     this.drawList(camera, this.postChildren);
-    if (this.onDraw) this.onDraw();
+    if (this.onDraw) this.onDraw(camera);
     camera.ctx.translate(-this.x, -this.y);
     camera.ctx.globalAlpha = 1;
+
+    if (this.rotate && this.parent) this.parent.applyRotation(camera, true);
 };
 
 /**

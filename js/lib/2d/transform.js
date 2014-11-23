@@ -23,7 +23,7 @@ Transform.prototype.moveTo = function(x, y) {
     this.pos.x = x;
     this.pos.y = y;
     return this;
-},
+};
 
 /**
  * Translates relatively
@@ -37,7 +37,7 @@ Transform.prototype.moveTo = function(x, y) {
         this.pos.x += x;
         this.pos.y += y;
         return this;
-    },
+    };
 
 /**
  * Sets the angle using precalculated sin/cos values
@@ -50,7 +50,7 @@ Transform.prototype.moveTo = function(x, y) {
         this.rotation.x = Math.cos(angle);
         this.rotation.y = Math.sin(angle);
         return this;
-    },
+    };
 
 /**
  * Sets the rotation using precalculated sin/cos values
@@ -64,7 +64,7 @@ Transform.prototype.moveTo = function(x, y) {
         this.rotation.x = cos;
         this.rotation.y = sin;
         return this;
-    },
+    };
 
 /**
  * Rotates relatively by an angle
@@ -76,7 +76,7 @@ Transform.prototype.moveTo = function(x, y) {
     Transform.prototype.rotateAngle = function(angle) {
         this.rotate(Math.cos(angle), Math.sin(angle));
         return this;
-    },
+    };
 
 /**
  * Rotates relatively using precalculated sin/cos values
@@ -89,7 +89,7 @@ Transform.prototype.moveTo = function(x, y) {
     Transform.prototype.rotate = function(cos, sin) {
         this.rotation.rotate(cos, sin);
         return this;
-    },
+    };
 
 /**
  * Rotates about an origin by the given angle
@@ -102,7 +102,7 @@ Transform.prototype.moveTo = function(x, y) {
     Transform.prototype.rotateAngleAbout = function(angle, origin) {
         this.rotateAbout(Math.cos(angle), Math.sin(angle), origin);
         return this;
-    },
+    };
 
 /**
  * Rotates about an origin using precalculated cos/sin values
@@ -119,7 +119,7 @@ Transform.prototype.moveTo = function(x, y) {
         this.pos.add(origin.x, origin.y);
         this.rotation.rotate(cos, sin);
         return this;
-    },
+    };
 
 /**
  * Scales the transform
@@ -133,7 +133,7 @@ Transform.prototype.moveTo = function(x, y) {
         this.size.x *= x;
         this.size.y *= y;
         return this;
-    },
+    };
 
 /**
  * Sets the scale of the transform
@@ -145,7 +145,7 @@ Transform.prototype.moveTo = function(x, y) {
         this.size.x = x;
         this.size.y = y;
         return this;
-    },
+    };
 
 /**
  * Applies the transformation to the vector coordinates
@@ -158,7 +158,7 @@ Transform.prototype.moveTo = function(x, y) {
         return vector.rotate(this.rotation.x, this.rotation.y)
             .multiply(this.size.x, this.size.y)
             .add(this.pos.x, this.pos.y);
-    },
+    };
 
 /**
  * Applies the transform to a rectangle
@@ -171,4 +171,4 @@ Transform.prototype.moveTo = function(x, y) {
         return rect.rotate(this.rotation.x, this.rotation.y)
             .scale(this.size.x, this.size.y)
             .move(this.pos.x, this.pos.y);
-    }
+    };

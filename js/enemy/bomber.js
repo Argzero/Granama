@@ -2,7 +2,7 @@ depend('enemy/enemy');
 depend('lib/math');
 
 /**
- * An enemy robot in the game
+ * An enemy that drops either mines or turrets while orbiting the players
  *
  * @param {string}        name         - name of the enemy sprite image
  * @param {number}        x            - initial horizontal position
@@ -14,7 +14,7 @@ depend('lib/math');
  * @param {string}        rank         - difficulty rank
  * @param {number}        [patternMin] - minimum time between switching attack patterns
  * @param {number}        [patternMax] - maximum time between switching attack patterns
- * @param {function}      weapon       - the weapon to use (mines or turrets)
+ * @param {function}      type         - the weapon type to use (mines or turrets)
  * @param {number}        damage       - damage dealt by mines or turrets
  * @param {number}        rate         - how fast to lay down the mines or turrets
  * @param {number|string} other        - the type of mine or the health of a turret
@@ -22,7 +22,7 @@ depend('lib/math');
  * @constructor
  */
 extend('Bomber', 'Enemy');
-function Bomber(name, x, y, health, speed, range, exp, rank, patternMin, patternMax, weapon, damage, rate, other) {
+function Bomber(name, x, y, health, speed, range, exp, rank, patternMin, patternMax, type, damage, rate, other) {
     this.super(name, x, y, health, speed, range, exp, rank, patternMin, patternMax);
     this.movement = movement.orbit;
     this.addWeapon(weapon, {

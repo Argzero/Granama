@@ -1,7 +1,7 @@
 depend('enemy/enemy');
 
 /**
- * An enemy robot in the game
+ * A robot that charges at players, knocking them out of the way upon collision
  *
  * @param {string} name         - name of the enemy sprite image
  * @param {number} x            - initial horizontal position
