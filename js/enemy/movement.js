@@ -3,7 +3,7 @@ var movement = {
 	/**
 	 * Helper function for moving towards a target
 	 */
-	moveTowards(target) {
+	moveTowards: function(target) {
 	
 		// Turning values
         this.turnVec = this.turnVec || new Vector(Math.cos(this.speed / this.turnDivider), Math.sin(this.speed / this.turnDivider));
@@ -193,14 +193,10 @@ var movement = {
 		// Move randomly when there's no targets to heal
 		if (!target) {
 			while (!this.backup || this.pos.distanceSq(this.backup) < sq(this.range + 100)) {
-				this.backup = new Vector(rand(game.width), y: rand(game.height));
+				this.backup = new Vector(rand(game.width), rand(game.height));
 			}
 			target = this.backup;
 		}
-		
-		// Move towards the target
-		this.movementHelper = movement.moveTowards;
-		this.movementHelper(target);
 
 		// Heal the enemy if close enough
 		else if (dSq <= Sq(this.range + 10)) {
@@ -209,6 +205,10 @@ var movement = {
 				target.health = target.maxHealth;
 			}
 		}
+
+        // Move towards the target
+        this.movementHelper = movement.moveTowards;
+        this.movementHelper(target);
 	},
 	
 	/**
@@ -228,7 +228,6 @@ var movement = {
 		var d2 = this.forward().dot(d);
 
 		// Turn in the correct direction
-		var turnSpeed = this.speed / 100.0;
 		this.movementHelper = movement.moveTowards;
 		if (tooFar || tooClose) {
 			this.movementHelper(player);
