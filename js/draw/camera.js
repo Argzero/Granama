@@ -26,6 +26,17 @@ function Camera(id) {
 }
 
 /**
+ * Draws a list of sprites to the camera
+ *
+ * @param {Sprite[]} sprites - the list of sprites to draw
+ */
+Camera.prototype.drawList = function(sprites) {
+	for (var i = 0; i < sprites.length; i++) {
+		sprites[i].draw(this);
+	}
+};
+
+/**
  * Sets the bounds of the camera view.
  *
  * @param rect bounding rectangle
@@ -40,6 +51,18 @@ Camera.prototype.setBounds = function(rect) {
  */
 Camera.prototype.removeBounds = function() {
     this.ctx.restore();
+};
+
+/**
+ * Checks whether or not a sprite is visible
+ *
+ * @param {Sprite} sprite - the sprite to checked
+ *
+ * @returns {boolean} true if visible, false otherwise
+ */
+Camera.prototype.isVisible = function(sprite) {
+	return sprite.xMax() >= this.bounds.topLeft.x + this.pos.x && sprite.xMin() <= this.bounds.bottomRight.y + this.pos.x
+		&& sprite.yMax() >= this.bounds.topLeft.y + this.pos.y && sprite.yMin() <= this.bounds.bottomRight.y + this.pos.y;
 };
 
 /**
