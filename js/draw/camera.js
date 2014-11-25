@@ -13,7 +13,6 @@ function Camera(id) {
     this.super();
     this.canvas = document.getElementById(id);
     this.ctx = this.canvas.getContext('2d');
-    this.fullScreen = true;
     this.bounds = new Rect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
 
     // Update the canvas dimensions
@@ -24,6 +23,36 @@ function Camera(id) {
     this.ctx.restore();
     this.applyBounds();
 }
+
+/**
+ * Translates to the given point
+ *
+ * @param {number} x - the new horizontal pos
+ * @param {number} y - the new vertical pos
+ *
+ * @returns {Camera} the Camera object
+ */
+Camera.prototype.moveTo = function(x, y) {
+    this.ctx.translate(this.pos.x - x, this.pos.y - y);
+    this.pos.x = x;
+    this.pos.y = y;
+    return this;
+};
+
+/**
+ * Translates relatively
+ *
+ * @param {number} x - the amount to add to the horizontal pos
+ * @param {number} y - the amount to add to the vertical pos
+ *
+ * @returns {Camera} the Camera object
+ */
+Camera.prototype.move = function(x, y) {
+    this.ctx.translate(-x, -y);
+    this.pos.x += x;
+    this.pos.y += y;
+    return this;
+};
 
 /**
  * Draws a list of sprites to the camera
@@ -63,6 +92,20 @@ Camera.prototype.removeBounds = function() {
 Camera.prototype.isVisible = function(sprite) {
 	return sprite.xMax() >= this.bounds.topLeft.x + this.pos.x && sprite.xMin() <= this.bounds.bottomRight.y + this.pos.x
 		&& sprite.yMax() >= this.bounds.topLeft.y + this.pos.y && sprite.yMin() <= this.bounds.bottomRight.y + this.pos.y;
+};
+
+/**
+ * Checks whether or not a sprite is visible
+ *
+ * @param {Vector} point     - the point to check for visibility
+ * @param {number} [padding] - the amount of padding to use
+ *
+ * @returns {boolean} true if visible, false otherwise
+ */
+Camera.prototype.isVisible = function(point, padding) {
+    padding = padding ? padding : 0;
+    return point.x + padding >= this.bounds.topLeft.x + this.pos.x && point.x - padding <= this.bounds.bottomRight.y + this.pos.x
+           && point.y + padding >= this.bounds.topLeft.y + this.pos.y && point.y - padding <= this.bounds.bottomRight.y + this.pos.y;
 };
 
 /**

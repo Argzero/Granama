@@ -33,11 +33,11 @@ Transform.prototype.moveTo = function(x, y) {
  *
  * @returns {Transform} the Transform object
  */
-    Transform.prototype.move = function(x, y) {
-        this.pos.x += x;
-        this.pos.y += y;
-        return this;
-    };
+Transform.prototype.move = function(x, y) {
+    this.pos.x += x;
+    this.pos.y += y;
+    return this;
+};
 
 /**
  * Sets the angle using precalculated sin/cos values
@@ -46,11 +46,11 @@ Transform.prototype.moveTo = function(x, y) {
  *
  * @returns {Transform} the Transform object
  */
-    Transform.prototype.setAngle = function(angle) {
-        this.rotation.x = Math.cos(angle);
-        this.rotation.y = Math.sin(angle);
-        return this;
-    };
+Transform.prototype.setAngle = function(angle) {
+    this.rotation.x = Math.cos(angle);
+    this.rotation.y = Math.sin(angle);
+    return this;
+};
 
 /**
  * Sets the rotation using precalculated sin/cos values
@@ -60,11 +60,11 @@ Transform.prototype.moveTo = function(x, y) {
  *
  * @returns {Transform} the Transform object
  */
-    Transform.prototype.setRotation = function(cos, sin) {
-        this.rotation.x = cos;
-        this.rotation.y = sin;
-        return this;
-    };
+Transform.prototype.setRotation = function(cos, sin) {
+    this.rotation.x = cos;
+    this.rotation.y = sin;
+    return this;
+};
 
 /**
  * Rotates relatively by an angle
@@ -73,10 +73,10 @@ Transform.prototype.moveTo = function(x, y) {
  *
  * @returns {Transform} the Transform object
  */
-    Transform.prototype.rotateAngle = function(angle) {
-        this.rotate(Math.cos(angle), Math.sin(angle));
-        return this;
-    };
+Transform.prototype.rotateAngle = function(angle) {
+    this.rotate(Math.cos(angle), Math.sin(angle));
+    return this;
+};
 
 /**
  * Rotates relatively using precalculated sin/cos values
@@ -86,10 +86,10 @@ Transform.prototype.moveTo = function(x, y) {
  *
  * @returns {Transform} the Transform object
  */
-    Transform.prototype.rotate = function(cos, sin) {
-        this.rotation.rotate(cos, sin);
-        return this;
-    };
+Transform.prototype.rotate = function(cos, sin) {
+    this.rotation.rotate(cos, sin);
+    return this;
+};
 
 /**
  * Rotates about an origin by the given angle
@@ -99,10 +99,10 @@ Transform.prototype.moveTo = function(x, y) {
  *
  * @returns {Transform} the Transform object
  */
-    Transform.prototype.rotateAngleAbout = function(angle, origin) {
-        this.rotateAbout(Math.cos(angle), Math.sin(angle), origin);
-        return this;
-    };
+Transform.prototype.rotateAngleAbout = function(angle, origin) {
+    this.rotateAbout(Math.cos(angle), Math.sin(angle), origin);
+    return this;
+};
 
 /**
  * Rotates about an origin using precalculated cos/sin values
@@ -113,13 +113,13 @@ Transform.prototype.moveTo = function(x, y) {
  *
  * @returns {Transform} the Transform object
  */
-    Transform.prototype.rotateAbout = function(cos, sin, origin) {
-        this.pos.add(-origin.x, -origin.y);
-        this.pos.rotate(cos, sin);
-        this.pos.add(origin.x, origin.y);
-        this.rotation.rotate(cos, sin);
-        return this;
-    };
+Transform.prototype.rotateAbout = function(cos, sin, origin) {
+    this.pos.add(-origin.x, -origin.y);
+    this.pos.rotate(cos, sin);
+    this.pos.add(origin.x, origin.y);
+    this.rotation.rotate(cos, sin);
+    return this;
+};
 
 /**
  * Rotates the transform to look at the target position
@@ -158,11 +158,11 @@ Transform.prototype.lookAway = function(target, rotation) {
  *
  * @returns {Transform} the Transform object
  */
-    Transform.prototype.scale = function(x, y) {
-        this.size.x *= x;
-        this.size.y *= y;
-        return this;
-    };
+Transform.prototype.scale = function(x, y) {
+    this.size.x *= x;
+    this.size.y *= y;
+    return this;
+};
 
 /**
  * Sets the scale of the transform
@@ -170,11 +170,11 @@ Transform.prototype.lookAway = function(target, rotation) {
  * @param {number} x - the new horizontal scale
  * @param {number} y - the new vertical scale
  */
-    Transform.prototype.setScale = function(x, y) {
-        this.size.x = x;
-        this.size.y = y;
-        return this;
-    };
+Transform.prototype.setScale = function(x, y) {
+    this.size.x = x;
+    this.size.y = y;
+    return this;
+};
 
 /**
  * Applies the transformation to the vector coordinates
@@ -183,11 +183,11 @@ Transform.prototype.lookAway = function(target, rotation) {
  *
  * @returns {Vector} the transformed vector
  */
-    Transform.prototype.apply = function(vector) {
-        return vector.rotate(this.rotation.x, this.rotation.y)
-            .multiply(this.size.x, this.size.y)
-            .add(this.pos.x, this.pos.y);
-    };
+Transform.prototype.apply = function(vector) {
+    return vector.rotate(this.rotation.x, this.rotation.y)
+        .multiply(this.size.x, this.size.y)
+        .add(this.pos.x, this.pos.y);
+};
 
 /**
  * Applies the transform to a rectangle
@@ -196,8 +196,8 @@ Transform.prototype.lookAway = function(target, rotation) {
  *
  * @returns {Rect} the transformed rectangle
  */
-    Transform.prototype.applyRect = function(rect) {
-        return rect.rotate(this.rotation.x, this.rotation.y)
-            .scale(this.size.x, this.size.y)
-            .move(this.pos.x, this.pos.y);
-    };
+Transform.prototype.applyRect = function(rect) {
+    return rect.rotate(this.rotation.x, this.rotation.y)
+        .scale(this.size.x, this.size.y)
+        .move(this.pos.x, this.pos.y);
+};

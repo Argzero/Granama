@@ -225,7 +225,7 @@ var movement = {
 		// Turn towards the player
 		var d = player.pos.clone().subtractv(this.pos);
 		var d1 = this.rotation.dot(d);
-		var d2 = this.forward().dot(d);
+		//var d2 = this.forward().dot(d);
 
 		// Turn in the correct direction
 		this.movementHelper = movement.moveTowards;

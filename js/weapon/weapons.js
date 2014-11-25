@@ -667,7 +667,7 @@ var weapon = {
         // Spawn enemies when off cooldown and in range
         if (weapon.checkTime(data, this.isInRange(data.range))) {
             var pos = weapon.getPosition(this, data);
-            enemyManager.spawnEnemy(data.enemies, pos.x, pos.y);
+            enemyManager.spawnEnemy(data.enemies, pos).exp = 0;
         }
     },
 
