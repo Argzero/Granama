@@ -281,13 +281,17 @@ function EnemyManager(screen) {
                 && this.enemies.length + screen.score < this.bossScore) {
             
             // Get a spawn point off of the gameScreen
+			/*
             var x, y;
             do {
                 x = Rand(GAME_WIDTH - 200 + 100);
                 y = Rand(GAME_HEIGHT - 200 + 100);
             }
             while (!OffScreen(x, y, 100));
-            
+			*/
+			x = GAME_WIDTH / 2;
+			y = GAME_HEIGHT / 2;
+		
             this.SpawnEnemy(SPAWN_DATA, x, y);
             
             // Apply the cooldown

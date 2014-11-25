@@ -92,7 +92,6 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
         
 		// Damages the player using an optional damage source
 		Damage: function(amount, damager) {
-            return;
             this.damageAbsorbed += amount;
             this.profile.addStat(this.name, STAT.TOTAL_ABSORBED, amount);
             
@@ -131,6 +130,9 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
                 this.profile.addStat(this.name, STAT.TOTAL_TAKEN, amount);
                 
                 this.health = Math.max(0, this.health - amount);
+				if (this.health <= 0) {
+					this.health = this.maxHealth;
+				}
                 
                 if (this.health == 0) {
                     
