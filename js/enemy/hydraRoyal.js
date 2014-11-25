@@ -45,10 +45,10 @@ function RoyalHydra(x, y) {
 				range: 600,
 				radius: 100,
 				knockback: 150,
-				rate: 90,
+				rate: 30,
 				dx: m * (400 + 340 * j),
 				dy: 100 - 100 * j,
-				speed: 12
+				speed: 16
 			}, 0);
 		}
 	}
@@ -106,19 +106,41 @@ function RoyalHydra(x, y) {
     enemy.head.reverse = enemy.headLeft.rope.reverse = enemy.headRight.rope.reverse = true;
     enemy.headLeft.rope.rel = Vector(COS_60, SIN_60);
     enemy.headRight.rope.rel = Vector(COS_60, -SIN_60);
+    enemy.head.held = null;
+    enemy.head.heldTimer = 0;
+    enemy.head.hydra = enemy;
+    enemy.head.consumeDamageStart = damageScale * 5;
+    enemy.head.consumeDamageTick = damageScale * 0.1;
+    enemy.head.consume = ConsumeAttackHelper;
     enemy.ApplySprite = function() {
+        var end = this.head.segments[this.head.segments.length - 1];
         this.head.update();
         this.headLeft.update();
 		this.headRight.update();
+        
+        // Consumption attack
+        var rot = this.head.getEndDir();
+		rot.Rotate(-1, 0);
+		this.head.cos = rot.x;
+		this.head.sin = rot.y;
+        this.head.x = end.pos.x;
+        this.head.y = end.pos.y;
+        this.head.consume();
     }
 
     return enemy;
 }
 
 function RoyalHydraSideHead(hydra, rope, damage) {
+
 	this.hydra = hydra;
 	this.rope = rope;
 	this.pattern = 0;
+    this.held = null;
+    this.heldTimer = 0;
+    this.consumeDamageStart = damage * 5;
+    this.consumeDamageTick = damage * 0.1;
+    this.consume = ConsumeAttackHelper;
 	
 	// Side head weapon 0 - flamethrower
 	this.flamethrower = EnemyWeaponRail;
@@ -132,6 +154,7 @@ function RoyalHydraSideHead(hydra, rope, damage) {
 		discharge: 0,
         duration: 240,
 		rate: 120,
+        speed: 14,
 		cd: 0,
 		list: gameScreen.enemyManager.bullets
 	};
@@ -152,8 +175,44 @@ RoyalHydraSideHead.prototype.update = function() {
 		this.cos = rot.x;
 		this.sin = rot.y;
 		this.angle = Math.atan2(this.sin, this.cos);
-		
-		this.flamethrower(this.fireData);
+        
+        this.consume();
+        
+        if (!this.held) {
+            this.flamethrower(this.fireData);
+        }
 	}
 	this.rope.update();
+}
+
+function ConsumeAttackHelper() {
+
+    // Consume attack
+    var holdX = this.x + this.cos * 150;
+    var holdY = this.y + this.sin * 150;
+    if (!this.held && this.hydra.pattern != 1 && this.heldTimer <= 0) {
+        var p = playerManager.getClosest(this.x, this.y);
+        var dx = p.x - holdX;
+        var dy = p.y - holdY;
+        if (dx * dx + dy * dy < 10000) {
+            this.held = p;
+            this.heldTimer = 300;
+            p.disableClamp = true;
+            p.Damage(this.consumeDamageStart, this.hydra);
+        }
+    }
+    else if (this.held) {
+        this.held.Damage(this.consumeDamageTick, this.hydra);
+        this.held.x = holdX;
+        this.held.y = holdY;
+        this.heldTimer--;
+        if (this.heldTimer <= 0 || this.hydra.pattern == 1) {
+            this.heldTimer = 300;
+            this.held.disableClamp = false;
+            this.held = null;
+        }
+    }
+    else if (this.heldTimer > 0) {
+        this.heldTimer--;
+    }
 }

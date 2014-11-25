@@ -254,7 +254,9 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 			}
 			
 			// Bounding
-			this.clamp();
+            if (!this.disableClamp) {
+                this.clamp();
+            }
 		},
         
         // Calmps the player to the game field
