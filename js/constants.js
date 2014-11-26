@@ -179,7 +179,7 @@ SPAWN_SCALE = 0.3,
 MAX_ENEMIES = 1,
 MINIBOSS_START = 8,
 SPAWN_DATA = [
-    10000000, 0, RoyalHydra,
+    10000000, 0, BabyHydra,
     90, 0, LightRangedEnemy,
     45, 1, HeavyRangedEnemy,
     60, 0, LightArtilleryEnemy,

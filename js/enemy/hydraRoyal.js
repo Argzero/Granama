@@ -1,3 +1,88 @@
+function BabyHydra(x, y) {
+    // Base enemy stats
+    var c = gameScreen.enemyManager.bossCount;
+    var enemy = EnemyBase(
+        GetImage('hydraBabyBody'), 
+        x, 
+        y,
+        100 * ScalePower(c, 1.4) * playerManager.players.length,
+        10,
+        750,
+		1,
+        600,
+        750
+    );
+    enemy.rank = STAT.DRAGON;
+    
+    enemy.pierceDamage = 0.3;
+    enemy.Knockback = undefined;
+    enemy.Slow = undefined;
+    enemy.stun = undefined;
+    enemy.IsInRange = function() { return true; };
+    enemy.turnRange = 750 * 750;
+    enemy.disableClamp = true;
+    
+    // Specific values
+    enemy.leftWing = GetImage('hydraBabyWingLeft');
+    enemy.rightWing = GetImage('hydraBabyWingRight');
+    
+    // Movement pattern
+    enemy.ApplyMove = EnemyMoveDragon;
+    
+    var damageScale = ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000);
+    
+	// Attack pattern 0 - Missile Barrage
+	/*
+    enemy.SetMovement(0, EnemyMoveDragon);
+	for (var i = 0; i < 2; i++) {
+		var m = i * 2 - 1;
+		for (var j = 0; j < 2; j++) {
+			enemy.AddWeapon(EnemyWeaponHomingRocket, {
+				sprite: GetImage('rocket'),
+				damage: 6 * damageScale,
+				range: 600,
+				radius: 100,
+				knockback: 150,
+				rate: 30,
+				dx: m * (400 + 340 * j),
+				dy: 100 - 100 * j,
+				speed: 16
+			}, 0);
+		}
+	}
+	*/
+	
+    // Hydra's tail   
+	enemy.tail = new RopeTail(enemy, GetImage('hydraBabyTail'), GetImage('hydraBabyEnd'), 5, 100, 90, 50, 25);
+	enemy.ApplyDraw = function() {
+    
+        // Turn into royal hydra
+        if (this.health < this.maxHealth * 0.2) {
+            if (this.exp > 0) {
+                gameScreen.particles.push(new RocketExplosion('Enemy', this.x, this.y, 1500));
+                gameScreen.enemyManager.enemies = [];
+                gameScreen.enemyManager.enemies.push(RoyalHydra(-200, -200));
+            }
+        }
+	
+        // Tail
+        this.tail.update();
+        
+        canvas.save();
+        canvas.translate(this.sprite.width / 2, this.sprite.height / 2);
+		canvas.transform(this.sin, -this.cos, this.cos, this.sin, 0, 0);
+        canvas.translate(-this.sprite.width / 2, -this.sprite.height / 2);
+        
+        // Wings
+        canvas.drawImage(this.rightWing, this.sprite.width - 100, -210);
+        canvas.drawImage(this.leftWing, 100 - this.leftWing.width, -210);
+        
+        canvas.restore();
+	}
+
+    return enemy;
+}
+
 function RoyalHydra(x, y) {
 
     // Base enemy stats
@@ -30,7 +115,6 @@ function RoyalHydra(x, y) {
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveDragon;
-	enemy.speed = 8;
     
     var damageScale = ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000);
     
