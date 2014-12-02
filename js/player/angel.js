@@ -149,7 +149,9 @@ function PlayerAngelType() {
 				if(p.staticActive)
 				{
 					//gives enemy some slowness
-					enemy.Slow(.9 - (.05 * this.upgrades[STATIC_AURA_ID]),50);
+					if (enemy.Slow) {
+						enemy.Slow(.9 - (.05 * this.upgrades[STATIC_AURA_ID]),50);
+					}
 				}
 				else
 				{
