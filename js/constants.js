@@ -217,6 +217,9 @@ BOSS_SPAWNS = [
     TankBoss,
     DragonBoss
 ],
+HYDRA_SPAWNS = [
+	1, 0, BabyHydra
+],
 DRAGON_SPAWNS = [
     1, 0, HunterEnemy
 ],

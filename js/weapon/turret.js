@@ -17,6 +17,7 @@ function Turret(x, y, damage, health) {
     this.angle = 0;
     this.cos = 0;
     this.sin = 1;
+	this.collides = false;
     this.gunData = { 
         cd: 0, 
         list: gameScreen.enemyManager.bullets, 
@@ -36,6 +37,19 @@ function Turret(x, y, damage, health) {
         this.angle = AngleTo(player, this);
         this.cos = -Math.sin(this.angle);
         this.sin = Math.cos(this.angle);
+		
+		// Collision
+		if (this.collides) {
+			var dx = player.x - this.x;
+			var dy = player.y - this.y;
+			var dSq = dx * dx + dy * dy;
+			var r = this.sprite.width / 2 + player.sprite.width;
+			if (dSq < Sq(r) && !player.disableClamp) {
+				var d = r / Math.sqrt(dSq);
+				player.x = this.x + d * dx;
+				player.y = this.y + d * dy;
+			}
+		}
         
         // Fire if in range
         this.Fire(this.gunData);

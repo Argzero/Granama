@@ -25,43 +25,45 @@ function BabyHydra(x, y) {
     // Specific values
     enemy.leftWing = GetImage('hydraBabyWingLeft');
     enemy.rightWing = GetImage('hydraBabyWingRight');
-    
+    enemy.leftArm = GetImage('hydraBabyArmLeft');
+	enemy.rightArm = GetImage('hydraBabyArmRight');
+	enemy.canTransform = gameScreen.enemyManager.enemies.length == 0;
+	
     // Movement pattern
     enemy.ApplyMove = EnemyMoveDragon;
     
     var damageScale = ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000);
     
 	// Attack pattern 0 - Missile Barrage
-	/*
     enemy.SetMovement(0, EnemyMoveDragon);
 	for (var i = 0; i < 2; i++) {
 		var m = i * 2 - 1;
-		for (var j = 0; j < 2; j++) {
-			enemy.AddWeapon(EnemyWeaponHomingRocket, {
-				sprite: GetImage('rocket'),
-				damage: 6 * damageScale,
-				range: 600,
-				radius: 100,
-				knockback: 150,
-				rate: 30,
-				dx: m * (400 + 340 * j),
-				dy: 100 - 100 * j,
-				speed: 16
-			}, 0);
-		}
+		enemy.AddWeapon(EnemyWeaponRocket, {
+			sprite: GetImage('rocket'),
+			damage: 6 * damageScale,
+			range: 500,
+			radius: 100,
+			knockback: 150,
+			rate: 50,
+			dx: m * 170,
+			dy: 10,
+			speed: 16,
+			angleOffset: 45 * m,
+			lists: [playerManager.getRobots()]
+		}, 0);
 	}
-	*/
 	
     // Hydra's tail   
 	enemy.tail = new RopeTail(enemy, GetImage('hydraBabyTail'), GetImage('hydraBabyEnd'), 5, 100, 90, 50, 25);
 	enemy.ApplyDraw = function() {
     
         // Turn into royal hydra
-        if (this.health < this.maxHealth * 0.2) {
+        if (this.canTransform && this.health < this.maxHealth * 0.2) {
             if (this.exp > 0) {
-                gameScreen.particles.push(new RocketExplosion('Enemy', this.x, this.y, 1500));
+                gameScreen.particles.push(new RocketExplosion('Enemy', this.x, this.y, 3000));
                 gameScreen.enemyManager.enemies = [];
                 gameScreen.enemyManager.enemies.push(RoyalHydra(-200, -200));
+				gameScreen.enemyManager.turrets = [];
             }
         }
 	
@@ -76,6 +78,10 @@ function BabyHydra(x, y) {
         // Wings
         canvas.drawImage(this.rightWing, this.sprite.width - 100, -210);
         canvas.drawImage(this.leftWing, 100 - this.leftWing.width, -210);
+		
+		// arms
+		canvas.drawImage(this.rightArm, this.sprite.width - 45, -30);
+		canvas.drawImage(this.leftArm, 45 - this.leftArm.width, -30);
         
         canvas.restore();
 	}
@@ -95,8 +101,8 @@ function RoyalHydra(x, y) {
         8,
         750,
 		2388,
-        600,
-        750
+        720,
+        900
     );
     enemy.rank = STAT.DRAGON;
     
@@ -108,15 +114,18 @@ function RoyalHydra(x, y) {
     enemy.turnRange = 1000 * 1000;
     enemy.disableClamp = true;
 	enemy.rotateSpeed = Math.PI / 240;
+	enemy.patternTimer = enemy.patternMax;
+	enemy.pattern = 3;
     
     // Specific values
     enemy.leftWing = GetImage('hydraRoyalWingLeft');
     enemy.rightWing = GetImage('hydraRoyalWingRight');
     
     // Movement pattern
-    enemy.ApplyMove = EnemyMoveDragon;
+    enemy.ApplyMove = EnemyMoveHydraPads;
     
     var damageScale = ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000);
+	enemy.damageScale = damageScale;
     
 	// Attack pattern 0 - Missile Barrage
 	enemy.SetMovement(0, EnemyMoveDragon);
@@ -153,19 +162,39 @@ function RoyalHydra(x, y) {
 	enemy.AddWeapon(EnemyWeaponRail, enemy.hyperBeamData, 1);
 	enemy.hyperBeamData.cd = 60;
 	
+	// Attack pattern 2 - Spawn baby
+	enemy.SetMovement(2, EnemyMoveDragonCenter);
+	enemy.AddWeapon(EnemyWeaponSpawn, {
+		enemies: HYDRA_SPAWNS,
+        max: 1,
+        rate: 120,
+        delay: 120,
+        dx: 0,
+        dy: 0
+	}, 2);
+	
+	// Attack pattern 3 - Lay turrets
+	enemy.SetMovement(3, EnemyMoveHydraPads);
+	
     // Hydra's tail   
 	enemy.tail = new RopeTail(enemy, GetImage('hydraRoyalTail'), GetImage('hydraRoyalEnd'), 7, 175, 150, 175, 20);
 	enemy.ApplyDraw = function() {
+	
+		// Turret laying stops when all are occupied
+		if (this.pattern == 3 && gameScreen.enemyManager.turrets.length == 4) {
+			this.pattern = 0;
+			this.ApplyMove = this.movements[0];
+		}
 	
 		// Hyper beam
 		if (this.hyperBeamData.cd < 0 && !this.firinLazors) {
 			this.firinLazors = true;
 		}
 		else if (this.hyperBeamData.cd > 0 && this.firinLazors) {
-			do {
-				this.SwitchPattern();
-			}
-			while (this.pattern == 1);
+			this.firinLazors = false;
+			this.pattern = 0;
+			this.ApplyMove = this.movements[0];
+			this.patternTimer = this.patternMax;
 		}
 	
         // Tail
