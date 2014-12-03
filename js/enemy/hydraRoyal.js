@@ -116,10 +116,15 @@ function RoyalHydra(x, y) {
 	enemy.rotateSpeed = Math.PI / 240;
 	enemy.patternTimer = enemy.patternMax;
 	enemy.pattern = 3;
+	
+	// Test settings
+	//enemy.pattern = 4;
+	//enemy.patternTimer = 999999;
     
     // Specific values
     enemy.leftWing = GetImage('hydraRoyalWingLeft');
     enemy.rightWing = GetImage('hydraRoyalWingRight');
+	enemy.fireball = GetImage("FireBall");
     
     // Movement pattern
     enemy.ApplyMove = EnemyMoveHydraPads;
@@ -176,6 +181,23 @@ function RoyalHydra(x, y) {
 	// Attack pattern 3 - Lay turrets
 	enemy.SetMovement(3, EnemyMoveHydraPads);
 	
+	// Attack pattern 4 - Fireball
+	enemy.SetMovement(4, EnemyMoveDragon);
+	enemy.AddWeapon(EnemyWeaponRocket, {
+		sprite: GetImage('FireBall'),
+		damage: 20 * damageScale,
+		range: 500,
+		radius: 200,
+		knockback: 100,
+		rate: 120,
+		dx: 0,
+		dy: 550,
+		rotation: Math.PI / 20,
+		speed: 20,
+		angleOffset: 0,
+		lists: [playerManager.getRobots()]
+	}, 4);
+	
     // Hydra's tail   
 	enemy.tail = new RopeTail(enemy, GetImage('hydraRoyalTail'), GetImage('hydraRoyalEnd'), 7, 175, 150, 175, 20);
 	enemy.ApplyDraw = function() {
@@ -185,7 +207,7 @@ function RoyalHydra(x, y) {
 			this.pattern = 0;
 			this.ApplyMove = this.movements[0];
 		}
-	
+		
 		// Hyper beam
 		if (this.hyperBeamData.cd < 0 && !this.firinLazors) {
 			this.firinLazors = true;
@@ -203,8 +225,23 @@ function RoyalHydra(x, y) {
         canvas.save();
         canvas.translate(this.sprite.width / 2, this.sprite.height / 2);
 		canvas.transform(this.sin, -this.cos, this.cos, this.sin, 0, 0);
-        canvas.translate(-this.sprite.width / 2, -this.sprite.height / 2);
         
+		// Fireball charging
+		if (this.pattern == 4) {
+			var cd = this.patterns[4][0].cd;
+			if (cd < 90) {
+				var w = (1 - cd / 90) * this.fireball.width;
+				canvas.save();
+				canvas.translate(0, 550);
+				canvas.rotate(-cd * Math.PI / 20);
+				canvas.drawImage(this.fireball, -w/2, -w/2, w, w);
+				canvas.restore();
+			}
+		}
+		else this.patterns[4][0].cd = this.patterns[4][0].rate;
+		
+		canvas.translate(-this.sprite.width / 2, -this.sprite.height / 2);
+		
         // Wings
         canvas.drawImage(this.rightWing, this.sprite.width - 250, -325);
         canvas.drawImage(this.leftWing, 250 - this.leftWing.width, -325);
