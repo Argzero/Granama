@@ -27,6 +27,7 @@ function BabyHydra(x, y) {
     enemy.rightWing = GetImage('hydraBabyWingRight');
     enemy.leftArm = GetImage('hydraBabyArmLeft');
 	enemy.rightArm = GetImage('hydraBabyArmRight');
+	enemy.fireball = GetImage("FireBall");
 	enemy.canTransform = gameScreen.enemyManager.enemies.length == 0;
 	
     // Movement pattern
@@ -53,6 +54,24 @@ function BabyHydra(x, y) {
 		}, 0);
 	}
 	
+	// Attack pattern 1 - Fireball
+	enemy.SetMovement(1, EnemyMoveDragon);
+	enemy.AddWeapon(EnemyWeaponRocket, {
+		sprite: GetImage('FireBall'),
+		damage: 15 * damageScale,
+		range: 500,
+		radius: 150,
+		knockback: 75,
+		rate: 150,
+		dx: 0,
+		dy: 100,
+		scale: 0.6,
+		rotation: -Math.PI / 20,
+		speed: 20,
+		angleOffset: 0,
+		lists: [playerManager.getRobots()]
+	}, 1);
+	
     // Hydra's tail   
 	enemy.tail = new RopeTail(enemy, GetImage('hydraBabyTail'), GetImage('hydraBabyEnd'), 5, 100, 90, 50, 25);
 	enemy.ApplyDraw = function() {
@@ -73,6 +92,21 @@ function BabyHydra(x, y) {
         canvas.save();
         canvas.translate(this.sprite.width / 2, this.sprite.height / 2);
 		canvas.transform(this.sin, -this.cos, this.cos, this.sin, 0, 0);
+		
+		// Fireball charging
+		if (this.pattern == 1) {
+			var cd = this.patterns[1][0].cd;
+			if (cd < 90) {
+				var w = (1 - cd / 90) * this.fireball.width * 0.6;
+				canvas.save();
+				canvas.translate(0, 100);
+				canvas.rotate(cd * Math.PI / 20);
+				canvas.drawImage(this.fireball, -w/2, -w/2, w, w);
+				canvas.restore();
+			}
+		}
+		else this.patterns[1][0].cd = this.patterns[1][0].rate;
+		
         canvas.translate(-this.sprite.width / 2, -this.sprite.height / 2);
         
         // Wings
@@ -192,7 +226,7 @@ function RoyalHydra(x, y) {
 		rate: 120,
 		dx: 0,
 		dy: 550,
-		rotation: Math.PI / 20,
+		rotation: -Math.PI / 20,
 		speed: 20,
 		angleOffset: 0,
 		lists: [playerManager.getRobots()]
@@ -233,7 +267,7 @@ function RoyalHydra(x, y) {
 				var w = (1 - cd / 90) * this.fireball.width;
 				canvas.save();
 				canvas.translate(0, 550);
-				canvas.rotate(-cd * Math.PI / 20);
+				canvas.rotate(cd * Math.PI / 20);
 				canvas.drawImage(this.fireball, -w/2, -w/2, w, w);
 				canvas.restore();
 			}
