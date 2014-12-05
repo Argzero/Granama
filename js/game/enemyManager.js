@@ -268,7 +268,7 @@ function EnemyManager(screen) {
         var x, y;
         
         // Boss spawning
-        if (this.bossStatus == ACTIVE_NONE && screen.score == this.bossScore) {
+        if (this.bossStatus == ACTIVE_NONE && screen.score >= this.bossScore) {
             this.bossStatus = ACTIVE_BOSS;
             this.SpawnBoss(this.bossCount);
             this.bossCount++;

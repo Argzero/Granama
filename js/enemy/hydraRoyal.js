@@ -41,7 +41,7 @@ function BabyHydra(x, y) {
 		var m = i * 2 - 1;
 		enemy.AddWeapon(EnemyWeaponRocket, {
 			sprite: GetImage('rocket'),
-			damage: 6 * damageScale,
+			damage: 2 * damageScale,
 			range: 500,
 			radius: 100,
 			knockback: 150,
@@ -58,7 +58,7 @@ function BabyHydra(x, y) {
 	enemy.SetMovement(1, EnemyMoveDragon);
 	enemy.AddWeapon(EnemyWeaponRocket, {
 		sprite: GetImage('FireBall'),
-		damage: 15 * damageScale,
+		damage: 4 * damageScale,
 		range: 500,
 		radius: 150,
 		knockback: 75,
@@ -131,7 +131,7 @@ function RoyalHydra(x, y) {
         GetImage('hydraRoyalBody'), 
         x, 
         y,
-        2500 * ScalePower(c, 1.4) * playerManager.players.length,
+        1200 * ScalePower(c, 1.4) * playerManager.players.length,
         8,
         750,
 		2388,
@@ -173,11 +173,11 @@ function RoyalHydra(x, y) {
 		for (var j = 0; j < 2; j++) {
 			enemy.AddWeapon(EnemyWeaponHomingRocket, {
 				sprite: GetImage('rocket'),
-				damage: 6 * damageScale,
+				damage: 2 * damageScale,
 				range: 600,
 				radius: 100,
 				knockback: 150,
-				rate: 30,
+				rate: 75,
 				dx: m * (400 + 340 * j),
 				dy: 100 - 100 * j,
 				speed: 16
@@ -189,7 +189,7 @@ function RoyalHydra(x, y) {
 	enemy.SetMovement(1, EnemyMoveRotate);
 	enemy.hyperBeamData = {
         sprite: GetImage('bossCannon'),
-        damage: 2 * damageScale,
+        damage: damageScale,
         rate: 60,
         range: 1000,
         discharge: 0.1,
@@ -205,7 +205,7 @@ function RoyalHydra(x, y) {
 	enemy.SetMovement(2, EnemyMoveDragonCenter);
 	enemy.AddWeapon(EnemyWeaponSpawn, {
 		enemies: HYDRA_SPAWNS,
-        max: 1,
+        max: 2,
         rate: 120,
         delay: 120,
         dx: 0,
@@ -219,7 +219,7 @@ function RoyalHydra(x, y) {
 	enemy.SetMovement(4, EnemyMoveDragon);
 	enemy.AddWeapon(EnemyWeaponRocket, {
 		sprite: GetImage('FireBall'),
-		damage: 20 * damageScale,
+		damage: 5 * damageScale,
 		range: 500,
 		radius: 200,
 		knockback: 100,
@@ -243,6 +243,22 @@ function RoyalHydra(x, y) {
 		}
 		
 		// Hyper beam
+		if (this.pattern == 1) 
+		{
+			for (var i = 0; i < playerManager.players.length; i++)
+			{
+				var r = playerManager.players[i].robot;
+				var dx = r.x - this.x;
+				var dy = r.y - this.y;
+				if (dx * dx + dy * dy < Sq(600))
+				{
+					var d = Math.sqrt(dx * dx + dy * dy);
+					dx /= d;
+					dy /= d;
+					r.Knockback(dx * 100, dy * 100);
+				}
+			}
+		}
 		if (this.hyperBeamData.cd < 0 && !this.firinLazors) {
 			this.firinLazors = true;
 		}
@@ -293,8 +309,8 @@ function RoyalHydra(x, y) {
     enemy.head.held = null;
     enemy.head.heldTimer = 0;
     enemy.head.hydra = enemy;
-    enemy.head.consumeDamageStart = damageScale * 5;
-    enemy.head.consumeDamageTick = damageScale * 0.1;
+    enemy.head.consumeDamageStart = damageScale;
+    enemy.head.consumeDamageTick = damageScale * 0.02;
     enemy.head.consume = ConsumeAttackHelper;
     enemy.ApplySprite = function() {
         var end = this.head.segments[this.head.segments.length - 1];
@@ -323,7 +339,7 @@ function RoyalHydraSideHead(hydra, rope, damage) {
     this.held = null;
     this.heldTimer = 0;
     this.consumeDamageStart = damage * 5;
-    this.consumeDamageTick = damage * 0.1;
+    this.consumeDamageTick = damage;
     this.consume = ConsumeAttackHelper;
 	
 	// Side head weapon 0 - flamethrower
@@ -386,7 +402,7 @@ function ConsumeAttackHelper() {
         }
     }
     else if (this.held) {
-        this.held.Damage(this.consumeDamageTick, this.hydra);
+        //this.held.Damage(this.consumeDamageTick, this.hydra);
         this.held.x = holdX;
         this.held.y = holdY;
         this.heldTimer--;

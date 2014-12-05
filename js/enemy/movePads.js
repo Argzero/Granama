@@ -18,7 +18,7 @@ function EnemyMoveHydraPads() {
 			var turret = new Turret(
 				this.padX,
 				this.padY,
-				this.damageScale * 2,
+				this.damageScale,
 				125 * ScalePower(gameScreen.enemyManager.bossCount, 1.2) * playerManager.players.length
 			);
 			turret.sprite = GetImage('padTurretTop');
