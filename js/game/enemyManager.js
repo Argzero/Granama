@@ -5,6 +5,8 @@ function EnemyManager(screen) {
     this.bossScore = Math.floor(BOSS_SPAWN_BASE * (0.6 + 0.4 * playerManager.players.length));
     this.bossIncrement = Math.floor(BOSS_SPAWN_BASE * (0.6 + 0.4 * playerManager.players.length));
     this.bossCount = 0;
+	this.bossId = 0;
+	this.superBossId = 0;
 	this.timer = 0;
     this.expM = [1, 5/3, 9/4, 8/3, 35/12];
     
@@ -347,7 +349,8 @@ function EnemyManager(screen) {
     };
     
     // Spawns a boss
-    this.SpawnBoss = function(id) {
+    this.SpawnBoss = function() {
+	
         // Get the position
         if (gameScreen.scrollX + WINDOW_WIDTH / 2 < GAME_WIDTH / 2) {
             x = GAME_WIDTH - 500;
@@ -363,6 +366,37 @@ function EnemyManager(screen) {
         }
         
         // Spawn the boss
-        this.enemies.push(BOSS_SPAWNS[id % BOSS_SPAWNS.length](x, y));
+		if (this.bossId < 5)
+		{
+			this.enemies.push(BOSS_SPAWNS[this.bossId % BOSS_SPAWNS.length](x, y));
+			this.bossId++;
+		}
+		else
+		{
+			if (this.superBossId == 0)
+			{
+				this.enemies.push(DragonBoss(x, y));
+			}
+			else 
+			{
+				this.enemies.push(BabyHydra(x, y));
+			}
+			this.superBossId++;
+			this.ShuffleBosses();
+		}
     };
+	
+	// Shuffles the list of bosses
+	this.ShuffleBosses = function() {
+		var list = [];
+		while (BOSS_SPAWNS.length > 0)
+		{
+			var id = Rand(BOSS_SPAWNS.length);
+			list.push(BOSS_SPAWNS[id]);
+			BOSS_SPAWNS.splice(id, 1);
+		}
+		BOSS_SPAWNS = list;
+		this.bossId = 0;
+	};
+	this.ShuffleBosses();
 }

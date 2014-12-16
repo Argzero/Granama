@@ -64,9 +64,7 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
             this.exp += amount;
             this.profile.addStat(this.name, STAT.TOTAL_EXP, amount);
             
-			gameScreen.enemyManager.bossCount = 11;
-			gameScreen.score = 2250;
-			while (this.exp >= this.level * 200 || this.level < 28) {
+			while (this.exp >= this.level * 200) {
 				
 				this.exp -= this.level * 200;
 				if (this.level <= 25) {

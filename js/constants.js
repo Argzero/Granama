@@ -169,14 +169,14 @@ ACTIVE_BOSS = 1,
 MAX_BOSS_INTERVAL = 40,
 BOSS_SPAWN_INTERVAL = 180,
 // Normal base rate
-//BOSS_SPAWN_BASE = 50,
-//BOSS_SPAWN_SCALE = 25,
+BOSS_SPAWN_BASE = 50,
+BOSS_SPAWN_SCALE = 25,
 // Testing base rate
-BOSS_SPAWN_BASE = 1,
-BOSS_SPAWN_SCALE = 0,
+//BOSS_SPAWN_BASE = 1,
+//BOSS_SPAWN_SCALE = 0,
 SPAWN_RATE = 180,
 SPAWN_SCALE = 0.3,
-MAX_ENEMIES = 1,
+MAX_ENEMIES = 30,
 MINIBOSS_START = 8,
 SPAWN_DATA = [
     //10000000, 0, BabyHydra,
@@ -214,8 +214,7 @@ BOSS_SPAWNS = [
 	FireBoss,
     PunchBoss,
     QueenBoss,
-    TankBoss,
-    BabyHydra
+    TankBoss
 ],
 HYDRA_SPAWNS = [
 	1, 0, BabyHydra
