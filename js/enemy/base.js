@@ -23,6 +23,7 @@ function EnemyBase(sprite, x, y, health, speed, range, exp, patternMin, patternM
         movements: [],
 		patterns: [[]],
 		pattern: 0,
+		patternCount: 0,
 		patternMin: patternMin,
 		patternMax: patternMax,
 		patternTimer: 0,
@@ -93,6 +94,7 @@ var enemyFunctions = {
     AddWeapon: function(method, data, pattern) {
 		if (pattern === undefined) pattern = 0;
 		
+		this.patternCount = Math.max(pattern, this.patternCount);
         data.method = method.bind(this);
         data.list = gameScreen.enemyManager.bullets;
         data.cd = 0;
@@ -102,17 +104,19 @@ var enemyFunctions = {
 	
 	// Sets a range for a specific pattern
 	SetRange: function(pattern, range) {
+		this.patternCount = Math.max(pattern + 1, this.patternCount);
 		this.ranges[pattern] = range;
 	},
 	
 	// Sets the movement for a specific pattern
 	SetMovement: function(pattern, movement) {
+		this.patternCount = Math.max(pattern + 1, this.patternCount);
 		this.movements[pattern] = movement;
 	},
     
     // Switches attack patterns
     SwitchPattern: function() {
-        this.pattern = Rand(this.patterns.length);
+        this.pattern = Rand(this.patternCount);
         this.range = this.ranges[this.pattern] || this.range;
         this.ApplyMove = this.movements[this.pattern] || this.ApplyMove;
         this.patternTimer = Rand(this.patternMax - this.patternMin) + this.patternMin;
@@ -138,7 +142,7 @@ var enemyFunctions = {
 		}
     
 		// Pattern switching
-		if (this.patterns.length > 1) {
+		if (this.patternCount > 1) {
 			this.patternTimer--;
 			if (this.patternTimer <= 0) {
                 this.SwitchPattern();
@@ -164,7 +168,7 @@ var enemyFunctions = {
         }
         
         // Apply weapons
-        for (var i = 0; i < this.patterns[this.pattern].length; i++) {
+        for (var i = 0; this.patterns[this.pattern] !== undefined && i < this.patterns[this.pattern].length; i++) {
             this.patterns[this.pattern][i].method(this.patterns[this.pattern][i]);
         }
         
@@ -199,8 +203,10 @@ var enemyFunctions = {
     
     // Clamps the enemy to the map
     clamp: function() {
-        this.x = clamp(this.x, this.sprite.width / 2, GAME_WIDTH - this.sprite.width / 2);
-        this.y = clamp(this.y, this.sprite.height / 2, GAME_HEIGHT - this.sprite.height / 2);
+        if (!this.disableClamp) {
+            this.x = clamp(this.x, this.sprite.width / 2, GAME_WIDTH - this.sprite.width / 2);
+            this.y = clamp(this.y, this.sprite.height / 2, GAME_HEIGHT - this.sprite.height / 2);
+        }
     },
     
     // Draws the enemy

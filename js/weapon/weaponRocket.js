@@ -16,7 +16,9 @@
 //          dy - vertical offset for the bullet spawn location
 //        type - type of explosion
 //       angle - max angle of deviation from a straight shot
+//    rotation - how fast the projectile rotates
 // angleOffset - angle offset of the projectile
+//       scale - size scale of the projectile
 function EnemyWeaponRocket(data) {
 
     // Initialize data
@@ -67,6 +69,12 @@ function EnemyWeaponRocket(data) {
 			data.type || 'Enemy',
             data.lists
         );
+		if (data.rotation) {
+			rocket.rotation = data.rotation;
+		}
+		if (data.scale) {
+			rocket.scale = data.scale;
+		}
         data.list.push(rocket);
         data.cd = data.rate;
     }

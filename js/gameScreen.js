@@ -216,7 +216,7 @@ function GameScreen(bossRush) {
                 }
                 
                 // Regular enemy collision
-                for (var j = 0; j < this.enemyManager.enemies.length; j++) {
+                for (var j = 0; player.bullets[i] && j < this.enemyManager.enemies.length; j++) {
                 
                     // See if the bullet hit the enemy
                     if (player.bullets[i].Collides(this.enemyManager.enemies[j])) {
@@ -277,7 +277,7 @@ function GameScreen(bossRush) {
     // Updates the music depending on the state of the game
     this.UpdateMusic = UpdateMusic;
     function UpdateMusic() {
-
+        return;
         // Player must be alive for the music to play
         if (!this.gameOver) {
         

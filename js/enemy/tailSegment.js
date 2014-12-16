@@ -49,3 +49,7 @@ TailSegment.prototype.draw = function() {
     canvas.transform(this.dir.y, -this.dir.x, this.dir.x, this.dir.y, 0, 0);
     canvas.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
 }
+
+TailSegment.prototype.rotate = function(cos, sin) {
+    this.pos.RotateAround(cos, sin, this.parent.pos);
+}

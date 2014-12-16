@@ -17,6 +17,7 @@ function ProjectileBase(sprite, source, x, y, velX, velY, angle, damage, range, 
         velX: velX,
         velY: velY,
         angle: angle,
+		rotation: 0,
         cos: cos,
         sin: sin,
         range: range,
@@ -98,10 +99,8 @@ function SlowProjectile(sprite, source, x, y, velX, velY, angle, damage, range, 
 // Rotating projectile
 function RotatingProjectile(sprite, source, x, y, velX, velY, angle, damage, range, rotSpeed) {
     var projectile = ProjectileBase(sprite, source, x, y, velX, velY, angle, damage, range); 
-	projectile.rotSpeed = Rand(rotSpeed);
+	projectile.rotation = Rand(rotSpeed);
 	projectile.scale = (Rand(3))/3 + 1;
-	projectile.updateBase = projectile.Update;
-	projectile.ApplyUpdate = projectileFunctions.UpdateSpinningProjectile;
     return projectile;
 }
 
@@ -166,12 +165,19 @@ var projectileFunctions = {
         if (dx * dx + dy * dy >= this.range * this.range) {
             this.expired = true;
         }
-        
+		
         // Mark as expired when off screen
-        if (!this.offScreen && !WithinScreen(this)) {
+        else if (!this.offScreen && !WithinScreen(this)) {
             this.expired = true;
         }
         
+		// Rotation
+		else if (this.rotation) {
+			this.angle += this.rotation;
+			this.cos = Math.cos(this.angle);
+			this.sin = Math.sin(this.angle);
+		}
+		
         // Apply special updates if applicable
         if (this.ApplyUpdate) {
             this.ApplyUpdate();
@@ -372,14 +378,6 @@ var projectileFunctions = {
 		this.source[this.side + 'Fist'] = true;
 	},
 	
-	UpdateSpinningProjectile: function() {
-		
-		this.angle = this.angle += this.rotSpeed;
-		this.cos = Math.cos(this.angle);
-		this.sin = Math.sin(this.angle);
-	
-	},
-    
     // Updates a sword projectile
     updateSword: function() {
         

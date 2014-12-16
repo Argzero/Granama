@@ -179,6 +179,7 @@ SPAWN_SCALE = 0.3,
 MAX_ENEMIES = 30,
 MINIBOSS_START = 8,
 SPAWN_DATA = [
+    //10000000, 0, BabyHydra,
     90, 0, LightRangedEnemy,
     45, 1, HeavyRangedEnemy,
     60, 0, LightArtilleryEnemy,
@@ -213,8 +214,10 @@ BOSS_SPAWNS = [
 	FireBoss,
     PunchBoss,
     QueenBoss,
-    TankBoss,
-    DragonBoss
+    TankBoss
+],
+HYDRA_SPAWNS = [
+	1, 0, BabyHydra
 ],
 DRAGON_SPAWNS = [
     1, 0, HunterEnemy
