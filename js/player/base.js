@@ -259,15 +259,9 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 			
 			// Bounding
             if (!this.disableClamp) {
-                this.clamp();
+                gameScreen.Clamp(this);
             }
 		},
-        
-        // Calmps the player to the game field
-        clamp: function() {
-            this.x = clamp(this.x, gameScreen.playerMinX + this.sprite.width / 2, gameScreen.playerMaxX - this.sprite.width / 2);
-            this.y = clamp(this.y, gameScreen.playerMinY + this.sprite.height / 2, gameScreen.playerMaxY - this.sprite.height / 2);
-        },
         
         // Updates the bullets of the player
         updateBullets: function() {

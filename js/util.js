@@ -132,6 +132,7 @@ var vectorMethods = {
 
 // Returns a modified value clamped to the given bounds
 function clamp(value, min, max) {
+	if (min > max) max = min;
     if (value < min) return min;
     if (value > max) return max;
     return value;

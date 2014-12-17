@@ -15,7 +15,13 @@ function SpinnerBall() {
     this.playerMaxY = 9999;
 	this.particles = [];
 	this.arena = GetImage("sbArena");
+	
 	this.spinner = LightBouncerEnemy(GAME_WIDTH / 2, GAME_HEIGHT / 2);
+	this.spinner.ApplyMove = EnemyMoveSpinner;
+	this.spinner.damage = 0;
+	this.spinner.speed = 8;
+	this.spinner.direction.x = 0;
+	this.spinner.direction.y = 1;
     
     // Update function
     this.Update = function() {
@@ -152,11 +158,38 @@ function SpinnerBall() {
     }
 	
 	// Clamps players inside the bounds of the arena
-	this.ClampPlayer = function(player) {
-		var minY = Math.max(20, this.playerMinY + player.sprite.height / 2);
-		var maxY = Math.min(this.playerMaxY - player.sprite.height / 2);
-		player.y = clamp(player.y, minY, );
-		player.x = clamp(player.x, this.playerMinX + player.sprite.width / 2, this.playerMaxX - player.sprite.width / 2);
+	this.Clamp = function(player) {
+		
+		var minY = Math.max(20, this.playerMinY) + player.sprite.height / 2;
+		var maxY = Math.min(GAME_HEIGHT - 20, this.playerMaxY) - player.sprite.height / 2;
+		player.y = clamp(player.y, minY, maxY);
+		
+		var minX = Math.max(210, this.playerMinX) + player.sprite.width / 2;
+		var maxX = Math.min(GAME_WIDTH - 210, this.playerMaxX) - player.sprite.width / 2;
+		player.x = clamp(player.x, minX, maxX);
+		
+		var br = 135 + player.sprite.width / 2;
+		var bx = 210;
+		var by = GAME_HEIGHT / 2;
+		
+		var dx = player.x - bx;
+		var dy = player.y - by;
+		if (dx * dx + dy * dy < br * br)
+		{
+			var l = Math.sqrt(dx * dx + dy * dy);
+			player.x = bx + dx * br / l;
+			player.y = by + dy * br / l;
+		}
+		
+		bx = GAME_WIDTH - bx;
+		var dx = player.x - bx;
+		var dy = player.y - by;
+		if (dx * dx + dy * dy < br * br)
+		{
+			var l = Math.sqrt(dx * dx + dy * dy);
+			player.x = bx + dx * br / l;
+			player.y = by + dy * br / l;
+		}
 	};
 
     // Applies scrolling to the game
