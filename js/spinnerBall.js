@@ -2,6 +2,8 @@ function SpinnerBall() {
 
 	GAME_WIDTH = 1748;
 	GAME_HEIGHT = 813;
+	WINDOW_WIDTH += SIDEBAR_WIDTH
+	SIDEBAR_WIDTH = 0;
 
     this.scrollX = 0;
     this.scrollY = 0;
@@ -111,8 +113,6 @@ function SpinnerBall() {
             canvas.fillText(this.paused.name, WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 + 20);
         }
         
-        this.ui.DrawStatBar();
-        
 		// Draw the upgrade screen if applicable
 		if (this.paused == true) {
 			this.ui.DrawUpgradeUI();
@@ -216,6 +216,9 @@ function SpinnerBall() {
             // Scroll bounds
             this.scrollX = clamp(avgX - WINDOW_WIDTH / 2, 0, GAME_WIDTH - WINDOW_WIDTH);
             this.scrollY = clamp(avgY - WINDOW_HEIGHT / 2, 0, GAME_HEIGHT - WINDOW_HEIGHT);
+			
+			if (WINDOW_HEIGHT > GAME_HEIGHT) this.scrollY = (GAME_HEIGHT - WINDOW_HEIGHT) / 2;
+			if (WINDOW_WIDTH > GAME_WIDTH) this.scrollX = (GAME_WIDTH - WINDOW_WIDTH) / 2;
             
             // player bounds
             this.playerMinX = Math.max(0, Math.min(avgX - WINDOW_WIDTH / 2, this.scrollX) + 100);
