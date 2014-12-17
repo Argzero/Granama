@@ -477,7 +477,7 @@ function HunterEnemy(x, y) {
 function LightBouncerEnemy(x, y) {
 
 	// Base enemy stats
-    var c = gameScreen.enemyManager.bossCount;
+    var c = gameScreen.enemyManager ? gameScreen.enemyManager.bossCount : 10;
     var enemy = EnemyBase(
         GetImage('enemyLightBouncer'), 
         x, 

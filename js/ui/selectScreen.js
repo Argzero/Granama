@@ -570,7 +570,8 @@ function SelectScreen() {
                 robot.profile.addStat(robot.name, STAT.GAMES, 1);
                 robot.profile.addStat(robot.name, robot.ability, 1);
             }
-            gameScreen = new GameScreen(false);
+            //gameScreen = new GameScreen(false);
+			gameScreen = new SpinnerBall();
         }
     };
 }

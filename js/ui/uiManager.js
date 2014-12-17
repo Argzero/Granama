@@ -36,19 +36,20 @@ function UIManager(screen) {
         canvas.fillRect(0, 0, SIDEBAR_WIDTH, WINDOW_HEIGHT);
 
         // Score
-        //canvas.drawImage(scoreTitle, 20, 0);
-        canvas.font = "24px Flipbash";
-        canvas.fillStyle = "#fff";
-        canvas.textBaseline = 'alphabetic';
-        canvas.textAlign = 'left';
-        canvas.fillText("Kills", 10, 30);
-        canvas.fillText("Boss", SIDEBAR_WIDTH - StringWidth("Boss", canvas.font) - 10, 30);
-        canvas.fillRect(5, 35, SIDEBAR_WIDTH - 10, 2);
-        canvas.fillStyle = "#0f0"
-        canvas.font = '20px Flipbash';
-        canvas.fillText(screen.score, 10, 70);
-        canvas.fillText(screen.enemyManager.bossScore, SIDEBAR_WIDTH - StringWidth(screen.enemyManager.bossScore, canvas.font) - 10, 70);
-        
+		if (gameScreen.enemyManager) {
+			canvas.font = "24px Flipbash";
+			canvas.fillStyle = "#fff";
+			canvas.textBaseline = 'alphabetic';
+			canvas.textAlign = 'left';
+			canvas.fillText("Kills", 10, 30);
+			canvas.fillText("Boss", SIDEBAR_WIDTH - StringWidth("Boss", canvas.font) - 10, 30);
+			canvas.fillRect(5, 35, SIDEBAR_WIDTH - 10, 2);
+			canvas.fillStyle = "#0f0"
+			canvas.font = '20px Flipbash';
+			canvas.fillText(screen.score, 10, 70);
+			canvas.fillText(screen.enemyManager.bossScore, SIDEBAR_WIDTH - StringWidth(screen.enemyManager.bossScore, canvas.font) - 10, 70);
+        }
+		
         canvas.font = "30px Flipbash";
         
         // Spacing between upgrade counters

@@ -1,32 +1,21 @@
-function GameScreen(bossRush) {
+function SpinnerBall() {
 
-	GAME_WIDTH = 3000;
-	GAME_HEIGHT = 3000;
+	GAME_WIDTH = 1748;
+	GAME_HEIGHT = 813;
 
     this.scrollX = 0;
     this.scrollY = 0;
-    this.score = 0;
-    this.gameOver = false;
-    
-    this.damageOverlay = GetImage("damage");
-    
-    this.damageAlpha;
+	
     this.paused = undefined;
     this.music;
-    this.dropManager = new DropManager(this);
-    this.enemyManager = new EnemyManager(this);
     this.ui = new UIManager(this);
     this.playerMinX = 0;
     this.playerMinY = 0;
     this.playerMaxX = 9999;
     this.playerMaxY = 9999;
-    this.pads = [
-        HealingPad(GAME_WIDTH / 3, GAME_HEIGHT / 3), 
-        HealingPad(GAME_WIDTH * 2 / 3, GAME_HEIGHT / 3), 
-        HealingPad(GAME_WIDTH / 3, GAME_HEIGHT * 2 / 3), 
-        HealingPad(GAME_WIDTH * 2 / 3, GAME_HEIGHT * 2 / 3)
-    ];
 	this.particles = [];
+	this.arena = GetImage("sbArena");
+	this.spinner = LightBouncerEnemy(GAME_WIDTH / 2, GAME_HEIGHT / 2);
     
     // Update function
     this.Update = function() {
@@ -42,42 +31,15 @@ function GameScreen(bossRush) {
         if (!this.paused) {
 		
 			// Update enemies
-            this.enemyManager.UpdateEnemies();
+            this.spinner.Update();
         
-			// Spawn enemies
-			if (bossRush) {
-                this.enemyManager.CheckBosses();
-            }
-            else {
-                this.enemyManager.CheckSpawns();
-            }
-            
-            // Update healing pads
-            for (var i = 0; i < this.pads.length; i++) {
-                this.pads[i].update();
-            }
+			this.UpdateBullets();
 		
-			// Update environmental objects
-            this.UpdateBullets();
-            this.dropManager.Update();
-            
 			// Update the scroll position
             this.ApplyScrolling();
         }
-        
-        // Check for losing
-        for (var i = 0; i < playerManager.players.length; i++) {
-            if (playerManager.players[i].robot.health > 0) return;
-        }
-        if (!this.gameOver) {
-            this.gameOver = true;
-            
-            for (var i = 0; i < playerManager.players.length; i++) {
-                var p = playerManager.players[i].robot;
-                p.profile.setBest(p.name, STAT.BEST_SCORE, this.score);
-                p.profile.addList(p.name, STAT.LAST_10, 10, this.score);
-            }
-        }
+		
+		// Check for scoring
     };
 	
 	// Pauses the game
@@ -100,23 +62,12 @@ function GameScreen(bossRush) {
         canvas.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH, 0);
 
         // Draw the background
-        if (tile && tile.width) {
-            for (var i = 0; i < WINDOW_WIDTH / tile.width + 1; i++) {
-                var x = i * tile.width - this.scrollX % tile.width;
-                for (var j = 0; j < WINDOW_HEIGHT / tile.height + 1; j++) {
-                    canvas.drawImage(tile, x, j * tile.height - this.scrollY % tile.height);
-                }
-            }
-        }
+		canvas.fillStyle = '#444';
+		canvas.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
         
         // Apply scroll offsets
         canvas.translate(-this.scrollX, -this.scrollY);
-        
-        this.dropManager.Draw();
-        
-        for (var i = 0; i < this.pads.length; i++) {
-            this.pads[i].draw();
-        }
+		canvas.drawImage(this.arena, 0, 0);
         
         // Players
         for (var i = 0; i < playerManager.players.length; i++) {    
@@ -124,9 +75,8 @@ function GameScreen(bossRush) {
             player.Draw(canvas);
         }
         
-		// Enemies
-        this.enemyManager.Draw();
-        
+		this.spinner.Draw(canvas);
+		
         // Particles
         for (var i = 0; i < this.particles.length; i++) {
             this.particles[i].draw();
@@ -137,15 +87,6 @@ function GameScreen(bossRush) {
         }
         
         canvas.translate(this.scrollX, this.scrollY);
-        
-        // Damage effect
-        if (this.damageAlpha > 0) {
-            canvas.save();
-            canvas.globalAlpha = this.damageAlpha;
-            canvas.drawImage(this.damageOverlay, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-            canvas.restore();
-            this.damageAlpha -= DAMAGE_ALPHA_DECAY;
-        }
         
         canvas.setTransform(1, 0, 0, 1, 0, 0);
         
@@ -166,10 +107,6 @@ function GameScreen(bossRush) {
         
         this.ui.DrawStatBar();
         
-        if (bossRush) {
-            this.ui.DrawDroneInfo();
-        }
-		
 		// Draw the upgrade screen if applicable
 		if (this.paused == true) {
 			this.ui.DrawUpgradeUI();
@@ -186,8 +123,6 @@ function GameScreen(bossRush) {
     this.UpdateBullets = UpdateBullets;
     function UpdateBullets() {
 
-        this.enemyManager.UpdateBullets();
-        
         // Update bullets for each player
         for (var p = 0; p < playerManager.players.length; p++) {
         
@@ -196,28 +131,6 @@ function GameScreen(bossRush) {
             // Check for collisions between the player's bullets and enemies
             for (var i = 0; i < player.bullets.length; i++) {
             
-                // Colliding with turrets
-                for (var j = 0; j < this.enemyManager.turrets.length; j++) {
-                    var turret = this.enemyManager.turrets[j];
-                    if (player.bullets[i].Collides(turret)) {
-                        player.bullets[i].Hit(turret);
-                        
-                        // See if the turret is destroyed
-                        if (turret.health <= 0) {
-                            this.particles.push(new Explosion(turret.x, turret.y, 0.25));
-                            this.enemyManager.turrets.splice(j, 1);
-                            j--;
-                        }
-                        
-                        // If the bullet is not a piercing bullet, remove it
-                        if (!player.bullets[i].pierce) {
-                            player.bullets.splice(i, 1);
-                            i--;
-                            break;
-                        }
-                    }
-                }
-                
                 // Regular enemy collision
                 for (var j = 0; player.bullets[i] && j < this.enemyManager.enemies.length; j++) {
                 
@@ -236,9 +149,15 @@ function GameScreen(bossRush) {
                 }
             }
         }
-            
-        this.enemyManager.CheckDeaths();
     }
+	
+	// Clamps players inside the bounds of the arena
+	this.ClampPlayer = function(player) {
+		var minY = Math.max(20, this.playerMinY + player.sprite.height / 2);
+		var maxY = Math.min(this.playerMaxY - player.sprite.height / 2);
+		player.y = clamp(player.y, minY, );
+		player.x = clamp(player.x, this.playerMinX + player.sprite.width / 2, this.playerMaxX - player.sprite.width / 2);
+	};
 
     // Applies scrolling to the game
     this.ApplyScrolling = ApplyScrolling;

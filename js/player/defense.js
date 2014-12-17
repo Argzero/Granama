@@ -51,6 +51,8 @@ function PlayerDefenseType() {
             return;
         }
 		
+		return;
+		
 		// Damage multiplier
 		var m = this.GetDamageMultiplier();
 		

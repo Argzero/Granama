@@ -179,7 +179,7 @@ var enemyFunctions = {
         
         // Move away from other enemies
 		if (!this.isBoss()) {
-			if (gameScreen.enemyManager.enemies.length > 0) {
+			if (gameScreen.enemyManager && gameScreen.enemyManager.enemies.length > 0) {
 				for (var i = 0; i < gameScreen.enemyManager.enemies.length; i++) {
 					var enemy = gameScreen.enemyManager.enemies[i];
 					if (DistanceSq(this.x, this.y, enemy.x, enemy.y) < Sq(this.sprite.width) && DistanceSq(this.x, this.y, enemy.x, enemy.y) > 0) {
