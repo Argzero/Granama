@@ -25,6 +25,15 @@ function EnemyMoveSpinner() {
 	this.y += this.direction.y * speed;
 	this.checkBounds(false);
 	
+	if (Math.abs(GAME_WIDTH / 2 - this.x) > GAME_WIDTH / 2 - 50)
+	{
+		gameScreen.particles.push(new RocketExplosion('Enemy', this.x, GAME_HEIGHT / 2, 200));
+		this.x = GAME_WIDTH / 2;
+		this.y = GAME_HEIGHT / 2;
+		this.direction.x = 0;
+		this.direction.y = Rand(2) * 2 - 1;
+	}
+	
 	// Looking direction
 	var player = playerManager.getClosest(this.x, this.y);
 	this.angle = AngleTo(player, this);
