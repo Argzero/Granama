@@ -39,7 +39,7 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 		damage: 1,
 		bullets: [],
         drawObjects: [{ sprite: sprite, xOffset: -sprite.width / 2, yOffset: -sprite.height / 2 }],
-		upgrades: [10, 10, 10, 10, 10],
+		upgrades: [0, 0, 0, 0, 0],
         mPower: 1,
         mSpeed: 1,
         mHealth: 1,
@@ -56,7 +56,6 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 		levelFrame: -1,
 		knockback: Vector(0, 0),
 		input: undefined,
-		testDeaths: 0,
 		
 		// Gives the player experience and checks for level ups
 		GiveExp: function(amount) {
@@ -132,11 +131,6 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
                 this.profile.addStat(this.name, STAT.TOTAL_TAKEN, amount);
                 
                 this.health = Math.max(0, this.health - amount);
-				while (this.health <= 0) {
-					this.health = this.maxHealth;
-					this.testDeaths++;
-					console.log("Died - Count: " + this.testDeaths);
-				}
                 
                 if (this.health == 0) {
                     
