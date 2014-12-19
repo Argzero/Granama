@@ -532,7 +532,7 @@ function SBSelectScreen() {
 				case SBPARTS.READY:
 									
 					// Preview image
-					var preview = GetImage(robot.preview + settings.color);
+					var preview = GetImage(robot.preview + settings.team);
 					canvas.drawImage(preview, x - preview.width / 2, y - 40 - preview.height / 2);
 
 					// Name
