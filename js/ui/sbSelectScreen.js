@@ -1,25 +1,27 @@
 var ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-var PARTS = {
+var SBPARTS = {
     DISCONNECTED: 0,
     CONNECTED: 1,
     PROFILE: 2,
 	NEW_PROFILE: 2.5,
-    ROBOT: 3,
-    ABILITY: 4,
-    READY: 5
+	TEAM: 3,
+    ROBOT: 4,
+    ABILITY: 5,
+    READY: 6
 };
 
-function PlayerSettings(id) {
+function SBPlayerSettings(id) {
     return {
         id: id,
+		team: 'Blue',
         robot: 0,
         ability: 0,
         frame: 0,
 		profile: 0,
 		newProfile: '',
         error: '',
-        part: PARTS.DISCONNECTED
+        part: SBPARTS.DISCONNECTED
     };
 }
 
@@ -41,7 +43,7 @@ function SBSelectScreen() {
     
     // Initialize player settings
     for (var i = 0; i < playerManager.players.length; i++) {
-        this.settings.push(PlayerSettings(i));
+        this.settings.push(SBPlayerSettings(i));
     }
     
     // Start off with all classes available
@@ -67,7 +69,7 @@ function SBSelectScreen() {
         {
         
             // Make a profile available again when a player no longer selects it
-            case PARTS.PROFILE:
+            case SBPARTS.PROFILE:
                 
                 if (settings.profile != 'Guest') {
                     this.profilesArray.push(settings.profile);
@@ -84,7 +86,7 @@ function SBSelectScreen() {
                 break;
                 
             // Make a robot available again when a player no longer selects it
-            case PARTS.ROBOT:
+            case SBPARTS.ROBOT:
             
                 playerManager.players[settings.id].robot = undefined;
                 this.open.push(settings.robot);
@@ -138,7 +140,7 @@ function SBSelectScreen() {
             // Draw the boxes for the options
             canvas.fillStyle = '#484848';
             canvas.fillRect(x - 125, y - 170, 250, 500);
-            canvas.fillStyle = settings.part == PARTS.READY ? '#333' : '#000';
+            canvas.fillStyle = settings.part == SBPARTS.READY ? '#333' : '#000';
             canvas.fillRect(x - 115, y - 160, 230, 480);
             
             // Input
@@ -146,12 +148,12 @@ function SBSelectScreen() {
             input.update();
 			
 			// Valid/invalid input switches parts
-			if (input.valid && settings.part == PARTS.DISCONNECTED) {
-				settings.part = PARTS.CONNECTED;
+			if (input.valid && settings.part == SBPARTS.DISCONNECTED) {
+				settings.part = SBPARTS.CONNECTED;
 				settings.frame = 0;
 			}
 			else if (!input.valid) {
-				settings.part = PARTS.DISCONNECTED;
+				settings.part = SBPARTS.DISCONNECTED;
 				settings.frame = 0;
 			}
 			
@@ -159,7 +161,7 @@ function SBSelectScreen() {
 			switch(settings.part)
 			{
 				// Controller is disconnected and awaiting connection
-				case PARTS.DISCONNECTED:
+				case SBPARTS.DISCONNECTED:
 				
 					// Prompt to connect a controller
 					canvas.fillStyle = 'white';
@@ -171,7 +173,7 @@ function SBSelectScreen() {
 					break;
 				
 				// Controller is connected and awaiting the player to join
-				case PARTS.CONNECTED:
+				case SBPARTS.CONNECTED:
 				
 					// Prompt to press a button to join
 					canvas.fillStyle = 'white';
@@ -200,7 +202,7 @@ function SBSelectScreen() {
 					break;
 				
                 // Player is choosing a profile
-				case PARTS.PROFILE:
+				case SBPARTS.PROFILE:
                 
 					// Profile options
 					var min = Math.max(0, settings.profile - 5);
@@ -241,7 +243,7 @@ function SBSelectScreen() {
                             if (num < this.profilesArray.length - 2) {
                                 this.profilesArray.splice(num, 1);
                                 for (var j = 0; j < this.settings.length; j++) {
-                                    if (j != i && this.settings[j].part == PARTS.PROFILE && this.settings[j].profile >= num && this.settings[j].profile > 0) {
+                                    if (j != i && this.settings[j].part == SBPARTS.PROFILE && this.settings[j].profile >= num && this.settings[j].profile > 0) {
                                         this.settings[j].profile--;
                                     }
                                 }
@@ -262,7 +264,7 @@ function SBSelectScreen() {
 					break;
 					
                 // Player is creating a new profile
-				case PARTS.NEW_PROFILE: 
+				case SBPARTS.NEW_PROFILE: 
                 
                     // Current name display
                     canvas.fillStyle = '#ccc';
@@ -350,9 +352,14 @@ function SBSelectScreen() {
                     }
                 
 					break;
+					
+				// Player joined and is selecting a team
+				case SBPARTS.TEAM:
+					settings.part++;
+					break;
                 
-				// Player joined and is selecting a robot type
-				case PARTS.ROBOT:
+				// Player has a team and is selecting a robot type
+				case SBPARTS.ROBOT:
                     
                     // Profile name
                     canvas.fillStyle = 'white';
@@ -368,19 +375,19 @@ function SBSelectScreen() {
 					do { prev = (prev + PLAYER_DATA.length - 1) % PLAYER_DATA.length; } while (!this.isOpen(prev));
                     
 					// Previous image
-					var preview = GetImage(PLAYER_DATA[prev].preview);
+					var preview = GetImage(PLAYER_DATA[prev].preview + settings.team);
 					var scale = 75 / preview.height;
 					canvas.drawImage(preview, preview.width / 2, 0, preview.width / 2, preview.height, x - 115, y + 20, preview.width * scale / 2, 75);
 					
 					// Next image
-					preview = GetImage(PLAYER_DATA[next].preview);
+					preview = GetImage(PLAYER_DATA[next].preview + settings.team);
 					var scale = 50 / preview.height;
 					canvas.drawImage(preview, 0, 0, preview.width / 2, preview.height, x + 115 - preview.width * scale / 2, y + 20, preview.width * scale / 2, 75);
 				
 					canvas.globalAlpha = 1;
 				
 					// Preview image
-				    preview = GetImage(robot.preview);
+				    preview = GetImage(robot.preview + settings.team);
 					canvas.drawImage(preview, x - preview.width / 2 + 10, y - preview.height / 2);
 
 					// Name
@@ -426,7 +433,7 @@ function SBSelectScreen() {
                         }
                         for (var k = 0; k < this.settings.length; k++) {
 							if (k != i) {
-								if (this.settings[k].part <= PARTS.ROBOT) {
+								if (this.settings[k].part <= SBPARTS.ROBOT) {
 									if (!this.isOpen(this.settings[k].robot)) {
 										this.settings[k].robot = this.open[0];
 									}
@@ -443,7 +450,7 @@ function SBSelectScreen() {
 					break;
 				
 				// Player is selecting an ability
-				case PARTS.ABILITY:
+				case SBPARTS.ABILITY:
 				
                     // Profile name
                     canvas.fillStyle = 'white';
@@ -451,7 +458,7 @@ function SBSelectScreen() {
                     canvas.fillText(settings.profile, x, y - 160);
                 
 					// Preview image
-				    var preview = GetImage(robot.preview);
+				    var preview = GetImage(robot.preview + settings.team);
 					canvas.drawImage(preview, x - preview.width / 2 + 10, y - preview.height / 2);
 
 					// Name
@@ -495,7 +502,7 @@ function SBSelectScreen() {
                     if (input.confirm == 1) {
 					
 						// Apply the options to get ready for playing
-                        var player = robot.player();
+                        var player = robot.player(settings.team);
                         player.profile = Profile(settings.profile);
                         player.color = robot.color;
                         player.name = robot.name;
@@ -517,10 +524,10 @@ function SBSelectScreen() {
 					break;
 					
 				// Player is ready to play
-				case PARTS.READY:
+				case SBPARTS.READY:
 									
 					// Preview image
-					var preview = GetImage(robot.preview);
+					var preview = GetImage(robot.preview + settings.color);
 					canvas.drawImage(preview, x - preview.width / 2, y - 40 - preview.height / 2);
 
 					// Name
@@ -553,10 +560,10 @@ function SBSelectScreen() {
         var allReady = true;
         var oneReady = false;
         for (var k = 0; k < playerManager.players.length; k++) {
-            if (this.settings[k].part != PARTS.READY && this.settings[k].part > PARTS.CONNECTED) {
+            if (this.settings[k].part != SBPARTS.READY && this.settings[k].part > SBPARTS.CONNECTED) {
                 allReady = false;
             }
-            else if (this.settings[k].part == PARTS.READY) {
+            else if (this.settings[k].part == SBPARTS.READY) {
                 oneReady = true;
             }
         }

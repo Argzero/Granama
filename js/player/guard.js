@@ -1,11 +1,12 @@
-function PlayerDisker(team) {
+function PlayerGuard(team) {
     var p = BasePlayer(
-        GetImage('sbDisker' + team),
+        GetImage('sbGuard' + team),
 		30
     );
 	
 	// Weapon data
-	p.diskData = { 
+	/*
+	p.punchData = { 
         cd: 0, 
         range: 499, 
         dx: -30, 
@@ -16,6 +17,7 @@ function PlayerDisker(team) {
         list: p.bullets 
     };
     p.Shoot = EnemyWeaponGun;
+	*/
 	
 	// Updates the player
     p.Update = function() {

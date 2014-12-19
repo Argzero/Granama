@@ -65,6 +65,17 @@ PLAYER_DATA = [
 			{ name: 'Reflector', callback: SkillReflector },
 			{ name: 'Stasis', callback: SkillStasis }
 		]
+	},
+	{
+		player: PlayerGuard,
+		preview: 'sbGuardPreview',
+		name: 'Guard',
+		weapon: 'Punches',
+		skills: [
+			{ name: 'Perfect Shield', callback: SkillPerfectShield },
+			{ name: 'Reflector', callback: SkillReflector },
+			{ name: 'Stasis', callback: SkillStasis }
+		]
 	}
 ],
 PLAYER_DATA_2 = [
