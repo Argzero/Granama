@@ -4,6 +4,9 @@ function PlayerDisker(team) {
 		30
     );
 	
+	p.spinnerBall = true;
+	p.x = (team == 'Blue' ? GAME_WIDTH / 4 : GAME_WIDTH * 0.75);
+	
 	// Weapon data
 	p.diskData = { 
         cd: 0, 

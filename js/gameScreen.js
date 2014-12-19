@@ -1,8 +1,5 @@
 function GameScreen(bossRush) {
 
-	GAME_WIDTH = 3000;
-	GAME_HEIGHT = 3000;
-
     this.scrollX = 0;
     this.scrollY = 0;
     this.score = 0;

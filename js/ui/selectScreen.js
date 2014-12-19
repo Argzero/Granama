@@ -26,6 +26,11 @@ function PlayerSettings(id) {
 // The character selection screen of the game
 function SelectScreen() {
 
+	GAME_WIDTH = 3000;
+	GAME_HEIGHT = 3000;
+	WINDOW_WIDTH -= (200 - SIDEBAR_WIDTH);
+	SIDEBAR_WIDTH = 200;
+
 	this.frame = 0;
     this.settings = [];
     this.open = [];

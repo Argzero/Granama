@@ -4,6 +4,8 @@ function PlayerGuard(team) {
 		30
     );
 	
+	p.spinnerBall = true;
+	
 	// Weapon data
 	/*
 	p.punchData = { 

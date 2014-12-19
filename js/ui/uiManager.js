@@ -26,8 +26,7 @@ function UIManager(screen) {
         this.upIcons.push(GetImage("icon" + screen.player.drops[DROP_VALUES * i + DROP_TYPE]));
     }
     */
-    
-    
+	
     // Draws the sidebar with the upgrades
     this.DrawStatBar = function() {
 
@@ -266,4 +265,20 @@ function UIManager(screen) {
 		// Reset the alpha
 		canvas.globalAlpha = 1;
 	};
+	
+	// Draws team stats for spinner ball
+	this.DrawTeamStats = function() {
+		
+		canvas.fillStyle = 'black';
+		canvas.fillRect(0, 0, 250, 50);
+		canvas.fillRect(WINDOW_WIDTH - 250, 0, 250, 50);
+		
+		canvas.font = '32px Flipbash';
+		canvas.textAlign = 'left';
+		canvas.textBaseline = 'middle';
+		canvas.fillStyle = 'blue';
+		canvas.fillText('Blue: ' + this.screen.blueScore, 10, 25);
+		canvas.fillStyle = 'red';
+		canvas.fillText('Red: ' + this.screen.redScore, WINDOW_WIDTH - 240, 25);
+	}
 }

@@ -28,6 +28,11 @@ function SBPlayerSettings(id) {
 // The character selection screen of the game
 function SBSelectScreen() {
 
+	GAME_WIDTH = 1748;
+	GAME_HEIGHT = 813;
+	WINDOW_WIDTH += SIDEBAR_WIDTH
+	SIDEBAR_WIDTH = 0;
+
 	this.frame = 0;
     this.settings = [];
     this.open = [];

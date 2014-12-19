@@ -1,10 +1,5 @@
 function SpinnerBall() {
 
-	GAME_WIDTH = 1748;
-	GAME_HEIGHT = 813;
-	WINDOW_WIDTH += SIDEBAR_WIDTH
-	SIDEBAR_WIDTH = 0;
-
     this.scrollX = 0;
     this.scrollY = 0;
 	
@@ -24,6 +19,9 @@ function SpinnerBall() {
 	this.spinner.speed = 8;
 	this.spinner.direction.x = 0;
 	this.spinner.direction.y = 1;
+	
+	this.redScore = 0;
+	this.blueScore = 0;
     
     // Update function
     this.Update = function() {
@@ -113,6 +111,8 @@ function SpinnerBall() {
             canvas.fillText(this.paused.name, WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 + 20);
         }
         
+		this.ui.DrawTeamStats();
+		
 		// Draw the upgrade screen if applicable
 		if (this.paused == true) {
 			this.ui.DrawUpgradeUI();
