@@ -24,7 +24,7 @@ function PlayerSettings(id) {
 }
 
 // The character selection screen of the game
-function SelectScreen() {
+function SBSelectScreen() {
 
 	this.frame = 0;
     this.settings = [];
@@ -393,15 +393,12 @@ function SelectScreen() {
 					canvas.font = '24px Flipbash';
 					canvas.fillStyle = 'white';
 					canvas.textAlign = 'left';
-					canvas.fillText('Primary', x - 100, y + 180);
-					canvas.fillText('Secondary', x - 100, y + 250);
+					canvas.fillText('Weapon', x - 100, y + 180);
 					canvas.fillRect(x - 100, y + 212, 105, 2);
-					canvas.fillRect(x - 100, y + 282, 150, 2);
 					
 					// Weapon names
 					canvas.font = '18px Flipbash';
-					canvas.fillText(robot.weapons[0], x - 100, y + 215);
-					canvas.fillText(robot.weapons[1], x - 100, y + 285);
+					canvas.fillText(robot.weapon, x - 100, y + 215);
 				
 					// Indicator
                     var dx = Math.cos(this.frame * Math.PI / 15);
@@ -570,7 +567,8 @@ function SelectScreen() {
                 robot.profile.addStat(robot.name, STAT.GAMES, 1);
                 robot.profile.addStat(robot.name, robot.ability, 1);
             }
-            gameScreen = new GameScreen(false);
+            //gameScreen = new GameScreen(false);
+			gameScreen = new SpinnerBall();
         }
     };
 }

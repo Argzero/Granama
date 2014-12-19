@@ -11,16 +11,9 @@ function TitleScreen() {
             playerManager.setMultiplayer();
             gameScreen = new SelectScreen();
         })
-        .addButton('Boss Rush', -30,  function() {
-            playerManager.setSingleplayer();
-            player = PlayerTraitorType();
-            player.color = '#f80';
-            player.name = 'Traitor';
-            playerManager.players[0].robot = player;
-            PROFILE_DATA['Overall'] = {};
-            playerManager.players[0].robot.profile = Profile('Overall');
-            player.input = playerManager.players[0].input;
-            gameScreen = new GameScreen(player, true);
+        .addButton('Spinner Ball', -30,  function() {
+            playerManager.setMultiplayer();
+            gameScreen = new SBSelectScreen();
         })
         .addButton('Stats', 80, function() {
             gameScreen = new StatScreen();

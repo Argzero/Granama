@@ -56,6 +56,19 @@ TURRET_RANGE = 500,
 // Skill Data
 PLAYER_DATA = [
 	{
+		player: PlayerDisker,
+		preview: 'sbDiskerPreview',
+		name: 'Disker',
+		weapon: 'Disk Launcher',
+		skills: [
+			{ name: 'Perfect Shield', callback: SkillPerfectShield },
+			{ name: 'Reflector', callback: SkillReflector },
+			{ name: 'Stasis', callback: SkillStasis }
+		]
+	}
+],
+PLAYER_DATA_2 = [
+	{
 		player: PlayerDefenseType,
 		preview: 'pDefense',
 		name: 'Guardian',
