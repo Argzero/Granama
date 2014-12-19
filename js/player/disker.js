@@ -8,6 +8,7 @@ function PlayerDisker(team) {
 	p.x = (team == 'Blue' ? GAME_WIDTH / 4 : GAME_WIDTH * 0.75);
 	
 	// Weapon data
+	/*
 	p.diskData = { 
         cd: 0, 
         range: 499, 
@@ -19,6 +20,7 @@ function PlayerDisker(team) {
         list: p.bullets 
     };
     p.Shoot = EnemyWeaponGun;
+	*/
 	
 	// Updates the player
     p.Update = function() {
@@ -29,7 +31,7 @@ function PlayerDisker(team) {
 		return;
 		
 		// Disc gun
-		this.Shoot(this.diskData);
+		//this.Shoot(this.diskData);
 	}
 	
     return p;
