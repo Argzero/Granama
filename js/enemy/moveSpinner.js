@@ -28,15 +28,15 @@ function EnemyMoveSpinner() {
 	// Entering a goal
 	if (Math.abs(GAME_WIDTH / 2 - this.x) > GAME_WIDTH / 2 - 50)
 	{
+		// Award points
+		if (this.x < GAME_WIDTH / 2) gameScreen.redScore++;
+		else gameScreen.blueScore++;
+		
 		gameScreen.particles.push(new RocketExplosion('Enemy', this.x, GAME_HEIGHT / 2, 200));
 		this.x = GAME_WIDTH / 2;
 		this.y = GAME_HEIGHT / 2;
 		this.direction.x = 0;
 		this.direction.y = Rand(2) * 2 - 1;
-		
-		// Award points
-		if (this.x < GAME_WIDTH / 2) gameScreen.redScore++;
-		else gameScreen.blueScore++;
 	}
 	
 	// Looking direction
