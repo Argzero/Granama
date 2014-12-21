@@ -54,7 +54,7 @@ TURRET_RATE = 15,
 TURRET_RANGE = 500,
 
 // Skill Data
-PLAYER_DATA = [
+SB_DATA = [
 	{
 		player: PlayerDisker,
 		preview: 'sbDiskerPreview',
@@ -78,7 +78,7 @@ PLAYER_DATA = [
 		]
 	}
 ],
-PLAYER_DATA_2 = [
+PLAYER_DATA = [
 	{
 		player: PlayerDefenseType,
 		preview: 'pDefense',

@@ -77,6 +77,12 @@ function GameScreen(bossRush) {
         }
     };
 	
+	this.Clamp = function(player)
+	{
+		player.x = clamp(player.x, player.sprite.width / 2, GAME_WIDTH - player.sprite.width / 2);
+		player.y = clamp(player.y, player.sprite.height / 2, GAME_HEIGHT - player.sprite.height / 2);
+	}
+	
 	// Pauses the game
 	this.Pause = function(player) {
 		if (this.paused) {

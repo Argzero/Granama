@@ -52,7 +52,7 @@ function SBSelectScreen() {
     }
     
     // Start off with all classes available
-    for (var i = 0; i < PLAYER_DATA.length; i++) {
+    for (var i = 0; i < SB_DATA.length; i++) {
         this.open.push(i);
     }
     
@@ -140,7 +140,7 @@ function SBSelectScreen() {
     
             x = baseX + 270 * i;
 			var settings = this.settings[i];
-			var robot = PLAYER_DATA[settings.robot];
+			var robot = SB_DATA[settings.robot];
 	
             // Draw the boxes for the options
             canvas.fillStyle = '#484848';
@@ -376,16 +376,16 @@ function SBSelectScreen() {
                     
                     // Next/previous options
                     var next = settings.robot, prev = settings.robot;
-                    do { next = (next + 1) % PLAYER_DATA.length; } while (!this.isOpen(next));
-					do { prev = (prev + PLAYER_DATA.length - 1) % PLAYER_DATA.length; } while (!this.isOpen(prev));
+                    do { next = (next + 1) % SB_DATA.length; } while (!this.isOpen(next));
+					do { prev = (prev + SB_DATA.length - 1) % SB_DATA.length; } while (!this.isOpen(prev));
                     
 					// Previous image
-					var preview = GetImage(PLAYER_DATA[prev].preview + settings.team);
+					var preview = GetImage(SB_DATA[prev].preview + settings.team);
 					var scale = 75 / preview.height;
 					canvas.drawImage(preview, preview.width / 2, 0, preview.width / 2, preview.height, x - 115, y + 20, preview.width * scale / 2, 75);
 					
 					// Next image
-					preview = GetImage(PLAYER_DATA[next].preview + settings.team);
+					preview = GetImage(SB_DATA[next].preview + settings.team);
 					var scale = 50 / preview.height;
 					canvas.drawImage(preview, 0, 0, preview.width / 2, preview.height, x + 115 - preview.width * scale / 2, y + 20, preview.width * scale / 2, 75);
 				
