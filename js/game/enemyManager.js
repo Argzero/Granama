@@ -158,6 +158,19 @@ function EnemyManager(screen) {
     // Checks for enemy deaths
     this.CheckDeaths = function() {
 	
+		// Turrets exploding
+		for (var i = 0; i < this.turrets.length; i++)
+		{
+			var turret = this.turrets[i];
+			
+			// See if the turret is destroyed
+			if (turret.health <= 0) {
+				gameScreen.particles.push(new Explosion(turret.x, turret.y, 0.25));
+				this.turrets.splice(j, 1);
+				j--;
+			}
+		}
+	
 		// Enemy deaths
         for (var i = 0; i < this.enemies.length; i++) {
             if (this.enemies[i].health <= 0) {
