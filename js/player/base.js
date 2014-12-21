@@ -152,7 +152,7 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
         
         // Retrieves the damage multiplier for the player
         GetDamageMultiplier: function() {
-            return this.damage + this.damageBuff;
+            return this.damage;// + this.damageBuff;
         },
 		
 		// Updates the player
@@ -173,9 +173,14 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 			}
 			
 			//power (damage) buff check
-			if(this.damageBuffTimer > 0)
+			if(this.powerBuffTimer > 0)
 			{
-				this.damageBuffTimer--;
+				this.powerBuffTimer--;
+				this.health += this.maxHealth * this.damageBuff;
+				if (this.health > this.maxHealth)
+				{
+					this.health = this.maxHealth;
+				}
 			}
 			else
 			{
@@ -193,6 +198,7 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 			}
 			if (this.shieldCd <= 0) {
 				this.shieldCd += 60 / (this.shieldScale * (this.upgrades[SHIELD_ID] + 1) * 1 / 10);
+				if (this.shieldCd < 0) this.shieldCd = 0;
 				this.shield += this.maxHealth * SHIELD_GAIN;
 				if (this.shield > this.maxHealth * SHIELD_MAX) {
 					this.shield = this.maxHealth * SHIELD_MAX;

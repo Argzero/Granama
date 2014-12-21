@@ -97,29 +97,38 @@ function PlayerAngelType() {
 			}
 		}
 		
+		//checks to see if allies are in aura range
+		var auraCount = 0;
+		for(var k = 0; k < playerManager.players.length; k++){
+			var player = playerManager.players[k].robot;
+			if (player == this) auraCount++;
+			else if (DistanceSq(player.x, player.y, this.x, this.y) < Sq(p.activeRadius)) {
+				if (p.staticActive && player.shield >= player.maxHealth * SHIELD_MAX) continue;
+				if (!p.staticActive && player.health >= player.maxHealth) continue;
+				auraCount++;
+			}
+		}
+		auraCount = auraCount || 1;
+		
 		//updates the active radius for calculations
 		//then updates active Buff
 		if(p.staticActive)
 		{
 			p.activeRadius = 100 + (20 * this.upgrades[STATIC_AURA_ID]);
 			//shield recharge buff
-			p.shieldBuff = 2 + 0.5 * this.upgrades[STATIC_AURA_ID];
+			p.shieldBuff = (4 + this.upgrades[STATIC_AURA_ID]) / auraCount;
 		}
 		else
 		{
 			p.activeRadius = 100 + (20 * this.upgrades[POWER_AURA_ID]);
 			
 			//power buff
-			p.powerBuff = .1 + .04 * this.upgrades[POWER_AURA_ID];
+			p.powerBuff = (.001 + .0003 * this.upgrades[POWER_AURA_ID]) / auraCount;
 		}
 		
 		//checks to see if allies are in aura range
 		for(var k = 0; k < playerManager.players.length; k++){
-		
-			//here is the test player
 			var player = playerManager.players[k].robot;
-			
-			//buffs target player if in range of aura
 			if (DistanceSq(player.x, player.y, this.x, this.y) < Sq(p.activeRadius)) {
 			
 				if(p.staticActive)
