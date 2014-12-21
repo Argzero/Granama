@@ -15,7 +15,7 @@ function SkillAngelicAssault(player) {
         }
 		else
 		{
-			this.revSpeed = 1/300;
+			this.revSpeed = 1/250;
 		}
     }
     

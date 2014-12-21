@@ -3,6 +3,8 @@ function PlayerAngelType() {
         GetImage('pAngelBody'),
 		16
     );
+	
+	p.revSpeed = 1/250;
     
     // Sprites
     
