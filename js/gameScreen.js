@@ -192,6 +192,13 @@ function GameScreen(bossRush) {
         
             // Check for collisions between the player's bullets and enemies
             for (var i = 0; i < player.bullets.length; i++) {
+			
+				// Expired bullets
+				if (player.bullets[i].expired)
+				{
+					player.bullets.splice(i, 1);
+					continue;
+				}
             
                 // Colliding with turrets
                 for (var j = 0; j < this.enemyManager.turrets.length; j++) {

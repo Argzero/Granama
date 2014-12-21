@@ -4,7 +4,7 @@ function SkillAngelicAssault(player) {
     player.onMove = function(speed) {
         if (this.IsSkillCast()) {
             this.skillDuration = 600;
-            this.skillCd = 450;
+            this.skillCd = 300;
 			player.skillStarted = true;
         }
 		

@@ -12,7 +12,7 @@ function SkillStasis(player) {
         
         // Active skill effects
         if (this.skillDuration > 0) {
-            this.health += this.maxHealth * 0.5 / 180;
+            this.health += this.maxHealth / 180;
             if (this.health >= this.maxHealth) {
                 this.health = this.maxHealth;
                 this.skillDuration = 0;

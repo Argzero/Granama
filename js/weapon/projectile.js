@@ -296,7 +296,7 @@ var projectileFunctions = {
     UpdateHoming: function() {
     
         // Remove the bullet if the target is dead
-        if (this.target.health <= 0) {
+        if (!this.target.health) {
             this.expired = true;
             return;
         }
