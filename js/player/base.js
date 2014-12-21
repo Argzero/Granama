@@ -94,6 +94,8 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
         
 		// Damages the player using an optional damage source
 		Damage: function(amount, damager) {
+			if (this.health <= 0) return;
+		
             this.damageAbsorbed += amount;
             this.profile.addStat(this.name, STAT.TOTAL_ABSORBED, amount);
             
