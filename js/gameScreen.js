@@ -198,19 +198,19 @@ function GameScreen(bossRush) {
         
             // Check for collisions between the player's bullets and enemies
             for (var i = 0; i < player.bullets.length; i++) {
+			
+				// Expired bullets
+				if (player.bullets[i].expired)
+				{
+					player.bullets.splice(i, 1);
+					continue;
+				}
             
                 // Colliding with turrets
                 for (var j = 0; j < this.enemyManager.turrets.length; j++) {
                     var turret = this.enemyManager.turrets[j];
                     if (player.bullets[i].Collides(turret)) {
                         player.bullets[i].Hit(turret);
-                        
-                        // See if the turret is destroyed
-                        if (turret.health <= 0) {
-                            this.particles.push(new Explosion(turret.x, turret.y, 0.25));
-                            this.enemyManager.turrets.splice(j, 1);
-                            j--;
-                        }
                         
                         // If the bullet is not a piercing bullet, remove it
                         if (!player.bullets[i].pierce) {
@@ -283,7 +283,7 @@ function GameScreen(bossRush) {
     // Updates the music depending on the state of the game
     this.UpdateMusic = UpdateMusic;
     function UpdateMusic() {
-        return;
+        
         // Player must be alive for the music to play
         if (!this.gameOver) {
         

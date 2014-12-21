@@ -158,6 +158,19 @@ function EnemyManager(screen) {
     // Checks for enemy deaths
     this.CheckDeaths = function() {
 	
+		// Turrets exploding
+		for (var i = 0; i < this.turrets.length; i++)
+		{
+			var turret = this.turrets[i];
+			
+			// See if the turret is destroyed
+			if (turret.health <= 0) {
+				gameScreen.particles.push(new Explosion(turret.x, turret.y, 0.25));
+				this.turrets.splice(j, 1);
+				j--;
+			}
+		}
+	
 		// Enemy deaths
         for (var i = 0; i < this.enemies.length; i++) {
             if (this.enemies[i].health <= 0) {
@@ -283,16 +296,12 @@ function EnemyManager(screen) {
                 && this.enemies.length + screen.score < this.bossScore) {
             
             // Get a spawn point off of the gameScreen
-			/*
             var x, y;
             do {
                 x = Rand(GAME_WIDTH - 200 + 100);
                 y = Rand(GAME_HEIGHT - 200 + 100);
             }
             while (!OffScreen(x, y, 100));
-			*/
-			x = GAME_WIDTH / 2;
-			y = GAME_HEIGHT / 2;
 		
             this.SpawnEnemy(SPAWN_DATA, x, y);
             
