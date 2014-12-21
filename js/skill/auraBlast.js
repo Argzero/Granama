@@ -5,11 +5,8 @@ function SkillAuraBlast(player) {
         if (this.IsSkillCast()) {
             this.skillDuration = 1;
             this.skillCd = 480;
-			player.skillStarted = true;
-        }
-		
-		if(this.skillDuration > 0)
-		{
+			this.staticActive = !this.staticActive;
+			
 			var color1, color2;
 			var thickness;
 			var damage;

@@ -39,8 +39,6 @@ function PlayerAngelType() {
 	
 	//aura variables
 	p.staticActive = true;
-	p.powerActive = false;
-	p.skillStarted = false;
 	p.activeRadius = 0;
 	p.shieldBuff = 0;
 	p.powerBuff = 0;
@@ -171,23 +169,6 @@ function PlayerAngelType() {
 			
 			}
 		}
-		
-		//checks to see if she has just used her ability. If so, change active auras
-		if(p.skillStarted)
-		{
-			if(p.staticActive)
-			{
-				p.staticActive = false;
-				p.powerActive = true;
-			}
-			else
-			{
-				p.staticActive = true;
-				p.powerActive = false;
-			}
-			p.skillStarted = false;
-		}
-		
     };
 	
 	//draws auras and wings below the player

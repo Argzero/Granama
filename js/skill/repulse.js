@@ -4,6 +4,7 @@ function SkillRepulse(player) {
     player.onMove = function() {
         if (this.IsSkillCast()) {
             this.skillCd = 480;
+			this.staticActive = !this.staticActive;
 			
 			var color1, color2;
 			var thickness;

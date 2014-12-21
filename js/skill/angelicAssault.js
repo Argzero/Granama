@@ -3,10 +3,10 @@ function SkillAngelicAssault(player) {
     // Activate the ability on move
     player.onMove = function(speed) {
         if (this.IsSkillCast()) {
-            this.skillDuration = 600;
-            this.skillCd = 300;
+            this.skillDuration = 300;
+            this.skillCd = 240;
 			this.revSpeed = 1/100;
-			player.skillStarted = true;
+			this.staticActive = !this.staticActive;
         }
 		
 		if (this.skillDuration > 0) {
