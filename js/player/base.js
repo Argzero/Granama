@@ -56,6 +56,7 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 		levelFrame: -1,
 		knockback: Vector(0, 0),
 		input: undefined,
+		revSpeed: 1 / 300,
 		
 		// Gives the player experience and checks for level ups
 		GiveExp: function(amount) {
@@ -291,18 +292,18 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
             this.updateBullets();
         
             // See if a player is in range to rescue the player
-            var inRange = false;
+			var revSpeed = 0;
             for (var i = 0; i < playerManager.players.length; i++) {
                 var p = playerManager.players[i].robot;
                 if (p.health <= 0) continue;
                 if (DistanceSq(p.x, p.y, this.x, this.y) < 10000) {
-                    inRange = true;
+                    revSpeed = Math.max(revSpeed, p.revSpeed);
                 }
             }
             
             // Apply rescue effects
-            if (inRange) {
-                this.rescue -= 1 / 300;
+            if (revSpeed) {
+                this.rescue -= revSpeed;
                 if (this.rescue <= 0) {
                     this.health = this.maxHealth * 0.5;
                     this.rescue = 1;

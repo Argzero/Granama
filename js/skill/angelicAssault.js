@@ -5,13 +5,18 @@ function SkillAngelicAssault(player) {
         if (this.IsSkillCast()) {
             this.skillDuration = 600;
             this.skillCd = 300;
+			this.revSpeed = 1/100;
 			player.skillStarted = true;
         }
 		
 		if (this.skillDuration > 0) {
             // increase the speed slightly
-            return speed * 1.2;
+            return speed * 1.5;
         }
+		else
+		{
+			this.revSpeed = 1/300;
+		}
     }
     
     // Damage multiplier when active

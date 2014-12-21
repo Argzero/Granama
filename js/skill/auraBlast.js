@@ -31,7 +31,7 @@ function SkillAuraBlast(player) {
 			//thickness of waves is half that of the active aura
 			thickness = player.activeRadius * .5;
 			
-			for (var i = 0; i < 2; i++) 
+			for (var i = 0; i < 3; i++) 
 			{
 				var shockwave = Shockwave(
 					this,
@@ -40,8 +40,8 @@ function SkillAuraBlast(player) {
 					this.x,
 					this.y,
 					10,
-					Math.PI * i,
-					Math.PI * (i + 1),
+					Math.PI * 2 * i / 3,
+					Math.PI * 2 * (i + 1) / 3,
 					30,
 					thickness,
 					damage,
