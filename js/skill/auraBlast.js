@@ -12,7 +12,7 @@ function SkillAuraBlast(player) {
 			var damage;
 			
 			//since the aura immediately changes, we want to 'blast away' the old one
-			if(player.staticActive)
+			if(!player.staticActive)
 			{
 				color1 = '#0ff';
                 color2 = '#06c';
