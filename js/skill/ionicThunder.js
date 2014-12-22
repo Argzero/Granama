@@ -9,6 +9,8 @@ function SkillIonicThunder(player) {
             this.nextWave = 60;
             this.nextWaveIncrement = 50;
         }
+		
+		this.disabled = this.skillDuration > 0;
         
         // Active skill effects
         if (this.skillDuration > 0) {
@@ -44,28 +46,13 @@ function SkillIonicThunder(player) {
                         Math.PI * (i + 1),
                         30,
                         20,
-                        this.GetDamageMultiplier(),
+                        this.GetDamageMultiplier() * 2,
                         100 + elapsed * 2,
                         0
                     );
                     this.bullets.push(shockwave);
                 }
             }
-            /*var shockwave = Shockwave(
-                this,
-                data.color1 || '#ff9933',
-                data.color2 || '#f70',
-                this.x + data.dx,
-                this.y + data.dy,
-                data.speed || 5,
-                data.start + this.angle,
-                data.end + this.angle,
-                data.radius,
-                data.thickness || 20, 
-                data.damage,
-                data.range,
-                data.knockback
-            );*/
             
             this.x -= this.cos * elapsed / 50;
             this.y -= this.sin * elapsed / 50;
