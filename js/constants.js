@@ -145,7 +145,7 @@ PLAYER_DATA = [
         preview: 'pAngel',
         name: 'Angel',
         ups: ['StaticAura', 'PowerAura', 'PrismBeamPower', 'ShieldRecharge', 'MovementSpeed'],
-        icons: ['DroneRange', 'DroneShots', 'LMGDamage', 'Shield', 'Speed'],
+        icons: ['StaticAura', 'PowerAura', 'PrismBeam', 'Shield', 'Speed'],
         color: '#fff',
         weapons: [ 'Prism Beam', 'Healing Kit' ],
         skills: [
