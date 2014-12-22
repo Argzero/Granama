@@ -61,9 +61,9 @@ SB_DATA = [
 		name: 'Disker',
 		weapon: 'Disk Launcher',
 		skills: [
-			{ name: 'Perfect Shield', callback: SkillPerfectShield },
-			{ name: 'Reflector', callback: SkillReflector },
-			{ name: 'Stasis', callback: SkillStasis }
+			{ name: 'Disk Barrage', callback: SkillPerfectShield },
+			{ name: 'Expando Disk', callback: SkillReflector },
+			{ name: 'Explosive Disk', callback: SkillStasis }
 		]
 	},
 	{
@@ -72,9 +72,9 @@ SB_DATA = [
 		name: 'Guard',
 		weapon: 'Punches',
 		skills: [
-			{ name: 'Perfect Shield', callback: SkillPerfectShield },
-			{ name: 'Reflector', callback: SkillReflector },
-			{ name: 'Stasis', callback: SkillStasis }
+			{ name: 'Bumper', callback: SkillPerfectShield },
+			{ name: 'Mega Wave', callback: SkillReflector },
+			{ name: 'Perfect Shield', callback: SkillStasis }
 		]
 	}
 ],

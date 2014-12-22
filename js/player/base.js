@@ -430,7 +430,14 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
                     if (this.skillCd > 0) {
                         canvas.globalAlpha = 0.5;
                     }
-                    canvas.drawImage(GetImage('ability' + this.ability), this.x - 95, this.y - 20, 40, 40);
+					if (this.spinnerBall)
+					{
+							canvas.drawImage(GetImage('sb' + this.name + this.ability + this.team), this.x - 95, this.y - 20, 40, 40);
+					}
+					else
+					{
+						canvas.drawImage(GetImage('ability' + this.ability), this.x - 95, this.y - 20, 40, 40);
+					}
                     canvas.globalAlpha = 1;
                     
                     // Skill cooldown/duration

@@ -474,12 +474,12 @@ function SBSelectScreen() {
 					canvas.fillText(robot.name, x, y + 80);
 					
 					// Hovered ability
-					canvas.drawImage(GetImage('ability' + robot.skills[settings.ability].name), x - 45, y + 160, 90, 90);
+					canvas.drawImage(GetImage('sb' + robot.name + robot.skills[settings.ability].name + settings.team), x - 45, y + 160, 90, 90);
 					
 					// Other abilities
 					canvas.globalAlpha = 0.5;
-					canvas.drawImage(GetImage('ability' + robot.skills[(settings.ability + 2) % 3].name), x - 105, y + 205, 45, 45);
-					canvas.drawImage(GetImage('ability' + robot.skills[(settings.ability + 1) % 3].name), x + 60, y + 205, 45, 45);
+					canvas.drawImage(GetImage('sb' + robot.name + robot.skills[(settings.ability + 2) % 3].name + settings.team), x - 105, y + 205, 45, 45);
+					canvas.drawImage(GetImage('sb' + robot.name + robot.skills[(settings.ability + 1) % 3].name + settings.team), x + 60, y + 205, 45, 45);
 					canvas.globalAlpha = 1;
 					
 					// Skill name

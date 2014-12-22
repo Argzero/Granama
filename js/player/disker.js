@@ -5,6 +5,7 @@ function PlayerDisker(team) {
     );
 	
 	p.spinnerBall = true;
+	p.team = team;
 	p.x = (team == 'Blue' ? GAME_WIDTH / 4 : GAME_WIDTH * 0.75);
 	
 	// Weapon data
