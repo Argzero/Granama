@@ -328,6 +328,11 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
             }
             
             this.UpdatePause();
+			
+			// Bounding
+            if (!this.disableClamp) {
+                this.clamp();
+            }
         },
 		
 		UpdatePause: function() {
