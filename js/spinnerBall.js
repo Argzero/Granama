@@ -16,7 +16,7 @@ function SpinnerBall() {
 	this.spinner = LightBouncerEnemy(GAME_WIDTH / 2, GAME_HEIGHT / 2);
 	this.spinner.ApplyMove = EnemyMoveSpinner;
 	this.spinner.damage = 0;
-	this.spinner.speed = 8;
+	this.spinner.speed = 0;
 	this.spinner.direction.x = 0;
 	this.spinner.direction.y = 1;
 	

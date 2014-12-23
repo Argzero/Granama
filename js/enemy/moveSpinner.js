@@ -37,6 +37,7 @@ function EnemyMoveSpinner() {
 		this.y = GAME_HEIGHT / 2;
 		this.direction.x = 0;
 		this.direction.y = Rand(2) * 2 - 1;
+		this.speed = 0;
 	}
 	
 	// Looking direction
@@ -51,6 +52,7 @@ function EnemyMoveSpinner() {
 		if (player.health > 0 && BulletCollides(this, player)) {
 			this.direction = Vector(this.x - player.x, this.y - player.y);
 			this.direction.SetLength(1);
+			this.speed = 10;
 			player.Damage(this.damage, this);
 			
 			var knockback = Vector(-this.direction.x, -this.direction.y);
@@ -58,6 +60,12 @@ function EnemyMoveSpinner() {
 			knockback.y *= this.distance;
 			player.Knockback(knockback.x, knockback.y);
 		}
+	}
+	
+	// Slow down over time
+	if (this.speed > 0)
+	{
+		this.speed = Math.max(1, this.speed - 0.025);
 	}
 }
 
