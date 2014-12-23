@@ -57,6 +57,7 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 		knockback: Vector(0, 0),
 		input: undefined,
 		revSpeed: 1 / 300,
+		buffs: new BuffManager(100),
 		
 		// Gives the player experience and checks for level ups
 		GiveExp: function(amount) {
@@ -169,10 +170,12 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 			if(this.shieldRechargeBuffTimer > 0)
 			{
 				this.shieldRechargeBuffTimer--;
+				this.buffs.enable(BUFF.SHIELD_UP);
 			}
 			else
 			{
 				this.shieldRechargeBuff = 0;
+				this.buffs.disable(BUFF.SHIELD_UP);
 			}
 			
 			//power (damage) buff check
@@ -184,10 +187,12 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 				{
 					this.health = this.maxHealth;
 				}
+				this.buffs.enable(BUFF.HP_UP);
 			}
 			else
 			{
 				this.damageBuff = 0;
+				this.buffs.disable(BUFF.HP_UP);
 			}
 			
 			// Shield regeneration
@@ -238,12 +243,16 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 				if (this.speedMDuration) {
 					speed *= this.speedM;
 					this.speedMDuration--;
+					this.buffs.enable(BUFF.SPEED_DOWN);
 				}
+				else this.buffs.disable(BUFF.SPEED_DOWN);
 				if (this.onMove) {
 					var result = this.onMove(speed);
 					if (result !== undefined) {
+						if (result > 1) this.buffs.enable(BUFF.SPEED_UP);
 						speed = result;
 					}
+					else this.buffs.disable(BUFF.SPEED_UP);
 					if (!speed) {
 						return true;
 					}
@@ -326,6 +335,11 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
             }
             
             this.UpdatePause();
+			
+			// Bounding
+            if (!this.disableClamp) {
+                this.clamp();
+            }
         },
 		
 		UpdatePause: function() {
@@ -385,6 +399,9 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
         
             // Transform the canvas to match the player orientation
             canvas.translate(this.x, this.y);
+			
+			// Draw buff particles
+			this.buffs.draw();
 			
 			// Damage effect
 			if (this.damageAlpha > 0) {
@@ -503,5 +520,5 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
             this.profile.addStat(this.name, STAT.TOTAL_DEALT, amount);
             this.profile.setBest(this.name, STAT.MOST_DEALT, this.damageDealt);
         }
-	}
+	};
 }
