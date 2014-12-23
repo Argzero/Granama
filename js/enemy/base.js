@@ -29,6 +29,7 @@ function EnemyBase(sprite, x, y, health, speed, range, exp, patternMin, patternM
 		patternTimer: 0,
         pierceDamage: 1,
         turnDivider: 50,
+		buffs: new BuffManager(sprite.width / 2 + 20),
 		
 		//the higher this number, the more damage it takes. 1 is normal.
 		weaknessMultiplier: 1,
@@ -135,10 +136,12 @@ var enemyFunctions = {
 		if(this.weaknessTimer > 0)
 		{
 			this.weaknessTimer--;
+			this.buffs.enable(BUFF.DMG_DOWN);
 		}
 		else
 		{
 			this.weaknessMultiplier = 1;
+			this.buffs.disable(BUFF.DMG_DOWN);
 		}
     
 		// Pattern switching
@@ -152,7 +155,9 @@ var enemyFunctions = {
         // Speed multiplier countdown
         if (this.speedMDuration) {
             this.speedMDuration--;
+			this.buffs.enable(BUFF.SPEED_DOWN);
         }
+		else this.buffs.disable(BUFF.SPEED_DOWN);
     
         // Apply knockback
         if (this.knockback.LengthSq() > 0) {
@@ -218,9 +223,13 @@ var enemyFunctions = {
             this.ApplyDraw();
         }
     
-        // Orientation
+        // Return to center of the enemy
         canvas.translate(this.sprite.width / 2, this.sprite.height / 2);
-        //canvas.rotate(this.angle);
+		
+		// Draw buff particles
+		//this.buffs.draw();
+		
+		// Rotation
 		canvas.transform(this.sin, -this.cos, this.cos, this.sin, 0, 0);
         canvas.translate(-this.sprite.width / 2, -this.sprite.height / 2);
         

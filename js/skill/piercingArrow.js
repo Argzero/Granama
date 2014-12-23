@@ -20,9 +20,7 @@ function SkillPiercingArrow(player) {
                 300
             );
 			arrow.updateBase = arrow.Update;
-			arrow.drawBase = arrow.Draw;
 			arrow.Update = piercingArrowUpdate;
-			arrow.Draw = piercingArrowDraw;
 			arrow.n1 = Vector(-this.sin * COS_60 - this.cos * SIN_60, -this.sin * SIN_60 + this.cos * COS_60);
 			arrow.n2 = Vector(this.sin * COS_60 - this.cos * SIN_60, -this.sin * SIN_60 - this.cos * COS_60);
 			arrow.n3 = Vector(-this.sin, this.cos);
@@ -49,19 +47,4 @@ function piercingArrowUpdate() {
 		}
 	}
 	this.updateBase();
-}
-
-function piercingArrowDraw() {
-	this.drawBase();
-	canvas.strokeStyle = 'red';
-	canvas.lineWidth = 3;
-	canvas.beginPath();
-	canvas.moveTo(this.x - this.velX * 5, this.y - this.velY * 5);
-	canvas.lineTo(this.x - this.velX * 5 - this.n1.x * 50, this.y - this.velY * 5 - this.n1.y * 50);
-	canvas.stroke();
-	canvas.strokeStyle = 'blue';
-	canvas.beginPath();
-	canvas.moveTo(this.x - this.velX * 5, this.y - this.velY * 5);
-	canvas.lineTo(this.x - this.velX * 5 - this.n2.x * 50, this.y - this.velY * 5 - this.n2.y * 50);
-	canvas.stroke();
 }

@@ -50,7 +50,7 @@ function PlayerValkyrieType() {
 	
 	// Damage reduction while locked
     p.onDamaged = function(amount, damager) {
-        if (this.locked || this.skillDuration > 0) {
+        if (this.disabled) {
             return amount * 0.1;
         }
     }
@@ -58,6 +58,13 @@ function PlayerValkyrieType() {
     // Update function
     p.Update = function() {
         this.UpdateBase();
+		
+		// Defense buff
+		if (this.disabled) 
+		{
+			this.buffs.enable(BUFF.DEF_UP);
+		}
+		else this.buffs.disable(BUFF.DEF_UP);
         
         // Damage multiplier
 		var m = this.GetDamageMultiplier();
