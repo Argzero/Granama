@@ -95,7 +95,7 @@ var enemyFunctions = {
     AddWeapon: function(method, data, pattern) {
 		if (pattern === undefined) pattern = 0;
 		
-		this.patternCount = Math.max(pattern, this.patternCount);
+		this.patternCount = Math.max(pattern + 1, this.patternCount);
         data.method = method.bind(this);
         data.list = gameScreen.enemyManager.bullets;
         data.cd = 0;
