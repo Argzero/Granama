@@ -7,6 +7,7 @@ function GameScreen(bossRush) {
     this.score = 0;
     this.gameOver = false;
 	this.bossTimer = 0;
+	this.shadeAlpha = 0;
 	
     this.damageOverlay = GetImage("damage");
     
@@ -126,7 +127,17 @@ function GameScreen(bossRush) {
                 }
             }
         }
-        
+		
+		// Shading when zooming to boss
+		this.shadeAlpha = Math.max(0, Math.min(1, this.shadeAlpha + (this.update ? -1/120 : 1/120)));
+		if (this.shadeAlpha > 0)
+		{
+			canvas.globalAlpha = this.shadeAlpha * 0.5;
+			canvas.fillStyle = '#000';
+			canvas.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+			canvas.globalAlpha = 1;
+        }
+		
         // Apply scroll offsets
         canvas.translate(-this.scrollX, -this.scrollY);
 		
@@ -166,9 +177,9 @@ function GameScreen(bossRush) {
         }
 		
 		// Boss title
-		if (this.bossTimer > 60 && this.bossTimer < BOSS_PREVIEW)
+		if (this.bossTimer > 120 && this.bossTimer < BOSS_PREVIEW)
 		{
-			this.ui.drawBossTitle(this.enemyManager.enemies[0].title, this.bossTimer - 60, BOSS_PREVIEW - this.bossTimer);
+			this.ui.drawBossTitle(this.enemyManager.enemies[0].title, this.bossTimer - 120, BOSS_PREVIEW - this.bossTimer);
 		}
         
         canvas.setTransform(1, 0, 0, 1, 0, 0);
@@ -315,7 +326,7 @@ function GameScreen(bossRush) {
 			if (dSq > 0)
 			{
 				dSq = Math.sqrt(dSq);
-				dSq = Math.min(dSq, 50) / dSq;
+				dSq = Math.min(dSq, 25) / dSq;
 				dx *= dSq;
 				dy *= dSq;
 				

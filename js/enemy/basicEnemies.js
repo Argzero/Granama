@@ -490,7 +490,7 @@ function LightBouncerEnemy(x, y) {
     enemy.rank = STAT.LIGHT;
     
     // Movement pattern
-	var angle = Rand(360 * Math.PI / 180);
+	var angle = Rand(360) * Math.PI / 180;
 	enemy.direction = Vector(Math.cos(angle), Math.sin(angle));
     enemy.ApplyMove = EnemyMoveBounce;
 	enemy.Knockback = enemyFunctions.KnockbackBouncer;
@@ -525,7 +525,7 @@ function HeavyBouncerEnemy(x, y) {
     enemy.rank = STAT.HEAVY;
     
     // Movement pattern
-	var angle = Rand(360 * Math.PI / 180);
+	var angle = Rand(360) * Math.PI / 180;
 	enemy.direction = Vector(Math.cos(angle), Math.sin(angle));
     enemy.ApplyMove = EnemyMoveBounce;
 	enemy.Knockback = enemyFunctions.KnockbackBouncer;
@@ -560,7 +560,7 @@ function SolarEnemy(x, y) {
     enemy.rank = STAT.MINIBOSS;
     
     // Movement pattern
-	var angle = Rand(360 * Math.PI / 180);
+	var angle = Rand(360) * Math.PI / 180;
 	enemy.direction = Vector(Math.cos(angle), Math.sin(angle));
     enemy.ApplyMove = EnemyMoveBounce;
 	enemy.Knockback = undefined;

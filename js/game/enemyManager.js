@@ -269,7 +269,7 @@ function EnemyManager(screen) {
     this.CheckSpawns = function() {
 		
 		// Transition to upgrade screen
-		if (this.bossStatus == ACTIVE_BOSS) {
+		if (this.bossStatus == ACTIVE_BOSS || this.bossStatus == ACTIVE_DRAGON) {
 			if (this.enemies.length == 0) {	
 				this.timer++;
 				if (this.timer >= 600) {	
