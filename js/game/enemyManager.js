@@ -348,13 +348,15 @@ function EnemyManager(screen) {
         var x, y;
         
         this.bossScore = 'RUSH';
-        if (this.spawnCd <= 0 && this.enemies.length < Math.floor(1 + screen.score / MAX_BOSS_INTERVAL)) {
-            this.bossStatus = ACTIVE_BOSS;
-            this.spawnCd = BOSS_SPAWN_INTERVAL;
-            this.SpawnBoss(screen.score);
-            this.bossCount += 0.3;
+        if (this.enemies.length < Math.floor(1 + screen.score / MAX_BOSS_INTERVAL)) {
+			if (this.spawnCd <= 0)
+			{
+				this.spawnCd = BOSS_SPAWN_INTERVAL;
+				this.SpawnBoss(screen.score);
+				this.bossCount += 0.5;
+			}
+			else this.spawnCd--;
         }
-        else if (this.spawnCd > 0) this.spawnCd--;
     };
     
     // Spawns a boss
@@ -377,11 +379,13 @@ function EnemyManager(screen) {
         // Spawn the boss
 		if (this.bossId < 5)
 		{
+			this.bossStatus = ACTIVE_BOSS;
 			this.enemies.push(BOSS_SPAWNS[this.bossId % BOSS_SPAWNS.length](x, y));
 			this.bossId++;
 		}
 		else
 		{
+			this.bossStatus = ACTIVE_DRAGON;
 			if (this.superBossId == 0)
 			{
 				this.enemies.push(DragonBoss(x, y));
@@ -393,6 +397,8 @@ function EnemyManager(screen) {
 			this.superBossId++;
 			this.ShuffleBosses();
 		}
+		
+		gameScreen.bossTimer = 0;
     };
 	
 	// Shuffles the list of bosses

@@ -17,6 +17,7 @@ function HeavyBoss(x, y) {
         400
     );
     enemy.rank = STAT.BOSS;
+	enemy.title = "Heavy";
     
     enemy.pierceDamage = 0.1;
     enemy.Knockback = enemyFunctions.BossKnockback;
@@ -129,6 +130,7 @@ function FireBoss(x, y) {
         400
     );
     enemy.rank = STAT.BOSS;
+	enemy.title = "Scorpion";
 	
     enemy.pierceDamage = 0.2;
     enemy.Knockback = enemyFunctions.BossKnockback;
@@ -249,6 +251,7 @@ function PunchBoss(x, y) {
 		400
     );
     enemy.rank = STAT.BOSS;
+	enemy.title = "Brawler";
     
     enemy.pierceDamage = 0.2;
     enemy.Knockback = enemyFunctions.BossKnockback;
@@ -326,9 +329,9 @@ function DragonBoss(x, y) {
     var c = gameScreen.enemyManager.bossCount;
     var enemy = EnemyBase(
         GetImage('bossDragonHead'), 
-        x, 
-        y,
-        500 * ScalePower(c, 1.4) * playerManager.players.length,
+        x * 4 - 1.5 * GAME_WIDTH, 
+        y * 4 - 1.5 * GAME_HEIGHT,
+        750 * ScalePower(c, 1.4) * playerManager.players.length,
         4 + 0.3 * c,
         300,
 		1188,
@@ -336,8 +339,9 @@ function DragonBoss(x, y) {
         750
     );
     enemy.rank = STAT.DRAGON;
+	enemy.title = "Dragon";
     
-    enemy.pierceDamage = 0.4;
+    enemy.pierceDamage = 0.3;
     enemy.Knockback = undefined;
     enemy.Slow = undefined;
     enemy.stun = undefined;
@@ -411,7 +415,7 @@ function DragonBoss(x, y) {
     // Dragon's tail
     enemy.tail2 = EnemyTail(enemy, GetImage('bossDragonEnd'), GetImage('bossDragonEnd'), 0, 1, 0, 90);
 	enemy.tail = EnemyTail(enemy, GetImage('bossDragonEnd'), GetImage('bossDragonEnd'), 150, 5, 240, 0);
-    enemy.tail.SetTurrets(GetImage('bossDragonTurret'), GetImage('bullet'), damageScale, 60, false, 0, 48);
+    enemy.tail.SetTurrets(GetImage('bossDragonTurret'), GetImage('bullet'), damageScale * 2, 60, false, 0, 48);
 	enemy.ApplyDraw = function() {
         this.tail.Draw();
         this.tail2.Draw();
@@ -443,6 +447,7 @@ function QueenBoss(x, y) {
         600
     );
     enemy.rank = STAT.BOSS;
+	enemy.title = "Hive Queen";
     
 	// Boss Stuff
     enemy.pierceDamage = 0.2;
@@ -528,6 +533,7 @@ function TankBoss(x, y) {
         400
     );
     enemy.rank = STAT.BOSS;
+	enemy.title = "Fortress";
     
 	// Boss Stuff
     enemy.pierceDamage = 0.1;

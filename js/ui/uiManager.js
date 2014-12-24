@@ -27,6 +27,28 @@ function UIManager(screen) {
     }
     */
     
+	// Draws the active boss title using the given time elapsed and remaining for the view
+	this.drawBossTitle = function(title, elapsed, remaining)
+	{
+		var x;
+		
+		if (elapsed < remaining)
+		{
+			x = Math.max(0.5, 1.5 - elapsed / 30) * WINDOW_WIDTH;
+		}
+		else
+		{
+			x = Math.min(0.5, remaining / 30 - 0.5) * WINDOW_WIDTH;
+		}
+		
+		canvas.fillStyle = 'black';
+		canvas.fillRect(x - WINDOW_WIDTH / 2, WINDOW_HEIGHT - 150, WINDOW_WIDTH, 100);
+		canvas.fillStyle = 'white';
+		canvas.textBaseline = 'middle';
+		canvas.textAlign = 'center';
+		canvas.font = '48px Flipbash';
+		canvas.fillText(title, WINDOW_WIDTH - x, WINDOW_HEIGHT - 100);
+	}
     
     // Draws the sidebar with the upgrades
     this.DrawStatBar = function() {

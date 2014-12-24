@@ -1,10 +1,13 @@
+var BOSS_PREVIEW = 300;
+
 function GameScreen(bossRush) {
 
-    this.scrollX = 0;
-    this.scrollY = 0;
+    this.scrollX = GAME_WIDTH / 2 - WINDOW_WIDTH / 2;
+    this.scrollY = GAME_HEIGHT / 2 - WINDOW_HEIGHT / 2;
     this.score = 0;
     this.gameOver = false;
-    
+	this.bossTimer = 0;
+	
     this.damageOverlay = GetImage("damage");
     
     this.damageAlpha;
@@ -17,6 +20,9 @@ function GameScreen(bossRush) {
     this.playerMinY = 0;
     this.playerMaxX = 9999;
     this.playerMaxY = 9999;
+	this.targetScrollX = 0;
+	this.targetScrollY = 0;
+	this.update = true;
     this.pads = [
         HealingPad(GAME_WIDTH / 3, GAME_HEIGHT / 3), 
         HealingPad(GAME_WIDTH * 2 / 3, GAME_HEIGHT / 3), 
@@ -34,9 +40,18 @@ function GameScreen(bossRush) {
         pageScrollX = (doc && doc.scrollLeft || body && body.scrollLeft || 0);
         pageScrollY = (doc && doc.scrollTop  || body && body.scrollTop  || 0);
         
+		// Boss preview
+		this.update = true;
+		if (this.enemyManager.bossStatus != ACTIVE_NONE && this.bossTimer < BOSS_PREVIEW)
+		{
+			if (!this.paused) this.bossTimer++;
+			this.update = false;
+		}
+		else if (this.enemyManager.bossStatus == ACTIVE_NONE) this.bossTimer = 0;
+		
         // Update when not paused
-        playerManager.update(this.paused);
-        if (!this.paused) {
+        if (this.update) playerManager.update(this.paused);
+        if (this.update && !this.paused) {
 		
 			// Update enemies
             this.enemyManager.UpdateEnemies();
@@ -55,12 +70,18 @@ function GameScreen(bossRush) {
             }
 		
 			// Update environmental objects
-            this.UpdateBullets();
             this.dropManager.Update();
-            
-			// Update the scroll position
-            this.ApplyScrolling();
         }
+		else if (!this.paused && this.enemyManager.bossStatus == ACTIVE_DRAGON) this.enemyManager.UpdateEnemies();
+		
+		// Bullets
+		if (!this.paused)
+		{
+			this.UpdateBullets();
+		}
+		
+		// Update the scroll position
+		if (!this.paused) this.ApplyScrolling();
         
         // Check for losing
         for (var i = 0; i < playerManager.players.length; i++) {
@@ -98,9 +119,9 @@ function GameScreen(bossRush) {
 
         // Draw the background
         if (tile && tile.width) {
-            for (var i = 0; i < WINDOW_WIDTH / tile.width + 1; i++) {
+            for (var i = -1; i < WINDOW_WIDTH / tile.width + 1; i++) {
                 var x = i * tile.width - this.scrollX % tile.width;
-                for (var j = 0; j < WINDOW_HEIGHT / tile.height + 1; j++) {
+                for (var j = -1; j < WINDOW_HEIGHT / tile.height + 1; j++) {
                     canvas.drawImage(tile, x, j * tile.height - this.scrollY % tile.height);
                 }
             }
@@ -108,7 +129,7 @@ function GameScreen(bossRush) {
         
         // Apply scroll offsets
         canvas.translate(-this.scrollX, -this.scrollY);
-        
+		
         this.dropManager.Draw();
         
         for (var i = 0; i < this.pads.length; i++) {
@@ -143,6 +164,12 @@ function GameScreen(bossRush) {
             canvas.restore();
             this.damageAlpha -= DAMAGE_ALPHA_DECAY;
         }
+		
+		// Boss title
+		if (this.bossTimer > 60 && this.bossTimer < BOSS_PREVIEW)
+		{
+			this.ui.drawBossTitle(this.enemyManager.enemies[0].title, this.bossTimer - 60, BOSS_PREVIEW - this.bossTimer);
+		}
         
         canvas.setTransform(1, 0, 0, 1, 0, 0);
         
@@ -241,32 +268,69 @@ function GameScreen(bossRush) {
     this.ApplyScrolling = ApplyScrolling;
     function ApplyScrolling() {
 
+		var minX = 9999;
+		var minY = 9999;
+		var maxX = 0;
+		var maxY = 0;
+	
+		// Boss view
+		if (!this.update)
+		{
+			minX = maxX = this.enemyManager.enemies[0].x;
+			minY = maxY = this.enemyManager.enemies[0].y;
+		}
+	
         // Get the average player position
-        var minX = 9999;
-        var minY = 9999;
-        var maxX = 0;
-        var maxY = 0;
-        for (var i = 0; i < playerManager.players.length; i++) {    
-            var r = playerManager.players[i].robot;
-            if (r.health <= 0) continue;
-            if (r.x < minX) minX = r.x;
-            if (r.x > maxX) maxX = r.x;
-            if (r.y < minY) minY = r.y;
-            if (r.y > maxY) maxY = r.y;
-        }
+		else 
+		{
+			for (var i = 0; i < playerManager.players.length; i++) {    
+				var r = playerManager.players[i].robot;
+				if (r.health <= 0) continue;
+				if (r.x < minX) minX = r.x;
+				if (r.x > maxX) maxX = r.x;
+				if (r.y < minY) minY = r.y;
+				if (r.y > maxY) maxY = r.y;
+			}
+		}
+		
         if (minX != 9999) {
             var avgX = (maxX + minX) / 2;
             var avgY = (maxY + minY) / 2;
             
             // Scroll bounds
-            this.scrollX = clamp(avgX - WINDOW_WIDTH / 2, 0, GAME_WIDTH - WINDOW_WIDTH);
-            this.scrollY = clamp(avgY - WINDOW_HEIGHT / 2, 0, GAME_HEIGHT - WINDOW_HEIGHT);
-            
+            this.targetScrollX = avgX - WINDOW_WIDTH / 2;
+            this.targetScrollY = avgY - WINDOW_HEIGHT / 2;
+			
+			// Scroll limit
+			if (this.update)
+			{
+				this.targetScrollX = clamp(this.targetScrollX, 0, GAME_WIDTH - WINDOW_WIDTH);
+				this.targetScrollY = clamp(this.targetScrollY, 0, GAME_HEIGHT - WINDOW_HEIGHT);
+			}
+
+			// Smooth scrolling            
+			var dx = this.targetScrollX - this.scrollX;
+			var dy = this.targetScrollY - this.scrollY;
+			var dSq = dx * dx + dy * dy;
+			if (dSq > 0)
+			{
+				dSq = Math.sqrt(dSq);
+				dSq = Math.min(dSq, 50) / dSq;
+				dx *= dSq;
+				dy *= dSq;
+				
+				this.scrollX += dx;
+				this.scrollY += dy;
+			}
+			
             // player bounds
-            this.playerMinX = Math.max(0, Math.min(avgX - WINDOW_WIDTH / 2, this.scrollX) + 100);
-            this.playerMinY = Math.max(0, Math.min(avgY - WINDOW_HEIGHT / 2, this.scrollY) + 100);
-            this.playerMaxX = Math.min(GAME_WIDTH, Math.max(avgX + WINDOW_WIDTH / 2, this.scrollX + WINDOW_WIDTH) - 100);
-            this.playerMaxY = Math.min(GAME_HEIGHT, Math.max(avgY + WINDOW_HEIGHT / 2, this.scrollY + WINDOW_HEIGHT) - 100);
+			if (this.update)
+			{
+				this.playerMinX = Math.max(0, Math.min(avgX - WINDOW_WIDTH / 2, this.targetScrollX) + 100);
+				this.playerMinY = Math.max(0, Math.min(avgY - WINDOW_HEIGHT / 2, this.targetScrollY) + 100);
+				this.playerMaxX = Math.min(GAME_WIDTH, Math.max(avgX + WINDOW_WIDTH / 2, this.targetScrollX + WINDOW_WIDTH) - 100);
+				this.playerMaxY = Math.min(GAME_HEIGHT, Math.max(avgY + WINDOW_HEIGHT / 2, this.targetScrollY + WINDOW_HEIGHT) - 100);
+			}
         }
         
         // Apply the scroll amount to the mouse coordinates

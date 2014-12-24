@@ -3,8 +3,8 @@ function BabyHydra(x, y) {
     var c = gameScreen.enemyManager.bossCount;
     var enemy = EnemyBase(
         GetImage('hydraBabyBody'), 
-        x, 
-        y,
+        x * 4 - 1.5 * GAME_WIDTH, 
+        y * 4 - 1.5 * GAME_HEIGHT,
         100 * ScalePower(c, 1.4) * playerManager.players.length,
         10,
         750,
@@ -13,8 +13,9 @@ function BabyHydra(x, y) {
         750
     );
     enemy.rank = STAT.DRAGON;
+	enemy.title = "Hydra";
     
-    enemy.pierceDamage = 0.3;
+    enemy.pierceDamage = 0.5;
     enemy.Knockback = undefined;
     enemy.Slow = undefined;
     enemy.stun = undefined;
@@ -81,8 +82,9 @@ function BabyHydra(x, y) {
             if (this.exp > 0) {
                 gameScreen.particles.push(new RocketExplosion('Enemy', this.x, this.y, 3000));
                 gameScreen.enemyManager.enemies = [];
-                gameScreen.enemyManager.enemies.push(RoyalHydra(-200, -200));
+                gameScreen.enemyManager.enemies.push(RoyalHydra(-GAME_WIDTH / 2, -GAME_HEIGHT / 2));
 				gameScreen.enemyManager.turrets = [];
+				gameScreen.bossTimer = 0;
             }
         }
 	
@@ -139,6 +141,7 @@ function RoyalHydra(x, y) {
         900
     );
     enemy.rank = STAT.DRAGON;
+	enemy.title = "Royal Hydra";
     
     enemy.pierceDamage = 0.1;
     enemy.Knockback = undefined;
