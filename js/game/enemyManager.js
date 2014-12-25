@@ -197,9 +197,9 @@ function EnemyManager(screen) {
                             allDead = true;
                             for (var player = 0; player < playerManager.players.length; player++) {
                                 var robot = playerManager.players[player % playerManager.players.length].robot;
-                                if (robot.health <= 0) continue;
+                                num -= data.value;
+								if (robot.health <= 0) continue;
                                 allDead = false;
-								num -= data.value;
 								var direction = Vector(0, BULLET_SPEED);
 								direction.Rotate(Rand(360) * Math.PI / 180);
 								var exp = ReflectionProjectile(

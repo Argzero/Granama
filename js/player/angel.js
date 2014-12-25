@@ -77,7 +77,7 @@ function PlayerAngelType() {
 				var player = playerManager.players[k].robot;
 				
 				//if the bullet collides with a player...
-				if(p.bullets[i].Collides(player) && player.name != "Angel"){
+				if(player != this && !p.bullets[i].pierce && p.bullets[i].Collides(player)){
 				
 					//and its health is less than max...
 					if(player.health < player.maxHealth && player.health > 0)

@@ -338,7 +338,8 @@ function BasePlayer(sprite, healthScale, damageScale, shieldScale, speedScale) {
 			
 			// Bounding
             if (!this.disableClamp) {
-                this.clamp();
+				this.x = clamp(this.x, this.sprite.width / 2, GAME_WIDTH - this.sprite.width / 2);
+				this.y = clamp(this.y, this.sprite.height / 2, GAME_HEIGHT - this.sprite.height / 2);
             }
         },
 		
