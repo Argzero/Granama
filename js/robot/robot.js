@@ -3,16 +3,6 @@ depend('lib/math');
 depend('lib/2d/vector');
 
 /**
- * Available events for robot objects:
- *
- * onPreDraw - before the sprite and its children are drawn
- * onDraw    - after the sprite and its children is drawn
- * onUpdate  - when the robot updates and isn't stunned
- * onDamaged - when the robot takes damage
- * onHealed  - when the robot is healed
- */
-
-/**
  * Base class for damageable robots
  *
  * @param {string} name   - sprite image name
@@ -32,6 +22,11 @@ function Robot(name, x, y, health, speed) {
     this.maxShield = 0;
     this.shield = 0;
     this.speed = speed;
+	
+	this.damageTaken = 0;
+	this.damageDealt = 0;
+	this.damageAbsorbed = 0;
+	this.deaths = 0;
 
     this.defense = 1;
     this.damage = 1;
@@ -41,6 +36,33 @@ function Robot(name, x, y, health, speed) {
 
     this.knockback = new Vector(0, 0);
     this.buffs = {};
+	
+	////////////
+	// Events //
+	////////////
+	
+	/**
+	 * Called after knockback and buffs are updated each update
+	 */
+	this.onUpdate = undefined;
+	
+	/**
+	 * Called before robots are drawn to the screen
+	 */
+	this.onPreDraw = undefined;
+	
+	/**
+	 * Called after robots are drawn to the screen
+	 */
+	this.onPostDraw = undefined;
+	
+	/**
+	 * Called when the robot takes damage
+	 *
+	 * @param {Number} amount - amount of damage taken
+	 * @param {Robot}  source - source of the damage
+	 */
+	this.onDamaged = undefined;
 }
 
 /**
@@ -50,24 +72,34 @@ function Robot(name, x, y, health, speed) {
  * @param {Robot}  source - the source of the damage
  */
 Robot.prototype.damage = function(amount, source) {
+	
+	// Ignore damage when dead
+	if (this.dead) return;
+
+	// Defense application
+    amount *= this.get('defense');
 
     // Event for taking damage
     if (this.onDamaged) this.onDamaged(amount, source);
-
-    // Defense application
-    amount *= this.get('defense');
+	
+	// Credit source of damage with the dealt damage
+	source.damageDealt += amount;
 
     // Shield absorbs all the damage
     if (this.shield > amount) {
         this.shield -= amount;
+		this.damageAbsorbed += amount;
     }
 
     // Taking health damage
     else {
         amount -= this.shield;
-        this.shield = 0;
+		this.damageAbsorbed += this.shield;
+		this.shield = 0;
+		this.damageTaken += amount;
         this.health -= amount;
-        this.dead = this.health <= 0;
+		this.dead = this.health <= 0;
+		if (this.dead) this.deaths++;
     }
 };
 
@@ -104,7 +136,7 @@ Robot.prototype.forward = function() {
 Robot.prototype.get = function(name) {
     var m = 1;
     if (this.buffs[name]) m = this.buffs[name].multiplier;
-    return this[name] * m;
+    return (this[name] || 1) * m;
 };
 
 /**
@@ -148,7 +180,7 @@ Robot.prototype.knockback = function(knockback) {
 /**
  * The base update function for robots
  */
-Robot.prototype.updateBase = function() {
+Robot.prototype.updateRobot = function() {
 
     // Update buffs, removing them when expired
     for (var buff in this.buffs) {

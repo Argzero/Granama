@@ -201,3 +201,25 @@ Transform.prototype.applyRect = function(rect) {
         .scale(this.size.x, this.size.y)
         .move(this.pos.x, this.pos.y);
 };
+
+/**
+ * Finds the distance between two transforms
+ *
+ * @param {Transform} transform - the other transform
+ *
+ * @returns {Number} distance between the transforms
+ */
+Transform.prototype.distance = function(transform) {
+	return transform.pos.distance(this.pos);
+}
+
+/**
+ * Finds the squared distance between two transforms
+ *
+ * @param {Transform} transform - the other transform
+ *
+ * @returns {Number} squared distance between the transforms
+ */
+Transform.prototype.distance = function(transform) {
+	return transform.pos.distanceSq(this.pos);
+}
