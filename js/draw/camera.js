@@ -1,5 +1,6 @@
 depend('lib/2d/transform');
 depend('lib/2d/vector');
+depend('lib/2d/rect');
 
 /**
  * Represents a camera on a 2D canvas
@@ -115,10 +116,10 @@ Camera.prototype.applyBounds = function() {
     this.ctx.restore();
     this.ctx.save();
     this.ctx.beginPath();
-    this.ctx.moveTo(this.bounds.topLeft.x, this.topLeft.y);
-    this.ctx.lineTo(this.bounds.topRight.x, this.topRight.y);
-    this.ctx.lineTo(this.bounds.bottomRight.x, this.bottomRight.y);
-    this.ctx.lineTo(this.bounds.bottomLeft.x, this.bottomLeft.y);
+    this.ctx.moveTo(this.bounds.topLeft.x, this.bounds.topLeft.y);
+    this.ctx.lineTo(this.bounds.topRight.x, this.bounds.topRight.y);
+    this.ctx.lineTo(this.bounds.bottomRight.x, this.bounds.bottomRight.y);
+    this.ctx.lineTo(this.bounds.bottomLeft.x, this.bounds.bottomLeft.y);
     this.ctx.closePath();
     this.ctx.clip();
 };

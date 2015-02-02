@@ -1,95 +1,73 @@
-// Manages players
-var playerManager = {
+depend('lib/input');
 
-    // The list of players
-    players: [Player(-1)],
+// Active players
+var players = [];
 
-    keyboardActive : true,
-    gamepadActive  : true,
+keyboardActive = true;
+gamepadActive  = true;
 
-    // Updates all the players
-    update         : function(paused) {
-        for (var i = 0; i < this.players.length; i++) {
-            this.players[i].input.update();
-            if (!paused) {
-                if (this.players[i].robot.health > 0) {
-                    this.players[i].robot.Update();
-                }
-                else {
-                    this.players[i].robot.UpdateDead();
-                }
-            }
-            else {
-                this.players[i].robot.UpdatePause();
-            }
-        }
-    },
+/**
+ * Grabs the closest alive player to the coordinates.
+ * If all players are dead, this will instead grab the
+ * first player in the list.
+ *
+ * @param {Number} x - horizontal coordinate
+ * @param {Number} y - vertical coordinate
+ */
+function getClosestPlayer(x, y) {
+	var r = undefined;
+	var min = 9999999;
+	for (var i = 0; i < this.players.length; i++) {
+		var robot = this.players[i].robot;
+		if (robot.health <= 0) continue;
+		var dSq = (robot.x - x) * (robot.x - x) + (robot.y - y) * (robot.y - y);
+		if (dSq < min) {
+			min = dSq;
+			r = robot;
+		}
+	}
+	return r || this.players[0].robot;
+}
 
-    // Retrieves the list of player robots
-    getRobots      : function() {
-        var list = [];
-        for (var i = 0; i < this.players.length; i++) {
-            list.push(this.players[i].robot);
-        }
-        return list;
-    },
+/**
+ * Sets the amount of players able to play in the current game
+ *
+ * @param {Number} amount - the amount of players to set up
+ */
+function setPlayerCount(amount) {
+	this.players = [];
+	while (this.players.length < amount && (this.players.length < 1 || input.GAMEPADS_SUPPORTED)) {
+		this.players.push(getPlayerWrapper(this.players.length - 1));
+	}
+	this.keyboardActive = true;
+	this.gamepadActive = players.length > 1;
+}
 
-    // Gets the nearest player to the coordinates
-    getClosest     : function(x, y) {
-        var r = undefined;
-        var min = 9999999;
-        for (var i = 0; i < this.players.length; i++) {
-            var robot = this.players[i].robot;
-            if (robot.health <= 0) continue;
-            var dSq = (robot.x - x) * (robot.x - x) + (robot.y - y) * (robot.y - y);
-            if (dSq < min) {
-                min = dSq;
-                r = robot;
-            }
-        }
-        return r || this.players[0].robot;
-    },
+/**
+ * Cleans the list of players, removing players that did not join
+ */
+function cleanPlayerList() {
+	this.keyboardActive = false;
+	this.gamepadActive = false;
+	for (var i = 0; i < this.players.length; i++) {
+		if (!players[i].health) {
+			this.players.splice(i, 1);
+			i--;
+		}
+		else if (players[i].input.id === undefined) {
+			this.keyboardActive = true;
+		}
+		else this.gamepadActive = true;
+	}
+}
 
-    // Sets up the list for single player
-    setSingleplayer: function() {
-        this.players = [];
-        this.players.push(Player(-1));
-
-        this.keyboardActive = true;
-        this.gamepadActive = false;
-    },
-
-    // Adds players so that there's 4
-    setMultiplayer : function() {
-        this.players = [];
-        while (this.players.length < 5 && (this.players.length < 1 || gamepads)) {
-            this.players.push(Player(this.players.length - 1));
-        }
-
-        this.keyboardActive = true;
-        this.gamepadActive = true;
-    },
-
-    // Cleans inactive player objects from the list
-    clean          : function() {
-        this.keyboardActive = false;
-        this.gamepadActive = false;
-        for (var i = 0; i < this.players.length; i++) {
-            if (!this.players[i].robot) {
-                this.players.splice(i, 1);
-                i--;
-            }
-            else if (this.players[i].input.id === undefined) {
-                this.keyboardActive = true;
-            }
-            else this.gamepadActive = true;
-        }
-    }
-};
-
-function Player(gamepadIndex) {
+/**
+ * Gets a wrapper for a player during robot selection
+ *
+ * @param {Number} index - index of the player
+ */ 
+function getPlayerWrapper(index) {
     return {
-        input: (gamepadIndex == -1 ? StandardInput() : GamepadInput(gamepadIndex)),
-        robot: undefined
+        input: (index == -1 ? new KeyboardInput() : new GamepadInput(gamepadIndex))
     };
 }

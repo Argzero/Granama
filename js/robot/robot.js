@@ -2,6 +2,11 @@ depend('draw/sprite');
 depend('lib/math');
 depend('lib/2d/vector');
 
+Robot.PLAYER = 0;
+Robot.ENEMY = 1;
+Robot.BOSS = 2;
+Robot.TURRET = 3;
+
 /**
  * Base class for damageable robots
  *
@@ -61,8 +66,19 @@ function Robot(name, x, y, health, speed) {
 	 *
 	 * @param {Number} amount - amount of damage taken
 	 * @param {Robot}  source - source of the damage
+	 *
+	 * @returns {Number} modified damage amount or undefined if no changes
 	 */
 	this.onDamaged = undefined;
+	
+	/**
+	 * Called when the robot is healed by any source
+	 *
+	 * @param {Number} amount - healing amount
+	 *
+	 * @returns {Number} modified healing amount or undefined if no changes
+	 */
+	this.onHealed = undefined;
 }
 
 /**
@@ -80,7 +96,12 @@ Robot.prototype.damage = function(amount, source) {
     amount *= this.get('defense');
 
     // Event for taking damage
-    if (this.onDamaged) this.onDamaged(amount, source);
+    if (this.onDamaged) {
+		var result = this.onDamaged(amount, damager);
+        if (result !== undefined) {
+            amount = result;
+        }
+	}
 	
 	// Credit source of damage with the dealt damage
 	source.damageDealt += amount;
@@ -111,7 +132,12 @@ Robot.prototype.damage = function(amount, source) {
 Robot.prototype.heal = function(amount) {
 
     // Event for healing
-    if (this.onHealed) this.onHealed(amount);
+    if (this.onHealed) {
+		var result = this.onHealed(amount);
+		if (result !== undefined) {
+			amount = result;
+		}
+	}
 
     // Apply healing
     this.health = Math.min(this.health + amount, this.maxHealth);
