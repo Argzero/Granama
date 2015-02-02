@@ -26,7 +26,7 @@ var input = {
 
     // Special keys
     KEY_BACK: 8,   KEY_TAB: 9,      KEY_ENTER: 13, KEY_SHIFT: 16,
-    KEY_CTRL 17,   KEY_ALT: 18,     KEY_ESC: 27,   KEY_SPACE: 32,
+    KEY_CTRL: 17,  KEY_ALT: 18,     KEY_ESC: 27,   KEY_SPACE: 32,
     KEY_PG_UP: 33, KEY_PG_DOWN: 34,
 
     // Mouse buttons
