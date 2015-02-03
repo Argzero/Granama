@@ -17,13 +17,12 @@ depend('lib/2d/vector');
  * @param {number}  x        - the horizontal starting position
  * @param {number}  y        - the vertical starting position
  * @param {Sprite}  [parent] - the parent to inherit transforms from
- * @param {boolean} [before] - whether or not to draw before the parent
  * @param {boolean} [rotate] - whether or not to inherit rotations as well
  *
  * @constructor
  */
 extend('Sprite', 'Transform');
-function Sprite(name, x, y, parent, before, rotate) {
+function Sprite(name, x, y, parent, rotate) {
     this.super();
     this.sprite = images.get(name);
     this.parent = parent;
@@ -34,12 +33,6 @@ function Sprite(name, x, y, parent, before, rotate) {
     this.pivot = new Vector(0, 0);
     this.alpha = 1;
     this.moveTo(x, y);
-
-    // Add itself to the parent
-    if (parent) {
-        if (before) this.parent.preChildren.push(this);
-        else this.parent.postChildren.push(this);
-    }
 }
 
 /**

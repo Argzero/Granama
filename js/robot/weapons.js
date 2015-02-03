@@ -1,6 +1,5 @@
 depend('lib/math');
 depend('lib/2d/vector');
-depend('robot');
 
 var weapon = {
 

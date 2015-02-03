@@ -2,10 +2,12 @@ depend('draw/sprite');
 depend('lib/math');
 depend('lib/2d/vector');
 
-Robot.PLAYER = 0;
-Robot.ENEMY = 1;
-Robot.BOSS = 2;
-Robot.TURRET = 3;
+Robot.PLAYER = 1;
+Robot.MOB = 2;
+Robot.BOSS = 4;
+Robot.TURRET = 8;
+Robot.ENEMY = 14;
+Robot.MOBILE = 6;
 
 /**
  * Base class for damageable robots

@@ -3,7 +3,7 @@ depend('lib/2d/vector');
 
 //var IS_FIREFOX = typeof InstallTrigger !== 'undefined';
 
-var input = {
+var controls = {
 
     GAMEPADS_SUPPORTED: navigator.getGamepads !== undefined,
 
@@ -160,7 +160,7 @@ var input = {
 };
 
 /**
- * An input type for keyboard and mouse
+ * An controls type for keyboard and mouse
  */
 function KeyboardInput() {
     this.data = {};
@@ -168,14 +168,14 @@ function KeyboardInput() {
 }
 
 /**
- * Updates the input data
+ * Updates the controls data
  */
 KeyboardInput.prototype.update = function() {
     var x;
 
     // Keyboard keys
-    for (x in input.enabled.key) {
-        if (input.keyPressed(x)) {
+    for (x in controls.enabled.key) {
+        if (controls.keyPressed(x)) {
             if (this.data[x]) this.data[x]++;
             else this.data[x] = 1;
         }
@@ -183,18 +183,18 @@ KeyboardInput.prototype.update = function() {
     }
 
     // Left mouse button
-    if (input.mouse.left) {
-        if (this.data[input.MOUSE_LEFT]) this.data[input.MOUSE_LEFT]++;
-        else this.data[input.MOUSE_LEFT] = 1;
+    if (controls.mouse.left) {
+        if (this.data[controls.MOUSE_LEFT]) this.data[controls.MOUSE_LEFT]++;
+        else this.data[controls.MOUSE_LEFT] = 1;
     }
-    else this.data[input.MOUSE_LEFT] = 0;
+    else this.data[controls.MOUSE_LEFT] = 0;
 
     // Right mouse button
-    if (input.mouse.right) {
-        if (this.data[input.MOUSE_RIGHT]) this.data[input.MOUSE_RIGHT]++;
-        else this.data[input.MOUSE_RIGHT] = 1;
+    if (controls.mouse.right) {
+        if (this.data[controls.MOUSE_RIGHT]) this.data[controls.MOUSE_RIGHT]++;
+        else this.data[controls.MOUSE_RIGHT] = 1;
     }
-    else this.data[input.MOUSE_RIGHT] = 0;
+    else this.data[controls.MOUSE_RIGHT] = 0;
 };
 
 /**
@@ -205,7 +205,7 @@ KeyboardInput.prototype.update = function() {
  * @returns {number} number of updates it has been pressed
  */
 KeyboardInput.prototype.button = function(key) {
-    var mapping = input.mapping.button[key];
+    var mapping = controls.mapping.button[key];
     if (!mapping) return 0;
     else if (this.data[mapping.key]) return this.data[mapping.key];
     else return 0;
@@ -219,13 +219,13 @@ KeyboardInput.prototype.button = function(key) {
  * @returns {number} the current direction the axis is pointing
  */
 KeyboardInput.prototype.axis = function(key) {
-    var mapping = input.mapping.axis[key];
+    var mapping = controls.mapping.axis[key];
     if (!mapping) return 0;
     else if (mapping.obj) {
-        if (mapping.x) return input.mouse.x > mapping.obj.x ? 1 : -1;
-        else return input.mouse.y > mapping.obj.y ? 1 : -1;
+        if (mapping.x) return controls.mouse.x > mapping.obj.x ? 1 : -1;
+        else return controls.mouse.y > mapping.obj.y ? 1 : -1;
     }
-    else return (input.keyPressed(mapping.key1) ? 1 : 0) + (input.keyPressed(mapping.key2) ? -1 : 0);
+    else return (controls.keyPressed(mapping.key1) ? 1 : 0) + (controls.keyPressed(mapping.key2) ? -1 : 0);
 }
 
 /**
@@ -236,20 +236,20 @@ KeyboardInput.prototype.axis = function(key) {
  * @return {Vector} the current direction being pointed at
  */
 KeyboardInput.prototype.direction = function(key) {
-    var mapping = input.mapping.axis[key];
+    var mapping = controls.mapping.axis[key];
     if (!mapping) return new Vector(0, 0);
     else if (mapping.obj) {
-        return new Vector(input.mouse.x - mapping.obj.x, input.mouse.y - mapping.obj.y).normalize();
+        return new Vector(controls.mouse.x - mapping.obj.x, controls.mouse.y - mapping.obj.y).normalize();
     }
     else {
-        var x = (input.keyPressed(mapping.key1) ? 1 : 0) + (input.keyPressed(mapping.key2) ? -1 : 0);
-        var y = (input.keyPressed(mapping.key3) ? 1 : 0) + (input.keyPressed(mapping.key4) ? -1 : 0);
+        var x = (controls.keyPressed(mapping.key1) ? 1 : 0) + (controls.keyPressed(mapping.key2) ? -1 : 0);
+        var y = (controls.keyPressed(mapping.key3) ? 1 : 0) + (controls.keyPressed(mapping.key4) ? -1 : 0);
         return new Vector(x, y).normalize();
     }
 };
 
 /**
- * An input type for keyboard and mouse
+ * An controls type for keyboard and mouse
  *
  * @constructor
  */
@@ -259,7 +259,7 @@ function GamepadInput(index) {
 }
 
 /**
- * Updates the input data
+ * Updates the controls data
  */
 GamepadInput.prototype.update = function() {
     this.valid = navigator.getGamepads()[index];
@@ -268,7 +268,7 @@ GamepadInput.prototype.update = function() {
     var x;
 
     // Gamepad buttons
-    for (x in input.enabled.button) {
+    for (x in controls.enabled.button) {
         if (this.valid.buttons) {
             if (this.data[x]) this.data[x]++;
             else this.data[x] = 1;
@@ -286,7 +286,7 @@ GamepadInput.prototype.update = function() {
  */
 GamepadInput.prototype.button = function(key) {
     if (!this.valid) return 0;
-    var mapping = input.mapping.button[key];
+    var mapping = controls.mapping.button[key];
     if (!mapping) return 0;
     else if (this.data[mapping.key]) return this.data[mapping.key];
     else return 0;
@@ -301,7 +301,7 @@ GamepadInput.prototype.button = function(key) {
  */
 GamepadInput.prototype.axis = function(key) {
     if (!this.valid) return 0;
-    var mapping = input.mapping.axis[key];
+    var mapping = controls.mapping.axis[key];
     if (!mapping) return 0;
     else return this.valid.axis[mapping.axisId];
 };
@@ -315,43 +315,43 @@ GamepadInput.prototype.axis = function(key) {
  */
 GamepadInput.prototype.direction = function(key) {
     if (!this.valid) return 0;
-    var mapping = input.mapping.axis[key];
+    var mapping = controls.mapping.axis[key];
     if (!mapping) return new Vector(0, 0);
     else return new Vector(this.valid.axis[mapping.axis1], this.valid.axis[mapping.axis2]).normalize();
 };
 
 // Mouse down event
 window.addEventListener('mousedown', function(e) {
-    if (e.which == 1) input.mouse.left = true;
-    else if (e.which == 3) input.mouse.right = true;
+    if (e.which == 1) controls.mouse.left = true;
+    else if (e.which == 3) controls.mouse.right = true;
 });
 
 // Mouse up event
 window.addEventListener('mouseup', function(e) {
-    if (e.which == 1) input.mouse.left = false;
-    else if (e.which == 3) input.mouse.right = false;
+    if (e.which == 1) controls.mouse.left = false;
+    else if (e.which == 3) controls.mouse.right = false;
 });
 
 // Mouse move event
 window.addEventListener('mousemove', function(event) {
-    input.mouse.x = event.pageX - event.target.offsetLeft;
-    input.mouse.y = event.pageY - event.target.offsetTop;
+    controls.mouse.x = event.pageX - event.target.offsetLeft;
+    controls.mouse.y = event.pageY - event.target.offsetTop;
 });
 
 // Mouse out event
 window.addEventListener('mouseout', function(event) {
-    input.mouse.x = -999;
-    input.mouse.y = -999;
-    input.mouse.left = false;
-    input.mouse.right = false;
+    controls.mouse.x = -999;
+    controls.mouse.y = -999;
+    controls.mouse.left = false;
+    controls.mouse.right = false;
 });
 
 // Key down event
 window.addEventListener('keydown', function(event) {
-    input.keysDown[event.keyCode] = true;
+    controls.keysDown[event.keyCode] = true;
 });
 
 // Key up event
 window.addEventListener('keyup', function(event) {
-    input.keysDown[event.keyCode] = false;
+    controls.keysDown[event.keyCode] = false;
 });

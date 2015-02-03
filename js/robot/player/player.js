@@ -1,3 +1,5 @@
+depend('robot/robot');
+
 /**
  * Base constructor for player types
  *
@@ -11,6 +13,7 @@
  * @param {Number} [shieldScale] - multiplier for shield recharge rate
  * @param {Number} [speedScale]  - multiplier for speed bonuses
  */
+extend('Player', 'Robot');
 function Player(name, x, y, health, speed, healthScale, damageScale, shieldScale, speedScale) {
 	this.super(name, x, y, health, speed);
 	  
@@ -46,9 +49,8 @@ function Player(name, x, y, health, speed, healthScale, damageScale, shieldScale
 	totalExp      = 0;
 	level         = 1;
 	points        = 0;
-	sprite        = sprite;
 	shieldCd      = SHIELD_RATE;
-	healthScale   = healthScale || 1;
+	healthScale   = healthScale || 10;
 	damageScale   = damageScale || 0.1;
 	shieldScale   = shieldScale || 1;
 	speedScale    = speedScale || 1;
@@ -101,7 +103,11 @@ Player.prototype.giveExp = function(amount) {
 	}
 };
 
-// Updates the player
+/**
+ * Updates the player with shared functionality
+ * between players each frame. This should be called
+ * in the implemented players "update" method.
+ */
 Player.prototype.updateBase = function() {
 	this.updatePause();
 
@@ -146,7 +152,9 @@ Player.prototype.updateBase = function() {
 	}
 };
 
-// Updates the player while dead
+/**
+ * Applies updates to the player while dead
+ */
 Player.prototype.updateDead = function() {
 
 	// Update bullets of the player
@@ -185,6 +193,9 @@ Player.prototype.updateDead = function() {
 	this.updatePause();
 };
 
+/**
+ * Applies updates to the player that 
+ */
 Player.prototype.updatePause = function() {
 
 	// Input update

@@ -1,5 +1,10 @@
 depend('draw/camera');
 
+/**
+ * Represents the arcade mode game screen
+ *
+ * @constructor
+ */
 function GameScreen() {
 
     this.score = 0;
@@ -10,17 +15,19 @@ function GameScreen() {
     this.damageAlpha;
     this.paused = undefined;
     this.music;
-    this.dropManager = new DropManager(this);
-    this.enemyManager = new EnemyManager(this);
-    this.ui = new UIManager(this);
     this.playerMinX = 0;
     this.playerMinY = 0;
     this.playerMaxX = 9999;
     this.playerMaxY = 9999;
     this.pads = [];
     this.particles = [];
+	this.bullets = [];
+	this.robots = players.slice(0);
 }
 
+/**
+ * Updates the screen, updating all robots, turretes, bullets, etc.
+ */
 GameScreen.prototype.update = function() {
 
 	var doc = document.documentElement, body = document.body;
@@ -28,42 +35,32 @@ GameScreen.prototype.update = function() {
 	pageScrollY = (doc && doc.scrollTop || body && body.scrollTop || 0);
 
 	// Update when not paused
-	playerManager.update(this.paused);
 	if (!this.paused) {
 
-		// Update enemies
-		this.enemyManager.UpdateEnemies();
-
-		// Spawn enemies
-		if (bossRush) {
-			this.enemyManager.CheckBosses();
+		// Update robots
+		for (var i = 0; i < this.robots.length; i++)
+		{
+			this.robots[i].update();
 		}
-		else {
-			this.enemyManager.CheckSpawns();
-		}
-
+		
 		// Update healing pads
 		for (var i = 0; i < this.pads.length; i++) {
 			this.pads[i].update();
 		}
-
-		// Update environmental objects
-		this.UpdateBullets();
-		this.dropManager.Update();
 
 		// Update the scroll position
 		this.ApplyScrolling();
 	}
 
 	// Check for losing
-	for (var i = 0; i < playerManager.players.length; i++) {
-		if (playerManager.players[i].robot.health > 0) return;
+	for (var i = 0; i < players.length; i++) {
+		if (players[i].health > 0) return;
 	}
 	if (!this.gameOver) {
 		this.gameOver = true;
 
-		for (var i = 0; i < playerManager.players.length; i++) {
-			var p = playerManager.players[i].robot;
+		for (var i = 0; i < players.length; i++) {
+			var p = players[i];
 			p.profile.setBest(p.name, STAT.BEST_SCORE, this.score);
 			p.profile.addList(p.name, STAT.LAST_10, 10, this.score);
 		}
