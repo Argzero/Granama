@@ -1,4 +1,5 @@
 depend('draw/camera');
+depend('screen/gameUI');
 
 /**
  * Represents the arcade mode game screen
@@ -23,6 +24,9 @@ function GameScreen() {
     this.particles = [];
 	this.bullets = [];
 	this.robots = players.slice(0);
+	
+	GAME_WIDTH = 3000;
+	GAME_HEIGHT = 3000;
 }
 
 /**
@@ -49,7 +53,7 @@ GameScreen.prototype.update = function() {
 		}
 
 		// Update the scroll position
-		this.ApplyScrolling();
+		this.applyScrolling();
 	}
 
 	// Check for losing
@@ -80,33 +84,37 @@ GameScreen.prototype.pause = function(player) {
 
 GameScreen.prototype.draw = function() {
 
-	// Draw the background
-	if (tile && tile.width) {
-		for (var i = 0; i < WINDOW_WIDTH / tile.width + 1; i++) {
-			var x = i * tile.width - this.scrollX % tile.width;
-			for (var j = 0; j < WINDOW_HEIGHT / tile.height + 1; j++) {
-				canvas.drawImage(tile, x, j * tile.height - this.scrollY % tile.height);
-			}
-		}
-	}
+	camera.moveTo(-SIDEBAR_WIDTH, 0);
+	ui.drawBackground();
 
 	// Apply scroll offsets
-	canvas.translate(-this.scrollX, -this.scrollY);
+	camera.moveTo(this.scrollX, this.scrollY);
 
-	this.dropManager.Draw();
-
+	// Draw healing pads
 	for (var i = 0; i < this.pads.length; i++) {
-		this.pads[i].draw();
+		this.pads[i].draw(camera);
 	}
 
-	// Players
-	for (var i = 0; i < playerManager.players.length; i++) {
-		var player = playerManager.players[i].robot;
-		player.Draw(canvas);
+	// Pre-draw
+	for (var i = 0; i < this.robots.length; i++) {
+		var r = this.robots[i];
+		if (r.onPreDraw) {
+			r.onPreDraw(camera);
+		}
 	}
-
-	// Enemies
-	this.enemyManager.Draw();
+	
+	// Draw sprites
+	for (var i = 0; i < this.robots.length; i++) {
+		this.robots[i].draw(camera);
+	}
+	
+	// Post-draw
+	for (var i = 0; i < this.robots.length; i++) {
+		var r = this.robots[i];
+		if (r.onPostDraw) {
+			r.onPostDraw(camera);
+		}
+	}
 
 	// Particles
 	for (var i = 0; i < this.particles.length; i++) {
@@ -117,9 +125,11 @@ GameScreen.prototype.draw = function() {
 		}
 	}
 
-	canvas.translate(this.scrollX, this.scrollY);
+	// Reset scrolling for UI elements
+	camera.moveTo(0, 0);
 
 	// Damage effect
+	/*
 	if (this.damageAlpha > 0) {
 		canvas.save();
 		canvas.globalAlpha = this.damageAlpha;
@@ -161,6 +171,7 @@ GameScreen.prototype.draw = function() {
 		canvas.setTransform(1, 0, 0, 1, 0, 0);
 		canvas.drawImage(cursor, mx - element.offsetLeft + pageScrollX - cursor.width / 2, my - element.offsetTop + pageScrollY - cursor.height / 2);
 	}
+	*/
 };
 
 GameScreen.prototype.applyScrolling = function() {
@@ -170,13 +181,13 @@ GameScreen.prototype.applyScrolling = function() {
 	var minY = 9999;
 	var maxX = 0;
 	var maxY = 0;
-	for (var i = 0; i < playerManager.players.length; i++) {
-		var r = playerManager.players[i].robot;
+	for (var i = 0; i < players.length; i++) {
+		var r = players[i];
 		if (r.health <= 0) continue;
-		if (r.x < minX) minX = r.x;
-		if (r.x > maxX) maxX = r.x;
-		if (r.y < minY) minY = r.y;
-		if (r.y > maxY) maxY = r.y;
+		if (r.x < minX) minX = r.pos.x;
+		if (r.x > maxX) maxX = r.pos.x;
+		if (r.y < minY) minY = r.pos.y;
+		if (r.y > maxY) maxY = r.pos.y;
 	}
 	if (minX != 9999) {
 		var avgX = (maxX + minX) / 2;
@@ -192,10 +203,6 @@ GameScreen.prototype.applyScrolling = function() {
 		this.playerMaxX = Math.min(GAME_WIDTH, Math.max(avgX + WINDOW_WIDTH / 2, this.scrollX + WINDOW_WIDTH) - 100);
 		this.playerMaxY = Math.min(GAME_HEIGHT, Math.max(avgY + WINDOW_HEIGHT / 2, this.scrollY + WINDOW_HEIGHT) - 100);
 	}
-
-	// Apply the scroll amount to the mouse coordinates
-	mouseX = mx + this.scrollX - SIDEBAR_WIDTH - element.offsetLeft + pageScrollX;
-	mouseY = my + this.scrollY - element.offsetTop + pageScrollY;
 };
 
 GameScreen.prototype.updateMusic = function() {

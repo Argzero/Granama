@@ -72,7 +72,7 @@ var controls = {
      * @returns {boolean} true if pressed, false otherwise
      */
     keyPressed: function(keyId) {
-        return keysDown[keyId];
+        return this.keysDown[keyId];
     },
 
     /**

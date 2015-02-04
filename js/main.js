@@ -1,5 +1,4 @@
 depend('data/images');
-depend('data/constants');
 depend('draw/camera');
 depend('robot/weapons');
 depend('robot/player/playerManager');
@@ -7,10 +6,10 @@ depend('robot/player/player');
 depend('robot/player/slayer');
 depend('screen/gameScreen');
 
-var MOVE_X = 'moveX';
-var MOVE_Y = 'moveY';
-var LOOK_X = 'lookX';
-var LOOK_Y = 'lookY';
+var TILE = undefined;
+
+var MOVE = 'move';
+var LOOK = 'look';
 var SHOOT = 'shoot';
 var SKILL = 'skill';
 var PAUSE = 'pause';
@@ -18,17 +17,30 @@ var SELECT = 'select';
 
 var camera = undefined;
 var gameScreen = undefined;
+var constants = false;
 onLoaderDone = function() {
+	if (!constants) {
+		depend('data/constants');
+		constants = true;
+		return;
+	}
+
 	camera = new Camera('granama');
+	
+	TILE = new Sprite('tile', 0, 0);
+	ui.canvas = document.getElementById('ui');
+	ui.ctx = ui.canvas.getContext('2d');
 	
 	controls.mapButton(SHOOT, controls.MOUSE_LEFT, controls.BUTTON_RT);
 	controls.mapButton(SKILL, controls.KEY_SPACE, controls.BUTTON_LT);
 	controls.mapButton(PAUSE, controls.KEY_ESC, controls.BUTTON_START);
 	
-	controls.mapAxisKey(MOVE_X, controls.KEY_A, controls.KEY_D, controls.AXIS_LX);
-	controls.mapAxisKey(MOVE_Y, controls.KEY_W, controls.KEY_S, controls.AXIS_LY);
-	
 	players[0] = new PlayerSlayer();
+	players[0].input = new KeyboardInput();
+	
+	controls.mapDirectionKey(MOVE, controls.KEY_LEFT, controls.KEY_RIGHT, controls.KEY_UP, controls.KEY_DOWN, controls.AXIS_LX, controls.AXIS_LY);
+	controls.mapDirectionMouse(LOOK, players[0], true, controls.AXIS_RX, controls.AXIS_RY);
+	
 	gameScreen = new GameScreen();
 	
 	// Cancel the context menu
@@ -41,7 +53,7 @@ onLoaderDone = function() {
     // Game loop
     window.setInterval(function() {
         window.scrollTo(0, 0);
-        if (gameScreen && gameScreen.Draw) {
+        if (gameScreen && gameScreen.draw) {
             if (gameScreen.update) {
                 gameScreen.update();
             }
@@ -62,8 +74,8 @@ window.onmousewheel = document.onmousewheel = function(e) {
  * displayed size of the HTML element.
  */
 function resizeCanvas() {
-    camera.canvas.width = document.clientWidth;
-    camera.canvas.height = "innerHeight" in window
+    camera.canvas.width = ui.canvas.width = camera.canvas.clientWidth;
+    camera.canvas.height = ui.canvas.height = "innerHeight" in window
         ? window.innerHeight
         : document.documentElement.offsetHeight;
     WINDOW_WIDTH = camera.canvas.width - SIDEBAR_WIDTH;

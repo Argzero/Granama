@@ -43,29 +43,29 @@ function Player(name, x, y, health, speed, healthScale, damageScale, shieldScale
 	// Fields //
 	////////////
 	
-	skillCd       = 0;
-	skillDuration = 0;
-	exp           = 0;
-	totalExp      = 0;
-	level         = 1;
-	points        = 0;
-	shieldCd      = SHIELD_RATE;
-	healthScale   = healthScale || 10;
-	damageScale   = damageScale || 0.1;
-	shieldScale   = shieldScale || 1;
-	speedScale    = speedScale || 1;
-	upgrades      = [0, 0, 0, 0, 0];
-	damage        = 1;
-	mPower        = 1;
-	mSpeed        = 1;
-	mHealth       = 1;
-	rescue        = 1;
-	deaths        = 0;
-	rescues       = 0;
-	enemiesKilled = 0;
-	damageAlpha   = 0;
-	levelFrame    = -1;
-	input         = undefined;
+	this.skillCd       = 0;
+	this.skillDuration = 0;
+	this.exp           = 0;
+	this.totalExp      = 0;
+	this.level         = 1;
+	this.points        = 0;
+	this.shieldCd      = SHIELD_RATE;
+	this.healthScale   = healthScale || 10;
+	this.damageScale   = damageScale || 0.1;
+	this.shieldScale   = shieldScale || 1;
+	this.speedScale    = speedScale || 1;
+	this.upgrades      = [0, 0, 0, 0, 0];
+	this.damage        = 1;
+	this.mPower        = 1;
+	this.mSpeed        = 1;
+	this.mHealth       = 1;
+	this.rescue        = 1;
+	this.deaths        = 0;
+	this.rescues       = 0;
+	this.enemiesKilled = 0;
+	this.damageAlpha   = 0;
+	this.levelFrame    = -1;
+	this.input         = undefined;
 }
 
 /**
@@ -147,8 +147,10 @@ Player.prototype.updateBase = function() {
 		}
 
 		// Movement
-		this.setRotation(this.input.direction.x, this.input.direction.y);
-		this.move(speed * this.input.movement.x, speed * this.input.movement.y);
+		var moveDir = this.input.direction(MOVE);
+		var lookDir = this.input.direction(LOOK);
+		this.setRotation(lookDir.x, lookDir.y);
+		this.move(speed * moveDir.x, speed * moveDir.y);
 	}
 };
 
@@ -198,22 +200,20 @@ Player.prototype.updateDead = function() {
  */
 Player.prototype.updatePause = function() {
 
-	// Input update
-	this.input.setPlayer(this);
-
 	// Pause when controls are invalid
 	if (this.input.invalid && !gameScreen.paused) {
-		gameScreen.Pause(this);
+		gameScreen.pause(this);
 	}
 
 	// Pausing
 	else if (!this.input.invalid && this.input.pause == 1) {
-		gameScreen.Pause(this);
+		gameScreen.pause(this);
 	}
 };
 
 // Draws the player and its bullets
-Player.prototype.draw = function(canvas) {
+/*
+Player.prototype.draw = function(camera) {
 
 	// Draw level up effect
 	if (this.levelFrame >= 0) {
@@ -343,6 +343,7 @@ Player.prototype.draw = function(canvas) {
 
 	ResetTransform(canvas);
 };
+*/
 
 // Checks whether or not a skill is being cast
 Player.prototype.isSkillCast = function() {

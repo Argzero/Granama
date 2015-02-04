@@ -4,13 +4,28 @@ depend('data/images');
 var ui = {
 
 	// UI canvas
-	this.canvas = undefined;
-	this.ctx = undefined;
+	canvas: undefined,
+	ctx: undefined,
 	
-    this.ready = undefined;
-    this.hovered = undefined;
-    this.start = undefined;
-    this.upgradeAlpha = 0;
+    ready: undefined,
+    hovered: undefined,
+    start: undefined,
+    upgradeAlpha: 0,
+	
+	drawBackground: function() {
+	
+		// Draw the background
+		if (TILE && TILE.width) {
+			for (var i = 0; i < WINDOW_WIDTH / TILE.width + 1; i++) {
+				var x = i * TILE.width - camera.pos.x % TILE.width;
+				for (var j = 0; j < WINDOW_HEIGHT / TILE.height + 1; j++) {
+					var y = j * TILE.height - camera.pos.y % TILE.height;
+					TILE.moveTo(x, y);
+					TILE.draw(camera);
+				}
+			}
+		}
+	},
 	
     // Draws the sidebar with the upgrades
     drawStatBar: function() {
@@ -85,10 +100,10 @@ var ui = {
                 }
             }
         }
-    }
+    },
 
     // Sets up the end screen to show the stats of the given game screen
-    this.SetupUpgradeUI = function() {
+    setupUpgradeUI: function() {
         this.gameScreen.paused = true;
 
         // Start off with no one ready
@@ -108,7 +123,7 @@ var ui = {
     },
 
 	// Draws the upgrade UI for the game
-	this.DrawUpgradeUI = function() {
+	drawUpgradeUI: function() {
 
 		this.upgradeAlpha = Math.min(1, this.upgradeAlpha + 0.02);
 
@@ -217,5 +232,5 @@ var ui = {
 
 		// Reset the alpha
 		this.ctx.globalAlpha = 1;
-	};
+	}
 }

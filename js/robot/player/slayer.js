@@ -8,10 +8,10 @@ function PlayerSlayer() {
 	
 	// Sprites drawn on top of the robot's body
 	this.postChildren.push(
-		new Sprite('pPowerLaser', -10, -30, this, true),
-		new Sprite('pPowerSpread', -20.5, -30, this, true),
-		new Sprite('pPowerShield', -11, -20, this, true),
-		new Sprite('pPowerFlame', -40, -20, this, true)
+		new Sprite('pPowerLaser', -10, -30).child(this, true),
+		new Sprite('pPowerSpread', -20.5, -30).child(this, true),
+		new Sprite('pPowerShield', -11, -20).child(this, true),
+		new Sprite('pPowerFlame', -40, -20).child(this, true)
 	);
 
     // Weapon data
