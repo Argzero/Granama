@@ -4,14 +4,14 @@
  */
 extend('PlayerSlayer', 'Player');
 function PlayerSlayer() {
-	this.super('pPowerBody', 0, 0, 100, 3, 6, 0.25, 1, 1);
+	//         Sprite Name   X  Y  HP   Speed  HP+  Damage+  Speed+  Shield+
+	this.super('pPowerBody', 0, 0, 100, 3,     6,   0.25,    1,      1);
 	
 	// Sprites drawn on top of the robot's body
 	this.postChildren.push(
-		new Sprite('pPowerLaser', -10, -30).child(this, true),
-		new Sprite('pPowerSpread', -20.5, -30).child(this, true),
-		new Sprite('pPowerShield', -11, -20).child(this, true),
-		new Sprite('pPowerFlame', -40, -20).child(this, true)
+		new Sprite('pPowerShield', 28, 14).child(this, true),
+		new Sprite('pPowerFlame', -28, 15).child(this, true),
+		new Sprite('pPowerSpread', -0.5, -3).child(this, true)
 	);
 
     // Weapon data
@@ -20,7 +20,7 @@ function PlayerSlayer() {
         cd    : 0,
         dx    : -30,
         dy    : 45,
-        rate  : FIRE_CD,
+        rate  : 2,
 		target: Robot.ENEMY
     };
     this.laserData = {
@@ -48,7 +48,7 @@ PlayerSlayer.prototype.update = function() {
 
 	// Flamethrower
 	var fireUps = this.upgrades[FLAME_ID];
-	this.fireData.damage = FIRE_DAMAGE * m;
+	this.fireData.damage = 0.1 * m;
 	this.fireData.range = fireUps * 20 + 100;
 	this.shootFire(this.fireData);
 

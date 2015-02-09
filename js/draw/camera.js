@@ -14,15 +14,10 @@ function Camera(id) {
     this.super();
     this.canvas = document.getElementById(id);
     this.ctx = this.canvas.getContext('2d');
-    this.bounds = new Rect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
 
     // Update the canvas dimensions
     this.canvas.width = this.canvas.clientWidth;
     this.canvas.height = this.canvas.clientHeight;
-
-    // Initialize the clipping region
-    this.ctx.restore();
-    this.applyBounds();
 }
 
 /**
@@ -34,7 +29,7 @@ function Camera(id) {
  * @returns {Camera} the Camera object
  */
 Camera.prototype.moveTo = function(x, y) {
-    this.ctx.translate(this.pos.x - x, this.pos.y - y);
+    this.ctx.translate(x - this.pos.x, y - this.pos.y);
     this.pos.x = x;
     this.pos.y = y;
     return this;
@@ -49,7 +44,7 @@ Camera.prototype.moveTo = function(x, y) {
  * @returns {Camera} the Camera object
  */
 Camera.prototype.move = function(x, y) {
-    this.ctx.translate(-x, -y);
+    this.ctx.translate(x, y);
     this.pos.x += x;
     this.pos.y += y;
     return this;
@@ -67,23 +62,6 @@ Camera.prototype.drawList = function(sprites) {
 };
 
 /**
- * Sets the bounds of the camera view.
- *
- * @param rect bounding rectangle
- */
-Camera.prototype.setBounds = function(rect) {
-    this.bounds = rect;
-    this.applyBounds();
-};
-
-/**
- * Removes the bounds of the camera, making it draw to the full canvas
- */
-Camera.prototype.removeBounds = function() {
-    this.ctx.restore();
-};
-
-/**
  * Checks whether or not a sprite is visible
  *
  * @param {Sprite} sprite - the sprite to checked
@@ -91,8 +69,8 @@ Camera.prototype.removeBounds = function() {
  * @returns {boolean} true if visible, false otherwise
  */
 Camera.prototype.isVisible = function(sprite) {
-	return sprite.xMax() >= this.bounds.topLeft.x + this.pos.x && sprite.xMin() <= this.bounds.bottomRight.y + this.pos.x
-		&& sprite.yMax() >= this.bounds.topLeft.y + this.pos.y && sprite.yMin() <= this.bounds.bottomRight.y + this.pos.y;
+	return sprite.xMax() >= this.pos.x && sprite.xMin() <= this.pos.x + this.canvas.width
+		&& sprite.yMax() >= this.pos.y && sprite.yMin() <= this.pos.y + this.canvas.height
 };
 
 /**
@@ -105,23 +83,8 @@ Camera.prototype.isVisible = function(sprite) {
  */
 Camera.prototype.isVisible = function(point, padding) {
     padding = padding ? padding : 0;
-    return point.x + padding >= this.bounds.topLeft.x + this.pos.x && point.x - padding <= this.bounds.bottomRight.y + this.pos.x
-           && point.y + padding >= this.bounds.topLeft.y + this.pos.y && point.y - padding <= this.bounds.bottomRight.y + this.pos.y;
-};
-
-/**
- * Applies bound changes for the camera
- */
-Camera.prototype.applyBounds = function() {
-    this.ctx.restore();
-    this.ctx.save();
-    this.ctx.beginPath();
-    this.ctx.moveTo(this.bounds.topLeft.x, this.bounds.topLeft.y);
-    this.ctx.lineTo(this.bounds.topRight.x, this.bounds.topRight.y);
-    this.ctx.lineTo(this.bounds.bottomRight.x, this.bounds.bottomRight.y);
-    this.ctx.lineTo(this.bounds.bottomLeft.x, this.bounds.bottomLeft.y);
-    this.ctx.closePath();
-    this.ctx.clip();
+    return point.x + padding >= this.pos.x && point.x - padding <= this.pos.x + this.canvas.width
+           && point.y + padding >= this.pos.y && point.y - padding <= this.pos.y + this.canvas.height;
 };
 
 /**

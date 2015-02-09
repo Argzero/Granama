@@ -62,7 +62,21 @@ var controls = {
     keysDown: [],
 
     // The mouse data
-    mouse: {x: 0, y: 0, left: false, right: false},
+    mouse: { x: 0, y: 0, ox: 0, oy: 0, left: false, right: false, xOffset: 0, yOffset: 0 },
+	
+	/**
+	 * Sets the offset for the input updates to convert screen coordinates to
+	 * game world coordinates while determining mouse position
+	 *
+	 * @param {Number} x - horizontal offet
+	 * @param {Number} y - vertical offset
+	 */
+	setOffset: function(x, y) {
+		this.mouse.ox += x - this.mouse.xOffset;
+		this.mouse.oy += y - this.mouse.yOffset;
+		this.mouse.xOffset = x;
+		this.mouse.yOffset = y;
+	},
 
     /**
      * Checks whether or not a key is currently pressed
@@ -92,11 +106,10 @@ var controls = {
      * Maps a directional axis using the mouse's relative position
      *
      * @param {string} key    - the access key for the control
-     * @param {Object} obj    - an object with an 'x' and 'y' value
      * @param {number} axisId - the ID of the gamepad axis to map
      */
-    mapAxisMouse: function(key, obj, axisId) {
-        this.mapping.axis[key] = {obj: obj, axis: axisId};
+    mapAxisMouse: function(key, axisId) {
+        this.mapping.axis[key] = {obj: true, axis: axisId};
         this.enabled.axis[axisId] = true;
     },
 
@@ -119,13 +132,12 @@ var controls = {
      * Maps a directional axis using the mouse's relative position
      *
      * @param {string}  key     - the access key for the control
-     * @param {Object}  obj     - an object with an 'x' and 'y' value
      * @param {boolean} mouseX  - whether or not to use the horizontal relative position
      * @param {number}  axisId1 - the ID of the gamepad axis to map horizontally
      * @param {number}  axisId2 - the ID of the gamepad axis to map vertically
      */
-    mapDirectionMouse: function(key, obj, mouseX, axisId1, axisId2) {
-        this.mapping.axis[key] = {obj: obj, x: mouseX, axis1: axisId1, axis2: axisId2};
+    mapDirectionMouse: function(key, mouseX, axisId1, axisId2) {
+        this.mapping.axis[key] = {obj: true, x: mouseX, axis1: axisId1, axis2: axisId2};
         this.enabled.axis[axisId1] = true;
         this.enabled.axis[axisId2] = true;
     },
@@ -215,35 +227,37 @@ KeyboardInput.prototype.button = function(key) {
  * Checks the state of a mapped axis value
  *
  * @param {string} key - axis value key
+ * @param {Transform} target - target the input is controlling
  *
  * @returns {number} the current direction the axis is pointing
  */
-KeyboardInput.prototype.axis = function(key) {
+KeyboardInput.prototype.axis = function(key, target) {
     var mapping = controls.mapping.axis[key];
     if (!mapping) return 0;
     else if (mapping.obj) {
-        if (mapping.x) return controls.mouse.x > mapping.obj.x ? 1 : -1;
-        else return controls.mouse.y > mapping.obj.y ? 1 : -1;
+        if (mapping.x) return controls.mouse.ox > target.pos.x ? 1 : -1;
+        else return controls.mouse.oy > target.pos.y ? 1 : -1;
     }
-    else return (controls.keyPressed(mapping.key1) ? 1 : 0) + (controls.keyPressed(mapping.key2) ? -1 : 0);
+    else return (controls.keyPressed(mapping.key1) ? -1 : 0) + (controls.keyPressed(mapping.key2) ? 1 : 0);
 }
 
 /**
  * Checks the state of a mapped direction value
  *
- * @param {string} key - direction value key
+ * @param {string}    key    - direction value key
+ * @param {Transform} target - target the input is controlling
  *
  * @return {Vector} the current direction being pointed at
  */
-KeyboardInput.prototype.direction = function(key) {
+KeyboardInput.prototype.direction = function(key, target) {
     var mapping = controls.mapping.axis[key];
     if (!mapping) return new Vector(0, 0);
     else if (mapping.obj) {
-        return new Vector(controls.mouse.x - mapping.obj.x, controls.mouse.y - mapping.obj.y).normalize();
+        return new Vector(controls.mouse.ox - target.pos.x, controls.mouse.oy - target.pos.y).normalize();
     }
     else {
-        var x = (controls.keyPressed(mapping.key1) ? 1 : 0) + (controls.keyPressed(mapping.key2) ? -1 : 0);
-        var y = (controls.keyPressed(mapping.key3) ? 1 : 0) + (controls.keyPressed(mapping.key4) ? -1 : 0);
+        var x = (controls.keyPressed(mapping.key1) ? -1 : 0) + (controls.keyPressed(mapping.key2) ? 1 : 0);
+        var y = (controls.keyPressed(mapping.key3) ? -1 : 0) + (controls.keyPressed(mapping.key4) ? 1 : 0);
         return new Vector(x, y).normalize();
     }
 };
@@ -336,6 +350,8 @@ window.addEventListener('mouseup', function(e) {
 window.addEventListener('mousemove', function(event) {
     controls.mouse.x = event.pageX - event.target.offsetLeft;
     controls.mouse.y = event.pageY - event.target.offsetTop;
+	controls.mouse.ox = controls.mouse.x - controls.mouse.xOffset;
+	controls.mouse.oy = controls.mouse.y - controls.mouse.yOffset;
 });
 
 // Mouse out event

@@ -101,7 +101,7 @@ Player.prototype.giveExp = function(amount) {
 			this.onLevel();
 		}
 	}
-};
+}
 
 /**
  * Updates the player with shared functionality
@@ -147,9 +147,14 @@ Player.prototype.updateBase = function() {
 		}
 
 		// Movement
-		var moveDir = this.input.direction(MOVE);
-		var lookDir = this.input.direction(LOOK);
-		this.setRotation(lookDir.x, lookDir.y);
+		this.input.update();
+		var moveDir = this.input.direction(MOVE, this);
+		var lookDir = this.input.direction(LOOK, this);
+		if (lookDir.lengthSq() > 0)
+		{
+			lookDir.rotate(0, -1);
+			this.setRotation(lookDir.x, lookDir.y);
+		}
 		this.move(speed * moveDir.x, speed * moveDir.y);
 	}
 };
@@ -353,5 +358,5 @@ Player.prototype.isSkillCast = function() {
 
 // Function for telling weapons when they can fire
 Player.prototype.isInRange = function() {
-	return this.input.shoot;
+	return this.input.button(SHOOT);
 };

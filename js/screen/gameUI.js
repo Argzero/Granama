@@ -11,19 +11,40 @@ var ui = {
     hovered: undefined,
     start: undefined,
     upgradeAlpha: 0,
+	cursor: GetImage('cursor'),
 	
+	/**
+	 * Clears the UI canvas
+	 */
+	clear: function() {
+		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	},
+	
+	/**
+	 * Draws the background of the game
+	 */ 
 	drawBackground: function() {
-	
-		// Draw the background
 		if (TILE && TILE.width) {
-			for (var i = 0; i < WINDOW_WIDTH / TILE.width + 1; i++) {
+			var width = camera.canvas.width;
+			var height = camera.canvas.height;
+			for (var i = 0; i < width / TILE.width + 1; i++) {
 				var x = i * TILE.width - camera.pos.x % TILE.width;
-				for (var j = 0; j < WINDOW_HEIGHT / TILE.height + 1; j++) {
+				for (var j = 0; j < height / TILE.height + 1; j++) {
 					var y = j * TILE.height - camera.pos.y % TILE.height;
 					TILE.moveTo(x, y);
 					TILE.draw(camera);
 				}
 			}
+		}
+	},
+	
+	/**
+	 * Draws the UI cursor
+	 */
+	drawCursor: function() {
+		if (keyboardActive) {
+			this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+			this.ctx.drawImage(this.cursor, controls.mouse.x - this.cursor.width / 2, controls.mouse.y - this.cursor.height / 2);
 		}
 	},
 	

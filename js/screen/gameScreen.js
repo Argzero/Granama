@@ -20,6 +20,8 @@ function GameScreen() {
     this.playerMinY = 0;
     this.playerMaxX = 9999;
     this.playerMaxY = 9999;
+	this.scrollX = 0;
+	this.scrollY = 0;
     this.pads = [];
     this.particles = [];
 	this.bullets = [];
@@ -27,6 +29,8 @@ function GameScreen() {
 	
 	GAME_WIDTH = 3000;
 	GAME_HEIGHT = 3000;
+	WINDOW_WIDTH = camera.canvas.width - SIDEBAR_WIDTH;
+	WINDOW_HEIGHT = camera.canvas.height;
 }
 
 /**
@@ -84,11 +88,12 @@ GameScreen.prototype.pause = function(player) {
 
 GameScreen.prototype.draw = function() {
 
-	camera.moveTo(-SIDEBAR_WIDTH, 0);
+	camera.moveTo(SIDEBAR_WIDTH, 0);
 	ui.drawBackground();
 
 	// Apply scroll offsets
-	camera.moveTo(this.scrollX, this.scrollY);
+	camera.move(this.scrollX, this.scrollY);
+	controls.setOffset(this.scrollX + SIDEBAR_WIDTH, this.scrollY);
 
 	// Draw healing pads
 	for (var i = 0; i < this.pads.length; i++) {
@@ -165,13 +170,8 @@ GameScreen.prototype.draw = function() {
 	if (this.paused == true) {
 		this.ui.DrawUpgradeUI();
 	}
-
-	// Draw the cursor
-	if (playerManager.keyboardActive) {
-		canvas.setTransform(1, 0, 0, 1, 0, 0);
-		canvas.drawImage(cursor, mx - element.offsetLeft + pageScrollX - cursor.width / 2, my - element.offsetTop + pageScrollY - cursor.height / 2);
-	}
-	*/
+	*/	
+	ui.drawCursor();
 };
 
 GameScreen.prototype.applyScrolling = function() {
@@ -184,10 +184,10 @@ GameScreen.prototype.applyScrolling = function() {
 	for (var i = 0; i < players.length; i++) {
 		var r = players[i];
 		if (r.health <= 0) continue;
-		if (r.x < minX) minX = r.pos.x;
-		if (r.x > maxX) maxX = r.pos.x;
-		if (r.y < minY) minY = r.pos.y;
-		if (r.y > maxY) maxY = r.pos.y;
+		if (r.pos.x < minX) minX = r.pos.x;
+		if (r.pos.x > maxX) maxX = r.pos.x;
+		if (r.pos.y < minY) minY = r.pos.y;
+		if (r.pos.y > maxY) maxY = r.pos.y;
 	}
 	if (minX != 9999) {
 		var avgX = (maxX + minX) / 2;

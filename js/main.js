@@ -37,9 +37,10 @@ onLoaderDone = function() {
 	
 	players[0] = new PlayerSlayer();
 	players[0].input = new KeyboardInput();
+	players[0].moveTo(200, 200);
 	
-	controls.mapDirectionKey(MOVE, controls.KEY_LEFT, controls.KEY_RIGHT, controls.KEY_UP, controls.KEY_DOWN, controls.AXIS_LX, controls.AXIS_LY);
-	controls.mapDirectionMouse(LOOK, players[0], true, controls.AXIS_RX, controls.AXIS_RY);
+	controls.mapDirectionKey(MOVE, controls.KEY_A, controls.KEY_D, controls.KEY_W, controls.KEY_S, controls.AXIS_LX, controls.AXIS_LY);
+	controls.mapDirectionMouse(LOOK, true, controls.AXIS_RX, controls.AXIS_RY);
 	
 	gameScreen = new GameScreen();
 	
@@ -53,6 +54,7 @@ onLoaderDone = function() {
     // Game loop
     window.setInterval(function() {
         window.scrollTo(0, 0);
+		ui.clear();
         if (gameScreen && gameScreen.draw) {
             if (gameScreen.update) {
                 gameScreen.update();
@@ -64,6 +66,11 @@ onLoaderDone = function() {
     resizeCanvas();
 }
 
+/**
+ * Prevents scrolling the page using the scroll wheel
+ *
+ * @param {Event} e - event details
+ */
 window.onmousewheel = document.onmousewheel = function(e) {
     e.preventDefault();
     e.returnValue = false;
