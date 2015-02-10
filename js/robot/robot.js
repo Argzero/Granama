@@ -15,15 +15,17 @@ Robot.MOBILE = 6;
  * @param {string} name   - sprite image name
  * @param {number} x      - initial horizontal position
  * @param {number} y      - initial vertical position
+ * @param {number} type   - type ID of the robot (see above for values)
  * @param {number} health - max health
  * @param {number} speed  - base speed
  *
  * @constructor
  */
 extend('Robot', 'Sprite');
-function Robot(name, x, y, health, speed) {
+function Robot(name, x, y, type, health, speed) {
     this.super(name, x, y);
 
+	this.type = type;
     this.maxHealth = health;
     this.health = health;
     this.maxShield = 0;
@@ -35,6 +37,7 @@ function Robot(name, x, y, health, speed) {
 	this.damageAbsorbed = 0;
 	this.deaths = 0;
 
+	this.pierce = 1;
     this.defense = 1;
     this.damage = 1;
     this.knockbackFactor = 1;
