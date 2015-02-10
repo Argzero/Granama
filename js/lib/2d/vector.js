@@ -11,6 +11,9 @@ function Vector(x, y) {
     this.y = y ? y : 0;
 }
 
+// Zero vector constant
+Vector.ZERO = new Vector(0, 0);
+
 /**
  * Computes the dot product between two vectors
  *

@@ -95,7 +95,7 @@ function Robot(name, x, y, type, health, speed) {
 Robot.prototype.damage = function(amount, source) {
 	
 	// Ignore damage when dead
-	if (this.dead) return;
+	if (this.dead || amount <= 0) return;
 
 	// Defense application
     amount *= this.get('defense');

@@ -60,6 +60,11 @@ function Projectile(name, x, y, shooter, gun, speed, angle, damage, range, pierc
 	 * Event for when the projectile is blocked by a shield
 	 */
 	this.onBlocked = undefined;
+	
+	/**
+	 * Event for when the bullet reaches its max distance
+	 */
+	this.onExpire = undefined;
 }
 
 /**
@@ -73,6 +78,7 @@ Projectile.prototype.update = function() {
 	// Range limit
 	if (this.origin.distanceSq(this.pos) >= this.range * this.range) {
 		this.expired = true;
+		if (this.onExpire) this.onExpire();
 	}
 	
 	// Special updates
@@ -110,21 +116,8 @@ Projectile.prototype.collides = function(target) {
 Projectile.prototype.hit = function(target) {
 	var damage = this.damage;
 	if (this.pierce) damage *= target.pierce;
-	this.damage(target, damage);
+	target.damage(damage, this.shooter);
 	if (this.onHit) this.onHit(target, damage);
-};
-
-/**
- * Damages a target for the given amount of damage
- *
- * @param {Robot}  target - the target to damage
- * @param {Number} damage - the amount of damage
- */
-Projectile.prototype.damage = function(target, damage) {
-	if (damage > 0) {
-		target.damage(damage, this.shooter);
-		this.shooter.damageDealt += damage;
-	}
 };
 
 /**
@@ -154,7 +147,7 @@ var projEvents = {
 	 * @param {Number} damage - damage being dealt
 	 */
 	slowedBonusHit: function(target, damage) {
-		this.damage(target, damage * 0.5);
+		target.damage(damage * 0.5, this.shooter);
 	},
 	
 	/**
@@ -259,5 +252,86 @@ var projEvents = {
 	 */
 	swordUpdate: function() {
 		
+		// Move out from the robot first
+		if (!this.state) {
+			this.rotateAngle(this.arc / 20
+			this.move((this.start.x - this.initial.x) / 10, (this.start.y - this.initial.y) / 10);
+			
+			if (!this.step) this.step = 0;
+			this.step++;
+			if (this.step == 10) {
+				this.steps = Math.ceil(this.arc * 36 / Math.PI);
+				this.rotAngle = this.arc / steps;
+				this.state = 1;
+			}
+		}
+		
+		// Swinging
+		else if (this.state == 1) {
+			this.rotateAngleAbout(this.rotAngle, Vector.ZERO);
+			this.step--;
+			if (this.step <= 0) {
+				this.step = 10;
+				this.state = 2;
+			}
+		}
+		
+		// Returning back to the robot
+		else if (this.state == 2) {
+			this.rotateAngle(-this.arc / 20);
+			this.move((this.initial.x - this.start.x) / 10, (this.initial.y - this.start.y) / 10);
+			
+			this.step--;
+			if (this.step <= 0) {
+				this.source.sword = true;
+				this.expired = true;
+			}
+		}
 	},
+	
+	/**
+	 * Applies sword hitting effects such as applying knockback and lifesteal
+	 *
+	 * @param {Robot}  target - the target being hit by the sword
+	 * @param {Number} damage - the amount of damage being dealt
+	 */
+	swordHit: function(target, damage) {
+		
+		// Lifesteal
+		if (!this.shooter.dead && this.lifesteal) {
+			this.shooter.heal(this.damage * this.lifesteal);
+		}
+		
+		// Knockback
+		if (this.knockback) {
+			var dir = target.pos.clone().subtractv(this.shooter.pos).setMagnitude(this.knockback);
+			target.knockback(dir);
+		}
+	},
+	
+	/**
+	 * Restores the sword to the shooter when blocked
+	 */
+	swordBlocked: function() {
+		this.shooter.sword = true;
+	},
+	
+	/**
+	 * Blows up the rocket when expired or blocked
+	 *
+	 * @param {Robot} ignore - robot to ignore if any
+	 */
+	rocketExpire: function(ignore) {
+		for (var i = 0; i < gameScreen.robots.length; i++) {
+			var r = gameScreen.robots[i];
+			if (r != ignore && (r.type & this.group) && this.pos.distanceSq(r.pos) < this.radius * this.radius) {
+				r.damage(this.damage, this.shooter);
+				if (this.knockback) {
+					var dir = r.pos.clone().subtractv(this.pos).setMagnitude(this.knockback);
+					r.knockback(dir);
+				}
+			}
+		}
+		gameScreen.particles.push(new RocketExplosion(this.type, this.pos, this.radius));
+	}
 };
