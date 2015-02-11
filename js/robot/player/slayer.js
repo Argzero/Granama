@@ -17,11 +17,12 @@ function PlayerSlayer() {
     // Weapon data
     this.fireData = {
 		sprite: 'fire',
-        cd    : 0,
-        dx    : -30,
-        dy    : 45,
-        rate  : 2,
-		target: Robot.ENEMY
+        cd      : 0,
+        dx      : -30,
+        dy      : 45,
+        rate    : 2,
+		target  : Robot.ENEMY,
+		onUpdate: projEvents.fireUpdate
     };
     this.laserData = {
 		sprite: 'laser',
@@ -36,7 +37,7 @@ function PlayerSlayer() {
 
 // Weapons that are used by the slayer
 PlayerSlayer.prototype.shootLasers = weapon.gun;
-PlayerSlayer.prototype.shootFire = weapon.fire;
+PlayerSlayer.prototype.shootFire = weapon.gun;
 
 /**
  * Updates the player each frame

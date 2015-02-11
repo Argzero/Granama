@@ -22,7 +22,7 @@ function Projectile(name, x, y, shooter, gun, speed, angle, damage, range, pierc
 	
 	this.shooter = shooter;
 	this.rotation = gun.rotation.clone().rotateAngle(angle);
-	this.vel = this.rotation.clone().multiply(speed);
+	this.vel = this.rotation.clone().multiply(speed, speed).rotate(0, 1);
 	this.speed = speed;
 	this.damage = damage;
 	this.range = range;
@@ -36,6 +36,8 @@ function Projectile(name, x, y, shooter, gun, speed, angle, damage, range, pierc
 	this.pos.rotatev(gun.rotation);
 	this.pos.addv(gun.pos);
 	this.origin = this.pos.clone();
+	
+	console.log('Pos(' + this.pos.x + ', ' + this.pos.y + ') Params(' + x + ', ' + y + ')');
 	
 	/**
 	 * Event for updating the bullet after checking velocity and range bounds
@@ -76,7 +78,7 @@ function Projectile(name, x, y, shooter, gun, speed, angle, damage, range, pierc
 Projectile.prototype.update = function() {
 	
 	// Movement
-	this.movev(this.vel);
+	this.move(this.vel.x, this.vel.y);
 	
 	// Range limit
 	if (this.origin.distanceSq(this.pos) >= this.range * this.range) {
@@ -93,7 +95,7 @@ Projectile.prototype.update = function() {
 /**
  * Applies embedded buffs to the target
  */
-Projectile.prototype.applyBuffs(target) {
+Projectile.prototype.applyBuffs = function(target) {
 	var buff;
 	for (var i = 0; i < this.buffs.length; i++) {
 		buff = this.buffs[i];
@@ -155,14 +157,53 @@ Projectile.prototype.clone = function() {
 	return projectile;
 };
 
+/**
+ * Spreads the bullet, duplicating it and rotating them
+ * To provide a cone of evenly distributed bullets. Each
+ * "amount" provided creates 2 more bullets, one on each
+ * side of the original.
+ *
+ * @param {number} amount - the number of times to spread
+ */
+Projectile.prototype.spread = function(amount) {
+
+	// Get angle data
+        var angle, sin, cos;
+        if (amount > 29) {
+            sin = SIN_1;
+            cos = COS_1;
+        }
+        else if (amount > 17) {
+            sin = SIN_3;
+            cos = COS_3;
+        }
+        else if (amount > 8) {
+            sin = SIN_5;
+            cos = COS_5;
+        }
+        else if (amount > 5) {
+            sin = SIN_10;
+            cos = COS_10;
+        }
+        else {
+            sin = SIN_15;
+            cos = COS_15;
+        }
+
+        // Spread the bullet
+        for (var i = 0; i < amount; i++) {
+            for (var j = -1; j < 2; j += 2) {
+                var proj = this.clone();
+				proj.vel.rotate(cos, sin);
+				proj.rotate(cos, sin);
+                gameScreen.bullets.push(proj);
+            }
+        }
+};
+
 Projectile.prototype.setupSlowBonus = function(multiplier) {
 	this.onHit = projEvents.slowedBonusHit;
 	this.slowMultiplier = multiplier;
-	return this;
-};
-
-Projectile.prototype.setupFire = function() {
-	this.onUpdate = projEvents.fireUpdate;
 	return this;
 };
 
@@ -301,7 +342,7 @@ var projEvents = {
 		
 		// Move out from the robot first
 		if (!this.state) {
-			this.rotateAngle(this.arc / 20
+			this.rotateAngle(this.arc / 20);
 			this.move((this.start.x - this.initial.x) / 10, (this.start.y - this.initial.y) / 10);
 			
 			if (!this.step) this.step = 0;

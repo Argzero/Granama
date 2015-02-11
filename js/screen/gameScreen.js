@@ -44,13 +44,22 @@ GameScreen.prototype.update = function() {
 
 	// Update when not paused
 	if (!this.paused) {
-
+	
 		// Update robots
 		for (var i = 0; i < this.robots.length; i++)
 		{
 			this.robots[i].update();
 		}
-		
+	
+		// Update bullets
+		for (var i = 0; i < this.bullets.length; i++) {
+			this.bullets[i].update();
+			if (this.bullets[i].expired) {
+				this.bullets.splice(i, 1);
+				i--;
+			}
+		}
+	
 		// Update healing pads
 		for (var i = 0; i < this.pads.length; i++) {
 			this.pads[i].update();
@@ -121,6 +130,11 @@ GameScreen.prototype.draw = function() {
 		}
 	}
 
+	// Bullets
+	for (var i = 0; i < this.bullets.length; i++) {
+		this.bullets[i].draw(camera);
+	}
+	
 	// Particles
 	for (var i = 0; i < this.particles.length; i++) {
 		this.particles[i].draw();

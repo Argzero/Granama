@@ -125,8 +125,12 @@ var weapon = {
      * @param {Object} data - weapon data
      */
     gun: function(data) {
+	
+		// Must meet the conditions
         if (weapon.checkTime(data, this.isInRange(data.range))) {
             var pos = weapon.getPosition(this, data);
+			
+			// Create the projectile
             var projectile = new Projectile(
                 data.sprite || 'bullet',
 				pos.x, pos.y,
@@ -138,8 +142,40 @@ var weapon = {
                 data.pierce,
 				data.target
             );
-            gameScreen.bullets.push(bullet);
-            weapon.spread(bullet, data);
+			
+			// Copy over provided buffs
+			if (data.buffs) {
+				projectile.buffs = data.buffs;
+			}
+			
+			// Copy over event handlers
+			projectile.onUpdate = data.onUpdate;
+			projectile.onCollideCheck = data.onCollideCheck;
+			projectile.onHit = data.onHit;
+			projectile.onBlocked = data.onBlocked;
+			projectile.onExpire = data.onExpire;
+			
+			// Apply template calls
+			if (data.templates) {
+				for (var i = 0; i < data.templates.length; i++) {
+					var temp = data.templates[i];
+					projectile[temp.name].apply(projectile, temp.args);
+				}
+			}
+			
+			// Apply extra data
+			if (data.extra) {
+				var x;
+				for (x in data.extra) {
+					projectile[x] = data.extra[x];
+				}
+			}
+			
+			// Add the bullet to the game and spread it
+            gameScreen.bullets.push(projectile);
+			if (data.spread) {
+				projectile.spread(data.spread);
+			}
         }
     },
 

@@ -160,8 +160,8 @@ Vector.prototype.multiply = function(x, y) {
  * @returns {Vector} the modified vector
  */
 Vector.prototype.addv = function(vector) {
-    this.x *= vector.x;
-    this.y *= vector.y;
+    this.x += vector.x;
+    this.y += vector.y;
     return this;
 };
 
