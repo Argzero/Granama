@@ -9,6 +9,8 @@ depend('screen/gameUI');
 function GameScreen() {
 
     this.score = 0;
+    this.bossScore = 0;
+    this.bossId = 0;
     this.gameOver = false;
 
     this.damageOverlay = GetImage("damage");
@@ -147,44 +149,18 @@ GameScreen.prototype.draw = function() {
 	// Reset scrolling for UI elements
 	camera.moveTo(0, 0);
 
-	// Damage effect
-	/*
-	if (this.damageAlpha > 0) {
-		canvas.save();
-		canvas.globalAlpha = this.damageAlpha;
-		canvas.drawImage(this.damageOverlay, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-		canvas.restore();
-		this.damageAlpha -= DAMAGE_ALPHA_DECAY;
-	}
-
-	canvas.setTransform(1, 0, 0, 1, 0, 0);
-
 	// Pause overlay
 	if (this.paused && this.paused !== true) {
-		//canvas.drawImage(this.pauseOverlay, SIDEBAR_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-		canvas.globalAlpha = 0.65;
-		canvas.fillStyle = 'black';
-		canvas.fillRect(SIDEBAR_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-		canvas.globalAlpha = 1;
-		canvas.fillStyle = 'white';
-		canvas.font = '48px Flipbash';
-		canvas.textAlign = 'center';
-		canvas.fillText('Paused By', WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 - 50);
-		canvas.fillStyle = this.paused.color;
-		canvas.fillText(this.paused.name, WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 + 20);
+		ui.drawPauseOverlay(this.paused);
 	}
 
-	this.ui.DrawStatBar();
-
-	if (bossRush) {
-		this.ui.DrawDroneInfo();
-	}
+	ui.drawStatBar();
 
 	// Draw the upgrade screen if applicable
 	if (this.paused == true) {
-		this.ui.DrawUpgradeUI();
+		this.ui.drawUpgradeUI();
 	}
-	*/	
+    
 	ui.drawCursor();
 };
 
@@ -208,8 +184,8 @@ GameScreen.prototype.applyScrolling = function() {
 		var avgY = (maxY + minY) / 2;
 
 		// Scroll bounds
-		this.scrollX = clamp(avgX - WINDOW_WIDTH / 2, 0, GAME_WIDTH - WINDOW_WIDTH);
-		this.scrollY = clamp(avgY - WINDOW_HEIGHT / 2, 0, GAME_HEIGHT - WINDOW_HEIGHT);
+		this.scrollX = -clamp(avgX - WINDOW_WIDTH / 2, 0, GAME_WIDTH - WINDOW_WIDTH);
+		this.scrollY = -clamp(avgY - WINDOW_HEIGHT / 2, 0, GAME_HEIGHT - WINDOW_HEIGHT);
 
 		// player bounds
 		this.playerMinX = Math.max(0, Math.min(avgX - WINDOW_WIDTH / 2, this.scrollX) + 100);

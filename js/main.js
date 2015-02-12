@@ -1,10 +1,17 @@
 depend('data/images');
+depend('data/profile');
 depend('draw/camera');
 depend('robot/weapons');
 depend('robot/player/playerManager');
 depend('robot/player/player');
 depend('robot/player/slayer');
 depend('screen/gameScreen');
+depend('screen/creditsScreen');
+depend('screen/selectScreen');
+depend('screen/statScreen');
+depend('screen/titleButton');
+depend('screen/titleScreen');
+depend('screen/uiBox');
 
 var TILE = undefined;
 
@@ -35,14 +42,10 @@ onLoaderDone = function() {
 	controls.mapButton(SKILL, controls.KEY_SPACE, controls.BUTTON_LT);
 	controls.mapButton(PAUSE, controls.KEY_ESC, controls.BUTTON_START);
 	
-	players[0] = new PlayerSlayer();
-	players[0].input = new KeyboardInput();
-	players[0].moveTo(200, 200);
-	
 	controls.mapDirectionKey(MOVE, controls.KEY_A, controls.KEY_D, controls.KEY_W, controls.KEY_S, controls.AXIS_LX, controls.AXIS_LY);
 	controls.mapDirectionMouse(LOOK, true, controls.AXIS_RX, controls.AXIS_RY);
 	
-	gameScreen = new GameScreen();
+	gameScreen = new TitleScreen();
 	
 	// Cancel the context menu
     camera.canvas.oncontextmenu = function(e) {

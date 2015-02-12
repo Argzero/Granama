@@ -159,9 +159,9 @@ Vector.prototype.multiply = function(x, y) {
  *
  * @returns {Vector} the modified vector
  */
-Vector.prototype.addv = function(vector) {
-    this.x += vector.x;
-    this.y += vector.y;
+Vector.prototype.multiplyv = function(vector) {
+    this.x *= vector.x;
+    this.y *= vector.y;
     return this;
 };
 
@@ -186,7 +186,7 @@ Vector.prototype.divide = function(x, y) {
  *
  * @returns {Vector} the modified vector
  */
-Vector.prototype.addv = function(vector) {
+Vector.prototype.dividev = function(vector) {
     this.x /= vector.x;
     this.y /= vector.y;
     return this;

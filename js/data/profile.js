@@ -1,8 +1,10 @@
+depend('data/io', function() { PROFILE_DATA = io.getObject(PROFILE_DATA_KEY) || {}; });
+
 // The key which profile data is saved to
-PROFILE_DATA_KEY = 'profiles';
+var PROFILE_DATA_KEY = 'profiles';
 
 // The serializable object representation of profile data
-PROFILE_DATA = userData.getObject(PROFILE_DATA_KEY) || {};
+var PROFILE_DATA = undefined;
 
 // Available stats
 var STAT = {
@@ -39,7 +41,13 @@ window.addEventListener('beforeunload', function() {
     userData.setObject(PROFILE_DATA_KEY, PROFILE_DATA);
 });
 
-// Handles managing the data for a profile
+/**
+ * Handles managing the data for a profile
+ *
+ * @param {string} name - the name of the profile to manage
+ *
+ * @constructor
+ */
 function Profile(name) {
     if (PROFILE_DATA[name] === undefined) {
         PROFILE_DATA[name] = {};
@@ -50,7 +58,13 @@ function Profile(name) {
 	this.data = PROFILE_DATA[name];
 }
 
-// Adds to a stat in the profile data
+/**
+ * Adds to a cumulative stat in the profile data
+ *
+ * @param {string} name   - name of the robot to set the stat for
+ * @param {string} stat   - the key of the stat to add to
+ * @param {Number} amount - the amount to add to the stat
+ */
 Profile.prototype.addStat = function(name, stat, amount) {
 
 	// Overall stat
@@ -73,7 +87,14 @@ Profile.prototype.addStat = function(name, stat, amount) {
 	}
 };
 
-// Adds a value to a list with a set capacity
+/**
+ * Adds a value to a list with a set capacity
+ *
+ * @param {string} name   - the name of the robot to set the stat for
+ * @param {string} stat   - the key of the stat to set
+ * @param {Number} max    - the most amount of entries the list can hold
+ * @param {Number} amount - the new stat value
+ */
 Profile.prototype.addList = function(name, stat, max, amount) {
 
 	// Overall stat
@@ -104,7 +125,13 @@ Profile.prototype.addList = function(name, stat, max, amount) {
 	}
 };
 
-// Sets a stat if it is higher than the previous record
+/**
+ * Sets a stat if it is higher than the previous record
+ *
+ * @param {string} name   - the name of the robot to set the stat for
+ * @param {string} stat   - the stat key to set
+ * @param {Number} amount - the new value for the stat
+ */
 Profile.prototype.setBest = function(name, stat, amount) {
 
 	// Overall stat

@@ -84,7 +84,64 @@ var weapon = {
         if (data.dx === undefined) data.dx = 0;
         if (data.dy === undefined) data.dy = 0;
 
-        return new Vector(data.dx, data.dy).rotateAroundv(source.pos, source.rotation).addv(source.pos);
+        return new Vector(data.dx, data.dy);
+    },
+
+    /**
+     * Fires a bullet using the given settings
+     *
+     * @param {Robot}  source - robot firing the bullet
+     * @param {Object} data   - settings to apply
+     */
+    fireBullet: function(source, data) {
+        var pos = weapon.getPosition(source, data);
+			
+        // Create the projectile
+        var projectile = new Projectile(
+            data.sprite || 'bullet',
+            pos.x, pos.y,
+            data.shooter || source, source,
+            data.speed || weapon.DEFAULT_SPEED,
+            weapon.getAngle(data),
+            data.damage,
+            data.distance || (data.range * 1.5),
+            data.pierce,
+            data.target
+        );
+        
+        // Copy over provided buffs
+        if (data.buffs) {
+            projectile.buffs = data.buffs;
+        }
+        
+        // Copy over event handlers
+        projectile.onUpdate = data.onUpdate;
+        projectile.onCollideCheck = data.onCollideCheck;
+        projectile.onHit = data.onHit;
+        projectile.onBlocked = data.onBlocked;
+        projectile.onExpire = data.onExpire;
+        
+        // Apply template calls
+        if (data.templates) {
+            for (var i = 0; i < data.templates.length; i++) {
+                var temp = data.templates[i];
+                projectile[temp.name].apply(projectile, temp.args);
+            }
+        }
+        
+        // Apply extra data
+        if (data.extra) {
+            var x;
+            for (x in data.extra) {
+                projectile[x] = data.extra[x];
+            }
+        }
+        
+        // Add the bullet to the game and spread it
+        gameScreen.bullets.push(projectile);
+        if (data.spread) {
+            projectile.spread(data.spread);
+        }
     },
 
     /**
@@ -105,21 +162,28 @@ var weapon = {
     /**
      * A simple gun weapon that fires one or more bullets
      * <ul>
-	 *     <li>{number}  target        - the ID of the target group the bullet hits</li>
-     *     <li>{number}  rate          - the number of frames between shots</li>
-     *     <li>{number}  damage        - the damage dealt by the bullet</li>
-     *     <li>{number}  range         - the range of the bullet</li>
-	 *     <li>{number}  [distance]    - how far the bullet travels</li>
-     *     <li>{string}  [sprite]      - the name of the bullet sprite</li>
-     *     <li>{number}  [speed]       - the speed of the bullet</li>
-     *     <li>{number}  [dx]          - horizontal position offset</li>
-     *     <li>{number}  [dy]          - vertical position offset</li>
-     *     <li>{boolean} [pierce]      - whether or not the bullets pierce</li>
-     *     <li>{number}  [angle]       - random angle range for spread</li>
-     *     <li>{number}  [angleOffset] - definite angle for spread</li>
-     *     <li>{number}  [spread]      - the number of bullets to spread</li>
-     *     <li>{number}  [delay]       - the delay before shooting while in range</li>
-	 *     <li>{Robot}   [shooter]     - the actual shooter of the bullet</li>
+	 *     <li>{number}   target           - the ID of the target group the bullet hits</li>
+     *     <li>{number}   rate             - the number of frames between shots</li>
+     *     <li>{number}   damage           - the damage dealt by the bullet</li>
+     *     <li>{number}   range            - the range of the bullet</li>
+	 *     <li>{number}   [distance]       - how far the bullet travels</li>
+     *     <li>{string}   [sprite]         - the name of the bullet sprite</li>
+     *     <li>{number}   [speed]          - the speed of the bullet</li>
+     *     <li>{number}   [dx]             - horizontal position offset assuming no rotation</li>
+     *     <li>{number}   [dy]             - vertical position offset assuming no rotation</li>
+     *     <li>{boolean}  [pierce]         - whether or not the bullets pierce</li>
+     *     <li>{number}   [angle]          - random angle range for spread</li>
+     *     <li>{number}   [angleOffset]    - definite angle for spread</li>
+     *     <li>{number}   [spread]         - the number of bullets to spread</li>
+     *     <li>{number}   [delay]          - the delay before shooting while in range</li>
+	 *     <li>{Robot}    [shooter]        - the actual shooter of the bullet</li>
+     *     <li>{Array}    [buffs]          - buffs to apply on hit { stat, multiplier, duration }</li>
+     *     <li>{Array}    [templates]      - templates to apply { name, args }</li>
+     *     <li>{function} [onUpdate]       - onUpdate event handler (projEvent function)</li>
+     *     <li>{function} [onCollideCheck] - onCoolideCheck event handler (projEvent function)</li>
+     *     <li>{function} [onHit]          - onHit event handler (projEvent function)</li>
+     *     <li>{function} [onBlocked]      - onBlocked event handler (projEvent function)</li>
+     *     <li>{function} [onExpire]       - onExpire event handler (projEvent function)</li>
      * </ul>
      *
      * @param {Object} data - weapon data
@@ -128,54 +192,7 @@ var weapon = {
 	
 		// Must meet the conditions
         if (weapon.checkTime(data, this.isInRange(data.range))) {
-            var pos = weapon.getPosition(this, data);
-			
-			// Create the projectile
-            var projectile = new Projectile(
-                data.sprite || 'bullet',
-				pos.x, pos.y,
-                data.shooter || this, this,
-				data.speed || weapon.DEFAULT_SPEED,
-				weapon.getAngle(data),
-                data.damage,
-                data.distance || (data.range * 1.5),
-                data.pierce,
-				data.target
-            );
-			
-			// Copy over provided buffs
-			if (data.buffs) {
-				projectile.buffs = data.buffs;
-			}
-			
-			// Copy over event handlers
-			projectile.onUpdate = data.onUpdate;
-			projectile.onCollideCheck = data.onCollideCheck;
-			projectile.onHit = data.onHit;
-			projectile.onBlocked = data.onBlocked;
-			projectile.onExpire = data.onExpire;
-			
-			// Apply template calls
-			if (data.templates) {
-				for (var i = 0; i < data.templates.length; i++) {
-					var temp = data.templates[i];
-					projectile[temp.name].apply(projectile, temp.args);
-				}
-			}
-			
-			// Apply extra data
-			if (data.extra) {
-				var x;
-				for (x in data.extra) {
-					projectile[x] = data.extra[x];
-				}
-			}
-			
-			// Add the bullet to the game and spread it
-            gameScreen.bullets.push(projectile);
-			if (data.spread) {
-				projectile.spread(data.spread);
-			}
+            weapon.fireBullet(this, data);
         }
     },
 
@@ -221,7 +238,7 @@ var weapon = {
      */
     mine: function(data) {
         if (weapon.checkTime(data, this.isInRange(data.range))) {
-            var pos = weapon.getPosition(this, data);
+            var pos = weapon.getPosition(this, data).addv(this.pos);
             var mine = new Mine(pos, data.damage, data.type);
             enemyManager.mines.push(mine);
             if (data.duration) {
@@ -267,13 +284,8 @@ var weapon = {
                     data.intervalTimer--;
                     return;
                 }
-                this.subWeapon = data.subWeapon;
-                var tempCd = data.cd;
-                var tempDelay = data.delay;
-                data.delay = 0;
                 for (var i = 0; i < (data.bullets || 1); i++) {
-                    this.subWeapon(data);
-                    data.cd = tempCd;
+                    weapon.fireBullet(this, data);
                 }
                 data.delay = tempDelay;
                 data.intervalTimer = data.interval;
@@ -322,8 +334,8 @@ var weapon = {
      */
     shockwave: function(data) {
         if (weapon.checkTime(data, this.isInRange(data.range))) {
-            var pos = weapon.getPosition(this, data);
-            var shockwave = Shockwave(
+            var pos = weapon.getPosition(this, data).addv(this.pos);
+            var shockwave = new Shockwave(
                 this,
                 data.color1 || '#ff9933',
                 data.color2 || '#f70',
@@ -363,15 +375,15 @@ var weapon = {
     spawn: function(data) {
 
         // Don't spawn more if already reached the max
-        if (enemyManager.enemies.length > data.max) {
+        if (gameScreen.robots.length > data.max + players.length) {
             this.switchPattern();
             return;
         }
 
         // Spawn enemies when off cooldown and in range
         if (weapon.checkTime(data, this.isInRange(data.range))) {
-            var pos = weapon.getPosition(this, data);
-            enemyManager.spawnEnemy(data.enemies, pos).exp = 0;
+            var pos = weapon.getPosition(this, data).addv(this.pos);
+            gameScreen.spawnEnemy(data.enemies, pos).exp = 0;
         }
     },
 
@@ -391,8 +403,8 @@ var weapon = {
      */
     turret: function(data) {
         if (weapon.checkTime(data, this.isInRange(data.range))) {
-            var pos = weapon.getPosition(this, data);
-            gameScreen.enemyManager.turrets.push(new Turret(pos, data.damage, data.health));
+            var pos = weapon.getPosition(this, data).addv(this.pos);
+            gameScreen.robots.push(new Turret(pos, data.damage, data.health));
         }
     }
 };

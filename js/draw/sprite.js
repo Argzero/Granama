@@ -72,7 +72,7 @@ Sprite.prototype.draw = function(camera) {
     this.drawList(camera, this.preChildren, false);
     this.applyRotation(camera, false);
 	this.drawList(camera, this.preChildren, true);
-    camera.ctx.drawImage(this.sprite, -this.sprite.width / 2 - this.pivot.x, -this.sprite.height / 2 - this.pivot.y);
+    camera.ctx.drawImage(this.sprite, (-this.sprite.width / 2 - this.pivot.x) * this.size.x, (-this.sprite.height / 2 - this.pivot.y) * this.size.y, this.sprite.width * this.size.x, this.sprite.height * this.size.y);
 	this.drawList(camera, this.postChildren, true);
     this.applyRotation(camera, true);
     this.drawList(camera, this.postChildren, false);

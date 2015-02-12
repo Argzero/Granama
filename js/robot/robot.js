@@ -1,6 +1,7 @@
 depend('draw/sprite');
 depend('lib/math');
 depend('lib/2d/vector');
+depend('robot/weapons');
 
 Robot.PLAYER = 1;
 Robot.MOB = 2;

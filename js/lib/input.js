@@ -168,6 +168,12 @@ var controls = {
         this.enabled.key[keyId2] = true;
         this.enabled.key[keyId3] = true;
         this.enabled.key[keyId4] = true;
+    },
+    
+    /**
+     * Checks whether or not the mouse is currently hovered over the given rectangle
+     */ 
+    isMouseOver: function(x, y, w, h) {
     }
 };
 

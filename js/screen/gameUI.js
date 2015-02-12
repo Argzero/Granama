@@ -37,6 +37,25 @@ var ui = {
 			}
 		}
 	},
+    
+    /**
+     * Draws the overlay for a paused game with the provided player
+     * as the one who paused it.
+     * 
+     * @param {Player} player - the player who paused the game
+     */
+    drawPauseOverlay: function(player) {
+        canvas.globalAlpha = 0.65;
+		canvas.fillStyle = 'black';
+		canvas.fillRect(SIDEBAR_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+		canvas.globalAlpha = 1;
+		canvas.fillStyle = 'white';
+		canvas.font = '48px Flipbash';
+		canvas.textAlign = 'center';
+		canvas.fillText('Paused By', WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 - 50);
+		canvas.fillStyle = this.paused.color;
+		canvas.fillText(this.paused.name, WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 + 20);
+    },
 	
 	/**
 	 * Draws the UI cursor
@@ -61,18 +80,18 @@ var ui = {
         this.ctx.textBaseline = 'alphabetic';
         this.ctx.textAlign = 'left';
         this.ctx.fillText("Kills", 10, 30);
-        this.ctx.fillText("Boss", SIDEBAR_WIDTH - StringWidth("Boss", this.ctx.font) - 10, 30);
+        this.ctx.fillText("Boss", SIDEBAR_WIDTH - this.ctx.measureText("Boss").width - 10, 30);
         this.ctx.fillRect(5, 35, SIDEBAR_WIDTH - 10, 2);
         this.ctx.fillStyle = "#0f0"
         this.ctx.font = '20px Flipbash';
         this.ctx.fillText(gameScreen.score, 10, 70);
-        this.ctx.fillText(gameScreen.bossScore, SIDEBAR_WIDTH - StringWidth(gameScreen.bossScore, this.ctx.font) - 10, 70);
+        this.ctx.fillText(gameScreen.bossScore, SIDEBAR_WIDTH - this.ctx.measureText(gameScreen.bossScore).width - 10, 70);
 
         this.ctx.font = "30px Flipbash";
 
         // Spacing between upgrade counters
         var base = 120;
-        var space = element.height - base - 10;
+        var space = this.canvas.height - base - 10;
         var interval = Math.min(255, space / players.length);
 
         // Player stats

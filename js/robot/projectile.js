@@ -32,12 +32,10 @@ function Projectile(name, x, y, shooter, gun, speed, angle, damage, range, pierc
 	
 	// Array of buffs to apply. Add in the format { name, multiplier, duration }
 	this.buffs = [];
-	
+    
 	this.pos.rotatev(gun.rotation);
 	this.pos.addv(gun.pos);
 	this.origin = this.pos.clone();
-	
-	console.log('Pos(' + this.pos.x + ', ' + this.pos.y + ') Params(' + x + ', ' + y + ')');
 	
 	/**
 	 * Event for updating the bullet after checking velocity and range bounds
@@ -121,7 +119,7 @@ Projectile.prototype.block = function() {
 Projectile.prototype.collides = function(target) {
 	var valid = target.type & this.group;
 	if (this.onCollideCheck) valid = valid && this.onCollideCheck(target);
-	return valid && this.pos.distanceSq(target.pos) < sq(this.width + target.width) / 4;
+	return valid && this.collides(target);
 };
 
 /**
