@@ -21,6 +21,16 @@ var SHOOT = 'shoot';
 var SKILL = 'skill';
 var PAUSE = 'pause';
 var SELECT = 'select';
+var CANCEL = 'cancel';
+var JOIN = 'join';
+var UP_1 = 'up1';
+var DOWN_1 = 'down1';
+var LEFT_1 = 'left1';
+var RIGHT_1 = 'right1';
+var UP_2 = 'up2';
+var DOWN_2 = 'down2';
+var LEFT_2 = 'left2';
+var RIGHT_2 = 'right2';
 
 var camera = undefined;
 var gameScreen = undefined;
@@ -41,6 +51,17 @@ onLoaderDone = function() {
 	controls.mapButton(SHOOT, controls.MOUSE_LEFT, controls.BUTTON_RT);
 	controls.mapButton(SKILL, controls.KEY_SPACE, controls.BUTTON_LT);
 	controls.mapButton(PAUSE, controls.KEY_ESC, controls.BUTTON_START);
+    controls.mapButton(SELECT, controls.KEY_ENTER, controls.BUTTON_DOWN);
+    controls.mapButton(CANCEL, controls.KEY_ESC, controls.BUTTON_RIGHT);
+    controls.mapButton(JOIN, controls.KEY_SPACE, controls.BUTTON_START);
+    controls.mapButton(UP_1, controls.KEY_W, controls.AXIS_LYN);
+    controls.mapButton(DOWN_1, controls.KEY_S, controls.AXIS_LYP);
+    controls.mapButton(LEFT_1, controls.KEY_A, controls.AXIS_LXN);
+    controls.mapButton(RIGHT_1, controls.KEY_D, controls.AXIS_LXP);
+    controls.mapButton(UP_1, controls.KEY_UP, controls.AXIS_RYN);
+    controls.mapButton(DOWN_1, controls.KEY_DOWN, controls.AXIS_RYP);
+    controls.mapButton(LEFT_1, controls.KEY_LEFT, controls.AXIS_RXN);
+    controls.mapButton(RIGHT_1, controls.KEY_RIGHT, controls.AXIS_RXP);
 	
 	controls.mapDirectionKey(MOVE, controls.KEY_A, controls.KEY_D, controls.KEY_W, controls.KEY_S, controls.AXIS_LX, controls.AXIS_LY);
 	controls.mapDirectionMouse(LOOK, true, controls.AXIS_RX, controls.AXIS_RY);

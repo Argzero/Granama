@@ -36,8 +36,8 @@ function getClosestPlayer(x, y) {
  */
 function setPlayerCount(amount) {
 	this.players = [];
-	while (this.players.length < amount && (this.players.length < 1 || input.GAMEPADS_SUPPORTED)) {
-		this.players.push(getPlayerWrapper(this.players.length - 1));
+	while (this.players.length < amount && (this.players.length < 1 || controls.GAMEPADS_SUPPORTED)) {
+		this.players.push(new PlayerWrapper(this.players.length - 1));
 	}
 	this.keyboardActive = true;
 	this.gamepadActive = players.length > 1;
@@ -66,8 +66,6 @@ function cleanPlayerList() {
  *
  * @param {Number} index - index of the player
  */ 
-function getPlayerWrapper(index) {
-    return {
-        input: (index == -1 ? new KeyboardInput() : new GamepadInput(gamepadIndex))
-    };
+function PlayerWrapper(index) {
+    this.input = (index == -1 ? new KeyboardInput() : new GamepadInput(index));
 }

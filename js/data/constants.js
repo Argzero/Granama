@@ -54,8 +54,8 @@ TURRET_RATE = 15,
 TURRET_RANGE = 500,
 
 // Skill Data
-/*
 PLAYER_DATA = [
+    /*
 	{
 		player : PlayerDefenseType,
 		preview: 'pDefense',
@@ -85,8 +85,9 @@ PLAYER_DATA = [
 			{name: 'Overdrive', callback: SkillOverdrive}
 		]
 	},
+    */
 	{
-		player : PlayerPowerType,
+		player : PlayerSlayer,
 		preview: 'pPower',
 		name   : 'Slayer',
 		ups    : ['AttackSpeed', 'LaserSpread', 'FlamethrowerRange', 'ShieldRecharge', 'MovementSpeed'],
@@ -94,11 +95,12 @@ PLAYER_DATA = [
 		color  : '#0f0',
 		weapons: ['Laser Gun', 'Flamethrower'],
 		skills : [
-			{name: 'KO Cannon', callback: SkillBreakerblaster},
-			{name: 'Decimation', callback: SkillDecimation},
-			{name: 'Wave Burst', callback: SkillWaveburst}
+			{ name: 'KO Cannon', callback: skillKOCannon },
+			{ name: 'Decimation', callback: skillDecimation },
+			{ name: 'Wave Burst', callback: skillWaveburst } 
 		]
-	},
+	}
+    /*
 	{
 		player : PlayerKnightType,
 		preview: 'pKnight',
@@ -155,8 +157,8 @@ PLAYER_DATA = [
 			{name: 'Medic', callback: SkillMedic}
 		]
 	}
+    */
 ],
-*/
 
 // Animation
 GAME_FPS = 60,

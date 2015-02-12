@@ -30,15 +30,6 @@ function Player(name, x, y, health, speed, healthScale, damageScale, shieldScale
 	 */
 	this.onLevel = undefined;
 	
-	/**
-	 * Called when the player is about to move
-	 *
-	 * @param {Number} speed - speed of the player
-	 * 
-	 * @returns {Number} speed - modified speed of the player
-	 */
-	this.onMove = undefined;
-
 	////////////
 	// Fields //
 	////////////
@@ -108,9 +99,15 @@ Player.prototype.giveExp = function(amount) {
  * between players each frame. This should be called
  * in the implemented players "update" method.
  */
-Player.prototype.updateBase = function() {
-	this.updatePause();
-
+Player.prototype.update = function() {
+    if (this.dead) {
+        this.updateDead();
+        return;
+    }
+    
+	this.updateRobot();
+    this.updatePause();
+    
 	// Shield regeneration
 	this.shieldCd -= this.get('shieldBuff');
 	if (this.shieldCd <= 0) {
@@ -134,20 +131,9 @@ Player.prototype.updateBase = function() {
 
 		// Get speed
 		var speed = this.get('speed') + this.speedScale * this.upgrades[SPEED_ID] * 0.2;
-		
-		// Move event
-		if (this.onMove) {
-			var result = this.onMove(speed);
-			if (result !== undefined) {
-				speed = result;
-			}
-			if (!speed) {
-				return true;
-			}
-		}
+        if (speed < 0.001) return;
 
 		// Movement
-		this.input.update();
 		var moveDir = this.input.direction(MOVE, this);
 		var lookDir = this.input.direction(LOOK, this);
 		if (lookDir.lengthSq() > 0)
@@ -156,6 +142,11 @@ Player.prototype.updateBase = function() {
 			this.setRotation(lookDir.x, lookDir.y);
 		}
 		this.move(speed * moveDir.x, speed * moveDir.y);
+        
+        // Robot specific updates
+        if (this.applyUpdate) {
+            this.applyUpdate();
+        }
 	}
 };
 
@@ -163,9 +154,6 @@ Player.prototype.updateBase = function() {
  * Applies updates to the player while dead
  */
 Player.prototype.updateDead = function() {
-
-	// Update bullets of the player
-	this.updateBullets();
 
 	// See if a player is in range to rescue the player
 	var inRange = false;
@@ -204,6 +192,8 @@ Player.prototype.updateDead = function() {
  * Applies updates to the player that 
  */
 Player.prototype.updatePause = function() {
+
+    this.input.update();
 
 	// Pause when controls are invalid
 	if (this.input.invalid && !gameScreen.paused) {

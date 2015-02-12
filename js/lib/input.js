@@ -42,6 +42,9 @@ var controls = {
     // Gamepad axes
     AXIS_LX: 0, AXIS_LY: 1,
     AXIS_RX: 2, AXIS_RY: 3,
+    
+    AXIS_LXP: 100, AXIS_LXN: 101, AXIS_LYP: 102, AXIS_LYN: 103,
+    AXIS_RXP: 104, AXIS_RXN: 105, AXIS_RYP: 106, AXIS_RYN: 107,
 
     // Mapping data
     mapping: {
@@ -172,8 +175,16 @@ var controls = {
     
     /**
      * Checks whether or not the mouse is currently hovered over the given rectangle
+     *
+     * @param {Number} x - the horizontal coordinate of the left edge
+     * @param {Number} y - the vertical coordinate of the top edge
+     * @param {Number} w - the width of the rectangle
+     * @param {Number} h - the height of the rectangle
+     *
+     * @returns {boolean} true if the mouse is over the rectangle, false otherwise
      */ 
     isMouseOver: function(x, y, w, h) {
+        return this.mouse.ox >= x && this.mouse.ox <= x + w && this.mouse.oy >= y && this.mouse.oy <= y + h;
     }
 };
 
@@ -276,13 +287,14 @@ KeyboardInput.prototype.direction = function(key, target) {
 function GamepadInput(index) {
     this.data = {};
     this.valid = navigator.getGamepads()[index];
+    this.index = index;
 }
 
 /**
  * Updates the controls data
  */
 GamepadInput.prototype.update = function() {
-    this.valid = navigator.getGamepads()[index];
+    this.valid = navigator.getGamepads()[this.index];
     if (!this.valid) return;
 
     var x;
@@ -307,7 +319,11 @@ GamepadInput.prototype.update = function() {
 GamepadInput.prototype.button = function(key) {
     if (!this.valid) return 0;
     var mapping = controls.mapping.button[key];
-    if (!mapping) return 0;
+    if (mapping === undefined) return 0;
+    else if (mapping >= 100) {
+        var p = mapping % 2 == 0;
+        return (this.data[Math.floor(mapping.key - 100) / 2] > 0) == p;
+    }
     else if (this.data[mapping.key]) return this.data[mapping.key];
     else return 0;
 };
@@ -362,10 +378,8 @@ window.addEventListener('mousemove', function(event) {
 
 // Mouse out event
 window.addEventListener('mouseout', function(event) {
-    controls.mouse.x = -999;
-    controls.mouse.y = -999;
-    controls.mouse.left = false;
-    controls.mouse.right = false;
+    controls.mouse.x = controls.mouse.y = controls.mouse.ox = controls.mouse.oy = -999;
+    controls.mouse.left = controls.mouse.right = false;
 });
 
 // Key down event

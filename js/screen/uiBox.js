@@ -200,7 +200,7 @@ function UIButton(text, yOffset, minWidth, maxWidth, height, callback) {
         text     : text,
         y        : yOffset,
         height   : height,
-        rotation : Vector(1, 0),
+        rotation : new Vector(1, 0),
         rotCount : 0,
         hovered  : false,
         clicking : false,
@@ -223,17 +223,17 @@ function UIButton(text, yOffset, minWidth, maxWidth, height, callback) {
             var h = this.height;
 
             // Hover updates
-            this.hovered = mx >= x && mx <= x + w && my >= y + 20 && my <= y + h + 20;
+            this.hovered = controls.isMouseOver(x, y, w, h);
             var color, alpha;
             if (this.hovered) {
                 if (this.rotCount < this.MAX_ROTS) {
-                    this.rotation.Rotate(COS_1, SIN_1);
+                    this.rotation.rotate(COS_1, SIN_1);
                     this.rotCount++;
                 }
             }
             else {
                 if (this.rotCount > 0) {
-                    this.rotation.Rotate(COS_1, -SIN_1);
+                    this.rotation.rotate(COS_1, -SIN_1);
                     this.rotCount--;
                 }
             }
@@ -260,13 +260,13 @@ function UIButton(text, yOffset, minWidth, maxWidth, height, callback) {
             ui.ctx.fillText(this.text, x + 80 + (this.box.width - this.box.minWidth) / 2, y + h * 4 / 9);
 
             // Callback function
-            if (this.clicking && !KeyPressed(KEY_LMB)) {
+            if (this.clicking && !controls.mouse.left) {
                 this.clicking = false;
                 if (this.hovered) {
                     this.callback();
                 }
             }
-            else if (KeyPressed(KEY_LMB)) {
+            else if (controls.mouse.left) {
                 this.clicking = true;
             }
         }

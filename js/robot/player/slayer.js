@@ -1,3 +1,15 @@
+// Load in ability scripts
+depend('robot/skill/decimation');
+depend('robot/skill/kocannon');
+depend('robot/skill/waveburst');
+
+// Set weapons in the depend function because the weapons class
+// needs to be loaded before we can access them
+depend('robot/weapons', function() {
+    PlayerSlayer.prototype.shootLasers = weapon.gun;
+    PlayerSlayer.prototype.shootFire = weapon.gun;
+});
+
 /**
  * The Slayer player which uses lasers and a flamethrower
  * as its main attacks.
@@ -35,15 +47,10 @@ function PlayerSlayer() {
     };
 }
 
-// Weapons that are used by the slayer
-PlayerSlayer.prototype.shootLasers = weapon.gun;
-PlayerSlayer.prototype.shootFire = weapon.gun;
-
 /**
- * Updates the player each frame
+ * Updates the player each frame while not stunned or dead
  */
-PlayerSlayer.prototype.update = function() {
-	this.updateBase();
+PlayerSlayer.prototype.applyUpdate = function() {
 	
 	var m = this.get('damage');
 
