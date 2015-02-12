@@ -1,5 +1,6 @@
 depend('draw/camera');
 depend('screen/gameUI');
+depend('robot/pad');
 
 /**
  * Represents the arcade mode game screen
@@ -24,7 +25,12 @@ function GameScreen() {
     this.playerMaxY = 9999;
 	this.scrollX = 0;
 	this.scrollY = 0;
-    this.pads = [];
+    this.pads = [
+		new HealingPad(GAME_WIDTH / 3, GAME_HEIGHT / 3),
+        new HealingPad(GAME_WIDTH * 2 / 3, GAME_HEIGHT / 3),
+        new HealingPad(GAME_WIDTH / 3, GAME_HEIGHT * 2 / 3),
+        new HealingPad(GAME_WIDTH * 2 / 3, GAME_HEIGHT * 2 / 3)
+	];
     this.particles = [];
 	this.bullets = [];
 	this.robots = players.slice(0);

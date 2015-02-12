@@ -175,13 +175,13 @@ SelectScreen.prototype.draw = function() {
                 ui.ctx.fillText('to join...', x, y + 30);
 
                 // Joining the game
-                if (input.id !== undefined && input.button(JOIN) == 1) {
+                if (input.button(JOIN) == 1) {
                     settings.part++;
                     settings.profile = 0;
                 }
 
                 // Returning to main menu
-                if (input.id === undefined && input.button(CANCEL) == 1) {
+                if (input.button(CANCEL_1) == 1 || input.button(CANCEL_2)) {
                     gameScreen = new TitleScreen();
                 }
 
@@ -220,7 +220,7 @@ SelectScreen.prototype.draw = function() {
                 }
 
                 // Next screen
-                if (input.button(CONFIRM) == 1) {
+                if (input.button(SELECT_1) == 1 || input.button(SELECT_2)) {
 
                     if (settings.profile < this.profilesArray.length - 1) {
                         settings.part++;
@@ -243,7 +243,7 @@ SelectScreen.prototype.draw = function() {
                 }
 
                 // Returning to previous screen
-                if (input.button(CANCEL) == 1) {
+                if (input.button(CANCEL_1) == 1 || input.button(CANCEL_2)) {
                     settings.part--;
                 }
 
@@ -310,7 +310,7 @@ SelectScreen.prototype.draw = function() {
                 settings.frame = c + r * perRow;
 
                 // Choosing a letter/finishing
-                if (input.confirm == 1) {
+                if (input.button(SELECT_1) == 1 || input.button(SELECT_2) == 1) {
                     if (settings.frame < ALPHABET.length && settings.newProfile.length < 6) {
                         settings.newProfile += ALPHABET[settings.frame];
                     }
@@ -333,7 +333,7 @@ SelectScreen.prototype.draw = function() {
                 }
 
                 // Returning to profile select
-                if (input.cancel == 1) {
+                if (input.button(CANCEL_1) == 1 || input.button(CANCEL_2)) {
                     settings.part -= 0.5;
                 }
 
@@ -403,17 +403,17 @@ SelectScreen.prototype.draw = function() {
                 ui.ctx.drawImage(GetImage('uiArrowRight'), x + 79 + 5 * dx, y - 10);
 
                 // Switch to next robot
-                if (input.left == 1) {
+                if (input.button(LEFT_1) == 1 || input.button(LEFT_2) == 1) {
                     settings.robot = prev;
                 }
 
                 // Switch to previous robot
-                if (input.right == 1) {
+                if (input.button(RIGHT_1) == 1 || input.button(RIGHT_2) == 1) {
                     settings.robot = next;
                 }
 
                 // Choose the robot
-                if (input.confirm == 1) {
+                if (input.button(SELECT_1) == 1 || input.button(SELECT_2) == 1) {
                     settings.part++;
                     for (var k = 0; k < this.open.length; k++) {
                         if (this.open[k] == settings.robot) {
@@ -433,7 +433,7 @@ SelectScreen.prototype.draw = function() {
                 }
 
                 // Quitting
-                if (input.cancel == 1) {
+                if (input.button(CANCEL_1) == 1 || input.button(CANCEL_2) == 1) {
                     this.prevPart(settings);
                 }
 
@@ -479,21 +479,21 @@ SelectScreen.prototype.draw = function() {
                 ui.ctx.drawImage(GetImage('uiArrowRight'), x + 79 + 5 * dx, y + 170);
 
                 // Next Ability
-                if (input.left == 1) {
+                if (input.button(LEFT_1) == 1 || input.button(LEFT_2) == 1) {
                     settings.ability = (settings.ability + 2) % 3;
                 }
 
                 // Previous ability
-                if (input.right == 1) {
+                if (input.button(RIGHT_1) == 1 || input.button(RIGHT_2) == 1) {
                     settings.ability = (settings.ability + 1) % 3;
                 }
 
                 // Choose the ability
-                if (input.confirm == 1) {
+                if (input.button(SELECT_1) == 1 || input.button(SELECT_2) == 1) {
 
                     // Apply the options to get ready for playing
-                    var player = robot.player();
-                    player.profile = Profile(settings.profile);
+                    var player = new robot.player();
+                    player.profile = new Profile(settings.profile);
                     player.color = robot.color;
                     player.name = robot.name;
                     var skill = robot.skills[settings.ability];
@@ -502,12 +502,12 @@ SelectScreen.prototype.draw = function() {
                     player.ups = robot.ups;
                     player.icons = robot.icons;
                     skill.callback(player);
-                    playerManager.players[i].robot = player;
+                    players[i] = player;
                     settings.part++;
                 }
 
                 // Return to robot selection
-                else if (input.cancel == 1) {
+                else if (input.button(CANCEL_1) == 1 || input.button(CANCEL_2) == 1) {
                     this.prevPart(settings);
                 }
 
@@ -530,7 +530,7 @@ SelectScreen.prototype.draw = function() {
                 ui.ctx.fillText('Ready', x, y + 150);
 
                 // Return to profile select
-                if (input.cancel == 1) {
+                if (input.button(CANCEL_1) == 1 || input.button(CANCEL_2) == 1) {
                     settings.part--;
                 }
 
@@ -560,7 +560,7 @@ SelectScreen.prototype.draw = function() {
     if (allReady && oneReady) {
         cleanPlayerList();
         for (var i = 0; i < players.length; i++) {
-            var robot = players[i].robot;
+            var robot = players[i];
             robot.profile.addStat(robot.name, STAT.GAMES, 1);
             robot.profile.addStat(robot.name, robot.ability, 1);
         }

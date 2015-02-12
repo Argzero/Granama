@@ -25,13 +25,14 @@ var ui = {
 	 */ 
 	drawBackground: function() {
 		if (TILE && TILE.width) {
+			console.log('Cam(' + camera.pos.x + ', ' + camera.pos.y + ')');
 			var width = camera.canvas.width;
 			var height = camera.canvas.height;
 			for (var i = 0; i < width / TILE.width + 1; i++) {
 				var x = i * TILE.width - camera.pos.x % TILE.width;
 				for (var j = 0; j < height / TILE.height + 1; j++) {
 					var y = j * TILE.height - camera.pos.y % TILE.height;
-					TILE.moveTo(x, y);
+					TILE.moveTo(x - camera.pos.y % TILE.width, y - camera.pos.x % TILE.height);
 					TILE.draw(camera);
 				}
 			}
