@@ -24,15 +24,16 @@ var ui = {
 	 * Draws the background of the game
 	 */ 
 	drawBackground: function() {
+        var modX = -camera.pos.x - (-camera.pos.x) % TILE.width;
+        var modY = -camera.pos.y - (-camera.pos.y) % TILE.height;
 		if (TILE && TILE.width) {
-			console.log('Cam(' + camera.pos.x + ', ' + camera.pos.y + ')');
 			var width = camera.canvas.width;
 			var height = camera.canvas.height;
-			for (var i = 0; i < width / TILE.width + 1; i++) {
-				var x = i * TILE.width - camera.pos.x % TILE.width;
-				for (var j = 0; j < height / TILE.height + 1; j++) {
-					var y = j * TILE.height - camera.pos.y % TILE.height;
-					TILE.moveTo(x - camera.pos.y % TILE.width, y - camera.pos.x % TILE.height);
+			for (var i = -1; i < width / TILE.width + 3; i++) {
+				var x = i * TILE.width;
+				for (var j = -1; j < height / TILE.height + 3; j++) {
+					var y = j * TILE.height;
+					TILE.moveTo(x + modX, y + modY);
 					TILE.draw(camera);
 				}
 			}
@@ -46,16 +47,16 @@ var ui = {
      * @param {Player} player - the player who paused the game
      */
     drawPauseOverlay: function(player) {
-        canvas.globalAlpha = 0.65;
-		canvas.fillStyle = 'black';
-		canvas.fillRect(SIDEBAR_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-		canvas.globalAlpha = 1;
-		canvas.fillStyle = 'white';
-		canvas.font = '48px Flipbash';
-		canvas.textAlign = 'center';
-		canvas.fillText('Paused By', WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 - 50);
-		canvas.fillStyle = this.paused.color;
-		canvas.fillText(this.paused.name, WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 + 20);
+        ui.ctx.globalAlpha = 0.65;
+		ui.ctx.fillStyle = 'black';
+		ui.ctx.fillRect(SIDEBAR_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+		ui.ctx.globalAlpha = 1;
+		ui.ctx.fillStyle = 'white';
+		ui.ctx.font = '48px Flipbash';
+		ui.ctx.textAlign = 'center';
+		ui.ctx.fillText('Paused By', WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 - 50);
+		ui.ctx.fillStyle = this.paused.color;
+		ui.ctx.fillText(this.paused.name, WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 + 20);
     },
 	
 	/**
@@ -67,6 +68,116 @@ var ui = {
 			this.ctx.drawImage(this.cursor, controls.mouse.x - this.cursor.width / 2, controls.mouse.y - this.cursor.height / 2);
 		}
 	},
+
+    /**
+     * Draws the HUDs around each player
+     */
+    drawPlayerHUDs: function() {
+    
+        ui.ctx.translate(gameScreen.scrollX
+    
+        for (var i = 0; i < players.length; i++) {
+        
+            var player = players[i];
+        
+            // Draw level up effect
+            if (player.levelFrame >= 0) {
+                var circleFrame = player.levelFrame % 15;
+                ui.ctx.globalAlpha = 1 - 0.06 * circleFrame;
+                ui.ctx.fillStyle = '#6ff';
+                ui.ctx.beginPath();
+                ui.ctx.arc(player.pos.x, player.pos.y, circleFrame * 5, 0, Math.PI * 2);
+                ui.ctx.fill();
+
+                var img = GetImage('LevelUpWords');
+                ui.ctx.translate(player.pos.x, player.pos.y);
+                angle = 0;
+                if (player.levelFrame < 30) angle = Math.PI * ((30 - player.levelFrame) / 30);
+                ui.ctx.rotate(angle);
+                ui.ctx.globalAlpha = 1;
+                if (player.levelFrame > 150) ui.ctx.globalAlpha = 1 - (player.levelFrame - 150) / 60;
+                ui.ctx.drawImage(img, -img.width / 2, -120);
+                ui.ctx.globalAlpha = 1;
+                ResetTransform(ui.ctx);
+
+                player.levelFrame++;
+                if (player.levelFrame >= 210) {
+                    player.levelFrame = -1;
+                }
+            }
+
+            // Transform the ui.ctx to match the player orientation
+            ui.ctx.translate(player.x, player.y);
+
+            // Damage effect
+            if (player.damageAlpha > 0) {
+                ui.ctx.globalAlpha = player.damageAlpha;
+                ui.ctx.drawImage(GetImage('damage'), -75, -75, 150, 150);
+                ui.ctx.globalAlpha = 1;
+                player.damageAlpha -= DAMAGE_ALPHA_DECAY;
+            }
+            
+            // Restore the transform
+            ResetTransform(ui.ctx);
+
+            // Draw HUD if alive
+            if (player.health > 0) {
+
+                // Health bar
+                ui.ctx.lineWidth = 3;
+                var healthPercent = player.health / player.maxHealth;
+                var shieldPercent = player.shield / (player.maxHealth * SHIELD_MAX);
+                ui.ctx.beginPath();
+                ui.ctx.arc(player.x, player.y, 75, ((1 - healthPercent) * Math.PI * 8 / 10) - Math.PI * 9 / 10, -Math.PI / 10, false);
+                if (healthPercent > 0.66) ui.ctx.strokeStyle = '#0f0';
+                else if (healthPercent > 0.33) ui.ctx.strokeStyle = '#ff0';
+                else ui.ctx.strokeStyle = '#f00';
+                ui.ctx.stroke();
+                ui.ctx.beginPath();
+                ui.ctx.arc(player.x, player.y, 75, Math.PI / 10, Math.PI / 10 + shieldPercent * Math.PI * 8 / 10);
+                ui.ctx.strokeStyle = '#00f';
+                ui.ctx.stroke();
+                ui.ctx.drawImage(GetImage('healthBarSymbol'), player.x + 50, player.y - 20);
+
+                // Draw skill icon
+                if (player.ability) {
+                    if (player.skillCd > 0) {
+                        ui.ctx.globalAlpha = 0.5;
+                    }
+                    ui.ctx.drawImage(GetImage('ability' + player.ability), player.x - 95, player.y - 20, 40, 40);
+                    ui.ctx.globalAlpha = 1;
+
+                    // Skill cooldown/duration
+                    var num;
+                    if (player.skillDuration > 0) {
+                        num = player.skillDuration / 60;
+                        ui.ctx.fillStyle = '#0f0';
+                    }
+                    else {
+                        num = player.skillCd / 60;
+                        ui.ctx.fillStyle = '#fff';
+                    }
+                    if (num > 0) {
+                        ui.ctx.font = '24px Flipbash';
+                        if (num < 10) {
+                            num = num.toFixed(1);
+                        }
+                        else num = num.toFixed(0);
+                        ui.ctx.fillText(num, player.x - 75 - StringWidth(num) / 2, player.y + 10);
+                    }
+                }
+            }
+
+            // Otherwise draw rescue circle
+            else {
+                ui.ctx.strokeStyle = 'white';
+                ui.ctx.lineWidth = 3;
+                ui.ctx.beginPath();
+                ui.ctx.arc(player.x, player.y, 100, 0, Math.PI * 2 * player.rescue);
+                ui.ctx.stroke();
+            }
+        }
+    },
 	
     // Draws the sidebar with the upgrades
     drawStatBar: function() {

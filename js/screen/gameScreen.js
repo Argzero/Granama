@@ -62,6 +62,12 @@ GameScreen.prototype.update = function() {
 		// Update bullets
 		for (var i = 0; i < this.bullets.length; i++) {
 			this.bullets[i].update();
+            for (var j = 0; j < this.robots.length; j++) {
+                var r = this.robots[j];
+                if (this.bullets[j].isHitting(r)) {
+                    this.bullets[j].hit(r);
+                }
+            }
 			if (this.bullets[i].expired) {
 				this.bullets.splice(i, 1);
 				i--;
@@ -105,11 +111,10 @@ GameScreen.prototype.pause = function(player) {
 
 GameScreen.prototype.draw = function() {
 
-	camera.moveTo(SIDEBAR_WIDTH, 0);
+	camera.moveTo(SIDEBAR_WIDTH + this.scrollX, this.scrollY);
 	ui.drawBackground();
 
 	// Apply scroll offsets
-	camera.move(this.scrollX, this.scrollY);
 	controls.setOffset(this.scrollX + SIDEBAR_WIDTH, this.scrollY);
 
 	// Draw healing pads

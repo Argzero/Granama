@@ -16,8 +16,8 @@ depend('robot/weapons', function() {
  */
 extend('PlayerSlayer', 'Player');
 function PlayerSlayer() {
-	//         Sprite Name   X  Y  HP   Speed  HP+  Damage+  Speed+  Shield+
-	this.super('pPowerBody', 0, 0, 100, 3,     6,   0.25,    1,      1);
+	//         Sprite Name   X  Y  Type          HP   Speed  HP+  Damage+  Speed+  Shield+
+	this.super('pPowerBody', 0, 0, Robot.PLAYER, 100, 3,     6,   0.25,    1,      1);
 	
 	// Sprites drawn on top of the robot's body
 	this.postChildren.push(
@@ -28,11 +28,12 @@ function PlayerSlayer() {
 
     // Weapon data
     this.fireData = {
-		sprite: 'fire',
+		sprite  : 'fire',
         cd      : 0,
         dx      : -30,
         dy      : 45,
         rate    : 2,
+        pierce  : true,
 		target  : Robot.ENEMY,
 		onUpdate: projEvents.fireUpdate
     };

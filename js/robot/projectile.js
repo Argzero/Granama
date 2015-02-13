@@ -116,7 +116,7 @@ Projectile.prototype.block = function() {
  *
  * @returns {boolean} true if collides with the target, false otherwise
  */
-Projectile.prototype.collides = function(target) {
+Projectile.prototype.isHitting = function(target) {
 	var valid = target.type & this.group;
 	if (this.onCollideCheck) valid = valid && this.onCollideCheck(target);
 	return valid && this.collides(target);

@@ -6,6 +6,7 @@ depend('robot/robot');
  * @param {string} name          - name of the robot's body sprite
  * @param {Number} x             - starting X-coordinate
  * @param {Number} y             - starting Y-coordinate
+ * @param {number} type          - type ID of the robot (should be Robot.PLAYER)
  * @param {Number} health        - starting health
  * @param {Number} speed         - starting speed
  * @param {Number} [healthScale] - multiplier for health gain
@@ -14,8 +15,8 @@ depend('robot/robot');
  * @param {Number} [speedScale]  - multiplier for speed bonuses
  */
 extend('Player', 'Robot');
-function Player(name, x, y, health, speed, healthScale, damageScale, shieldScale, speedScale) {
-	this.super(name, x, y, health, speed);
+function Player(name, x, y, type, health, speed, healthScale, damageScale, shieldScale, speedScale) {
+	this.super(name, x, y, type, health, speed);
 	  
 	////////////
 	// Events //
@@ -102,8 +103,11 @@ Player.prototype.giveExp = function(amount) {
 Player.prototype.update = function() {
     if (this.dead) {
         this.updateDead();
+        this.alpha = 0.5;
         return;
     }
+    
+    this.alpha = 1;
     
 	this.updateRobot();
     this.updatePause();

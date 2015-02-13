@@ -75,8 +75,8 @@ var controls = {
 	 * @param {Number} y - vertical offset
 	 */
 	setOffset: function(x, y) {
-		this.mouse.ox += x - this.mouse.xOffset;
-		this.mouse.oy += y - this.mouse.yOffset;
+		this.mouse.ox = this.mouse.x - x;
+		this.mouse.oy = this.mouse.y - y;
 		this.mouse.xOffset = x;
 		this.mouse.yOffset = y;
 	},
