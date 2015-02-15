@@ -1,4 +1,6 @@
-// The title gameScreen for the game
+/**
+ * Represents the credits screen of the game
+ */
 function CreditsScreen() {
 
     // Setup UI
@@ -20,27 +22,21 @@ function CreditsScreen() {
         .addButton('Return', 300, function() {
             gameScreen = new TitleScreen();
         });
-
-    // Draws the title gameScreen
-    this.Draw = Draw;
-    function Draw() {
-
-        // Prevent IE bugs
-        canvas.setTransform(1, 0, 0, 1, 0, 0);
-
-        // Draw the background
-        if (tile && tile.width) {
-            for (var i = 0; i < element.width / tile.width + 1; i++) {
-                var x = i * tile.width;
-                for (var j = 0; j < element.height / tile.height + 1; j++) {
-                    canvas.drawImage(tile, x, j * tile.height);
-                }
-            }
-        }
-
-        this.ui.draw();
-
-        // Draw the cursor
-        canvas.drawImage(cursor, mx - cursor.width / 2, my - cursor.height / 2);
-    }
 }
+
+/**
+ * Draws the credits screen to the canvas
+ */
+CreditsScreen.prototype.draw = function() {
+
+    // Prevent IE bugs
+    ui.ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+    // Draw the background
+    ui.drawBackground();
+    
+    this.ui.draw();
+
+    // Draw the cursor
+    ui.drawCursor();
+};

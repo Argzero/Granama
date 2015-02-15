@@ -1,20 +1,62 @@
+// Data scripts
 depend('data/images');
 depend('data/profile');
+depend('data/io');
+depend('data/music');
+
+// Draw scripts
 depend('draw/camera');
-depend('robot/weapons');
-depend('robot/player/playerManager');
-depend('robot/player/player');
-depend('robot/player/slayer');
+depend('draw/sprite');
+
+// Lib scripts
+depend('lib/arc');
+depend('lib/image');
+depend('lib/input');
+depend('lib/math');
+depend('lib/2d/vector');
+depend('lib/2d/transform');
+depend('lib/2d/rect');
+
+// Screen scripts
 depend('screen/gameScreen');
 depend('screen/creditsScreen');
+depend('screen/controlsScreen');
 depend('screen/selectScreen');
 depend('screen/statScreen');
 depend('screen/titleButton');
 depend('screen/titleScreen');
 depend('screen/uiBox');
+depend('screen/gameUI');
 
+// Robot scripts
+depend('robot/projectile');
+depend('robot/weapons');
+depend('robot/movement');
+depend('robot/pad');
+depend('robot/robot');
+depend('robot/explosion');
+
+// Player scripts
+depend('robot/player/playerManager');
+depend('robot/player/player');
+depend('robot/player/slayer');
+
+// Enemy scripts
+depend('robot/enemy/enemy');
+depend('robot/enemy/boss');
+depend('robot/enemy/artillery');
+depend('robot/enemy/bomber');
+depend('robot/enemy/grabber');
+depend('robot/enemy/gunner');
+depend('robot/enemy/medic');
+depend('robot/enemy/melee');
+depend('robot/enemy/orbiter');
+depend('robot/enemy/spinner');
+
+// Background tile sprite
 var TILE = undefined;
 
+// Control mapping keys
 var MOVE = 'move';
 var LOOK = 'look';
 var SHOOT = 'shoot';

@@ -1,9 +1,12 @@
+depend('robot/ropeTail');
+
 /**
  * An enemy that orbits players while shooting bullets sideways
  *
  * @param {string}   name         - name of the enemy sprite image
  * @param {number}   x            - initial horizontal position
  * @param {number}   y            - initial vertical position
+ * @param {number}   type         - Robot type ID of the enemy (should be Robot.MOB)
  * @param {number}   health       - max health
  * @param {number}   speed        - movement speed
  * @param {number}   range        - attack range
@@ -17,13 +20,22 @@
  * @constructor
  */
 extend('Orbiter', 'Enemy');
-function Orbiter(name, x, y, health, speed, range, exp, rank, patternMin, patternMax, damage, rate) {
-    this.super(name, x, y, health, speed, range, exp, rank, patternMin, patternMax);
+function Orbiter(name, x, y, type, health, speed, range, exp, rank, patternMin, patternMax, damage, rate) {
+    this.super(name, x, y, type, health, speed, range, exp, rank, patternMin, patternMax);
     this.movement = movement.orbit;
-    this.addWeapon(weapon.sideGun, {
+    this.addWeapon(weapon.gun, {
         damage: damage * Enemy.sum(),
         rate  : rate,
-        range : range + 100
+        range : range + 100,
+        angle : Math.PI / 2,
+        target: Robot.PLAYER
+    });
+    this.addWeapon(weapon.gun, {
+        damage: damage * Enemy.sum(),
+        rate  : rate,
+        range : range + 100,
+        angle : -Math.PI / 2,
+        target: Robot.PLAYER
     });
 }
 
@@ -62,8 +74,9 @@ function LightOrbiter(x, y) {
         /* sprite name */ 'enemyLightOrbiter',
         /* x position  */ x,
         /* y position  */ y,
+        /* enemy type  */ Robot.MOB,
         /* health      */ 60 * Enemy.pow(0.9),
-        /* speed       */ 4 + 0.5 * enemyManager.bossCount,
+        /* speed       */ 4 + 0.5 * gameScreen.bossCount,
         /* range       */ 300,
         /* exp         */ Enemy.LIGHT_EXP,
         /* rank        */ Enemy.LIGHT_ENEMY,
@@ -100,8 +113,9 @@ function HeavyOrbiter(x, y) {
         /* sprite name */ 'enemyHeavyOrbiter',
         /* x position  */ x,
         /* y position  */ y,
+        /* enemy type  */ Robot.MOB,
         /* health      */ 80 * Enemy.pow(0.9),
-        /* speed       */ 3.75 + 0.45 * enemyManager.bossCount,
+        /* speed       */ 3.75 + 0.45 * gameScreen.bossCount,
         /* range       */ 300,
         /* exp         */ Enemy.HEAVY_EXP,
         /* rank        */ Enemy.HEAVY_ENEMY,
@@ -138,8 +152,9 @@ function Hunter(x, y) {
         /* sprite name */ 'enemyHunter',
         /* x position  */ x,
         /* y position  */ y,
+        /* enemy type  */ Robot.MOB,
         /* health      */ 300 * Enemy.pow(1.1),
-        /* speed       */ 3.5 + 0.4 * enemyManager.bossCount,
+        /* speed       */ 3.5 + 0.4 * gameScreen.bossCount,
         /* range       */ 350,
         /* exp         */ Enemy.MINIBOSS_EXP,
         /* rank        */ Enemy.MINIBOSS_ENEMY,
@@ -171,7 +186,6 @@ Hunter.prototype.onDraw = function(camera) {
     if (this.health < this.maxHealth * 0.5 && this.movement != movement.basic) {
         this.movement = movement.basic;
         this.range = 50;
-        this.weapons = [];
         this.addWeapon(weapon.melee, {
             damage: 4 * Enemy.sum(),
             rate  : 40,

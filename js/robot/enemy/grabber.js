@@ -4,6 +4,7 @@
  * @param {string} name         - name of the enemy sprite image
  * @param {number} x            - initial horizontal position
  * @param {number} y            - initial vertical position
+ * @param {number} type         - Robot type ID of the enemy (should be Robot.MOB)
  * @param {number} health       - max health
  * @param {number} speed        - movement speed
  * @param {number} range        - attack range
@@ -20,12 +21,14 @@
  * @param {number} gSelf        - whether or not the grapple pulls in the user
  * @param {string} leftClaw     - the image name for the left claw
  * @param {string} rightClaw    - the image name for the right claw
+ * @param {number} dx           - horizontal offset for the claw images
+ * @param {number} dy           - vertical offset for the claw images
  *
  * @constructor
  */
 extend('Grabber', 'Enemy');
-function Grabber(name, x, y, health, speed, range, exp, rank, patternMin, patternMax, mDamage, mRate, mSlow, gDamage, gRange, gRate, gSelf, leftClaw, rightClaw) {
-    this.super(name, x, y, health, speed, range, exp, rank, patternMin, patternMax);
+function Grabber(name, x, y, type, health, speed, range, exp, rank, patternMin, patternMax, mDamage, mRate, mSlow, gDamage, gRange, gRate, gSelf, leftClaw, rightClaw, dx, dy) {
+    this.super(name, x, y, type, health, speed, range, exp, rank, patternMin, patternMax);
     this.movement = movement.basic;
 
     // Melee weapon
@@ -34,25 +37,23 @@ function Grabber(name, x, y, health, speed, range, exp, rank, patternMin, patter
         range   : 100,
         rate    : mRate,
         slow    : mSlow,
-        duration: 60,
-        target  : Robot.PLAYER
+        duration: 60
     });
 
     // Grapple weapon
-    this.addWeapon(weapon.grapple, {
+    this.addWeapon(weapon.gun, {
         sprite: leftClaw,
         damage: gDamage * Enemy.sum(),
         range : gRange,
         rate  : gRate,
         stun  : 0,
-        self  : gSelf,
-        target: Robot.PLAYER
+        self  : gSelf
     });
 
     // Claw sprites
-    dx += this.width / 2;
     this.leftClaw = new Sprite(leftClaw, dx, dy, this, false, true);
     this.rightClaw = new Sprite(rightClaw, -dx, dy, this, false, true);
+    this.postChildren.push(this.leftClaw, this.rightClaw);
     this.grapple = false;
 }
 
@@ -79,8 +80,9 @@ function LightGrabber(x, y) {
         /* sprite name */ 'enemyLightGrabber',
         /* x position  */ x,
         /* y position  */ y,
+        /* enemy type  */ Robot.MOB,
         /* health      */ 40 * Enemy.pow(0.9),
-        /* speed       */ 3 + 0.3 * enemyManager.bossCount,
+        /* speed       */ 3 + 0.3 * gameScreen.bossCount,
         /* range       */ 75,
         /* exp         */ Enemy.LIGHT_EXP,
         /* rank        */ Enemy.LIGHT_ENEMY,
@@ -94,7 +96,9 @@ function LightGrabber(x, y) {
         /* gRate       */ 120,
         /* gSelf       */ true,
         /* leftClaw    */ 'enemyLightGrabberArm',
-        /* rightClaw   */ 'enemyLightGrabberArm'
+        /* rightClaw   */ 'enemyLightGrabberArm',
+        /* claw dx     */ 30,
+        /* claw dy     */ 0
     );
 }
 
@@ -112,8 +116,9 @@ function HeavyGrabber(x, y) {
         /* sprite name */ 'enemyHeavyGrabber',
         /* x position  */ x,
         /* y position  */ y,
+        /* enemy type  */ Robot.MOB,
         /* health      */ 60 * Enemy.pow(0.9),
-        /* speed       */ 3 + 0.3 * enemyManager.bossCount,
+        /* speed       */ 3 + 0.3 * gameScreen.bossCount,
         /* range       */ 75,
         /* exp         */ Enemy.HEAVY_EXP,
         /* rank        */ Enemy.HEAVY_ENEMY,
@@ -127,7 +132,9 @@ function HeavyGrabber(x, y) {
         /* gRate       */ 120,
         /* gSelf       */ true,
         /* leftClaw    */ 'enemyHeavyGrabberArmLeft',
-        /* rightClaw   */ 'enemyHeavyGrabberArmRight'
+        /* rightClaw   */ 'enemyHeavyGrabberArmRight',
+        /* claw dx     */ 40,
+        /* claw dy     */ 0
     );
 }
 
@@ -146,7 +153,7 @@ function Snatcher(x, y) {
         /* x position  */ x,
         /* y position  */ y,
         /* health      */ 60 * Enemy.pow(0.9),
-        /* speed       */ 3 + 0.3 * enemyManager.bossCount,
+        /* speed       */ 3 + 0.3 * gameScreen.bossCount,
         /* range       */ 500,
         /* exp         */ Enemy.MINIBOSS_EXP,
         /* rank        */ Enemy.MINIBOSS_ENEMY,
@@ -160,6 +167,8 @@ function Snatcher(x, y) {
         /* gRate       */ 180,
         /* gSelf       */ false,
         /* leftClaw    */ 'enemySnatcherArmLeft',
-        /* rightClaw   */ 'enemySnatcherArmRight'
+        /* rightClaw   */ 'enemySnatcherArmRight',
+        /* claw dx     */ 50,
+        /* claw dy     */ 0
     );
 }

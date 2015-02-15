@@ -18,7 +18,7 @@ function getClosestPlayer(x, y) {
 	var r = undefined;
 	var min = 9999999;
 	for (var i = 0; i < this.players.length; i++) {
-		var robot = this.players[i].robot;
+		var robot = this.players[i];
 		if (robot.health <= 0) continue;
 		var dSq = (robot.x - x) * (robot.x - x) + (robot.y - y) * (robot.y - y);
 		if (dSq < min) {
@@ -26,7 +26,7 @@ function getClosestPlayer(x, y) {
 			r = robot;
 		}
 	}
-	return r || this.players[0].robot;
+	return r || this.players[0];
 }
 
 /**

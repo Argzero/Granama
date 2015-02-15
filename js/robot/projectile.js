@@ -129,7 +129,7 @@ Projectile.prototype.isHitting = function(target) {
  */
 Projectile.prototype.hit = function(target) {
 	var damage = this.damage;
-	if (this.pierce) damage *= target.pierce;
+	if (this.pierce) damage *= target.pierceDamage;
 	target.damage(damage, this.shooter);
 	this.applyBuffs(target);
 	if (this.onHit) this.onHit(target, damage);

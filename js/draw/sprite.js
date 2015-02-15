@@ -20,12 +20,12 @@ depend('lib/2d/vector');
  * @constructor
  */
 extend('Sprite', 'Transform');
-function Sprite(name, x, y, parent, rotate) {
+function Sprite(name, x, y) {
     this.super();
 	this.src = name;
     this.sprite = images.get(name);
     this.parent = undefined;
-    this.rotate = false;
+    this.keepRotate = false;
     this.hidden = false;
     this.preChildren = [];
     this.postChildren = [];
@@ -54,7 +54,7 @@ function Sprite(name, x, y, parent, rotate) {
  */
 Sprite.prototype.child = function(parent, rotate) {
 	this.parent = parent;
-	this.rotate = rotate;
+	this.keepRotate = rotate;
 	return this;
 }
 
@@ -65,6 +65,7 @@ Sprite.prototype.child = function(parent, rotate) {
  */
 Sprite.prototype.draw = function(camera) {
     if (this.hidden) return;
+    if (!this.pos) debugger;
 	
     camera.ctx.globalAlpha *= this.alpha;
     camera.ctx.translate(this.pos.x, this.pos.y);
@@ -112,7 +113,7 @@ Sprite.prototype.setPivot = function(x, y) {
  */
 Sprite.prototype.drawList = function(camera, list, rotate) {
     for (var i = 0; i < list.length; i++) {
-		if (list[i].rotate == rotate)
+		if (list[i].keepRotate == rotate)
 		{
 			list[i].draw(camera);
 		}

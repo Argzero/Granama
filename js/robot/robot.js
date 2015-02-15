@@ -38,12 +38,13 @@ function Robot(name, x, y, type, health, speed) {
 	this.damageAbsorbed = 0;
 	this.deaths = 0;
 
-	this.pierce = 1;
+	this.pierceDamage = 1;
     this.defense = 1;
-    this.damage = 1;
+    this.power = 1;
     this.knockbackFactor = 1;
     this.knockbackSpeed = 10;
     this.dead = false;
+    this.expired = false;
 
     this.knockback = new Vector(0, 0);
     this.buffs = {};
@@ -126,7 +127,10 @@ Robot.prototype.damage = function(amount, source) {
 		this.damageTaken += amount;
         this.health -= amount;
 		this.dead = this.health <= 0;
-		if (this.dead) this.deaths++;
+		if (this.dead) {
+            this.deaths++;
+            
+        }
     }
 };
 
@@ -240,11 +244,11 @@ Robot.prototype.updateRobot = function() {
  */
 Robot.prototype.drawHealthBar = function(camera) {
     if (this.health < this.maxHealth) {
-        var greenWidth = this.sprite.width * this.health / this.maxHealth;
-        camera.ctx.fillStyle = "#00FF00";
-        camera.ctx.fillRect(-this.sprite.width / 2, -10, greenWidth, 5);
-        camera.ctx.fillStyle = "#FF0000";
-        camera.ctx.fillRect(greenWidth - this.sprite.width / 2, -10, this.sprite.width - greenWidth, 5);
+        var greenWidth = this.width * this.health / this.maxHealth;
+        ui.ctx.fillStyle = "#00FF00";
+        ui.ctx.fillRect(-this.width / 2, -10, greenWidth, 5);
+        ui.ctx.fillStyle = "#FF0000";
+        ui.ctx.fillRect(greenWidth - this.width / 2, -10, this.width - greenWidth, 5);
     }
 };
 
@@ -253,9 +257,9 @@ Robot.prototype.drawHealthBar = function(camera) {
  *
  * @param bounds bounds of the arena
  */
-Robot.prototype.clamp = function(bounds) {
-    this.pos.x = clamp(this.pos.x, bounds.x, bounds.x + bounds.width);
-    this.pos.y = clamp(this.pos.y, bounds.y, bounds.y + bounds.height);
+Robot.prototype.clamp = function() {
+    this.pos.x = clamp(this.pos.x, this.width / 2, GAME_WIDTH - this.width / 2);
+    this.pos.y = clamp(this.pos.y, this.width / 2, GAME_HEIGHT - this.width / 2);
 };
 
 /**

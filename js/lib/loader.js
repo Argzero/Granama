@@ -51,6 +51,7 @@ function updateLoader() {
 function applyExtensions(key) {
     var sub = window[key];
     var list = EXTENSIONS[key];
+    EXTENSIONS[key] = false;
     for (var i = 0; i < list.length; i++) {
         var baseName = list[i];
         if (EXTENSIONS[baseName]) {

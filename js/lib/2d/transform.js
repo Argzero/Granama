@@ -20,6 +20,7 @@ function Transform() {
  * @returns {Transform} the Transform object
  */
 Transform.prototype.moveTo = function(x, y) {
+    if (!this.pos) debugger;
     this.pos.x = x;
     this.pos.y = y;
     return this;

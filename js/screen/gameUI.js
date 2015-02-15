@@ -17,6 +17,7 @@ var ui = {
 	 * Clears the UI canvas
 	 */
 	clear: function() {
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	},
 	
@@ -74,12 +75,12 @@ var ui = {
      */
     drawPlayerHUDs: function() {
     
-        ui.ctx.translate(gameScreen.scrollX
+        this.ctx.translate(SIDEBAR_WIDTH + gameScreen.scrollX, gameScreen.scrollY);
     
         for (var i = 0; i < players.length; i++) {
         
             var player = players[i];
-        
+            
             // Draw level up effect
             if (player.levelFrame >= 0) {
                 var circleFrame = player.levelFrame % 15;
@@ -98,7 +99,7 @@ var ui = {
                 if (player.levelFrame > 150) ui.ctx.globalAlpha = 1 - (player.levelFrame - 150) / 60;
                 ui.ctx.drawImage(img, -img.width / 2, -120);
                 ui.ctx.globalAlpha = 1;
-                ResetTransform(ui.ctx);
+                ui.ctx.setTransform(1, 0, 0, 1, 0, 0);
 
                 player.levelFrame++;
                 if (player.levelFrame >= 210) {
@@ -106,20 +107,14 @@ var ui = {
                 }
             }
 
-            // Transform the ui.ctx to match the player orientation
-            ui.ctx.translate(player.x, player.y);
-
             // Damage effect
             if (player.damageAlpha > 0) {
                 ui.ctx.globalAlpha = player.damageAlpha;
-                ui.ctx.drawImage(GetImage('damage'), -75, -75, 150, 150);
+                ui.ctx.drawImage(GetImage('damage'), player.pos.x - 75, player.pos.y - 75, 150, 150);
                 ui.ctx.globalAlpha = 1;
                 player.damageAlpha -= DAMAGE_ALPHA_DECAY;
             }
             
-            // Restore the transform
-            ResetTransform(ui.ctx);
-
             // Draw HUD if alive
             if (player.health > 0) {
 
@@ -128,23 +123,23 @@ var ui = {
                 var healthPercent = player.health / player.maxHealth;
                 var shieldPercent = player.shield / (player.maxHealth * SHIELD_MAX);
                 ui.ctx.beginPath();
-                ui.ctx.arc(player.x, player.y, 75, ((1 - healthPercent) * Math.PI * 8 / 10) - Math.PI * 9 / 10, -Math.PI / 10, false);
+                ui.ctx.arc(player.pos.x, player.pos.y, 75, ((1 - healthPercent) * Math.PI * 8 / 10) - Math.PI * 9 / 10, -Math.PI / 10, false);
                 if (healthPercent > 0.66) ui.ctx.strokeStyle = '#0f0';
                 else if (healthPercent > 0.33) ui.ctx.strokeStyle = '#ff0';
                 else ui.ctx.strokeStyle = '#f00';
                 ui.ctx.stroke();
                 ui.ctx.beginPath();
-                ui.ctx.arc(player.x, player.y, 75, Math.PI / 10, Math.PI / 10 + shieldPercent * Math.PI * 8 / 10);
+                ui.ctx.arc(player.pos.x, player.pos.y, 75, Math.PI / 10, Math.PI / 10 + shieldPercent * Math.PI * 8 / 10);
                 ui.ctx.strokeStyle = '#00f';
                 ui.ctx.stroke();
-                ui.ctx.drawImage(GetImage('healthBarSymbol'), player.x + 50, player.y - 20);
+                ui.ctx.drawImage(GetImage('healthBarSymbol'), player.pos.x + 50, player.pos.y - 20);
 
                 // Draw skill icon
                 if (player.ability) {
                     if (player.skillCd > 0) {
                         ui.ctx.globalAlpha = 0.5;
                     }
-                    ui.ctx.drawImage(GetImage('ability' + player.ability), player.x - 95, player.y - 20, 40, 40);
+                    ui.ctx.drawImage(GetImage('ability' + player.ability), player.pos.x - 95, player.pos.y - 20, 40, 40);
                     ui.ctx.globalAlpha = 1;
 
                     // Skill cooldown/duration
@@ -163,7 +158,7 @@ var ui = {
                             num = num.toFixed(1);
                         }
                         else num = num.toFixed(0);
-                        ui.ctx.fillText(num, player.x - 75 - StringWidth(num) / 2, player.y + 10);
+                        ui.ctx.fillText(num, player.pos.x - 75 - StringWidth(num) / 2, player.pos.y + 10);
                     }
                 }
             }
@@ -173,10 +168,30 @@ var ui = {
                 ui.ctx.strokeStyle = 'white';
                 ui.ctx.lineWidth = 3;
                 ui.ctx.beginPath();
-                ui.ctx.arc(player.x, player.y, 100, 0, Math.PI * 2 * player.rescue);
+                ui.ctx.arc(player.pos.x, player.pos.y, 100, 0, Math.PI * 2 * player.rescue);
                 ui.ctx.stroke();
             }
         }
+        
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    },
+    
+    /** 
+     * Draws health bars for all active enemies
+     */
+    drawEnemyHealth: function() {
+        var r;
+        this.ctx.translate(SIDEBAR_WIDTH + gameScreen.scrollX, gameScreen.scrollY);
+        for (var i = 0; i < gameScreen.robots.length; i++) {
+            r = gameScreen.robots[i];
+            if (r.type == Robot.PLAYER || r.health >= r.maxHealth || r.health <= 0) continue;
+            var greenWidth = r.width * r.health / r.maxHealth;
+            this.ctx.fillStyle = "#00FF00";
+            this.ctx.fillRect(r.pos.x - r.width / 2, r.pos.y - r.height / 2 - 10, greenWidth, 5);
+            this.ctx.fillStyle = "#FF0000";
+            this.ctx.fillRect(r.pos.x + greenWidth - r.width / 2, r.pos.y - r.height / 2 - 10, r.width - greenWidth, 5);
+        }
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     },
 	
     // Draws the sidebar with the upgrades

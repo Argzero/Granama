@@ -1,7 +1,3 @@
-depend('draw/camera');
-depend('screen/gameUI');
-depend('robot/pad');
-
 /**
  * Represents the arcade mode game screen
  *
@@ -9,46 +5,49 @@ depend('robot/pad');
  */
 function GameScreen() {
 
+    // Boss data
+    this.bossStatus = ACTIVE_NONE;
+    this.bossScore = Math.floor(50 * (0.6 + 0.4 * players.length));
+    this.bossIncrement = this.bossScore;
+    this.bossCount = 0;
+
+    // Various data
     this.score = 0;
-    this.bossScore = 0;
-    this.bossId = 0;
+    this.spawnCd = 0;
+    this.enemyCount = 0;
     this.gameOver = false;
-
-    this.damageOverlay = GetImage("damage");
-
-    this.damageAlpha;
     this.paused = undefined;
-    this.music;
+    
+    // Scroll data
     this.playerMinX = 0;
     this.playerMinY = 0;
     this.playerMaxX = 9999;
     this.playerMaxY = 9999;
 	this.scrollX = 0;
 	this.scrollY = 0;
+    
+    // Healing pads
     this.pads = [
 		new HealingPad(GAME_WIDTH / 3, GAME_HEIGHT / 3),
         new HealingPad(GAME_WIDTH * 2 / 3, GAME_HEIGHT / 3),
         new HealingPad(GAME_WIDTH / 3, GAME_HEIGHT * 2 / 3),
         new HealingPad(GAME_WIDTH * 2 / 3, GAME_HEIGHT * 2 / 3)
 	];
+    
+    // Game objects
     this.particles = [];
 	this.bullets = [];
 	this.robots = players.slice(0);
 	
+    // Set the game dimensions
 	GAME_WIDTH = 3000;
 	GAME_HEIGHT = 3000;
-	WINDOW_WIDTH = camera.canvas.width - SIDEBAR_WIDTH;
-	WINDOW_HEIGHT = camera.canvas.height;
 }
 
 /**
  * Updates the screen, updating all robots, turretes, bullets, etc.
  */
 GameScreen.prototype.update = function() {
-
-	var doc = document.documentElement, body = document.body;
-	pageScrollX = (doc && doc.scrollLeft || body && body.scrollLeft || 0);
-	pageScrollY = (doc && doc.scrollTop || body && body.scrollTop || 0);
 
 	// Update when not paused
 	if (!this.paused) {
@@ -57,6 +56,13 @@ GameScreen.prototype.update = function() {
 		for (var i = 0; i < this.robots.length; i++)
 		{
 			this.robots[i].update();
+            if (this.robots[i].expired) {
+                if (this.robots[i].type == Robot.MOB) {
+                    this.enemyCount--;
+                }
+                this.robots.splice(i, 1);
+                i--;
+            }
 		}
 	
 		// Update bullets
@@ -64,8 +70,8 @@ GameScreen.prototype.update = function() {
 			this.bullets[i].update();
             for (var j = 0; j < this.robots.length; j++) {
                 var r = this.robots[j];
-                if (this.bullets[j].isHitting(r)) {
-                    this.bullets[j].hit(r);
+                if (this.bullets[i].isHitting(r)) {
+                    this.bullets[i].hit(r);
                 }
             }
 			if (this.bullets[i].expired) {
@@ -82,6 +88,8 @@ GameScreen.prototype.update = function() {
 		// Update the scroll position
 		this.applyScrolling();
 	}
+    
+    this.checkSpawns();
 
 	// Check for losing
 	for (var i = 0; i < players.length; i++) {
@@ -98,6 +106,11 @@ GameScreen.prototype.update = function() {
 	}
 };
 
+/**
+ * Pauses the game for the given player
+ *
+ * @param {Player} player to pause the game for
+ */
 GameScreen.prototype.pause = function(player) {
 	if (this.paused) {
 		if (this.paused == player) {
@@ -109,6 +122,9 @@ GameScreen.prototype.pause = function(player) {
 	}
 };
 
+/**
+ * Draws the game to the canvas
+ */
 GameScreen.prototype.draw = function() {
 
 	camera.moveTo(SIDEBAR_WIDTH + this.scrollX, this.scrollY);
@@ -156,6 +172,9 @@ GameScreen.prototype.draw = function() {
 			i--;
 		}
 	}
+    
+    ui.drawEnemyHealth();
+    ui.drawPlayerHUDs();
 
 	// Reset scrolling for UI elements
 	camera.moveTo(0, 0);
@@ -175,6 +194,9 @@ GameScreen.prototype.draw = function() {
 	ui.drawCursor();
 };
 
+/**
+ * Updates the scrolling offsets of the game
+ */
 GameScreen.prototype.applyScrolling = function() {
 
 	// Get the average player position
@@ -206,45 +228,145 @@ GameScreen.prototype.applyScrolling = function() {
 	}
 };
 
-GameScreen.prototype.updateMusic = function() {
+/**
+ * Checks whether or not a new enemy should spawn
+ */
+GameScreen.prototype.checkSpawns = function() {
 
-	// Player must be alive for the music to play
-	if (!this.gameOver) {
+    // Transition to upgrade screen
+    if (this.bossStatus == ACTIVE_BOSS) {
+        if (this.enemies.length == 0) {
+            this.timer++;
+            if (this.timer >= 600) {
+                ui.setupUpgradeUI();
+                this.bossStatus = ACTIVE_NONE;
+            }
+        }
+        return;
+    }
 
-		// Initially load the music if it isn't already
-		if (!this.music) {
-			this.music = new Audio("sound/granamaTheme.mp3");
-			this.music.addEventListener('ended', function() {
-				this.currentTime = 0;
-				this.play();
-			}, false);
-			this.music.volume = 0;
-			this.music.play();
-		}
+    var x, y;
 
-		// Gradually get louder after loading
-		else if (this.music.volume < 1) {
-			var newVolume = this.music.volume + 0.005;
-			if (newVolume > 1) {
-				newVolume = 1;
-			}
-			this.music.volume = newVolume;
-		}
-	}
+    // Boss spawning
+    if (this.bossStatus == ACTIVE_NONE && screen.score == this.bossScore) {
+        this.bossStatus = ACTIVE_BOSS;
+        this.spawnBoss();
+        this.bossCount++;
+    }
 
-	// Fade out and then stop when the player dies
-	else if (this.music) {
-		var newVolume = this.music.volume - 0.002;
-		if (newVolume <= 0) {
-			this.music.pause();
-			this.music = false;
+    // Don't spawn enemies if there are too many or one has just spawned
+    if (this.bossStatus == ACTIVE_NONE
+        && this.spawnCd <= 0
+        && this.enemyCount < MAX_ENEMIES * (0.85 + 0.15 * players.length)
+        && this.enemyCount + this.score < this.bossScore) {
 
-			// Move to the end screen
-			endScreen.setup(this);
-			gameScreen = endScreen;
-		}
-		else {
-			this.music.volume = newVolume;
-		}
-	}
+        // Get a spawn point off of the gameScreen
+        var pos = new Vector(0, 0);
+        do {
+            pos.x = rand(GAME_WIDTH - 200 + 100);
+            pos.y = rand(GAME_HEIGHT - 200 + 100);
+        }
+        while (camera.isVisible(pos, 100));
+
+        // Spawn the enemy at the position
+        this.spawnEnemy(SPAWN_DATA, pos.x, pos.y);
+
+        // Apply the cooldown
+        this.spawnCd = (SPAWN_RATE - SPAWN_SCALE * this.score) / (0.7 + players.length * 0.3);
+    }
+    
+    // Deduct the timer if applicable
+    else if (this.spawnCd > 0) {
+        this.spawnCd--;
+    }
 };
+
+/**
+ * Spawns an enemy using the given spawn data at the location
+ *
+ * @param {Object} spawn data to use
+ * @param {Number} horizontal coordainte to spawn at
+ * @param {Number} vertical coordinate to spawn at
+ */
+GameScreen.prototype.spawnEnemy = function(data, x, y) {
+
+    // Sum the weights
+    var spawnWeight = 0;
+    for (var i = 0; i < data.length; i += 3) {
+        if (data[i + 1] <= this.bossCount) {
+            spawnWeight += data[i];
+        }
+    }
+    
+    // Choose a random one and spawn it
+    var r = rand(spawnWeight);
+    var total = 0;
+    var enemy;
+    for (var i = 0; i < data.length; i += 3) {
+        if (data[i + 1] <= this.bossCount) {
+            total += data[i];
+        }
+        if (total > r) {
+            enemy = new data[i + 2](x, y);
+            break;
+        }
+    }
+    
+    // This shouldn't happen, but just in case
+    // a list is empty, prevent an error happening
+    if (!enemy) {
+        return;
+    }
+
+    // Spawn the enemy
+    this.robots.unshift(enemy);
+    this.enemyCount++;
+};
+
+/**
+ * Spawns a new boss
+ */
+GameScreen.prototype.spawnBoss = function() {
+
+    // Get the position
+    if (gameScreen.scrollX + WINDOW_WIDTH / 2 < GAME_WIDTH / 2) {
+        x = GAME_WIDTH - 500;
+    }
+    else {
+        x = 500;
+    }
+    if (gameScreen.scrollY + WINDOW_HEIGHT / 2 < GAME_HEIGHT / 2) {
+        y = GAME_HEIGHT - 500;
+    }
+    else {
+        y = 500;
+    }
+
+    // Spawn the boss
+    this.enemies.push(BOSS_SPAWNS[this.bossCount % BOSS_SPAWNS.length](x, y));
+};
+
+/**
+ * Gets the robot closest to the given position falling
+ * under the given type
+ *
+ * @param {Vector} pos  - the position to get the nearest robot to
+ * @param {Number} type - the robot group ID to look for
+ *
+ * @returns {Robot} the closest robot to the point
+ */
+GameScreen.prototype.getClosest = function(pos, type) {
+    var closest;
+    var dSq;
+    for (var i = 0; i < this.robots.length; i++) {
+        var r = this.robots[i];
+        if ((r.type & type) && !r.dead) {
+            var d = r.pos.distanceSq(pos);
+            if (!dSq || d < dSq) {
+                dSq = d;
+                closest = r;
+            }
+        }
+    }
+    return r;
+}

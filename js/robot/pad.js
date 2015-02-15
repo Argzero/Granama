@@ -28,7 +28,7 @@ HealingPad.prototype.update = function() {
 	var list = [];
 	for (var i = 0; i < players.length; i++) {
 		var robot = players[i];
-		if (robot.health > 0 && robot.health < robot.maxHealth && this.charge > 0 && robot.pos.distanceSq(this.pos) < Sq(this.sprite.width / 2)) {
+		if (robot.health > 0 && robot.health < robot.maxHealth && this.charge > 0 && robot.pos.distanceSq(this.pos) < sq(this.sprite.width / 2)) {
 			list.push(robot);
 		}
 	}

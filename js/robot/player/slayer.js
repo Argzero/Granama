@@ -53,7 +53,7 @@ function PlayerSlayer() {
  */
 PlayerSlayer.prototype.applyUpdate = function() {
 	
-	var m = this.get('damage');
+	var m = this.get('power');
 
 	// Flamethrower
 	var fireUps = this.upgrades[FLAME_ID];
