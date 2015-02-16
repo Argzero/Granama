@@ -24,7 +24,7 @@ function Spinner(name, x, y, type, health, speed, range, exp, rank, patternMin, 
     this.super(name, x, y, health, speed, range, exp, rank, patternMin, patternMax);
     this.movement = movement.bounce;
     this.scale = 1;
-    this.damage = damage * Enemy.sum();
+    this.power = damage * Enemy.sum();
     this.distance = distance;
 
     var angle = rand(0, 360) * Math.PI / 180;

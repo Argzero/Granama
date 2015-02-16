@@ -67,7 +67,7 @@ var movement = {
         // Collision
         if (player.health > 0 && this.collides(player)) {
             this.direction = this.pos.clone().subtractv(player.pos).normalize();
-            player.damage(this.damage, this);
+            player.damage(this.power, this);
 
             var knockback = this.direction.multiply(-this.distance, -this.distance);
             player.knockback(knockback);
@@ -97,12 +97,12 @@ var movement = {
                     var direction = player.pos.clone().subtractv(this.pos);
                     var dot = this.rotation.dot(direction);
                     if (dot > 0) {
-                        player.knockback(this.rotation.x * this.distance, this.rotation.y * this.distance);
+                        player.knockback(this.rotation.clone().multiply(this.distance, this.distance));
                     }
                     else {
-                        player.knockback(-this.rotation.x * this.distance, -this.rotation.y * this.distance);
+                        player.knockback(this.rotation.clone().multiply(-this.distance, -this.distance));
                     }
-                    player.damage(this.damage, this);
+                    player.damage(this.power, this);
                 }
             }
         }
@@ -199,7 +199,7 @@ var movement = {
 		}
 
 		// Heal the enemy if close enough
-		else if (dSq <= Sq(this.range + 10)) {
+		else if (dSq <= sq(this.range + 10)) {
 			target.health += this.heal;
 			if (target.health > target.maxHealth) {
 				target.health = target.maxHealth;
@@ -233,10 +233,10 @@ var movement = {
 			this.movementHelper(player);
 		}
 		else if (d1 < 0) {
-			this.movementHelper({ pos: d.rotate(0, 1).addv(this.pos) });
+			this.movementHelper({ pos: d.rotate(0, -1).addv(this.pos) });
 		}
 		else {
-			this.movementHelper({ pos: d.rotate(0, -1).addv(this.pos) });
+			this.movementHelper({ pos: d.rotate(0, 1).addv(this.pos) });
 		}
 	}
 };

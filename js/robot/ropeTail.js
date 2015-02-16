@@ -2,9 +2,9 @@ depend('robot/tailSegment');
 
 function RopeTail(source, segment, end, length, offset, base, endOffset, constraint) {
     this.source = source;
-    this.dir = Vector(0, 1);
-    this.rel = Vector(1, 0);
-    this.pos = Vector(source.x, source.y - base - offset);
+    this.dir = new Vector(0, 1);
+    this.rel = new Vector(1, 0);
+    this.pos = new Vector(source.x, source.y - base - offset);
     this.offset = base;
     this.sprite = length <= 1 ? end : segment;
 

@@ -21,6 +21,7 @@ function Projectile(name, x, y, shooter, gun, speed, angle, damage, range, pierc
 	this.super(name, x, y);
 	
 	this.shooter = shooter;
+    this.gun = gun;
 	this.rotation = gun.rotation.clone().rotateAngle(angle);
 	this.vel = this.rotation.clone().multiply(speed, speed).rotate(0, 1);
 	this.speed = speed;
@@ -33,6 +34,7 @@ function Projectile(name, x, y, shooter, gun, speed, angle, damage, range, pierc
 	// Array of buffs to apply. Add in the format { name, multiplier, duration }
 	this.buffs = [];
     
+    this.offset = this.pos.clone();
 	this.pos.rotatev(gun.rotation);
 	this.pos.addv(gun.pos);
 	this.origin = this.pos.clone();
@@ -130,8 +132,10 @@ Projectile.prototype.isHitting = function(target) {
 Projectile.prototype.hit = function(target) {
 	var damage = this.damage;
 	if (this.pierce) damage *= target.pierceDamage;
+    if (!isNaN(target.damage)) debugger;
 	target.damage(damage, this.shooter);
 	this.applyBuffs(target);
+    this.expired = this.expired || !this.pierce;
 	if (this.onHit) this.onHit(target, damage);
 };
 
@@ -189,11 +193,11 @@ Projectile.prototype.spread = function(amount) {
         }
 
         // Spread the bullet
-        for (var i = 0; i < amount; i++) {
+        for (var i = 0; i < Math.floor(amount); i++) {
             for (var j = -1; j < 2; j += 2) {
                 var proj = this.clone();
-				proj.vel.rotate(cos, sin);
-				proj.rotate(cos, sin);
+				proj.vel.rotate(cos, j * sin);
+				proj.rotate(cos, j * sin);
                 gameScreen.bullets.push(proj);
             }
         }
@@ -201,6 +205,7 @@ Projectile.prototype.spread = function(amount) {
 
 Projectile.prototype.setupSlowBonus = function(multiplier) {
 	this.onHit = projEvents.slowedBonusHit;
+    
 	this.slowMultiplier = multiplier;
 	return this;
 };
@@ -208,7 +213,8 @@ Projectile.prototype.setupSlowBonus = function(multiplier) {
 Projectile.prototype.setupHoming = function(rotSpeed) {
 	this.onCollideCheck = projEvents.homingCollide;
 	this.onUpdate = projEvents.homingUpdate;
-	this.rotSpeed = rotSpeed;
+	
+    this.rotSpeed = rotSpeed;
 	this.lifespan = this.range / this.speed;
 	this.range = 999999;
 	return this;
@@ -218,6 +224,7 @@ Projectile.prototype.setupRocket = function(radius, knockback) {
 	this.onHit = projEvents.rocketHit;
 	this.onExpire = projEvents.rocketExpire;
 	this.onBlocked = projEvents.rocketBlocked;
+    
 	this.radius = radius;
 	this.knockback = knockback;
 	return this;
@@ -225,8 +232,40 @@ Projectile.prototype.setupRocket = function(radius, knockback) {
 
 Projectile.prototype.setupSpinning = function(rotSpeed) {
 	this.onUpdate = projEvents.spinningUpdate;
+    
 	this.rotSpeed = rotSpeed;
 	return this;
+};
+
+Projectile.prototype.setupSword = function(radius, arc, knockback, lifesteal) {
+    this.onUpdate = projEvents.swordUpdate;
+    this.onHit = projEvents.swordHit;
+    this.onBlocked = projEvents.swordBlocked;
+    
+    this.tempRotation = new Vector(1, 0);
+    this.start = new Vector(-radius * Math.sin(arc / 2), r * Math.cos(arc / 2));
+    this.knockback = knockback;
+    this.lifesteal = lifesteal;
+    this.arc = arc;
+};
+
+Projectile.prototype.setupFist = function(delay, side) {
+    this.onUpdate = projEvents.fistUpdate;
+    this.onBlocked = projEvents.fistBlocked;
+    
+    this.delay = delay;
+    this.side = side.toLowerCase();
+};
+
+Projectile.prototype.setupGrapple = function(stun, self) {
+    this.onUpdate = projEvents.grappleUpdate;
+    this.onHit = projEvents.grappleHit;
+    this.onBlocked = projEvents.grappleBlocked;
+    this.onExpire = projEvents.grappleExpired;
+    this.onCollideCheck = projEvents.grappleCollide;
+    
+    this.stun = stun;
+    this.self = self;
 };
 
 // Event implementations used by various projectiles
@@ -288,7 +327,7 @@ var projEvents = {
 	 * returning back after reaching the range and pausing
 	 */
 	fistUpdate: function() {
-		this.expired = this.returning && this.delay <= 0 && this.target.dead;
+		this.expired = this.expired || (this.returning && this.delay <= 0 && this.target.dead);
 		
 		// Updates after the fist reached it's range limit
 		if (this.returning) {
@@ -305,7 +344,7 @@ var projEvents = {
 				this.vel = this.shooter.pos.clone().subtractv(this.pos);
 				this.vel.setMagnitude(this.speed);
 				
-				if (this.pos.distanceSq(this.shooter.pos) < 22500) {
+				if (this.pos.distanceSq(this.origin) < 22500) {
 					this.block();
 				}
 			}
@@ -323,7 +362,8 @@ var projEvents = {
 	 * Restores the fist to the boss when blocked
 	 */
 	fistBlocked: function() {
-		this.shooter[this.side + 'Fist'] = true;
+        this.expired = true;
+        this.returning = true;
 	},
 	
 	/**
@@ -340,8 +380,8 @@ var projEvents = {
 		
 		// Move out from the robot first
 		if (!this.state) {
-			this.rotateAngle(this.arc / 20);
-			this.move((this.start.x - this.initial.x) / 10, (this.start.y - this.initial.y) / 10);
+			this.tempRotation.rotateAngle(this.arc / 20);
+			this.offset.move((this.start.x - this.initial.x) / 10, (this.start.y - this.initial.y) / 10);
 			
 			if (!this.step) this.step = 0;
 			this.step++;
@@ -354,7 +394,11 @@ var projEvents = {
 		
 		// Swinging
 		else if (this.state == 1) {
-			this.rotateAngleAbout(this.rotAngle, Vector.ZERO);
+            var cos = Math.cos(this.rotAngle);
+            var sin = Math.sin(this.rotAngle);
+            this.offset.rotate(cos, sin);
+            this.tempRotation.rotate(cos, sin);
+            
 			this.step--;
 			if (this.step <= 0) {
 				this.step = 10;
@@ -364,8 +408,8 @@ var projEvents = {
 		
 		// Returning back to the robot
 		else if (this.state == 2) {
-			this.rotateAngle(-this.arc / 20);
-			this.move((this.initial.x - this.start.x) / 10, (this.initial.y - this.start.y) / 10);
+			this.tempRotation.rotateAngle(-this.arc / 20);
+			this.offset.move((this.initial.x - this.start.x) / 10, (this.initial.y - this.start.y) / 10);
 			
 			this.step--;
 			if (this.step <= 0) {
@@ -373,6 +417,10 @@ var projEvents = {
 				this.expired = true;
 			}
 		}
+        
+        this.moveTo(this.gun.pos.x + this.offset.x, this.gun.pos.y, this.offset.y);
+        this.setRotation(this.gun.rotation.x, this.gun.rotation.y);
+        this.rotate(this.tempRotation.x, this.tempRotation.y);
 	},
 	
 	/**
@@ -399,7 +447,7 @@ var projEvents = {
 	 * Restores the sword to the shooter when blocked
 	 */
 	swordBlocked: function() {
-		this.shooter.sword = true;
+        this.expired = false;
 	},
 	
 	/**
@@ -448,7 +496,15 @@ var projEvents = {
 			this.vel = this.shooter.pos.clone().subtractv(this.pos).setMagnitude(this.speed);
 			if (this.target && this.target.pos.distanceSq(this.shooter.pos) >= 10000) {
 				this.target.stun(this.stun || 2);
-				this.target.moveTo(this.pos.x + this.offset.x, this.pos.y + this.offset.y);
+                if (this.self) {
+                    this.target.moveTo(this.pos.x + this.offset.x, this.pos.y + this.offset.y);
+                }
+                else {
+                    this.shooter.move(-this.vel.x, -this.vel.y);
+                    this.shooter.stun(2);
+                    this.vel.x = 0;
+                    this.vel.y = 0;
+                }
 			}
 			if (this.pos.distanceSq(this.shooter.pos) <= 400) {
 				this.expired = true;

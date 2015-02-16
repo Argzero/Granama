@@ -10,8 +10,8 @@
  * @param {number} range        - attack range
  * @param {number} exp          - experience yield
  * @param {string} rank         - difficulty rank
- * @param {number} [patternMin] - minimum time between switching attack patterns
- * @param {number} [patternMax] - maximum time between switching attack patterns
+ * @param {number} patternMin   - minimum time between switching attack patterns
+ * @param {number} patternMax   - maximum time between switching attack patterns
  * @param {number} mDamage      - damage dealt by melee attacks
  * @param {number} mRate        - rate of melee attacks
  * @param {number} mSlow        - slow amount of melee attacks
@@ -42,18 +42,17 @@ function Grabber(name, x, y, type, health, speed, range, exp, rank, patternMin, 
 
     // Grapple weapon
     this.addWeapon(weapon.gun, {
-        sprite: leftClaw,
-        damage: gDamage * Enemy.sum(),
-        range : gRange,
-        rate  : gRate,
-        stun  : 0,
-        self  : gSelf
+        sprite   : leftClaw,
+        damage   : gDamage * Enemy.sum(),
+        range    : gRange,
+        rate     : gRate,
+        templates: [{ name: 'setupGrapple', args: [1, gSelf] }]
     });
 
     // Claw sprites
     this.leftClaw = new Sprite(leftClaw, dx, dy, this, false, true);
     this.rightClaw = new Sprite(rightClaw, -dx, dy, this, false, true);
-    this.postChildren.push(this.leftClaw, this.rightClaw);
+    this.postChildren.push(this.leftClaw.child(this, true), this.rightClaw.child(this, true));
     this.grapple = false;
 }
 

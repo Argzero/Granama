@@ -3,12 +3,17 @@ depend('lib/math');
 depend('lib/2d/vector');
 depend('robot/weapons');
 
+// Individual types
 Robot.PLAYER = 1;
 Robot.MOB = 2;
 Robot.BOSS = 4;
 Robot.TURRET = 8;
-Robot.ENEMY = 14;
-Robot.MOBILE = 6;
+Robot.MINE = 16;
+
+// Groups
+Robot.ENEMY = 14; // All basic enemy types (turrets, mobs, and bosses)
+Robot.MOBILE = 6; // Enemies other than turrets
+// You can combine more types by using the bitwise or (e.g. Robot.ENEMY | Robot.MINE)
 
 /**
  * Base class for damageable robots
@@ -46,7 +51,7 @@ function Robot(name, x, y, type, health, speed) {
     this.dead = false;
     this.expired = false;
 
-    this.knockback = new Vector(0, 0);
+    this.knockbackDir = new Vector(0, 0);
     this.buffs = {};
 	
 	////////////
@@ -192,7 +197,7 @@ Robot.prototype.buff = function(name, multiplier, duration) {
  * @returns {boolean} true if stunned, false otherwise
  */
 Robot.prototype.isStunned = function() {
-    return this.buffs['stun'] !== undefined || this.knockback.lengthSq() > 0;
+    return this.buffs['stun'] !== undefined || this.knockbackDir.lengthSq() > 0;
 };
 
 /**
@@ -210,7 +215,7 @@ Robot.prototype.stun = function(duration) {
  * @param {Vector} knockback - the relative offset to push
  */
 Robot.prototype.knockback = function(knockback) {
-    this.knockback = knockback.multiply(this.knockbackFactor, this.knockbackFactor);
+    this.knockbackDir = knockback.multiply(this.knockbackFactor, this.knockbackFactor);
 };
 
 /**
@@ -226,12 +231,12 @@ Robot.prototype.updateRobot = function() {
     }
 
     // Apply knockback
-    if (this.knockback.lengthSq() > 0) {
-        var l = this.knockback.length();
+    if (this.knockbackDir.lengthSq() > 0) {
+        var l = this.knockbackDir.length();
         if (l < this.knockbackSpeed) l = this.knockbackSpeed;
-        var dx = this.knockback.x * this.knockbackSpeed / l;
-        var dy = this.knockback.y * this.knockbackSpeed / l;
-        this.knockback.add(-dx, -dy);
+        var dx = this.knockbackDir.x * this.knockbackSpeed / l;
+        var dy = this.knockbackDir.y * this.knockbackSpeed / l;
+        this.knockbackDir.add(-dx, -dy);
         this.move(dx, dy);
     }
 
@@ -272,20 +277,3 @@ Robot.prototype.clamp = function() {
 Robot.prototype.isInRange = function(range) {
     return true;
 };
-
-// Functions
-/*
- isBoss: enemyFunctions.isBoss,
- stun: enemyFunctions.stun,
- AddWeapon: enemyFunctions.AddWeapon,
- SetRange: enemyFunctions.SetRange,
- SetMovement: enemyFunctions.SetMovement,
- Knockback: enemyFunctions.Knockback,
- SwitchPattern: enemyFunctions.SwitchPattern,
- Update: enemyFunctions.Update,
- clamp: enemyFunctions.clamp,
- Draw: enemyFunctions.Draw,
- IsInRange: enemyFunctions.IsInRange,
- Damage: enemyFunctions.Damage,
- Slow: enemyFunctions.Slow
- */

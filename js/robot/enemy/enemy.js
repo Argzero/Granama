@@ -201,7 +201,6 @@ Enemy.prototype.update = function() {
 Enemy.prototype.isInRange = function(range) {
     var player = getClosestPlayer(this.pos);
     var d = player.pos.clone().subtractv(this.pos);
-    console.log(this.forward().dot(d));
     return player.health > 0 && d.lengthSq() < sq(range + this.speed) && this.forward().dot(d) >= 0;
 };
 

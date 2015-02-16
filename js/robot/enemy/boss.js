@@ -39,7 +39,7 @@ Boss.prototype.isBoss = function() {
  * @returns {boolean} true if in range, false otherwise
  */
 Boss.prototype.isInRange = function(range) {
-    var player = playerManager.getClosest(this.pos);
+    var player = getClosestPlayer(this.pos);
     return player.health > 0 && this.pos.distanceSq(player.pos) < sq(range + this.speed);
 };
 

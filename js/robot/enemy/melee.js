@@ -23,7 +23,7 @@ function Melee(name, x, y, type, health, speed, range, exp, rank, patternMin, pa
     this.super(name, x, y, type, health, speed, range, exp, rank, patternMin, patternMax);
 
     this.scale = 1;
-    this.damage = damage * Enemy.sum();
+    this.power = damage * Enemy.sum();
     this.distance = distance;
     this.chargeDuration = duration;
     this.movement = movement.charge;

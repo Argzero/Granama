@@ -232,6 +232,7 @@ var weapon = {
      *     <li>{number}  [dy]       - vertical position offset</li>
      *     <li>{number}  [delay]    - the delay before shooting while in range</li>
      *     <li>{number}  [duration] - the lifespan of the mine
+     *     <li>{number}  [target]   - the target group the mine can hit
      * </ul>
      *
      * @param {Object} data - weapon data
@@ -239,8 +240,8 @@ var weapon = {
     mine: function(data) {
         if (weapon.checkTime(data, this.isInRange(data.range))) {
             var pos = weapon.getPosition(this, data).addv(this.pos);
-            var mine = new Mine(pos, data.damage, data.type);
-            enemyManager.mines.push(mine);
+            var mine = new Mine(pos, data.damage, data.type, data.target || Robot.PLAYER);
+            gameScreen.robots.push(mine);
             if (data.duration) {
                 mine.lifespan = data.duration;
             }

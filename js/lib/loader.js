@@ -77,14 +77,13 @@ function applyExtensions(key) {
 /**
  * Super constructor function for extended classes
  */
-var superConstructorEnabled = true;
 function superConstructor() {
-    if (!superConstructorEnabled) return;
-    superConstructorEnabled = false;
+    if (this.superConstructorEnabled == false) return;
+    this.superConstructorEnabled = false;
     for (var i = 0; i < this.childConstructors.length; i++) {
         this.childConstructors[i].apply(this, arguments);
     }
-    superConstructorEnabled = true;
+    this.superConstructorEnabled = true;
 }
 
 /**

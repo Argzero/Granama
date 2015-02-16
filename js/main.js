@@ -35,6 +35,8 @@ depend('robot/movement');
 depend('robot/pad');
 depend('robot/robot');
 depend('robot/explosion');
+depend('robot/mine');
+depend('robot/turret');
 
 // Player scripts
 depend('robot/player/playerManager');

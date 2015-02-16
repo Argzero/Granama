@@ -4,7 +4,7 @@ depend('data/io', function() { PROFILE_DATA = io.getObject(PROFILE_DATA_KEY) || 
 var PROFILE_DATA_KEY = 'profiles';
 
 // The serializable object representation of profile data
-var PROFILE_DATA = undefined;
+var PROFILE_DATA = {};
 
 // Available stats
 var STAT = {

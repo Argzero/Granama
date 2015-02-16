@@ -3,9 +3,9 @@ function TailSegment(parent, sprite, offset, constraint) {
     this.sprite = sprite;
     this.offset = offset;
     this.constraint = constraint;
-    this.pos = Vector(parent.pos.x, parent.pos.y - offset);
-    this.dir = Vector(0, 1);
-    this.lim = Vector(Math.cos(constraint), Math.sin(constraint));
+    this.pos = new Vector(parent.pos.x, parent.pos.y - offset);
+    this.dir = new Vector(0, 1);
+    this.lim = new Vector(Math.cos(constraint), Math.sin(constraint));
 }
 
 TailSegment.prototype.update = function() {
