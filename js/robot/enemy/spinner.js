@@ -1,26 +1,27 @@
 /**
  * An enemy that bounces off walls and can collide with players for damage
  *
- * @param {string} name         - name of the enemy sprite image
- * @param {number} x            - initial horizontal position
- * @param {number} y            - initial vertical position
- * @param {Number} type         - robot type ID of the enemy (should be Robot.MOB)
- * @param {number} health       - max health
- * @param {number} speed        - movement speed
- * @param {number} range        - attack range
- * @param {number} exp          - experience yield
- * @param {string} rank         - difficulty rank
- * @param {number} [patternMin] - minimum time between switching attack patterns
- * @param {number} [patternMax] - maximum time between switching attack patterns
- * @param {number} damage       - damage dealt by mines or turrets
- * @param {number} distance     - how far the spinner pushes players on collision
- * @param {string} back         - the sprite image name for the spinner's back
- * @param {number} spin         - the spin speed of the spinner's back
+ * @param {string}  name         - name of the enemy sprite image
+ * @param {number}  x            - initial horizontal position
+ * @param {number}  y            - initial vertical position
+ * @param {Number}  type         - robot type ID of the enemy (should be Robot.MOB)
+ * @param {number}  health       - max health
+ * @param {number}  speed        - movement speed
+ * @param {number}  range        - attack range
+ * @param {number}  exp          - experience yield
+ * @param {string}  rank         - difficulty rank
+ * @param {number}  [patternMin] - minimum time between switching attack patterns
+ * @param {number}  [patternMax] - maximum time between switching attack patterns
+ * @param {number}  damage       - damage dealt by mines or turrets
+ * @param {number}  distance     - how far the spinner pushes players on collision
+ * @param {string}  back         - the sprite image name for the spinner's back
+ * @param {number}  spin         - the spin speed of the spinner's back
+ * @param {boolean} fire         - whether or not to spew fire
  *
  * @constructor
  */
 extend('Spinner', 'Enemy');
-function Spinner(name, x, y, type, health, speed, range, exp, rank, patternMin, patternMax, damage, distance, back, spin) {
+function Spinner(name, x, y, type, health, speed, range, exp, rank, patternMin, patternMax, damage, distance, back, spin, fire) {
     this.super(name, x, y, health, speed, range, exp, rank, patternMin, patternMax);
     this.movement = movement.bounce;
     this.scale = 1;
@@ -30,7 +31,7 @@ function Spinner(name, x, y, type, health, speed, range, exp, rank, patternMin, 
     var angle = rand(0, 360) * Math.PI / 180;
     this.direction = new Vector(Math.cos(angle), Math.sin(angle));
 
-    this.back = new SpinnerBack(this, back, spin);
+    this.back = new SpinnerBack(back, this, spin, fire, this.power / 16);
 }
 
 /**
@@ -78,7 +79,8 @@ function LightSpinner(x, y) {
         /* damage      */ 4,
         /* distance    */ 150,
         /* back        */ 'enemyLightSpinnerBack',
-        /* spin        */ Math.PI / 15
+        /* spin        */ Math.PI / 15,
+		/* fire        */ false
     );
 }
 
@@ -107,7 +109,8 @@ function HeavySpinner(x, y) {
         /* damage      */ 6,
         /* distance    */ 200,
         /* back        */ 'enemyHeavySpinnerBack',
-        /* spin        */ Math.PI / 30
+        /* spin        */ Math.PI / 30,
+		/* fire        */ false
     );
 
     this.pierceDamage = 0.5;
@@ -138,7 +141,8 @@ function Solar(x, y) {
         /* damage      */ 8,
         /* distance    */ 300,
         /* back        */ 'enemySolarBack',
-        /* spin        */ Math.PI / 30
+        /* spin        */ Math.PI / 30,
+		/* fire        */ true
     );
 
     this.pierceDamage = 0.5;

@@ -13,7 +13,7 @@ function skillDecimation(player) {
             this.skillCd = 300;
         }
         if (this.skillDuration > 0) {
-            this.buff('damage', 2, 2);
+            this.buff('power', 2, 2);
         }
     }
 }

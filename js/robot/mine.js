@@ -8,8 +8,9 @@
  * @constructor
  */
 extend('Mine', 'Sprite');
-function Mine(pos, damage, type, target) {
+function Mine(shooter, pos, damage, type, target) {
     this.super(type + 'Mine', pos.x, pos.y);
+	this.shooter = shooter;
     this.lifespan = MINE_DURATION;
     this.power = damage;
     this.exploded = false;
@@ -45,6 +46,7 @@ Mine.prototype.damage = function(amount, source) {
  */
 Mine.prototype.explode = function() {
     if (this.exploded) {
+		this.expired = true;
         return;
     }
     this.exploded = true;
@@ -52,7 +54,8 @@ Mine.prototype.explode = function() {
     for (var i = 0; i < gameScreen.robots.length; i++) {
         var r = gameScreen.robots[i];
         if ((r.type & this.target) && this.pos.distanceSq(r.pos) < sq(r.width + 2 * this.width)) {
-            r.damage(this.damage);
+            r.damage(this.power, this.shooter);
         }
     }
+	this.expired = true;
 }

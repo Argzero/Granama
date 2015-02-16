@@ -43,8 +43,7 @@ var movement = {
 
         // Movement
         var speed = this.get('speed');
-        this.x += this.direction.x * speed;
-        this.y += this.direction.y * speed;
+		this.move(this.direction.x * speed, this.direction.y * speed);
 
         // Looking direction
         var player = getClosestPlayer(this.pos);
@@ -86,7 +85,7 @@ var movement = {
             this.move(this.forward().x * this.speed * 2, this.forward().y * this.speed * 2);
 
             // Stop charging when reaching the edge of the map
-            if (this.xMin() < 0 || this.xMax() > game.width || this.yMin() < 0 || this.yMax() > game.height) {
+            if (this.xMin() < 0 || this.xMax() > GAME_WIDTH || this.yMin() < 0 || this.yMax() > GAME_HEIGHT) {
                 this.charging = 0;
             }
 
@@ -221,22 +220,26 @@ var movement = {
 		var ds = this.pos.distanceSq(player.pos);
 		var tooFar = ds > sq(this.range + 100);
 		var tooClose = ds < sq(this.range - 100);
-
+		
 		// Turn towards the player
 		var d = player.pos.clone().subtractv(this.pos);
-		var d1 = this.rotation.dot(d);
-		//var d2 = this.forward().dot(d);
-
+		var d1 = d.dot(this.rotation);
+		
 		// Turn in the correct direction
 		this.movementHelper = movement.moveTowards;
-		if (tooFar || tooClose) {
+		if (tooFar) {
 			this.movementHelper(player);
 		}
-		else if (d1 < 0) {
-			this.movementHelper({ pos: d.rotate(0, -1).addv(this.pos) });
+		else if (tooClose) {
+			this.movementHelper({ pos: d.multiply(-500, -500).addv(this.pos) });
 		}
-		else {
-			this.movementHelper({ pos: d.rotate(0, 1).addv(this.pos) });
+		else if (d1 > 0) {
+			this.lookTowards(d.rotate(0, 1).multiply(500, 500).addv(this.pos), this.turnVec);
+			this.movementHelper({ pos: d });
+		}
+		else if (d1 < 0) {
+			this.lookTowards(d.rotate(0, -1).multiply(500, 500).addv(this.pos), this.turnVec);
+			this.movementHelper({ pos: d });
 		}
 	}
 };

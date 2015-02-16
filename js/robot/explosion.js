@@ -37,27 +37,26 @@ Explosion.prototype.draw = function() {
  *
  * @constructor
  */
-function RocketExplosion(type, x, y, size) {
+function RocketExplosion(type, pos, size) {
     var angle = rand(360) * Math.PI / 180;
     var dir = new Vector(Math.cos(angle), Math.sin(angle));
     var zero = new Vector(0, 0);
 
     this.type = type;
-    this.x = x;
-    this.y = y;
+	this.pos = pos;
     this.size = size;
     this.frame = 0;
 
     // Initialize starting pieces
     this.pieces = [
-        new ExplosionPiece('explodeSmoke' + (rand(4) + 1), 0, x + dir.rotate(COS_60, SIN_60).x * size / 4, y + dir.y * size / 4, size / 2, zero, 0.8, 0.02, 30, true),
-        new ExplosionPiece('explodeSmoke' + (rand(4) + 1), 1, x + dir.rotate(COS_60, SIN_60).x * size / 4, y + dir.y * size / 4, size / 2, zero, 0.8, 0.02, 30, true),
-        new ExplosionPiece('explodeSmoke' + (rand(4) + 1), 2, x + dir.rotate(COS_60, SIN_60).x * size / 4, y + dir.y * size / 4, size / 2, zero, 0.8, 0.02, 30, true),
-        new ExplosionPiece('explodeSmoke' + (rand(4) + 1), 3, x + dir.rotate(COS_60, SIN_60).x * size / 4, y + dir.y * size / 4, size / 2, zero, 0.8, 0.02, 30, true),
-        new ExplosionPiece('explodeSmoke' + (rand(4) + 1), 4, x + dir.rotate(COS_60, SIN_60).x * size / 4, y + dir.y * size / 4, size / 2, zero, 0.8, 0.02, 30, true),
-        new ExplosionPiece('explodeSmoke' + (rand(4) + 1), 5, x + dir.rotate(COS_60, SIN_60).x * size / 4, y + dir.y * size / 4, size / 2, zero, 0.8, 0.02, 30, true),
-        new ExplosionPiece('explodeSmoke' + (rand(4) + 1), 6, x + dir.rotate(COS_60, SIN_60).x * size / 4, y + dir.y * size / 4, size / 2, zero, 0.8, 0.02, 30, true),
-        new ExplosionPiece('explodeBase' + type, 7, x, y, size * 2 / 3, zero, 1, 0.08, 10, true)
+        new ExplosionPiece('explodeSmoke' + (rand(4) + 1), 0, pos.x + dir.rotate(COS_60, SIN_60).x * size / 4, pos.y + dir.y * size / 4, size / 2, zero, 0.8, 0.02, 30, true),
+        new ExplosionPiece('explodeSmoke' + (rand(4) + 1), 1, pos.x + dir.rotate(COS_60, SIN_60).x * size / 4, pos.y + dir.y * size / 4, size / 2, zero, 0.8, 0.02, 30, true),
+        new ExplosionPiece('explodeSmoke' + (rand(4) + 1), 2, pos.x + dir.rotate(COS_60, SIN_60).x * size / 4, pos.y + dir.y * size / 4, size / 2, zero, 0.8, 0.02, 30, true),
+        new ExplosionPiece('explodeSmoke' + (rand(4) + 1), 3, pos.x + dir.rotate(COS_60, SIN_60).x * size / 4, pos.y + dir.y * size / 4, size / 2, zero, 0.8, 0.02, 30, true),
+        new ExplosionPiece('explodeSmoke' + (rand(4) + 1), 4, pos.x + dir.rotate(COS_60, SIN_60).x * size / 4, pos.y + dir.y * size / 4, size / 2, zero, 0.8, 0.02, 30, true),
+        new ExplosionPiece('explodeSmoke' + (rand(4) + 1), 5, pos.x + dir.rotate(COS_60, SIN_60).x * size / 4, pos.y + dir.y * size / 4, size / 2, zero, 0.8, 0.02, 30, true),
+        new ExplosionPiece('explodeSmoke' + (rand(4) + 1), 6, pos.x + dir.rotate(COS_60, SIN_60).x * size / 4, pos.y + dir.y * size / 4, size / 2, zero, 0.8, 0.02, 30, true),
+        new ExplosionPiece('explodeBase' + type, 7, pos.x, pos.y, size * 2 / 3, zero, 1, 0.08, 10, true)
     ];
 }
 
@@ -71,7 +70,7 @@ RocketExplosion.prototype.draw = function() {
         var angle = rand(360) * Math.PI / 180;
         var speed = this.size * (rand(10) + 5) / 600;
         var dir = new Vector(speed * Math.cos(angle), speed * Math.sin(angle));
-        this.pieces.push(new ExplosionPiece('explodeBit' + this.type, this.pieces.length, this.x, this.y, this.size / 10, dir, 1, 0.03, 10, false, updateBit));
+        this.pieces.push(new ExplosionPiece('explodeBit' + this.type, this.pieces.length, this.pos.x, this.pos.y, this.size / 10, dir, 1, 0.03, 10, false, updateBit));
     }
     this.frame++;
 
@@ -117,7 +116,7 @@ function ExplosionPiece(sprite, id, x, y, size, vel, alpha, alphaDecay, alphaDel
     this.super(sprite, x, y);
     this.fadeIn = fadeIn;
     this.id = id;
-    this.size = size;
+	this.setScale(size / this.width, size / this.height);
     this.vel = vel;
     this.alpha = fadeIn ? 0 : alpha;
     this.targetAlpha = alpha;

@@ -31,6 +31,7 @@ function Enemy(name, x, y, type, health, speed, range, exp, rank, patternMin, pa
     this.pattern = 0;
     this.patternTimer = 0;
     this.turnDivider = 50;
+	this.points = 1;
 }
 
 // Experience constants
@@ -48,6 +49,16 @@ Enemy.MINIBOSS_ENEMY = 'm';
 Enemy.BOSS_ENEMY = 'b';
 Enemy.DRAGON_ENEMY = 'd';
 Enemy.HYDRA_ENEMY = 'DOOM';
+
+// Experience data
+Enemy.EXP_M = [1, 5 / 3, 9 / 4, 8 / 3, 35 / 12];
+Enemy.EXP_DATA = [
+	{value: 25, sprite: 'exp25'},
+	{value: 10, sprite: 'exp10'},
+	{value: 5, sprite: 'exp5'},
+	{value: 3, sprite: 'exp3'},
+	{value: 1, sprite: 'exp1'}
+];
 
 /**
  * Exponential scaling formula
@@ -138,10 +149,12 @@ Enemy.prototype.switchPattern = function() {
 Enemy.prototype.update = function() {
     this.updateRobot();
     
-    // Blow up upon dying
+    // Blow up and give exp/points upon dying
     if (this.isDead || this.health <= 0) {
         gameScreen.particles.push(new Explosion(this.pos.x, this.pos.y, this.width / 150));
         this.expired = true;
+		gameScreen.score += this.points;
+		this.spawnExp();
     }
     
     // Don't act when stunned
@@ -212,4 +225,41 @@ Enemy.prototype.isInRange = function(range) {
  */
 Enemy.prototype.onDamaged = function(amount, source) {
     if (amount > 0) this.killer = source;
+};
+
+/**
+ * Spawns the experience for the enemy
+ */
+Enemy.prototype.spawnExp = function() {
+	if (this.points) {
+		var num = Math.round(this.exp * Enemy.EXP_M[players.length - 1]);
+		for (var e = 0; e < Enemy.EXP_DATA.length; e++) {
+			var data = Enemy.EXP_DATA[e];
+			var allDead = false;
+			while (!allDead && data.value * players.length <= num) {
+				allDead = true;
+				for (var p = 0; p < players.length; p++) {
+					var player = players[p];
+					num -= data.value;
+					if (player.health <= 0) continue;
+					allDead = false;
+					var exp = new Projectile(
+						data.sprite,
+						0, 0,
+						this, this,
+						10,
+						rand(360) * Math.PI / 180,
+						0,
+						999999,
+						false,
+						Robot.PLAYER
+					);
+					exp.setupHoming(player, rand(10) / 100 + 0.04);
+					exp.onHit = projEvents.expHit;
+					exp.exp = data.value;
+					gameScreen.bullets.push(exp);
+				}
+			}
+		}
+	}
 };

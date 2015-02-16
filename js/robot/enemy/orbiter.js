@@ -24,18 +24,18 @@ function Orbiter(name, x, y, type, health, speed, range, exp, rank, patternMin, 
     this.super(name, x, y, type, health, speed, range, exp, rank, patternMin, patternMax);
     this.movement = movement.orbit;
     this.addWeapon(weapon.gun, {
-        damage: damage * Enemy.sum(),
-        rate  : rate,
-        range : range + 100,
-        angle : Math.PI / 2,
-        target: Robot.PLAYER
+        damage      : damage * Enemy.sum(),
+        rate        : rate,
+        range       : range + 100,
+        angleOffset : 90,
+        target      : Robot.PLAYER
     });
     this.addWeapon(weapon.gun, {
-        damage: damage * Enemy.sum(),
-        rate  : rate,
-        range : range + 100,
-        angle : -Math.PI / 2,
-        target: Robot.PLAYER
+        damage      : damage * Enemy.sum(),
+        rate        : rate,
+        range       : range + 100,
+        angleOffset : -90,
+        target      : Robot.PLAYER
     });
 }
 

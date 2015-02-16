@@ -269,11 +269,13 @@ GameScreen.prototype.checkSpawns = function() {
 
         // Get a spawn point off of the gameScreen
         var pos = new Vector(0, 0);
+		var visible;
         do {
             pos.x = rand(GAME_WIDTH - 200 + 100);
             pos.y = rand(GAME_HEIGHT - 200 + 100);
+			visible = getClosestPlayer(pos).pos.distanceSq(pos) < sq(WINDOW_WIDTH / 2);
         }
-        while (camera.isVisible(pos, 100));
+        while (visible);
 
         // Spawn the enemy at the position
         this.spawnEnemy(SPAWN_DATA, pos.x, pos.y);
@@ -328,6 +330,11 @@ GameScreen.prototype.spawnEnemy = function(data, x, y) {
     // Spawn the enemy
     this.robots.unshift(enemy);
     this.enemyCount++;
+	
+	// Enemies during the boss fight give 0 points
+	if (this.bossStatus != ACTIVE_NONE) {
+		enemy.points = 0;
+	}
 };
 
 /**
@@ -375,5 +382,5 @@ GameScreen.prototype.getClosest = function(pos, type) {
             }
         }
     }
-    return r;
+    return closest;
 }

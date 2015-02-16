@@ -31,6 +31,7 @@ function Bomber(name, x, y, type, health, speed, range, exp, rank, patternMin, p
         health: other,
         target: Robot.PLAYER
     });
+	this.turnDivider = 100;
 }
 
 /**

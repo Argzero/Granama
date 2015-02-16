@@ -100,6 +100,7 @@ var ui = {
                 ui.ctx.drawImage(img, -img.width / 2, -120);
                 ui.ctx.globalAlpha = 1;
                 ui.ctx.setTransform(1, 0, 0, 1, 0, 0);
+				ui.ctx.translate(SIDEBAR_WIDTH + gameScreen.scrollX, gameScreen.scrollY);
 
                 player.levelFrame++;
                 if (player.levelFrame >= 210) {
@@ -158,7 +159,7 @@ var ui = {
                             num = num.toFixed(1);
                         }
                         else num = num.toFixed(0);
-                        ui.ctx.fillText(num, player.pos.x - 75 - StringWidth(num) / 2, player.pos.y + 10);
+                        ui.ctx.fillText(num, player.pos.x - 75 - ui.ctx.measureText(num).width / 2, player.pos.y + 10);
                     }
                 }
             }

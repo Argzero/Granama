@@ -15,7 +15,7 @@ function skillKOCannon(player) {
                 /* Source */ this, this,
                 /* Speed  */ 10,
                 /* Angle  */ 0,
-                /* Damage */ 0.4 * this.get('damage'),
+                /* Damage */ 0.4 * this.get('power'),
                 /* Range  */ 999,
                 /* Pierce */ true,
                 /* Target */ Robot.ENEMY

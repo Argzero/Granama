@@ -49,6 +49,7 @@ HealingPad.prototype.update = function() {
  * Draws the charge bar for the pad
  */
 HealingPad.prototype.onPreDraw = function() {
+	if (!this.sprite.width) return;
 	camera.ctx.strokeStyle = '#0ff';
 	camera.ctx.lineWidth = 30;
 	camera.ctx.beginPath();

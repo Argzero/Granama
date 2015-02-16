@@ -26,7 +26,7 @@ function LightArtillery(x, y) {
         damage: Enemy.sum(),
         rate  : 45,
         range : 400,
-        spread: rand((gameScreen.bossScore + 1) / 3),
+        spread: rand((gameScreen.bossCount + 1) / 3),
         dx    : 0,
         dy    : 38,
         target: Robot.PLAYER

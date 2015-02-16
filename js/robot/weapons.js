@@ -213,7 +213,7 @@ var weapon = {
      */
     melee: function(data) {
         if (weapon.checkTime(data, this.isInRange(data.range))) {
-            var robot = gameScreen.getNearest(this.pos, data.target);
+            var robot = gameScreen.getClosest(this.pos, data.target);
             robot.damage(data.damage, this);
             if (data.stat && data.slow && data.duration) {
                 robot.buff(data.stat, data.multiplier, data.duration);
@@ -241,7 +241,7 @@ var weapon = {
     mine: function(data) {
         if (weapon.checkTime(data, this.isInRange(data.range))) {
             var pos = weapon.getPosition(this, data).addv(this.pos);
-            var mine = new Mine(pos, data.damage, data.type, data.target || Robot.PLAYER);
+            var mine = new Mine(this, pos, data.damage, data.type, data.target || Robot.PLAYER);
             gameScreen.robots.push(mine);
             if (data.duration) {
                 mine.lifespan = data.duration;

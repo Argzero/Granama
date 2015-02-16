@@ -1,4 +1,8 @@
 function skillWaveburst(player) {
+	
+	/**
+	 * Updates ability effects each frame while not dead
+	 */
     player.onUpdate = function() {
 
         // Activating the ability
@@ -18,12 +22,12 @@ function skillWaveburst(player) {
                     /* Source */ this, this,
                     /* Speed  */ 10,
                     /* Angle  */ this.waveAngle,
-                    /* Damage */ 0.5 * this.get('damage'),
+                    /* Damage */ 0.5 * this.get('power'),
                     /* Range  */ 999,
                     /* Pierce */ true,
                     /* Target */ Robot.ENEMY
                 );
-                this.bullets.push(laser);
+                gameScreen.bullets.push(laser);
             }
         }
     }

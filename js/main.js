@@ -106,10 +106,10 @@ onLoaderDone = function() {
     controls.mapButton(DOWN_1, controls.KEY_S, controls.AXIS_LYP);
     controls.mapButton(LEFT_1, controls.KEY_A, controls.AXIS_LXN);
     controls.mapButton(RIGHT_1, controls.KEY_D, controls.AXIS_LXP);
-    controls.mapButton(UP_1, controls.KEY_UP, controls.AXIS_RYN);
-    controls.mapButton(DOWN_1, controls.KEY_DOWN, controls.AXIS_RYP);
-    controls.mapButton(LEFT_1, controls.KEY_LEFT, controls.AXIS_RXN);
-    controls.mapButton(RIGHT_1, controls.KEY_RIGHT, controls.AXIS_RXP);
+    controls.mapButton(UP_2, controls.KEY_UP, controls.AXIS_RYN);
+    controls.mapButton(DOWN_2, controls.KEY_DOWN, controls.AXIS_RYP);
+    controls.mapButton(LEFT_2, controls.KEY_LEFT, controls.AXIS_RXN);
+    controls.mapButton(RIGHT_2, controls.KEY_RIGHT, controls.AXIS_RXP);
 	
 	controls.mapDirectionKey(MOVE, controls.KEY_A, controls.KEY_D, controls.KEY_W, controls.KEY_S, controls.AXIS_LX, controls.AXIS_LY);
 	controls.mapDirectionMouse(LOOK, true, controls.AXIS_RX, controls.AXIS_RY);

@@ -45,7 +45,7 @@ function Player(name, x, y, type, health, speed, healthScale, damageScale, shiel
     this.shield        = this.maxShield;
 	this.shieldCd      = SHIELD_RATE;
 	this.healthScale   = healthScale || 10;
-	this.damageScale   = damageScale || 0.1;
+	this.damageScale   = (damageScale || 1) / 10; 
 	this.shieldScale   = shieldScale || 1;
 	this.speedScale    = speedScale || 1;
 	this.upgrades      = [0, 0, 0, 0, 0];
@@ -87,7 +87,7 @@ Player.prototype.giveExp = function(amount) {
 		// Stat increases
 		this.maxHealth += this.healthScale * this.level;
 		this.health += this.healthScale * this.level;
-		this.damage += this.damageScale * this.level;
+		this.power += this.damageScale * this.level;
 		this.levelFrame = 0;
 
 		// Level up event
@@ -215,7 +215,7 @@ Player.prototype.updatePause = function() {
 // Checks whether or not a skill is being cast
 Player.prototype.isSkillCast = function() {
 	if (this.skillCd > 0 || this.skillDuration > 0) return false;
-	return this.input.ability == 1;
+	return this.input.button(SKILL) == 1;
 };
 
 // Function for telling weapons when they can fire

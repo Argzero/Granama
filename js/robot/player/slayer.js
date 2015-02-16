@@ -3,13 +3,6 @@ depend('robot/skill/decimation');
 depend('robot/skill/kocannon');
 depend('robot/skill/waveburst');
 
-// Set weapons in the depend function because the weapons class
-// needs to be loaded before we can access them
-depend('robot/weapons', function() {
-    PlayerSlayer.prototype.shootLasers = weapon.gun;
-    PlayerSlayer.prototype.shootFire = weapon.gun;
-});
-
 /**
  * The Slayer player which uses lasers and a flamethrower
  * as its main attacks.
@@ -17,7 +10,7 @@ depend('robot/weapons', function() {
 extend('PlayerSlayer', 'Player');
 function PlayerSlayer() {
 	//         Sprite Name   X  Y  Type          HP   Speed  HP+  Damage+  Speed+  Shield+
-	this.super('pPowerBody', 0, 0, Robot.PLAYER, 100, 3,     6,   0.25,    1,      1);
+	this.super('pPowerBody', 0, 0, Robot.PLAYER, 100, 3,     6,   2.5,     1,      1);
 	
 	// Sprites drawn on top of the robot's body
 	this.postChildren.push(
@@ -59,11 +52,11 @@ PlayerSlayer.prototype.applyUpdate = function() {
 	var fireUps = this.upgrades[FLAME_ID];
 	this.fireData.damage = 0.1 * m;
 	this.fireData.range = fireUps * 20 + 100;
-	this.shootFire(this.fireData);
+	weapon.gun.bind(this)(this.fireData);
 
 	// Lasers
 	this.laserData.damage = 0.4 * m;
 	this.laserData.rate = 60 / (5 + this.upgrades[LASER_ID] * 2.5);
 	this.laserData.spread = this.upgrades[SPREAD_ID] / 2;
-	this.shootLasers(this.laserData);
+	weapon.gun.bind(this)(this.laserData);
 };

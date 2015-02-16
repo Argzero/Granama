@@ -132,7 +132,7 @@ Projectile.prototype.isHitting = function(target) {
 Projectile.prototype.hit = function(target) {
 	var damage = this.damage;
 	if (this.pierce) damage *= target.pierceDamage;
-    if (!isNaN(target.damage)) debugger;
+    if (typeof(target.damage) !== 'function') debugger;
 	target.damage(damage, this.shooter);
 	this.applyBuffs(target);
     this.expired = this.expired || !this.pierce;
@@ -212,21 +212,23 @@ Projectile.prototype.setupSlowBonus = function(multiplier) {
 	return this;
 };
 
-Projectile.prototype.setupHoming = function(rotSpeed) {
+Projectile.prototype.setupHoming = function(target, rotSpeed) {
 	this.onCollideCheck = projEvents.homingCollide;
 	this.onUpdate = projEvents.homingUpdate;
 	
+	this.target = target;
     this.rotSpeed = rotSpeed;
 	this.lifespan = this.range / this.speed;
 	this.range = 999999;
 	return this;
 };
 
-Projectile.prototype.setupRocket = function(radius, knockback) {	
+Projectile.prototype.setupRocket = function(type, radius, knockback) {	
 	this.onHit = projEvents.rocketHit;
 	this.onExpire = projEvents.rocketExpire;
 	this.onBlocked = projEvents.rocketBlocked;
     
+	this.type = type;
 	this.radius = radius;
 	this.knockback = knockback;
 	return this;
@@ -319,7 +321,7 @@ var projEvents = {
 		this.expired = this.expired || this.target.dead || this.lifespan <= 0;
 		
 		var cross = this.pos.clone().subtractv(this.target.pos).cross(this.vel);
-		var angle = cross > 0 ? -this.rotSpeed : this.rotSpeed;
+		var angle = cross < 0 ? -this.rotSpeed : this.rotSpeed;
 		this.rotSpeed += 0.0001;
 		this.vel.rotateAngle(angle);
 	},
@@ -494,23 +496,24 @@ var projEvents = {
 	 * expiring and dragging along any targets it has
 	 */
 	grappleUpdate: function() {
+		this.shooter.grapple = this;
 		if (this.returning) {
 			this.vel = this.shooter.pos.clone().subtractv(this.pos).setMagnitude(this.speed);
 			if (this.target && this.target.pos.distanceSq(this.shooter.pos) >= 10000) {
 				this.target.stun(this.stun || 2);
                 if (this.self) {
-                    this.target.moveTo(this.pos.x + this.offset.x, this.pos.y + this.offset.y);
-                }
-                else {
                     this.shooter.move(-this.vel.x, -this.vel.y);
                     this.shooter.stun(2);
                     this.vel.x = 0;
                     this.vel.y = 0;
                 }
+                else {
+					this.target.moveTo(this.pos.x + this.offset.x, this.pos.y + this.offset.y);
+                }
 			}
 			if (this.pos.distanceSq(this.shooter.pos) <= 400) {
 				this.expired = true;
-				this.shooter.grapple = undefined;
+				this.shooter.grapple = false;
 			}
 		}
 	},
