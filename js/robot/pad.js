@@ -52,6 +52,6 @@ HealingPad.prototype.onPreDraw = function() {
 	camera.ctx.strokeStyle = '#0ff';
 	camera.ctx.lineWidth = 30;
 	camera.ctx.beginPath();
-	camera.ctx.arc(this.x, this.y, this.sprite.width / 2 - 30, -Math.PI / 2, Math.PI * 2 * this.charge / HEALING_CAPACITY - Math.PI / 2);
+	camera.ctx.arc(0, 0, this.sprite.width / 2 - 30, -Math.PI / 2, Math.PI * 2 * this.charge / HEALING_CAPACITY - Math.PI / 2);
 	camera.ctx.stroke();
 };

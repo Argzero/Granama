@@ -199,6 +199,7 @@ var weapon = {
     /**
      * An instant melee attack that can apply a debuff
      * <ul>
+           <li>{number}  target       - target robot group ID to hit</li>
      *     <li>{number}  rate         - the number of frames between shots</li>
      *     <li>{number}  damage       - the damage dealt by the bullet</li>
      *     <li>{number}  range        - the range of the bullet</li>
@@ -212,7 +213,7 @@ var weapon = {
      */
     melee: function(data) {
         if (weapon.checkTime(data, this.isInRange(data.range))) {
-            var robot = getNearest(data.lists, this.pos);
+            var robot = gameScreen.getNearest(this.pos, data.target);
             robot.damage(data.damage, this);
             if (data.stat && data.slow && data.duration) {
                 robot.buff(data.stat, data.multiplier, data.duration);

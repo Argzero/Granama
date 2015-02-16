@@ -70,7 +70,7 @@ RocketExplosion.prototype.draw = function() {
     if (this.frame < 7) {
         var angle = rand(360) * Math.PI / 180;
         var speed = this.size * (rand(10) + 5) / 600;
-        var dir = Vector(speed * Math.cos(angle), speed * Math.sin(angle));
+        var dir = new Vector(speed * Math.cos(angle), speed * Math.sin(angle));
         this.pieces.push(new ExplosionPiece('explodeBit' + this.type, this.pieces.length, this.x, this.y, this.size / 10, dir, 1, 0.03, 10, false, updateBit));
     }
     this.frame++;

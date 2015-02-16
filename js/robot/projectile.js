@@ -170,37 +170,39 @@ Projectile.prototype.clone = function() {
 Projectile.prototype.spread = function(amount) {
 
 	// Get angle data
-        var angle, sin, cos;
-        if (amount > 29) {
-            sin = SIN_1;
-            cos = COS_1;
-        }
-        else if (amount > 17) {
-            sin = SIN_3;
-            cos = COS_3;
-        }
-        else if (amount > 8) {
-            sin = SIN_5;
-            cos = COS_5;
-        }
-        else if (amount > 5) {
-            sin = SIN_10;
-            cos = COS_10;
-        }
-        else {
-            sin = SIN_15;
-            cos = COS_15;
-        }
+    var angle, sin, cos;
+    if (amount > 29) {
+        sin = SIN_1;
+        cos = COS_1;
+    }
+    else if (amount > 17) {
+        sin = SIN_3;
+        cos = COS_3;
+    }
+    else if (amount > 8) {
+        sin = SIN_5;
+        cos = COS_5;
+    }
+    else if (amount > 5) {
+        sin = SIN_10;
+        cos = COS_10;
+    }
+    else {
+        sin = SIN_15;
+        cos = COS_15;
+    }
 
-        // Spread the bullet
-        for (var i = 0; i < Math.floor(amount); i++) {
-            for (var j = -1; j < 2; j += 2) {
-                var proj = this.clone();
-				proj.vel.rotate(cos, j * sin);
-				proj.rotate(cos, j * sin);
-                gameScreen.bullets.push(proj);
+    // Spread the bullet
+    for (var i = 1; i <= amount; i++) {
+        for (var j = -1; j < 2; j += 2) {
+            var proj = this.clone();
+            for (var k = 0; k < i; k++) {
+                proj.vel.rotate(cos, j * sin);
+                proj.rotate(cos, j * sin);
             }
+            gameScreen.bullets.push(proj);
         }
+    }
 };
 
 Projectile.prototype.setupSlowBonus = function(multiplier) {
