@@ -89,6 +89,13 @@ GameScreen.prototype.update = function() {
 		this.applyScrolling();
 	}
     
+    // Update paused players
+    else {
+        for (var i = 0; i < players.length; i++) {
+            players[i].updatePause();
+        }
+    }
+    
     this.checkSpawns();
 
 	// Check for losing

@@ -56,8 +56,8 @@ var ui = {
 		ui.ctx.font = '48px Flipbash';
 		ui.ctx.textAlign = 'center';
 		ui.ctx.fillText('Paused By', WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 - 50);
-		ui.ctx.fillStyle = this.paused.color;
-		ui.ctx.fillText(this.paused.name, WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 + 20);
+		ui.ctx.fillStyle = gameScreen.paused.color;
+		ui.ctx.fillText(gameScreen.paused.name, WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 + 20);
     },
 	
 	/**

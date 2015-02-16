@@ -207,7 +207,7 @@ Player.prototype.updatePause = function() {
 	}
 
 	// Pausing
-	else if (!this.input.invalid && this.input.pause == 1) {
+	else if (!this.input.invalid && this.input.button(PAUSE) == 1) {
 		gameScreen.pause(this);
 	}
 };
