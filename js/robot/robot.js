@@ -109,7 +109,7 @@ Robot.prototype.damage = function(amount, source) {
 
     // Event for taking damage
     if (this.onDamaged) {
-		var result = this.onDamaged(amount, damager);
+		var result = this.onDamaged(amount, source);
         if (result !== undefined) {
             amount = result;
         }

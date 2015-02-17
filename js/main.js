@@ -1,53 +1,55 @@
 // Data scripts
 depend('data/images');
-depend('data/profile');
 depend('data/io');
 depend('data/music');
+depend('data/profile');
 
 // Draw scripts
 depend('draw/camera');
 depend('draw/sprite');
 
 // Lib scripts
-depend('lib/arc');
 depend('lib/image');
 depend('lib/input');
 depend('lib/math');
-depend('lib/2d/vector');
-depend('lib/2d/transform');
+depend('lib/2d/arc');
 depend('lib/2d/rect');
+depend('lib/2d/transform');
+depend('lib/2d/vector');
 
 // Screen scripts
-depend('screen/gameScreen');
-depend('screen/creditsScreen');
 depend('screen/controlsScreen');
+depend('screen/creditsScreen');
+depend('screen/gameScreen');
+depend('screen/gameUI');
 depend('screen/selectScreen');
 depend('screen/statScreen');
 depend('screen/titleButton');
 depend('screen/titleScreen');
 depend('screen/uiBox');
-depend('screen/gameUI');
 
 // Robot scripts
-depend('robot/projectile');
-depend('robot/weapons');
-depend('robot/movement');
-depend('robot/pad');
-depend('robot/robot');
 depend('robot/explosion');
 depend('robot/mine');
+depend('robot/movement');
+depend('robot/pad');
+depend('robot/plus');
+depend('robot/projectile');
+depend('robot/robot');
 depend('robot/turret');
+depend('robot/weapons');
 
 // Player scripts
-depend('robot/player/playerManager');
+depend('robot/player/guardian');
 depend('robot/player/player');
+depend('robot/player/playerManager');
 depend('robot/player/slayer');
 
 // Enemy scripts
-depend('robot/enemy/enemy');
-depend('robot/enemy/boss');
 depend('robot/enemy/artillery');
 depend('robot/enemy/bomber');
+depend('robot/enemy/boss');
+depend('robot/enemy/enemy');
 depend('robot/enemy/grabber');
 depend('robot/enemy/gunner');
 depend('robot/enemy/medic');

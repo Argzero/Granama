@@ -56,9 +56,8 @@ TURRET_RANGE = 500,
 
 // Skill Data
 PLAYER_DATA = [
-    /*
 	{
-		player : PlayerDefenseType,
+		player : PlayerGuardian,
 		preview: 'pDefense',
 		name   : 'Guardian',
 		ups    : ['MinigunAttackSpeed', 'BlastRadius', 'Knockback', 'ShieldRecharge', 'MovementSpeed'],
@@ -67,11 +66,12 @@ PLAYER_DATA = [
 		weapons: ['Rocket Launcher', 'Minigun'],
 		skills : [
 			//{ name: 'Recharger', callback: SkillRecharger },
-			{name: 'Perfect Shield', callback: SkillPerfectShield},
-			{name: 'Reflector', callback: SkillReflector},
-			{name: 'Stasis', callback: SkillStasis}
+			{name: 'Perfect Shield', callback: skillPerfectShield},
+			{name: 'Reflector', callback: skillReflector},
+			{name: 'Stasis', callback: skillStasis}
 		]
 	},
+    /*
 	{
 		player : PlayerSpeedType,
 		preview: 'pSpeed',
