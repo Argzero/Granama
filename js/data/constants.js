@@ -71,9 +71,8 @@ PLAYER_DATA = [
 			{name: 'Stasis', callback: skillStasis}
 		]
 	},
-    /*
 	{
-		player : PlayerSpeedType,
+		player : PlayerBlitz,
 		preview: 'pSpeed',
 		name   : 'Blitz',
 		ups    : ['CooldownReduction', 'ShotgunProjectiles', 'SlowingDuration', 'ShieldRecharge', 'MovementSpeed'],
@@ -81,12 +80,11 @@ PLAYER_DATA = [
 		color  : '#06f',
 		weapons: ['Static Gun', 'Shotgun'],
 		skills : [
-			{name: 'Blink', callback: SkillBlink},
-			{name: 'Critical Blast', callback: SkillCriticalBlast},
-			{name: 'Overdrive', callback: SkillOverdrive}
+			{name: 'Blink', callback: skillBlink},
+			{name: 'Critical Blast', callback: skillCriticalBlast},
+			{name: 'Overdrive', callback: skillOverdrive}
 		]
 	},
-    */
 	{
 		player : PlayerSlayer,
 		preview: 'pPower',

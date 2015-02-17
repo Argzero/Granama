@@ -282,7 +282,9 @@ var projEvents = {
 	 * @param {Number} damage - damage being dealt
 	 */
 	slowedBonusHit: function(target, damage) {
-		target.damage(damage * (this.slowMultiplier - 1), this.shooter);
+		if (target.get('speed') < target.speed) {
+			target.damage(damage * (this.slowMultiplier - 1), this.shooter);
+		}
 	},
 	
 	/**

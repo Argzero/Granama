@@ -87,6 +87,9 @@ GameScreen.prototype.update = function() {
 
 		// Update the scroll position
 		this.applyScrolling();
+		
+		// Spawn enemies when not paused
+		this.checkSpawns();
 	}
     
     // Update paused players
@@ -96,8 +99,6 @@ GameScreen.prototype.update = function() {
         }
     }
     
-    this.checkSpawns();
-
 	// Check for losing
 	for (var i = 0; i < players.length; i++) {
 		if (players[i].health > 0) return;

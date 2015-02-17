@@ -13,7 +13,7 @@ function skillReflector(player) {
         if (this.skillDuration > 0) {
             var reflection = new Projectile(
                 "abilityReflect",
-                this.pos.x, this.pos.y,
+                0, 0,
                 this, this,
                 10, 
                 rand(360) * Math.PI / 180,

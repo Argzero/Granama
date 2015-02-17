@@ -2,7 +2,7 @@
  * Sets up the Critical Blast skill for the player which
  * fires a powerful shotgun blast
  */
-function SkillCriticalBlast(player) {
+function skillCriticalBlast(player) {
 	
 	/**
 	 * Applies casting and firing the bullets each frame
@@ -20,7 +20,7 @@ function SkillCriticalBlast(player) {
         if (this.skillDuration > 0) {
             for (var i = 0; i < 15; i++) {
                 var bonus = (rand(30) - 15) * Math.PI / 180;
-                var shell = ProjectileBase(
+                var shell = new Projectile(
                     'abilityShell',
                     -30, 45,
 					this, this,
@@ -32,7 +32,7 @@ function SkillCriticalBlast(player) {
                     Robot.ENEMY
                 );
 				shell.setupSlowBonus(1.5);
-                this.bullets.push(shell);
+                gameScreen.bullets.push(shell);
             }
         }
     }
