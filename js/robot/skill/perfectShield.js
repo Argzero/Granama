@@ -4,6 +4,8 @@
 function skillPerfectShield(player) {
 
     player.perfectShield = new Sprite('perfectShield', 0, 100).child(player, true);
+    player.perfectShield.alpha = 0;
+    player.perfectShield.hidden = true;
     player.postChildren.push(player.perfectShield);
     player.arc = new Arc(new Vector(0, 0), 100, 25, -Math.PI / 4, Math.PI / 4);
     player.arc.initialStart = player.arc.startTrig.clone();
@@ -29,6 +31,7 @@ function skillPerfectShield(player) {
             this.perfectShield.alpha = Math.min(1, this.perfectShield.alpha + 0.05);
         }
         else this.perfectShield.alpha = Math.max(0, this.perfectShield.alpha - 0.05);
+        this.perfectShield.hidden = this.perfectShield.alpha == 0;
 
         // Stop bullets
         if (this.perfectShield.alpha > 0.5) {
@@ -47,7 +50,7 @@ function skillPerfectShield(player) {
             var bullets = gameScreen.bullets;
             for (var i = 0; i < bullets.length; i++) {
                 var bullet = bullets[i];
-                if ((bullet.group & Robot.PLAYER) && this.arc.collides(bullet)) {
+                if ((bullet.group & this.type) && this.arc.collides(bullet)) {
                     bullet.block();
                 }
             }

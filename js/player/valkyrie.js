@@ -1,45 +1,64 @@
+// Load in ability scripts
+depend('robot/skill/artillery');
+depend('robot/skill/ionicThunder');
+depend('robot/skill/lockdown');
+
+/**
+ * A valkyrie player that uses a twin shot laser and a
+ * rail cannon as its main weapons
+ */
 function PlayerValkyrieType() {
-    var p = BasePlayer(
-        GetImage('pValkyrieBody'),
-        14,
-        0.2,
-        1,
-        2
+    //         Sprite Name      X  Y  Type          HP   Speed  HP+  Damage+  Shield+  Speed+
+	this.super('pValkyrieBody', 0, 0, Robot.PLAYER, 100, 3,     14,  2,       1,       1.5);
+
+    // Moving sprites
+    this.shell1 = new Sprite('pValkyrieShell', 0, 0).child(this, true);
+    this.shell2 = new Sprite('pValkyrieShell', 0, 0).child(this, true);
+    this.rod1 = new Sprite('pValkyrieRod', 0, 0).child(this, true);
+    this.rod2 = new Sprite('pValkyrieRod', 0, 0).child(this, true);
+    this.wing = new Sprite('pValkyrieWing', 0, 0).child(this, true);
+    this.leftRail = new Sprite('pValkyrieRailLeft', 0, 0).child(this, true);
+    this.rightRail = new Sprite('pValkyrieRailRight', 0, 0).child(this, true);
+    this.turret = new Sprite('pValkyrieTurret', 0, 0).child(this, true);
+    this.scope = new Sprite('pValkyrieScope', 0, 0).child(this, true);
+    
+    // Sprites drawn on top of the robot's body
+	this.postChildren.push(
+        new Sprite('pValkyrieShield', 30, 0).child(this, true),
+        new Sprite('pValkyrieGun', -30, 0).child(this, true),
+        this.shell1,
+        this.shell2,
+        this.rod1,
+        this.rod2,
+        this.wing,
+        this.leftRail,
+        this.rightRail,
+        this.turret,
+        this.scope
     );
-
-    // Sprites
-    p.drawObjects.push({
-        sprite : GetImage('pValkyrieShield'),
-        xOffset: 3,
-        yOffset: -28
-    });
-    p.drawObjects.push({
-        sprite : GetImage('pValkyrieGun'),
-        xOffset: -42,
-        yOffset: -28
-    });
-
+    
     // Twin shot data
-    p.gunData1 = {
+    this.gunData1 = {
         sprite: GetImage('laser'),
         cd    : 0,
         range : 499,
         list  : p.bullets,
         dx    : -35,
         dy    : 40,
-        pierce: true
+        pierce: true,
+        target: Robot.ENEMY
     };
-    p.gunData2 = {
+    this.gunData2 = {
         sprite: GetImage('laser'),
         cd    : 0,
         range : 499,
         list  : p.bullets,
         dx    : -25,
         dy    : 40,
-        pierce: true
+        pierce: true,
+        target: Robot.ENEMY
     };
-    p.Shoot = EnemyWeaponGun;
-    p.charge = 0;
+    this.charge = 0;
 
     // Retrieves the Y offset for ability bullets
     p.getTurretY = function() {
