@@ -31,17 +31,14 @@ function Spinner(name, x, y, type, health, speed, range, exp, rank, patternMin, 
     var angle = rand(0, 360) * Math.PI / 180;
     this.direction = new Vector(Math.cos(angle), Math.sin(angle));
 
-    this.back = new SpinnerBack(back, this, spin, fire, this.power / 16);
+    this.back = new SpinnerBack(back, this, spin, fire, this.power / 16).child(this, false);
+    this.preChildren.push(this.back);
+    
+    // Update back regularly
+    this.onUpdate = function() {
+        this.back.update();
+    };
 }
-
-/**
- * Draws the back of a spinner before the spinner itself
- *
- * @param {Camera} camera - camera to draw to
- */
-Spinner.prototype.onPreDraw = function(camera) {
-    this.back.draw(camera);
-};
 
 /**
  * Changes the direction of a spinner when knocked back
@@ -162,28 +159,25 @@ function Solar(x, y) {
  */
 extend('SpinnerBack', 'Sprite');
 function SpinnerBack(sprite, source, angle, fire, damage) {
-    this.super(sprite, source.x, source.y, source, true, false);
-    this.sprite = sprite;
+    this.super(sprite, source.x, source.y);
     this.source = source;
     this.cos = Math.cos(angle);
     this.sin = Math.sin(angle);
     this.fire = fire;
-    this.damage = damage;
+    this.power = damage;
     this.fireCd = 0;
 }
 
 /**
- * Launches fire and rotates each draw cycle
- *
- * @param {Camera} camera - camera being drawn to
+ * Launches fire and rotates each update
  */
-SpinnerBack.prototype.onDraw = function(camera) {
+SpinnerBack.prototype.update = function() {
 
     // Launch fire when not paused
     if (!game.paused) {
         this.rotate(this.cos, this.sin);
 
-        if (this.fire && this.damage && this.fireCd <= 0) {
+        if (this.fire && this.power && this.fireCd <= 0) {
             var fireDir = this.rotation.clone();
             var fireVel = this.forward().multiply(10, 10);
             fireDir.rotate(HALF_RT_2, HALF_RT_2);
@@ -196,7 +190,7 @@ SpinnerBack.prototype.onDraw = function(camera) {
                     firePos.clone(),
                     fireVel.clone(),
                     fireDir.clone(),
-                    this.damage,
+                    this.power,
                     100
                 );
                 gameScreen.bullets.push(fire);

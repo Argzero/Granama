@@ -9,14 +9,14 @@ depend('robot/skill/overdrive');
  */
 extend('PlayerBlitz', 'Player');
 function PlayerBlitz() {
-	//         Sprite Name   X  Y  Type          HP   Speed  HP+  Damage+  Speed+  Shield+
-	this.super('pSpeedBody', 0, 0, Robot.PLAYER, 100, 3,     8,   1,       1.5,    1);
+	//         Sprite Name   X  Y  Type          HP   Speed  HP+  Damage+  Shield+  Speed+
+	this.super('pSpeedBody', 0, 0, Robot.PLAYER, 100, 3,     8,   1,       1,       1.5);
 
 	// Sprites drawn on top of the robot's body
 	this.postChildren.push(
-		new Sprite('pSpeedGun', 0, 5),
-		new Sprite('pSpeedShield', 25, 15),
-		new Sprite('pSpeedShotgun', -25, 12)
+		new Sprite('pSpeedGun', 0, 5).child(this, true),
+		new Sprite('pSpeedShield', 25, 15).child(this, true),
+		new Sprite('pSpeedShotgun', -25, 12).child(this, true)
 	);
 
 	// Weapon data
@@ -29,7 +29,7 @@ function PlayerBlitz() {
         angle    : 30,
         speed    : 15,
         dx       : -30,
-        dy       : 45,
+        dy       : 35,
 		target   : Robot.ENEMY
     };
     this.slowData = {
@@ -42,6 +42,7 @@ function PlayerBlitz() {
         speed     : 15,
 		target    : Robot.ENEMY,
 		buffs     : [{ name: 'speed', multiplier: 0.5, duration: 300 }],
+        //                                     args: [multiplier]
 		templates : [{ name: 'setupSlowBonus', args: [1.5] }]
     };
 	

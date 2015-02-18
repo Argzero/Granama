@@ -289,7 +289,6 @@ var weapon = {
                 for (var i = 0; i < (data.bullets || 1); i++) {
                     weapon.fireBullet(this, data);
                 }
-                data.delay = tempDelay;
                 data.intervalTimer = data.interval;
 
                 // "Overheating" resets the charge countdown

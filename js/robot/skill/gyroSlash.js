@@ -8,10 +8,10 @@ function skillGyroSlash(player) {
      * Updates the skill each frame, swinging the
      * sword and handling casting when applicable
      */
-    player.onUpdate = function(speed) {
+    player.onUpdate = function() {
 
         // Activating the ability
-        if (this.IsSkillCast()) {
+        if (this.isSkillCast()) {
             this.skillDuration = 180;
             this.skillCd = 300;
             this.buff('speed', 2, this.skillDuration);

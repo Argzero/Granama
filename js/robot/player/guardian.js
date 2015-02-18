@@ -9,8 +9,8 @@ depend('robot/skill/stasis');
  */
 extend('PlayerGuardian', 'Player');
 function PlayerGuardian() {
-	//         Sprite Name   X  Y  Type          HP   Speed  HP+  Damage+  Speed+  Shield+
-	this.super('pDefenseBody', 0, 0, Robot.PLAYER, 100, 3,     30,  1,       1,      1);
+	//         Sprite Name   X  Y  Type          HP   Speed  HP+  Damage+  Shield+  Speed+
+	this.super('pDefenseBody', 0, 0, Robot.PLAYER, 100, 3,     30,  1,     1,       1);
 	
 	// Sprites drawn on top of the player
 	this.postChildren.push(
@@ -29,7 +29,8 @@ function PlayerGuardian() {
         dx       : 0,
         dy       : 0,
         target   : Robot.ENEMY,
-		templates: [{ name: 'setupRocket', args: ['Guardian', 0, 0] }]
+        //                                 args: [type,       radius, knockback
+		templates: [{ name: 'setupRocket', args: ['Guardian', 0,      0] }]
     };
     this.minigunData = {
 		sprite: 'minigunBullet',

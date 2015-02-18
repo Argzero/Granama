@@ -22,6 +22,7 @@ function Projectile(name, x, y, shooter, gun, speed, angle, damage, range, pierc
 	
 	this.shooter = shooter;
     this.gun = gun;
+    this.angle = angle;
 	this.rotation = gun.rotation.clone().rotateAngle(angle);
 	this.vel = this.rotation.clone().multiply(speed, speed).rotate(0, 1);
 	this.speed = speed;
@@ -205,6 +206,13 @@ Projectile.prototype.spread = function(amount) {
     }
 };
 
+// ------------------------------- Templates --------------------------------- //
+
+/** 
+ * Sets up a projectile that does bonus damage to slowed targets
+ *
+ * @param {number} multiplier - the damage multiplier to apply
+ */
 Projectile.prototype.setupSlowBonus = function(multiplier) {
 	this.onHit = projEvents.slowedBonusHit;
     
@@ -212,6 +220,12 @@ Projectile.prototype.setupSlowBonus = function(multiplier) {
 	return this;
 };
 
+/** 
+ * Sets up a homing projectile
+ *
+ * @param {Robot}  target   - the target to home towards
+ * @param {number} rotSpeed - how fast to turn towards the target initially
+ */
 Projectile.prototype.setupHoming = function(target, rotSpeed) {
 	this.onCollideCheck = projEvents.homingCollide;
 	this.onUpdate = projEvents.homingUpdate;
@@ -223,6 +237,13 @@ Projectile.prototype.setupHoming = function(target, rotSpeed) {
 	return this;
 };
 
+/**
+ * Sets up a rocket projectile
+ *
+ * @param {string} type      - the sprite type of the explosion
+ * @param {number} radius    - the radius of the explosion
+ * @param {number} knockback - the amount of knockback to apply
+ */
 Projectile.prototype.setupRocket = function(type, radius, knockback) {	
 	this.onHit = projEvents.rocketHit;
 	this.onExpire = projEvents.rocketExpire;
@@ -234,6 +255,11 @@ Projectile.prototype.setupRocket = function(type, radius, knockback) {
 	return this;
 };
 
+/**
+ * Sets up a spinning projectile
+ *
+ * @param {number} rotSpeed - how fast the projectile rotates in radians
+ */
 Projectile.prototype.setupSpinning = function(rotSpeed) {
 	this.onUpdate = projEvents.spinningUpdate;
     
@@ -241,18 +267,33 @@ Projectile.prototype.setupSpinning = function(rotSpeed) {
 	return this;
 };
 
+/**
+ * Sets up a sword projectile
+ *
+ * @param {number} radius    - the radius of the swing arc
+ * @param {number} arc       - the angle of the swing arc in radians
+ * @param {number} knockback - the amount of knockback the sword applies
+ * @param {number} lifesteal - the multiplier for the amount of health stolen
+ */
 Projectile.prototype.setupSword = function(radius, arc, knockback, lifesteal) {
     this.onUpdate = projEvents.swordUpdate;
     this.onHit = projEvents.swordHit;
     this.onBlocked = projEvents.swordBlocked;
     
     this.tempRotation = new Vector(1, 0);
-    this.start = new Vector(-radius * Math.sin(arc / 2), r * Math.cos(arc / 2));
+    this.initial = this.offset.clone();
+    this.start = new Vector(-radius * Math.sin(arc / 2), radius * Math.cos(arc / 2));
     this.knockback = knockback;
     this.lifesteal = lifesteal;
     this.arc = arc;
 };
 
+/**
+ * Sets up a boss fist projectile
+ *
+ * @param {number} delay - the delay in frames before the fist starts returning
+ * @param {string} side  - the key of the side the fist is being fired from
+ */
 Projectile.prototype.setupFist = function(delay, side) {
     this.onUpdate = projEvents.fistUpdate;
     this.onBlocked = projEvents.fistBlocked;
@@ -261,16 +302,24 @@ Projectile.prototype.setupFist = function(delay, side) {
     this.side = side.toLowerCase();
 };
 
+/** 
+ * Sets up a grapple projectile
+ *
+ * @param {number}  stun - the stun duration in frames
+ * @param {boolean} self - whether or not the grapple pulls in the shooter
+ */
 Projectile.prototype.setupGrapple = function(stun, self) {
     this.onUpdate = projEvents.grappleUpdate;
     this.onHit = projEvents.grappleHit;
     this.onBlocked = projEvents.grappleBlocked;
-    this.onExpire = projEvents.grappleExpired;
+    this.onExpire = projEvents.grappleExpire;
     this.onCollideCheck = projEvents.grappleCollide;
     
     this.stun = stun;
     this.self = self;
 };
+
+// ------------------------------- Individual Events --------------------------------- //
 
 // Event implementations used by various projectiles
 var projEvents = {
@@ -383,50 +432,52 @@ var projEvents = {
 	 * Updates a sword, swinging across an arc
 	 */
 	swordUpdate: function() {
-		
+		this.shooter.sword = this;
+        
 		// Move out from the robot first
 		if (!this.state) {
-			this.tempRotation.rotateAngle(this.arc / 20);
-			this.offset.move((this.start.x - this.initial.x) / 10, (this.start.y - this.initial.y) / 10);
+			this.tempRotation.rotateAngle(this.arc / 20 + this.angle / 10);
+			this.offset.add((this.start.x - this.initial.x) / 10, (this.start.y - this.initial.y) / 10);
 			
 			if (!this.step) this.step = 0;
 			this.step++;
-			if (this.step == 10) {
-				this.steps = Math.ceil(this.arc * 36 / Math.PI);
-				this.rotAngle = this.arc / steps;
+			if (this.step >= 10) {
+				this.step = Math.ceil(this.arc * 36 / Math.PI);
+				var angle = this.arc / this.step;
+                this.rotCos = Math.cos(angle);
+                this.rotSin = -Math.sin(angle);
 				this.state = 1;
 			}
 		}
 		
 		// Swinging
 		else if (this.state == 1) {
-            var cos = Math.cos(this.rotAngle);
-            var sin = Math.sin(this.rotAngle);
-            this.offset.rotate(cos, sin);
-            this.tempRotation.rotate(cos, sin);
+            this.offset.rotate(this.rotCos, this.rotSin);
+            this.tempRotation.rotate(this.rotCos, this.rotSin);
             
 			this.step--;
 			if (this.step <= 0) {
 				this.step = 10;
 				this.state = 2;
+                this.start = this.offset.clone();
 			}
 		}
 		
 		// Returning back to the robot
 		else if (this.state == 2) {
-			this.tempRotation.rotateAngle(-this.arc / 20);
-			this.offset.move((this.initial.x - this.start.x) / 10, (this.initial.y - this.start.y) / 10);
+			this.tempRotation.rotateAngle(-this.arc / 20 - this.angle / 10);
+			this.offset.add((this.initial.x - this.start.x) / 10, (this.initial.y - this.start.y) / 10);
 			
 			this.step--;
 			if (this.step <= 0) {
-				this.source.sword = true;
+				this.shooter.sword = false;
 				this.expired = true;
 			}
 		}
         
-        this.moveTo(this.gun.pos.x + this.offset.x, this.gun.pos.y, this.offset.y);
-        this.setRotation(this.gun.rotation.x, this.gun.rotation.y);
-        this.rotate(this.tempRotation.x, this.tempRotation.y);
+        this.moveTo(this.gun.pos.x + this.offset.x, this.gun.pos.y + this.offset.y);
+        this.setRotation(this.tempRotation.x, this.tempRotation.y);
+        this.rotateAbout(this.gun.rotation.x, this.gun.rotation.y, this.gun.pos); 
 	},
 	
 	/**
@@ -464,9 +515,11 @@ var projEvents = {
 	rocketExpire: function(ignore) {
 		for (var i = 0; i < gameScreen.robots.length; i++) {
 			var r = gameScreen.robots[i];
-			if (r != ignore && (r.type & this.group) && this.pos.distanceSq(r.pos) < this.radius * this.radius) {
-				r.damage(this.damage, this.shooter);
-				this.applyBuffs(r);
+			if ((r.type & this.group) && this.pos.distanceSq(r.pos) < this.radius * this.radius) {
+                if (r != ignore) {
+                    r.damage(this.damage, this.shooter);
+                    this.applyBuffs(r);
+                }
 				if (this.knockback) {
 					var dir = r.pos.clone().subtractv(this.pos).setMagnitude(this.knockback);
 					r.knockback(dir);

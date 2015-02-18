@@ -111,8 +111,8 @@ Player.prototype.update = function() {
     
     this.alpha = 1;
     
-	this.updateRobot();
-    this.updatePause();
+	this.updatePause();
+    this.updateRobot();
     
 	// Shield regeneration
 	this.shieldCd -= this.get('shieldBuff');

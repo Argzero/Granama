@@ -98,10 +98,9 @@ PLAYER_DATA = [
 			{ name: 'Decimation', callback: skillDecimation },
 			{ name: 'Wave Burst', callback: skillWaveburst } 
 		]
-	}
-    /*
+	},
 	{
-		player : PlayerKnightType,
+		player : PlayerKnight,
 		preview: 'pKnight',
 		name   : 'Knight',
 		ups    : ['GrappleStun', 'SwordSwingArc', 'SwordLifeSteal', 'ShieldRecharge', 'MovementSpeed'],
@@ -109,11 +108,12 @@ PLAYER_DATA = [
 		color  : '#fcf',
 		weapons: ['Grappling Hook', 'Sword'],
 		skills : [
-			{name: 'Piercing Arrow', callback: SkillPiercingArrow},
-			{name: 'Gyro Slash', callback: SkillGyroSlash},
-			{name: 'Sweeping Blade', callback: SkillSweepingBlade}
+			{name: 'Piercing Arrow', callback: skillPiercingArrow},
+			{name: 'Gyro Slash', callback: skillGyroSlash},
+			{name: 'Sweeping Blade', callback: skillSweepingBlade}
 		]
-	},
+	}
+    /*
 	{
 		player : PlayerValkyrieType,
 		preview: 'pValkyrie',
@@ -183,7 +183,7 @@ SPAWN_DATA = [
 	15, 1, HeavyBomber,
 	20, 0, LightOrbiter,
 	10, 1, HeavyOrbiter,
-	15, 0, LightSpinner,
+	15000, 0, LightSpinner,
 	10, 1, HeavySpinner,
 	15, 5, LightMedic,
 	10, 5, HeavyMedic,

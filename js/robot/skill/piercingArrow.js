@@ -22,12 +22,10 @@ function skillPiercingArrow(player) {
                 this.get('power') * 20,
                 1249,
                 true,
-                Enemy.MOBILE
+                Robot.MOBILE
             );
             arrow.buffs.push({ name: 'speed', multiplier: 0.5, duration: 300 });
             arrow.onUpdate = piercingArrowUpdate;
-            arrow.n1 = new Vector(-this.sin * COS_60 - this.cos * SIN_60, -this.sin * SIN_60 + this.cos * COS_60);
-            arrow.n2 = new Vector(this.sin * COS_60 - this.cos * SIN_60, -this.sin * SIN_60 - this.cos * COS_60);
             arrow.n3 = this.forward();
             arrow.n2 = arrow.n3.clone().rotate(COS_60, -SIN_60).multiply(-1, -1);
             arrow.n1 = arrow.n3.clone().rotate(COS_60, SIN_60);
@@ -45,17 +43,16 @@ var PA_KNOCKBACK = 200;
 function piercingArrowUpdate() {
     for (var i = 0; i < gameScreen.robots.length; i++) {
         var target = gameScreen.robots[i];
-        if ((target & Enemy.MOBILE) && target.pos.distanceSq(this.pos) < 90000) {
+        if ((target.type & this.group) && target.pos.distanceSq(this.pos) < 90000) {
             var rel = this.vel.clone().multiply(5, 5).addv(target.pos).subtractv(this.pos);
             if (rel.dot(this.n1) > 0 && rel.dot(this.n2) > 0) {
                 if (rel.dot(this.n3) > 0) {
-                    target.knockback(-PA_KNOCKBACK * this.n1.x, -PA_KNOCKBACK * this.n1.y);
+                    target.knockback(this.n1.clone().multiply(-PA_KNOCKBACK, -PA_KNOCKBACK));
                 }
                 else {
-                    target.knockback(-PA_KNOCKBACK * this.n2.x, -PA_KNOCKBACK * this.n2.y);
+                    target.knockback(this.n2.clone().multiply(-PA_KNOCKBACK, -PA_KNOCKBACK));
                 }
             }
         }
     }
-    this.updateBase();
 }

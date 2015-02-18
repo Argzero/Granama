@@ -19,7 +19,7 @@ function skillSweepingBlade(player) {
             this.buff('speed', 2, 36);
 
             // Spawn the sword projectile
-            var sword = SwordProjectile(
+            var sword = new Projectile(
                 'abilitySword',
                 0, 0,
                 this, this,
@@ -28,7 +28,7 @@ function skillSweepingBlade(player) {
                 this.get('power') * 6,
                 9999,
                 true,
-                Target.ENEMY
+                Robot.ENEMY
             );
             sword.setupSword(150, Math.PI, 600, this.swordData.templates[0].args[3]);
             gameScreen.bullets.push(sword);
