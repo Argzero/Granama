@@ -32,7 +32,8 @@ function skillPerfectShield(player) {
 
         // Stop bullets
         if (this.perfectShield.alpha > 0.5) {
-            var bullets = gameScreen.bullets;
+            
+            // Update the arc
             this.arc.pos.x = this.x;
             this.arc.pos.y = this.y;
             this.arc.startTrig.x = this.arc.initialStart.x;
@@ -41,6 +42,9 @@ function skillPerfectShield(player) {
             this.arc.endTrig.y = this.arc.initialEnd.y;
             this.arc.startTrig.rotate(this.rotation.x, this.rotation.y);
             this.arc.endTrig.rotate(this.rotation.x, this.rotation.y);
+            
+            // Check bullet collision
+            var bullets = gameScreen.bullets;
             for (var i = 0; i < bullets.length; i++) {
                 var bullet = bullets[i];
                 if ((bullet.group & Robot.PLAYER) && this.arc.collides(bullet)) {
