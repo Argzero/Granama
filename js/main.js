@@ -46,6 +46,7 @@ depend('robot/player/knight');
 depend('robot/player/player');
 depend('robot/player/playerManager');
 depend('robot/player/slayer');
+depend('robot/player/valkyrie');
 
 // Enemy scripts
 depend('robot/enemy/artillery');

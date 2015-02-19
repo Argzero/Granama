@@ -4,7 +4,10 @@
  */
 function skillLockdown(player) {
 
-    // Skill effects
+    /**
+     * Updates the skill each frame, applying stat changes
+     * and firing the lasers when applicable.
+     */
     player.onUpdate = function() {
 
         var chargeRate = 2 + 0.3 * this.upgrades[CHARGE_ID];
@@ -14,7 +17,7 @@ function skillLockdown(player) {
             this.skillCooldown = Math.round(100 / chargeRate);
             this.locked = !this.locked;
             this.speed = 0.00001;
-            this.defense = 1.8 / (players.length + 1);
+            this.defense = 1 - 1.8 / (players.length + 1);
         }
         
         // Restore speed when not locked

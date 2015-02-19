@@ -112,10 +112,9 @@ PLAYER_DATA = [
 			{name: 'Gyro Slash', callback: skillGyroSlash},
 			{name: 'Sweeping Blade', callback: skillSweepingBlade}
 		]
-	}
-    /*
+	},
 	{
-		player : PlayerValkyrieType,
+		player : PlayerValkyrie,
 		preview: 'pValkyrie',
 		name   : 'Valkyrie',
 		ups    : ['ChargeSpeed', 'RailGunRange', 'DualShot', 'ShieldRecharge', 'MovementSpeed'],
@@ -123,11 +122,12 @@ PLAYER_DATA = [
 		color  : '#0ff',
 		weapons: ['Rail Gun', 'Double Shot'],
 		skills : [
-			{name: 'Ionic Thunder', callback: SkillIonicThunder},
-			{name: 'Lock Down', callback: SkillLockdown},
-			{name: 'Artillery', callback: SkillArtillery}
+			{name: 'Ionic Thunder', callback: skillIonicThunder},
+			{name: 'Lock Down', callback: skillLockdown},
+			{name: 'Artillery', callback: skillArtillery}
 		]
-	},
+	}
+    /*
 	{
 		player : PlayerCommandoType,
 		preview: 'pCommando',

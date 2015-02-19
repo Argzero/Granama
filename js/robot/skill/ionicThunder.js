@@ -1,6 +1,14 @@
+/**
+ * Sets up the Ionic Thunder skill for the player which
+ * fires a laser and shockwaves while the player is immobilized
+ * and pushed backwards
+ */
 function skillIonicThunder(player) {
 
-    // Skill effects
+    /**
+     * Updates the skill each frame, applying stat changes, firing
+     * the laser, and applying shockwaves when applicable.
+     */
     player.onUpdate = function() {
 
         // Activating the ability
@@ -8,10 +16,15 @@ function skillIonicThunder(player) {
             this.skillDuration = this.charge * 2 - 1;
             this.nextWave = 60;
             this.nextWaveIncrement = 50;
-            this.buff('defense', 0.1, this.skillDuration);
-            this.buff('speed', 0, this.skillDuration);
+            this.defense = 1 - 1.8 / (players.length + 1);
+            this.speed = 0;
         }
-
+        
+        // Charge over time while not using ability
+        if (this.skillDuration <= 0 && this.charge < 100) {
+            this.charge += 0.05 + 0.02 * this.upgrades[CHARGE_ID];
+        }
+        
         // Active skill effects
         if (this.skillDuration > 0) {
         
@@ -65,9 +78,10 @@ function skillIonicThunder(player) {
             }
         }
         
-        // Charge over time while not using ability
-        else if (this.charge < 100) {
-            this.charge += 0.05 + 0.02 * this.upgrades[CHARGE_ID];
+        // Restore stats when not active
+        else {
+            this.speed = this.baseSpeed;
+            this.defense = 1;
         }
     }
 }

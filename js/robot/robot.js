@@ -37,6 +37,7 @@ function Robot(name, x, y, type, health, speed) {
     this.maxShield = 0;
     this.shield = 0;
     this.speed = speed;
+    this.baseSpeed = speed;
 	
 	this.damageTaken = 0;
 	this.damageDealt = 0;

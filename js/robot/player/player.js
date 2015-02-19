@@ -47,7 +47,7 @@ function Player(name, x, y, type, health, speed, healthScale, damageScale, shiel
 	this.healthScale   = healthScale || 10;
 	this.damageScale   = (damageScale || 1) / 10; 
 	this.shieldScale   = shieldScale || 1;
-	this.speedScale    = speedScale || 1;
+	this.speedScale    = (speedScale || 1) / 15;
 	this.upgrades      = [0, 0, 0, 0, 0];
 	this.power         = 1;
 	this.mPower        = 1;
@@ -136,8 +136,8 @@ Player.prototype.update = function() {
 	if (!this.isStunned()) {
 
 		// Get speed
-		var speed = this.get('speed') + this.speedScale * this.upgrades[SPEED_ID] * 0.2;
-        if (speed < 0.001) return;
+		var speed = this.get('speed') * (1 + this.speedScale * this.upgrades[SPEED_ID]);
+        if (speed < 0.000001) return;
 
 		// Movement
 		var moveDir = this.input.direction(MOVE, this);

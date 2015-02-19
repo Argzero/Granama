@@ -5,7 +5,8 @@
  */ 
 function skillArtillery(player) {
 
-    player.reticle = new Sprite('pValkyrieTarget', 0, 0).child(this, false);
+    player.reticle = new Sprite('pValkyrieTarget', 0, 0).child(this, true);
+    player.postChildren.push(player.reticle);
     player.reticle.hidden = true;
 
     /**
@@ -59,6 +60,7 @@ function skillArtillery(player) {
                     0,
                     0,
                     25 * this.get('power') * (used / 25) * (1 + this.bonus),
+                    0,
                     true,
                     Robot.ENEMY
                 );
