@@ -63,7 +63,6 @@ function skillIonicThunder(player) {
             if (this.skillDuration <= 1) {
                 this.charge = 0;
             }
-            return 0;
         }
         
         // Charge over time while not using ability
