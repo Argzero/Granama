@@ -45,11 +45,11 @@ function skillArtillery(player) {
             // Range increases over time
             else {
                 this.range = Math.min(this.range + 10, 499 + 50 * this.upgrades[RAIL_ID]);
+				
+				// Move the reticle over the target location
+				this.reticle.moveTo(0, this.range);
             }
             
-            // Move the reticle over the target location
-            this.reticle.moveTo(0, this.range);
-
             // Firing the artillery
             if (this.input.button(SKILL) == 1 || this.timer == 30) {
                 var used = Math.min(25, this.charge);
