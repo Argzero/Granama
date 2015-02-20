@@ -6,6 +6,8 @@ depend('robot/skill/lockdown');
 /**
  * A valkyrie player that uses a twin shot laser and a
  * rail cannon as its main weapons
+ *
+ * @constructor
  */
 extend('PlayerValkyrie', 'Player');
 function PlayerValkyrie() {
@@ -57,8 +59,10 @@ function PlayerValkyrie() {
         pierce: true,
         target: Robot.ENEMY
     };
+    this.gun = weapon.gun;
+    
+    // Charge data
     this.charge = 0;
-    this.disabled = false;
 }
 
 /** 
@@ -70,11 +74,11 @@ PlayerValkyrie.prototype.applyUpdate = function() {
     var m = this.get('power');
 
     // Double shot
-    if (!this.disabled) {
+    if (this.speed == this.baseSpeed) {
         this.gunData1.damage = this.gunData2.damage = m;
         this.gunData1.rate = this.gunData2.rate = 120 / (5 + this.upgrades[DUAL_ID] * 2.5);
-        weapon.gun.bind(this)(this.gunData1);
-        weapon.gun.bind(this)(this.gunData2);
+        this.gun(this.gunData1);
+        this.gun(this.gunData2);
     }
 	
 	// Update sprite positions

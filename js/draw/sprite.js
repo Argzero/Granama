@@ -4,13 +4,6 @@ depend('lib/2d/transform');
 depend('lib/2d/vector');
 
 /**
- * Available events for sprite objects:
- *
- * onPreDraw - before the sprite and its children are drawn
- * onDraw    - after the sprite and its children is drawn
- */
-
-/**
  * A drawable in the game
  *
  * @param {Image}  sprite    - the main sprite of the entity
@@ -22,6 +15,7 @@ depend('lib/2d/vector');
 extend('Sprite', 'Transform');
 function Sprite(name, x, y) {
     this.super();
+    
 	this.src = name;
     this.sprite = images.get(name);
     this.parent = undefined;
@@ -35,6 +29,7 @@ function Sprite(name, x, y) {
 	this.width = this.sprite.width;
 	this.height = this.sprite.height;
 	
+    // Load width when the image loads
 	if (!this.width) {
 		this.sprite.sprite = this;
 		this.sprite.onload = function() {
@@ -42,6 +37,18 @@ function Sprite(name, x, y) {
 			this.sprite.height = this.height;
 		}
 	}
+    
+    /** 
+     * Event called before the sprite or its children are drawn.
+     * The camera is translated to the sprite's location during the event.
+     */
+    this.onPreDraw = this.onPreDraw || undefined;
+    
+    /**
+     * Event called after the sprite and its children are drawn.
+     * The camera is translated to the sprite's position during the event.
+     */
+    this.onDraw = this.onDraw || undefined;
 }
 
 /**

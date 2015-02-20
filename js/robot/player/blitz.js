@@ -45,6 +45,8 @@ function PlayerBlitz() {
         //                                     args: [multiplier]
 		templates : [{ name: 'setupSlowBonus', args: [1.5] }]
     };
+    this.rail = weapon.rail;
+    this.gun = weapon.gun;
 	
 	// Multiplier for ability cooldowns
 	this.cdm = 1;
@@ -71,11 +73,11 @@ PlayerBlitz.prototype.applyUpdate = function() {
 	this.shotgunData.duration = Math.floor(num / bullets);
 	this.shotgunData.bullets = bullets;
 	this.shotgunData.rate = 60 * this.rm;
-	weapon.rail.bind(this)(this.shotgunData);
+	this.rail(this.shotgunData);
 
 	// Slow gun
 	this.slowData.damage = 5 * m;
 	this.slowData.rate = 40 * this.rm;
 	this.slowData.buffs[0].duration = 300 + this.upgrades[SLOW_ID] * 50;
-	weapon.gun.bind(this)(this.slowData);
+	this.gun(this.slowData);
 };

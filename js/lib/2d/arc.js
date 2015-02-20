@@ -1,5 +1,7 @@
 /**
- * Represents an arc that can check against sprites for collision
+ * Represents an arc that can check against sprites for collision. Do not
+ * make an arc with a difference between the start and end of more than
+ * Pi radians. Instead, make multiple smaller ones.
  *
  * @param {Vector} pos       - the center position of the arc
  * @param {Number} radius    - the radius of the arc

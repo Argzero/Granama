@@ -17,19 +17,11 @@ depend('robot/robot');
 extend('Player', 'Robot');
 function Player(name, x, y, type, health, speed, healthScale, damageScale, shieldScale, speedScale) {
 	this.super(name, x, y, type, health, speed);
-	  
-	////////////
-	// Events //
-	////////////
-	
-	this.onDraw = undefined;
-	this.onPreDraw = undefined;
-	this.onFire = undefined;
 	
 	/**
-	 * Called when the player levels up
+	 * Event called when the player levels up
 	 */
-	this.onLevel = undefined;
+	this.onLevel = this.onLevel || undefined;
 	
 	////////////
 	// Fields //
@@ -137,17 +129,18 @@ Player.prototype.update = function() {
 
 		// Get speed
 		var speed = this.get('speed') * (1 + this.speedScale * this.upgrades[SPEED_ID]);
-        if (speed < 0.000001) return;
+        if (speed > 0.000001) {
 
-		// Movement
-		var moveDir = this.input.direction(MOVE, this);
-		var lookDir = this.input.direction(LOOK, this);
-		if (lookDir.lengthSq() > 0)
-		{
-			lookDir.rotate(0, -1);
-			this.setRotation(lookDir.x, lookDir.y);
-		}
-		this.move(speed * moveDir.x, speed * moveDir.y);
+            // Movement
+            var moveDir = this.input.direction(MOVE, this);
+            var lookDir = this.input.direction(LOOK, this);
+            if (lookDir.lengthSq() > 0)
+            {
+                lookDir.rotate(0, -1);
+                this.setRotation(lookDir.x, lookDir.y);
+            }
+            this.move(speed * moveDir.x, speed * moveDir.y);
+        }
         
         // Robot specific updates
         if (this.applyUpdate) {

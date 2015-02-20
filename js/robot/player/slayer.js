@@ -6,6 +6,8 @@ depend('robot/skill/waveburst');
 /**
  * The Slayer player which uses lasers and a flamethrower
  * as its main attacks.
+ *
+ * @constructor
  */
 extend('PlayerSlayer', 'Player');
 function PlayerSlayer() {
@@ -39,6 +41,7 @@ function PlayerSlayer() {
         pierce: true,
 		target: Robot.ENEMY
     };
+    this.gun = weapon.gun;
 }
 
 /**
@@ -52,11 +55,11 @@ PlayerSlayer.prototype.applyUpdate = function() {
 	var fireUps = this.upgrades[FLAME_ID];
 	this.fireData.damage = 0.1 * m;
 	this.fireData.range = fireUps * 20 + 100;
-	weapon.gun.bind(this)(this.fireData);
+	this.gun(this.fireData);
 
 	// Lasers
 	this.laserData.damage = 0.4 * m;
 	this.laserData.rate = 60 / (5 + this.upgrades[LASER_ID] * 2.5);
 	this.laserData.spread = this.upgrades[SPREAD_ID] / 2;
-	weapon.gun.bind(this)(this.laserData);
+	this.gun(this.laserData);
 };

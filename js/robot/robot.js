@@ -62,17 +62,7 @@ function Robot(name, x, y, type, health, speed) {
 	/**
 	 * Called after knockback and buffs are updated each update
 	 */
-	this.onUpdate = undefined;
-	
-	/**
-	 * Called before robots are drawn to the screen
-	 */
-	this.onPreDraw = undefined;
-	
-	/**
-	 * Called after robots are drawn to the screen
-	 */
-	this.onPostDraw = undefined;
+	this.onUpdate = this.onUpdate || undefined;
 	
 	/**
 	 * Called when the robot takes damage
@@ -82,7 +72,7 @@ function Robot(name, x, y, type, health, speed) {
 	 *
 	 * @returns {Number} modified damage amount or undefined if no changes
 	 */
-	this.onDamaged = undefined;
+	this.onDamaged = this.onDamaged || undefined;
 	
 	/**
 	 * Called when the robot is healed by any source
@@ -91,7 +81,7 @@ function Robot(name, x, y, type, health, speed) {
 	 *
 	 * @returns {Number} modified healing amount or undefined if no changes
 	 */
-	this.onHealed = undefined;
+	this.onHealed = this.onHealed || undefined;
 }
 
 /**

@@ -41,6 +41,7 @@ function PlayerGuardian() {
         dy    : 45,
         target: Robot.ENEMY
     };
+    this.gun = weapon.gun;
 }
 
 /**
@@ -54,12 +55,12 @@ PlayerGuardian.prototype.applyUpdate = function() {
 	// Minigun
 	this.minigunData.damage = 3 * m;
 	this.minigunData.rate = 6 - this.upgrades[MINIGUN_ID] / 2;
-	weapon.gun.bind(this)(this.minigunData);
+	this.gun(this.minigunData);
 
 	// Rockets
 	this.rocketData.type = this.name;
 	this.rocketData.damage = 12 * m;
 	this.rocketData.templates[0].args[1] = 100 + 25 * this.upgrades[EXPLOSION_ID];
 	this.rocketData.templates[0].args[2] = 30 + 25 * this.upgrades[KNOCKBACK_ID];
-	weapon.gun.bind(this)(this.rocketData);
+	this.gun(this.rocketData);
 };

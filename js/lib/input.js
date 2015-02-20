@@ -208,7 +208,7 @@ KeyboardInput.prototype.update = function() {
             if (this.data[x]) this.data[x]++;
             else this.data[x] = 1;
         }
-        else this.data[x] = 0;
+        else if (x < 900) this.data[x] = 0;
     }
 
     // Left mouse button

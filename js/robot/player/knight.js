@@ -6,6 +6,8 @@ depend('robot/skill/sweepingBlade');
 /**
  * The Knight player which uses a sword and
  * a grappling hook as its main attacks
+ *
+ * @constructor
  */
 extend('PlayerKnight', 'Player');
 function PlayerKnight() {
@@ -49,6 +51,7 @@ function PlayerKnight() {
         //                                  args: [stun, self]
         templates: [{ name: 'setupGrapple', args: [0,    false] }]
     };
+    this.gun = weapon.gun;
     this.sword = false;
 }
     
@@ -63,13 +66,13 @@ PlayerKnight.prototype.applyUpdate = function() {
     // Grapple
     this.grappleData.damage = m;
     this.grappleData.templates[0].args[0] = 30 + this.upgrades[ARROW_ID] * 10;
-    weapon.gun.bind(this)(this.grappleData);
+    this.gun(this.grappleData);
 
     // Sword
     this.swordData.damage = 8 * m;
     this.swordData.templates[0].args[1] = Math.PI / 3 + this.upgrades[SLASH_ID] * Math.PI / 18;
     this.swordData.templates[0].args[3] = 0.1 + this.upgrades[LIFESTEAL_ID] * 0.04;
-    weapon.gun.bind(this)(this.swordData);
+    this.gun(this.swordData);
     
     // Hide held sword when swinging
     this.swordSprite.hidden = this.sword;

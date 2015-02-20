@@ -183,7 +183,7 @@ SPAWN_DATA = [
 	15, 1, HeavyBomber,
 	20, 0, LightOrbiter,
 	10, 1, HeavyOrbiter,
-	15000, 0, LightSpinner,
+	15, 0, LightSpinner,
 	10, 1, HeavySpinner,
 	15, 5, LightMedic,
 	10, 5, HeavyMedic,

@@ -36,6 +36,7 @@ depend('robot/pad');
 depend('robot/plus');
 depend('robot/projectile');
 depend('robot/robot');
+depend('robot/shockwave');
 depend('robot/turret');
 depend('robot/weapons');
 

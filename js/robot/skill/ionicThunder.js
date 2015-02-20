@@ -22,7 +22,7 @@ function skillIonicThunder(player) {
         
         // Charge over time while not using ability
         if (this.skillDuration <= 0 && this.charge < 100) {
-            this.charge += 0.05 + 0.02 * this.upgrades[CHARGE_ID];
+            this.charge += 1 + 0.05 + 0.02 * this.upgrades[CHARGE_ID];
         }
         
         // Active skill effects
@@ -42,33 +42,32 @@ function skillIonicThunder(player) {
                 Robot.ENEMY
             );
             laser.size.x = laser.size.y = 0.01 * elapsed;
-            this.bullets.push(laser);
+            gameScreen.bullets.push(laser);
 
             // Shockwave
-            /*
             if (elapsed >= this.nextWave) {
                 this.nextWave += this.nextWaveIncrement;
                 this.nextWaveIncrement -= 10;
                 for (var i = 0; i < 2; i++) {
-                    var shockwave = Shockwave(
+                    var shockwave = new Shockwave(
                         this,
                         '#0ff',
                         '#0bb',
-                        this.x,
-                        this.y,
+                        this.pos.x,
+                        this.pos.y,
                         10,
                         Math.PI * i,
                         Math.PI * (i + 1),
                         30,
                         20,
-                        this.GetDamageMultiplier(),
+                        this.get('power'),
                         100 + elapsed * 2,
-                        0
+                        0,
+                        Robot.ENEMY
                     );
-                    this.bullets.push(shockwave);
+                    gameScreen.bullets.push(shockwave);
                 }
             }
-            */
 
             var push = this.forward().multiply(-elapsed / 50, -elapsed / 50);
             this.move(push.x, push.y);
