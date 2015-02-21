@@ -23,7 +23,7 @@ function Projectile(name, x, y, shooter, gun, speed, angle, damage, range, pierc
 	this.shooter = shooter;
     this.gun = gun;
     this.angle = angle;
-	this.rotation = gun.rotation.clone().rotateAngle(angle);
+	this.rotation = gun.getWorldRotation().rotateAngle(angle);
 	this.vel = this.rotation.clone().multiply(speed, speed).rotate(0, 1);
 	this.speed = speed;
 	this.damage = damage;
@@ -36,8 +36,8 @@ function Projectile(name, x, y, shooter, gun, speed, angle, damage, range, pierc
 	this.buffs = [];
     
     this.offset = this.pos.clone();
-	this.pos.rotatev(gun.rotation);
-	this.pos.addv(gun.pos);
+	this.pos.rotatev(gun.getWorldRotation());
+	this.pos.addv(gun.getWorldPos());
 	this.origin = this.pos.clone();
 	
 	/**

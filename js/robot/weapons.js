@@ -282,14 +282,14 @@ var weapon = {
 
             // Fire when charged up
             if (data.cd < 0) {
-                if (data.intervalTimer > 1) {
+                if (data.intervalTimer > 0) {
                     data.intervalTimer--;
                     return;
                 }
                 for (var i = 0; i < (data.bullets || 1); i++) {
                     weapon.fireBullet(this, data);
                 }
-                data.intervalTimer = data.interval;
+                data.intervalTimer = data.interval - 1;
 
                 // "Overheating" resets the charge countdown
                 if (data.cd < -data.duration) {

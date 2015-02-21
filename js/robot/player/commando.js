@@ -22,7 +22,7 @@ function PlayerCommando() {
     );
     
     // Weapon data
-    p.lmgData = {
+    this.lmgData = {
         sprite: 'lmgBullet',
         cd    : 0,
         range : 499,
@@ -36,7 +36,6 @@ function PlayerCommando() {
     
     // Drone data
     this.drones = [];
-    this.addDrone();
     this.nextDroneLevel = 4;
     this.droneRangeM = 1;
 }
@@ -47,17 +46,16 @@ function PlayerCommando() {
 PlayerCommando.prototype.addDrone = function() {
 
     // Add the drone
-    var drone = new CommandoDrone(this).child(this, false);
+    var drone = new CommandoDrone(this);
     this.drones.push(drone);
-    this.postChildren.push(drone);
+    gameScreen.robots.push(drone);
 
     // Update drone angles
-    var totalAngle = Math.min(Math.PI, this.drones.length * Math.PI / 8);
+    var totalAngle = (this.drones.length - 1) * Math.PI / 8;
     var increment = Math.PI / 8;
     var angle = -totalAngle / 2;
     for (var i = 0; i < this.drones.length; i++) {
-        this.drones[i].setAngle(angle + this.angle);
-        this.drones[i].update();
+        this.drones[i].setAngle(angle);
         angle += increment;
     }
 };
@@ -67,12 +65,19 @@ PlayerCommando.prototype.addDrone = function() {
  */
 PlayerCommando.prototype.applyUpdate = function() {
 
+    if (this.drones.length == 0) this.addDrone();
+
     // Get damage multiplier
     var m = this.get('power');
 
     // LMG
     this.lmgData.damage = m * (5 + 2 * this.upgrades[LMG_DAMAGE_ID]);
     this.gun(this.lmgData);
+    
+    // Update drones
+    for (var i = 0; i < this.drones.length; i++) {
+        this.drones[i].update();
+    }
 };
 
 /**
@@ -94,13 +99,14 @@ var COMMANDO_DRONE_RADIUS = 100;
  */
 extend('CommandoDrone', 'Sprite');
 function CommandoDrone(player) {
-    this.super('drone', 0, -1);
+    this.super('drone', 0, 0);
 
     this.player = player;
+    this.offset = new Vector(0, -1);
     this.targetRadius = COMMANDO_DRONE_RADIUS;
     this.radius = 1;
-    this.setAngle(0);
-
+    this.type = 0;
+    
     // Weapon data
     this.gunData = {
         sprite   : 'lmgBullet',
@@ -108,14 +114,14 @@ function CommandoDrone(player) {
         cd       : 0,
         rate     : 90,
         discharge: 0,
-        interval : 5,
+        interval : 10,
         initial  : true,
         speed    : 10,
         dx       : -6,
         dy       : 15,
         target   : Robot.ENEMY
     };
-    this.chargeData: {
+    this.chargeData = {
         sprite   : 'pCommandoChargeLaser',
         shooter  : player,
         damage   : 0,
@@ -129,46 +135,49 @@ function CommandoDrone(player) {
         dy       : 15,
         target   : Robot.ENEMY
     };
-    this.rail = wepaon.rail;
+    this.rail = weapon.rail;
 }
 
 // Sets the new target angle of the drone
 CommandoDrone.prototype.setAngle = function(angle) {
     this.targetRot = new Vector(Math.sin(angle), -Math.cos(angle)).multiply(this.radius, this.radius);
-},
+};
 
 // Updates the drone
 CommandoDrone.prototype.update = function() {
 
     // Move outward after spawning to the desired radius
     if (this.radius < this.targetRadius) {
-        this.radius = Math.min(this.radius + 1, this.targetRadius);
-        this.pos.setLength(this.radius);
+        this.radius++;
+        this.offset.setMagnitude(this.radius);
+        this.targetRot.setMagnitude(this.radius);
     }
 
     // Look to the correct angle when the player turns
     if (this.player.charging) {
         var target = this.player.forward().multiply(LASER_BOMB_OFFSET, LASER_BOMB_OFFSET);
         this.lookAt(target);
-        this.chargeData.range = target.distance(this.pos) / 1.5;
+        this.chargeData.range = target.distance(this.offset) / 1.5;
         this.rail(this.chargeData);
     }
     else {
     
         // Rotate around the player to the desired position
-        this.pos.rotateTowards(this.targetRot, new Vector(COS_1, SIN_1));
+        this.offset.rotateTowards(this.targetRot.clone().rotate(this.player.rotation.x, this.player.rotation.y), new Vector(COS_1, SIN_1));
     
         // Update rotation
         var enemy = this.getTarget();
         if (enemy) {
-            this.rotation.rotateTowards(enemy.pos, new Vector(COS_3, SIN_3));
+            this.lookTowards(enemy.pos, new Vector(COS_3, SIN_3));
         }
+        
+        this.moveTo(this.player.pos.x + this.offset.x, this.player.pos.y + this.offset.y);
 
         // Drone gun
         this.gunData.damage = 5 * this.player.get('power');
         this.gunData.range = (349 + 25 * this.player.upgrades[DRONE_RANGE_ID]) * this.player.droneRangeM;
         this.gunData.duration = (5 + this.player.upgrades[DRONE_SHOTS_ID]) * this.gunData.interval;
-        this.shoot(this.gunData);
+        this.rail(this.gunData);
     }
 };
 
@@ -182,9 +191,9 @@ CommandoDrone.prototype.isInRange = function(range) {
 CommandoDrone.prototype.getTarget = function() {
     if (this.player.particle && this.player.skillDuration > 0) {
         var target = this.player.particle.target;
-        if (target.pos.distanceSq(this.pos.clone().addv(this.player.pos)) < sq(this.gunData.range)) {
+        if (target.pos.distanceSq(this.pos) < sq(this.gunData.range)) {
             return target;
         }
     }
-    return gameScreen.getClosest(this.pos.clone().addv(this.player.pos), Robot.ENEMY);
+    return gameScreen.getClosest(this.pos, Robot.ENEMY);
 };

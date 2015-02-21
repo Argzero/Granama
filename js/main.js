@@ -42,6 +42,7 @@ depend('robot/weapons');
 
 // Player scripts
 depend('robot/player/blitz');
+depend('robot/player/commando');
 depend('robot/player/guardian');
 depend('robot/player/knight');
 depend('robot/player/player');

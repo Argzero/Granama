@@ -126,10 +126,9 @@ PLAYER_DATA = [
 			{name: 'Lock Down', callback: skillLockdown},
 			{name: 'Artillery', callback: skillArtillery}
 		]
-	}
-    /*
+	},
 	{
-		player : PlayerCommandoType,
+		player : PlayerCommando,
 		preview: 'pCommando',
 		name   : 'Commando',
 		ups    : ['DroneRange', 'DroneShots', 'LMGBaseDamage', 'ShieldRecharge', 'MovementSpeed'],
@@ -137,11 +136,12 @@ PLAYER_DATA = [
 		color  : '#070',
 		weapons: ['Drone Kit', 'Light Machine Gun'],
 		skills : [
-			{name: 'Missile Barrage', callback: SkillMissileBarrage},
-			{name: 'Targeter', callback: SkillTargeter},
-			{name: 'Laser Bomb', callback: SkillLaserBomb}
+			{name: 'Missile Barrage', callback: skillMissileBarrage},
+			{name: 'Targeter', callback: skillTargeter},
+			{name: 'Laser Bomb', callback: skillLaserBomb}
 		]
-	},
+	}
+    /*
 	{
 		player : PlayerAngelType,
 		preview: 'pAngel',

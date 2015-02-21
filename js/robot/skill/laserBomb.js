@@ -10,7 +10,7 @@ var LASER_BOMB_SIZE_SCALE = 10;
 function skillLaserBomb(player) {
 
     player.chargeBall = new Sprite('pCommandoChargeBall', 0, LASER_BOMB_OFFSET).child(this, true);
-    player.postChildren.push(chargeBall);
+    player.postChildren.push(player.chargeBall);
     player.chargeBall.hidden = true;
 
     /**
@@ -41,11 +41,11 @@ function skillLaserBomb(player) {
             );
             bomb.setupRocket(
                 /* Type      */ 'Commando',
-                /* Radius    */ 180 + this.drones.length * 40,
-                /* Knockback */ 160 + this.drones.length * 30
+                /* Radius    */ 160 + this.drones.length * 30,
+                /* Knockback */ 180 + this.drones.length * 40
             );
             bomb.setupSpinning(LASER_BOMB_ROTATION);
-            var size = LASER_BOMB_SIZE_SCALE * this.drones.length + 40) / bomb.sprite.width;
+            var size = (LASER_BOMB_SIZE_SCALE * this.drones.length + 40) / bomb.sprite.width;
             bomb.scale(size, size);
             gameScreen.bullets.push(bomb);
         }
@@ -58,7 +58,7 @@ function skillLaserBomb(player) {
         
         // Apply statuses depending on the skill state
         this.charging = this.skillDuration > 0;
-        this.speed = this.charging ? 0.5, 1;
+        this.speed = (this.charging ? 0.5 : 1) * this.baseSpeed;
         this.chargeBall.hidden = this.skillDuration <= 1;
     }
 }

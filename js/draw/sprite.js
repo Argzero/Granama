@@ -52,6 +52,38 @@ function Sprite(name, x, y) {
 }
 
 /**
+ * Gets the world position of the sprite, applying
+ * parent transformations to its own.
+ */ 
+Sprite.prototype.getWorldPos = function() {
+    var parent = this.parent;
+    var pos = this.pos.clone();
+    while (parent) {
+        pos.addv(parent.pos);
+        parent = parent.parent;
+    }
+    return pos;
+};
+
+/**
+ * Gets the world rotation of the sprite, applying
+ * parent transformations to its own
+ */
+Sprite.prototype.getWorldRotation = function() {
+    var parent = this.parent;
+    var child = this;
+    var rot = this.rotation;
+    while (parent) {
+        if (child.keepRotate) {
+            rot.rotate(parent.rotation.x, parent.rotation.y);
+        }
+        child = parent;
+        parent = parent.parent;
+    }
+    return rot;
+};
+
+/**
  * Sets the parent of the sprite, optionally inheriting rotation
  *
  * @param {Sprite}  [parent] - the parent to inherit transforms from

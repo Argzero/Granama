@@ -14,7 +14,7 @@ function skillTargeter(player) {
         if (this.isSkillCast()) {
             this.skillCd = 600;
 
-            // Fire rockets from each drone
+            // Fire the missile
             var missile = new Projectile(
                 'targeterMissile',
                 0, 0,
