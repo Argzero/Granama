@@ -41,9 +41,9 @@ function HeavyBoss(x, y) {
         dy      : -105
     });
     enemy.AddWeapon(EnemyWeaponSpawn, {
-        enemies: c < 4 ? HEAVY_EASY_SPAWNS : HEAVY_SPAWNS,
-        max    : 10,
-        rate   : 120,
+        enemies: gameScreen.bossCount < 4 ? HEAVY_EASY_SPAWNS : HEAVY_SPAWNS,
+        max    : gameScreen.bossCount < 4 ? 20 : 10,
+        rate   : 60,
         delay  : 120,
         dx     : 0,
         dy     : 0

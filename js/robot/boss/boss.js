@@ -22,6 +22,16 @@ function Boss(name, x, y, type, health, speed, range, exp, rank, patternMin, pat
     this.knockbackFactor = 0.2;
 }
 
+/** 
+ * Caculates the scaling multiplier for a summation scale
+ * 
+ * @returns {number} scaling multiplier
+ */
+Boss.sum = function() {
+    var c = gameScreen.bossCount;
+    return ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000)
+};
+
 /**
  * Checks whether or not the enemy is a boss
  *
@@ -44,15 +54,14 @@ Boss.prototype.isInRange = function(range) {
 };
 
 /**
- * Stuns the robot temporarily
+ * Bosses ignore stuns
  *
  * @param duration duration of the stun
  */
-Boss.prototype.stun = function(duration) {
-};
+Boss.prototype.stun = function(duration) { };
 
 /**
- * Applies a buff to the robot, modifying a stat
+ * Bosses take reduced buff effects
  *
  * @param {string} name       - the name of the stat
  * @param {number} multiplier - the multiplier for the stat
@@ -60,4 +69,18 @@ Boss.prototype.stun = function(duration) {
  */
 Boss.prototype.buff = function(name, multiplier, duration) {
     this.buffs[name] = {multiplier: multiplier + (1 - multiplier) * 0.8, duration: duration};
+};
+
+/**
+ * Bosses cannot be walked over by players
+ */
+Boss.prototype.subUpdate = function() {
+    for (var i = 0; i < players.length; i++) {
+        var p = players[i];
+        if (this.collides(p)) {
+            var d = p.pos.clone().subtractv(this.pos);
+            d.setMagnitude((this.width + p.width) / 2);
+            p.moveTo(d.addv(this.pos));
+        }
+    }
 };

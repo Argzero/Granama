@@ -51,10 +51,13 @@ depend('robot/player/playerManager');
 depend('robot/player/slayer');
 depend('robot/player/valkyrie');
 
+// Boss Scrupts
+depend('robot/boss/boss');
+depend('robot/boss/heavy');
+
 // Enemy scripts
 depend('robot/enemy/artillery');
 depend('robot/enemy/bomber');
-depend('robot/enemy/boss');
 depend('robot/enemy/enemy');
 depend('robot/enemy/grabber');
 depend('robot/enemy/gunner');

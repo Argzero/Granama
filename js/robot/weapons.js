@@ -235,14 +235,13 @@ var weapon = {
      * <ul>
      *     <li>{number}  rate       - the number of frames between shots</li>
      *     <li>{number}  damage     - the damage dealt by the bullet</li>
-     *     <li>{number}  range      - the range of the bullet</li>
+     *     <li>{number}  range      - the range to start dropping mines from</li>
      *     <li>{string}  [type]     - the type of mine</li>
-     *     <li>{number}  [speed]    - the speed of the bullet</li>
      *     <li>{number}  [dx]       - horizontal position offset</li>
      *     <li>{number}  [dy]       - vertical position offset</li>
      *     <li>{number}  [delay]    - the delay before shooting while in range</li>
-     *     <li>{number}  [duration] - the lifespan of the mine
-     *     <li>{number}  [target]   - the target group the mine can hit
+     *     <li>{number}  [duration] - the lifespan of the mine</li>
+     *     <li>{number}  [target]   - the target group the mine can hit</li>
      * </ul>
      *
      * @param {Object} data - weapon data

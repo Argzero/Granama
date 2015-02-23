@@ -200,35 +200,35 @@ SPAWN_DATA = [
     2, 6, Solar,
     2, 6, Snatcher
 ],
-/*
 BOSS_SPAWNS = [
-    HeavyBoss,
-    FireBoss,
-    PunchBoss,
-    QueenBoss,
-    TankBoss,
-    DragonBoss
+    HeavyBoss
+    //FireBoss,
+    //PunchBoss,
+    //QueenBoss,
+    //TankBoss,
+    //DragonBoss
 ],
 DRAGON_SPAWNS = [
-    1, 0, HunterEnemy
+    1, 0, Hunter
 ],
 HEAVY_SPAWNS = [
-    1, 0, SolarEnemy
+    1, 0, Solar
 ],
 HEAVY_EASY_SPAWNS = [
-    1, 0, LightBomberEnemy,
-    1, 0, HeavyBomberEnemy
+    1, 0, LightBomber,
+    1, 0, HeavyBomber
 ],
 PUNCH_SPAWNS = [
-    1, 0, PaladinEnemy
+    1, 0, Paladin
 ],
 FIRE_SPAWNS = [
-    10, 0, HeavyGrabberEnemy,
-    1, 0, SnatcherEnemy
+    10, 0, HeavyGrabber,
+    1, 0, Snatcher
 ],
+/*
 QUEEN_SPAWNS = [
-    4, 0, HiveDroneEnemy,
-    1, 0, HiveDefenderEnemy
+    4, 0, HiveDrone,
+    1, 0, HiveDefender
 ],
 */
 

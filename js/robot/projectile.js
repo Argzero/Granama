@@ -223,14 +223,17 @@ Projectile.prototype.setupSlowBonus = function(multiplier) {
 /** 
  * Sets up a homing projectile
  *
- * @param {Robot}  target   - the target to home towards
- * @param {number} rotSpeed - how fast to turn towards the target initially
+ * @param {Robot|number}  target   - the target to home towards or the type of robot to seek the nearest of
+ * @param {number}        rotSpeed - how fast to turn towards the target initially
  */
 Projectile.prototype.setupHoming = function(target, rotSpeed) {
     this.onCollideCheck = projEvents.homingCollide;
     this.onUpdate = projEvents.homingUpdate;
     
-    this.target = target;
+    // Get nearest of the given type if a specific robot is not specified
+    if (isNaN(target)) this.target = target;
+    else this.target = gameScreen.getClosest(this.pos, target);
+    
     this.rotSpeed = rotSpeed;
     this.lifespan = this.range / this.speed;
     this.range = 999999;

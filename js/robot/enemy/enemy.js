@@ -181,27 +181,34 @@ Enemy.prototype.update = function() {
         this.movement();
     }
 
+    // Updates specific to enemies vs bosses
+    this.subUpdate();
+
+    this.clamp();
+};
+
+/**
+ * Normal enemies move away from other enemies
+ */
+Enemy.prototype.subUpdate = function() {
+
     // Move away from other enemies
-    if (!this.isBoss()) {
-        if (gameScreen.enemyCount > 0) {
-            for (i = 0; i < gameScreen.robots.length; i++) {
-                var enemy = gameScreen.robots[i];
-                var d = enemy.pos.clone().subtractv(this.pos);
-                if (enemy.type == Robot.MOB && d.lengthSq() < sq(this.width) && d.lengthSq() > 0) {
-                    if (this.rotation.dot(d) > 0) {
-                        this.pos.subtractv(this.rotation.clone().multiply(0.5, 0.5));
-                        break;
-                    }
-                    else {
-                        this.pos.addv(this.rotation.clone().multiply(0.5, 0.5));
-                        break;
-                    }
+    if (gameScreen.enemyCount > 0) {
+        for (i = 0; i < gameScreen.robots.length; i++) {
+            var enemy = gameScreen.robots[i];
+            var d = enemy.pos.clone().subtractv(this.pos);
+            if (enemy.type == Robot.MOB && d.lengthSq() < sq(this.width) && d.lengthSq() > 0) {
+                if (this.rotation.dot(d) > 0) {
+                    this.pos.subtractv(this.rotation.clone().multiply(0.5, 0.5));
+                    break;
+                }
+                else {
+                    this.pos.addv(this.rotation.clone().multiply(0.5, 0.5));
+                    break;
                 }
             }
         }
     }
-
-    this.clamp();
 };
 
 /**

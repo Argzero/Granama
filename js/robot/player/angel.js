@@ -132,6 +132,8 @@ PlayerAngel.prototype.applyUpdate = function() {
  * @param {Camera} camera - camera to draw to
  */
 PlayerAngel.prototype.onAuraDraw = function(camera) {
+    if (this.dead) return;
+    
     camera.ctx.globalAlpha *= 0.3;
     if (this.staticActive) {
         camera.ctx.fillStyle = '#00f';
