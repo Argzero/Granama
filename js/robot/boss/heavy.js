@@ -41,8 +41,8 @@ function HeavyBoss(x, y) {
     this.pierceDamage = 0.1;
     
     // Covers
-    this.coverRight = new Sprite('bossHeavyCoverRight', 0, 0);
-    this.coverLeft = new Sprite('bossHeavyCoverLeft', 0, 0);
+    this.coverRight = new Sprite('bossHeavyCoverRight', -58, -41).child(this, true);
+    this.coverLeft = new Sprite('bossHeavyCoverLeft', 58, -41).child(this, true);
     this.coverOffset = 0;
     this.postChildren.push(this.coverRight, this.coverLeft);
 
@@ -110,13 +110,18 @@ function HeavyBoss(x, y) {
             sprite   : 'rocket',
             damage   : 4 * damageScale,
             range    : 650,
-            radius   : 100,
-            knockback: 150,
             rate     : 60,
             dx       : -60 + 120 * i,
             dy       : -35,
             delay    : 30 * i,
-            speed    : 8
+            speed    : 8,
+            target   : Robot.PLAYER,
+            templates: [
+                //                     args: [type,    radius, knockback]
+                { name: 'setupRocket', args: ['Enemy', 100,    150] },
+                //                     args: [target,       rotSpeed]
+                { name: 'setupHoming', args: [Robot.PLAYER, 0.02] }
+            ]
         }, 2);
     }
 }
@@ -128,12 +133,12 @@ function HeavyBoss(x, y) {
 HeavyBoss.prototype.onUpdate = function() {
     if (this.pattern != 0 && this.coverOffset < 45) {
         this.coverOffset++;
-        this.coverRight.move(0, -1);
-        this.coverLeft.move(0, 1);
+        this.coverRight.move(-1, 0);
+        this.coverLeft.move(1, 0);
     }
     else if (this.pattern == 0 && this.coverOffset > 0) {
         this.coverOffset--;
-        this.coverRight.move(0, 1);
-        this.coverLeft.move(0, -1);
+        this.coverRight.move(-1, 0);
+        this.coverLeft.move(1, 0);
     }
 };

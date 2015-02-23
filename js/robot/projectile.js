@@ -378,6 +378,7 @@ var projEvents = {
         var angle = cross < 0 ? -this.rotSpeed : this.rotSpeed;
         this.rotSpeed += 0.0001;
         this.vel.rotateAngle(angle);
+        this.rotation.rotateAngle(angle);
     },
     
     /**

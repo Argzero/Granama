@@ -179,7 +179,7 @@ SPAWN_DATA = [
     10, 1, HeavyMelee,
     30, 0, LightBomber,
     15, 1, HeavyBomber,
-    200000, 0, LightOrbiter,
+    20, 0, LightOrbiter,
     10, 1, HeavyOrbiter,
     15, 0, LightSpinner,
     10, 1, HeavySpinner,
@@ -198,7 +198,8 @@ SPAWN_DATA = [
     2, 6, Paladin,
     2, 6, Hunter,
     2, 6, Solar,
-    2, 6, Snatcher
+    2, 6, Snatcher,
+    10000, 0, HeavyBoss
 ],
 BOSS_SPAWNS = [
     HeavyBoss

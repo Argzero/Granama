@@ -41,7 +41,7 @@ function skillOverdrive(player) {
         if (this.skillDuration > 0) {
 
             // Make a new copy every 5 frames
-            if (this.skillDuration % 5 == 0) {
+            if (this.skillDuration % 10 == 0) {
                 var copy = new Sprite('pSpeedBody', this.pos.x, this.pos.y);
                 copy.rotation = this.rotation.clone();
                 copy.alpha = 0.9;
@@ -57,7 +57,9 @@ function skillOverdrive(player) {
     player.onPreDraw = function() {
         for (var i = 0; i < this.copies.length; i++) {
             var copy = this.copies[i];
+            copy.move(-this.pos.x, -this.pos.y);
             copy.draw(camera);
+            copy.move(this.pos.x, this.pos.y);
         }
     };
 }

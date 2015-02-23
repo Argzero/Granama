@@ -80,7 +80,8 @@ Boss.prototype.subUpdate = function() {
         if (this.collides(p)) {
             var d = p.pos.clone().subtractv(this.pos);
             d.setMagnitude((this.width + p.width) / 2);
-            p.moveTo(d.addv(this.pos));
+            d.addv(this.pos);
+            p.moveTo(d.x, d.y);
         }
     }
 };
