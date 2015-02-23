@@ -289,6 +289,7 @@ Projectile.prototype.setupSword = function(radius, arc, knockback, lifesteal) {
     this.knockback = knockback;
     this.lifesteal = lifesteal;
     this.arc = arc;
+    this.range = 999999;
 };
 
 /**
@@ -476,6 +477,7 @@ var projEvents = {
             if (this.step <= 0) {
                 this.shooter.sword = false;
                 this.expired = true;
+                this.step = 0;
             }
         }
         

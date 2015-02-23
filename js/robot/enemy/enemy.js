@@ -139,7 +139,7 @@ Enemy.prototype.switchPattern = function() {
     if (this.patterns.length <= 1) return;
     this.pattern = rand(this.patterns.length);
     this.range = this.ranges[this.pattern] || this.range;
-    this.movement = this.movements[this.pattern] || this.ApplyMove;
+    this.movement = this.movements[this.pattern] || this.movement;
     this.patternTimer = rand(this.patternMin, this.patternMax);
 };
 

@@ -408,7 +408,7 @@ var weapon = {
     spawn: function(data) {
 
         // Don't spawn more if already reached the max
-        if (gameScreen.robots.length > data.max + players.length) {
+        if (gameScreen.enemyCount >= data.max) {
             this.switchPattern();
             return;
         }
@@ -416,7 +416,9 @@ var weapon = {
         // Spawn enemies when off cooldown and in range
         if (weapon.checkTime(data, this.isInRange(data.range))) {
             var pos = weapon.getPosition(this, data).addv(this.pos);
-            gameScreen.spawnEnemy(data.enemies, pos).exp = 0;
+            var enemy = gameScreen.spawnEnemy(data.enemies, pos.x, pos.y);
+            enemy.exp = 0;
+            enemy.points = 0;
         }
     },
 

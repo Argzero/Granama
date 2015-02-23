@@ -334,10 +334,7 @@ GameScreen.prototype.spawnEnemy = function(data, x, y) {
     this.robots.unshift(enemy);
     this.enemyCount++;
     
-    // Enemies during the boss fight give 0 points
-    if (this.bossStatus != ACTIVE_NONE) {
-        enemy.points = 0;
-    }
+    return enemy;
 };
 
 /**

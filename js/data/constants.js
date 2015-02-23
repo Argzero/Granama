@@ -168,7 +168,7 @@ ACTIVE_BOSS = 1,
 
 SPAWN_RATE = 180,
 SPAWN_SCALE = 0.3,
-MAX_ENEMIES = 30,
+MAX_ENEMIES = 1,
 MINIBOSS_START = 8,
 SPAWN_DATA = [
     90, 0, LightGunner,
@@ -199,11 +199,11 @@ SPAWN_DATA = [
     2, 6, Hunter,
     2, 6, Solar,
     2, 6, Snatcher,
-    10000, 0, HeavyBoss
+    10000, 0, ScorpionBoss
 ],
 BOSS_SPAWNS = [
-    HeavyBoss
-    //FireBoss,
+    HeavyBoss,
+    ScorpionBoss,
     //PunchBoss,
     //QueenBoss,
     //TankBoss,
