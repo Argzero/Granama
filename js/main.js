@@ -41,6 +41,7 @@ depend('robot/turret');
 depend('robot/weapons');
 
 // Player scripts
+depend('robot/player/angel');
 depend('robot/player/blitz');
 depend('robot/player/commando');
 depend('robot/player/guardian');
@@ -89,25 +90,25 @@ var camera = undefined;
 var gameScreen = undefined;
 var constants = false;
 onLoaderDone = function() {
-	if (!constants) {
-		depend('data/constants');
-		constants = true;
-		return;
-	}
+    if (!constants) {
+        depend('data/constants');
+        constants = true;
+        return;
+    }
 
-	camera = new Camera('granama');
-	
-	TILE = new Sprite('tile', 0, 0);
-	ui.canvas = document.getElementById('ui');
-	ui.ctx = ui.canvas.getContext('2d');
-	
-	controls.mapButton(SHOOT, controls.MOUSE_LEFT, controls.BUTTON_RT);
-	controls.mapButton(SKILL, controls.KEY_SPACE, controls.BUTTON_LT);
-	controls.mapButton(PAUSE, controls.KEY_ESC, controls.BUTTON_START);
+    camera = new Camera('granama');
+    
+    TILE = new Sprite('tile', 0, 0);
+    ui.canvas = document.getElementById('ui');
+    ui.ctx = ui.canvas.getContext('2d');
+    
+    controls.mapButton(SHOOT, controls.MOUSE_LEFT, controls.BUTTON_RT);
+    controls.mapButton(SKILL, controls.KEY_SPACE, controls.BUTTON_LT);
+    controls.mapButton(PAUSE, controls.KEY_ESC, controls.BUTTON_START);
     controls.mapButton(SELECT_1, controls.KEY_ENTER, controls.BUTTON_DOWN);
-	controls.mapButton(CANCEL_1, controls.KEY_ESC, controls.BUTTON_RIGHT);
-	controls.mapButton(SELECT_2, controls.KEY_SPACE, controls.BUTTON_RT);
-	controls.mapButton(CANCEL_2, controls.KEY_DEL, controls.BUTTON_LT);
+    controls.mapButton(CANCEL_1, controls.KEY_ESC, controls.BUTTON_RIGHT);
+    controls.mapButton(SELECT_2, controls.KEY_SPACE, controls.BUTTON_RT);
+    controls.mapButton(CANCEL_2, controls.KEY_DEL, controls.BUTTON_LT);
     controls.mapButton(JOIN, controls.KEY_SPACE, controls.BUTTON_START);
     controls.mapButton(UP_1, controls.KEY_W, controls.AXIS_LYN);
     controls.mapButton(DOWN_1, controls.KEY_S, controls.AXIS_LYP);
@@ -117,13 +118,13 @@ onLoaderDone = function() {
     controls.mapButton(DOWN_2, controls.KEY_DOWN, controls.AXIS_RYP);
     controls.mapButton(LEFT_2, controls.KEY_LEFT, controls.AXIS_RXN);
     controls.mapButton(RIGHT_2, controls.KEY_RIGHT, controls.AXIS_RXP);
-	
-	controls.mapDirectionKey(MOVE, controls.KEY_A, controls.KEY_D, controls.KEY_W, controls.KEY_S, controls.AXIS_LX, controls.AXIS_LY);
-	controls.mapDirectionMouse(LOOK, true, controls.AXIS_RX, controls.AXIS_RY);
-	
-	gameScreen = new TitleScreen();
-	
-	// Cancel the context menu
+    
+    controls.mapDirectionKey(MOVE, controls.KEY_A, controls.KEY_D, controls.KEY_W, controls.KEY_S, controls.AXIS_LX, controls.AXIS_LY);
+    controls.mapDirectionMouse(LOOK, true, controls.AXIS_RX, controls.AXIS_RY);
+    
+    gameScreen = new TitleScreen();
+    
+    // Cancel the context menu
     camera.canvas.oncontextmenu = function(e) {
         return false;
     };
@@ -133,7 +134,7 @@ onLoaderDone = function() {
     // Game loop
     window.setInterval(function() {
         window.scrollTo(0, 0);
-		ui.clear();
+        ui.clear();
         if (gameScreen && gameScreen.draw) {
             if (gameScreen.update) {
                 gameScreen.update();

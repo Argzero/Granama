@@ -3,11 +3,11 @@
  * fires a powerful shotgun blast
  */
 function skillCriticalBlast(player) {
-	
-	/**
-	 * Applies casting and firing the bullets each frame
-	 * when applicable
-	 */
+    
+    /**
+     * Applies casting and firing the bullets each frame
+     * when applicable
+     */
     player.onUpdate = function() {
 
         // Activating the ability
@@ -23,15 +23,15 @@ function skillCriticalBlast(player) {
                 var shell = new Projectile(
                     'abilityShell',
                     -30, 45,
-					this, this,
-					15,
-					bonus,
+                    this, this,
+                    15,
+                    bonus,
                     3 * this.get('power'),
                     449,
                     false,
                     Robot.ENEMY
                 );
-				shell.setupSlowBonus(1.5);
+                shell.setupSlowBonus(1.5);
                 gameScreen.bullets.push(shell);
             }
         }

@@ -12,14 +12,14 @@ depend('robot/skill/sweepingBlade');
 extend('PlayerKnight', 'Player');
 function PlayerKnight() {
     //         Sprite Name    X  Y  Type          HP   Speed  HP+  Damage+  Shield+  Speed+
-	this.super('pKnightBody', 0, 0, Robot.PLAYER, 100, 3,     25,  1,       3,       1);
+    this.super('pKnightBody', 0, 0, Robot.PLAYER, 100, 3,     25,  1,       3,       1);
 
     this.swordSprite = new Sprite('sword', -16, 40).child(this, true);
     this.grappleFull = new Sprite('pKnightGrappleFull', 0, -5).child(this, true);
     this.grappleEmpty = new Sprite('pKnightGrappleEmpty', 0, -10).child(this, false);
     
     // Sprites drawn on top of the robot's body
-	this.postChildren.push(
+    this.postChildren.push(
         new Sprite('pKnightShield', 26, 15).child(this, true),
         new Sprite('pKnightArm', -32, 10).child(this, true),
         this.grappleFull,

@@ -126,7 +126,7 @@ function GameScreen(bossRush) {
 
         // Particles
         for (var i = 0; i < this.particles.length; i++) {
-            this.particles[i].draw();
+            this.particles[i].draw(camera);
             if (this.particles[i].expired) {
                 this.particles.splice(i, 1);
                 i--;

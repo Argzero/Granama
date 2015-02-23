@@ -77,7 +77,7 @@ function LightSpinner(x, y) {
         /* distance    */ 150,
         /* back        */ 'enemyLightSpinnerBack',
         /* spin        */ Math.PI / 15,
-		/* fire        */ false
+        /* fire        */ false
     );
 }
 
@@ -107,7 +107,7 @@ function HeavySpinner(x, y) {
         /* distance    */ 200,
         /* back        */ 'enemyHeavySpinnerBack',
         /* spin        */ Math.PI / 30,
-		/* fire        */ false
+        /* fire        */ false
     );
 
     this.pierceDamage = 0.5;
@@ -139,7 +139,7 @@ function Solar(x, y) {
         /* distance    */ 300,
         /* back        */ 'enemySolarBack',
         /* spin        */ Math.PI / 30,
-		/* fire        */ true
+        /* fire        */ true
     );
 
     this.pierceDamage = 0.5;

@@ -84,7 +84,7 @@ SelectScreen.prototype.prevPart = function(settings) {
         // Make a robot available again when a player no longer selects it
         case PARTS.ROBOT:
 
-			if (!(players[settings.id] instanceof PlayerWrapper)) players[settings.id] = new PlayerWrapper(settings.id);
+            if (!(players[settings.id] instanceof PlayerWrapper)) players[settings.id] = new PlayerWrapper(settings.id);
             this.open.push(settings.robot);
 
             break;

@@ -75,15 +75,15 @@ var enemyManager = {
     bossIncrement: 0,
     bossCount: 0,
     timer: 0,
-	
-	// Experience multipliers for different numbers of players
+    
+    // Experience multipliers for different numbers of players
     expM: [
-	/* 1 Player  */ 1, 
-	/* 2 Players */ 5 / 3, 
-	/* 3 Players */ 9 / 4, 
-	/* 4 Players */ 8 / 3, 
-	/* 5 Players */ 35 / 12
-	],
+    /* 1 Player  */ 1, 
+    /* 2 Players */ 5 / 3, 
+    /* 3 Players */ 9 / 4, 
+    /* 4 Players */ 8 / 3, 
+    /* 5 Players */ 35 / 12
+    ],
 
     // Experience orb data - must go highest to lowest
     expData: [
@@ -103,12 +103,12 @@ var enemyManager = {
     turrets: [],
     bullets: [],
 
-	/**
-	 * Sets up the enemy manager for a new game
-	 */
-	setup: function() {
-		this.bossScore = Math.floor(this.BOSS_SPAWN_BASE * (1 - this.BOSS_PLAYER_SCALE + this.BOSS_PLAYER_SCALE * playerManager.players.length));
-		this.bossIncrement = this.bossScore;
+    /**
+     * Sets up the enemy manager for a new game
+     */
+    setup: function() {
+        this.bossScore = Math.floor(this.BOSS_SPAWN_BASE * (1 - this.BOSS_PLAYER_SCALE + this.BOSS_PLAYER_SCALE * playerManager.players.length));
+        this.bossIncrement = this.bossScore;
         this.bossStatus = 0;
         this.bossCount = 0;
         this.bossId = 0;
@@ -118,7 +118,7 @@ var enemyManager = {
         this.turrets = [];
         this.bullets = [];
         this.shuffle();
-	},
+    },
 
     /**
      * Shuffles the boss spawn order
@@ -132,20 +132,20 @@ var enemyManager = {
         }
         this.BOSS_SPAWNS = temp;
     },
-	
-	/**
-	 * Draws all enemies and their projectiles to the screen
-	 *
-	 * @param {Camera} camera - the camera to draw to
-	 */
+    
+    /**
+     * Draws all enemies and their projectiles to the screen
+     *
+     * @param {Camera} camera - the camera to draw to
+     */
     draw: function(camera) {
-	
+    
         // Mines
-		camera.drawList(this.mines);
-		camera.drawList(this.turrets);
-		camera.drawList(this.enemies);
-		camera.drawList(this.bullets);
-		
+        camera.drawList(this.mines);
+        camera.drawList(this.turrets);
+        camera.drawList(this.enemies);
+        camera.drawList(this.bullets);
+        
         // Enemy indicators if applicable
         if (game.score >= this.bossScore - 10) {
             var pointer = images.get('enemyPointer');

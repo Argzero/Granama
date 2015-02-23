@@ -1,11 +1,11 @@
 var movement = {
 
-	/**
-	 * Helper function for moving towards a target
-	 */
-	moveTowards: function(target) {
-	
-		// Turning values
+    /**
+     * Helper function for moving towards a target
+     */
+    moveTowards: function(target) {
+    
+        // Turning values
         this.turnVec = this.turnVec || new Vector(Math.cos(this.speed / this.turnDivider), Math.sin(this.speed / this.turnDivider));
 
         // Turn towards the player
@@ -25,15 +25,15 @@ var movement = {
         else if (dSq < sq(this.range - speed)) {
             this.move(-forward.x * m * speed / 3, -forward.y * m * speed / 3);
         }
-	},
+    },
 
     /**
      * Basic movement pattern which moves towards the player up until the
      * preferred range and moving away when too close.
      */
     basic: function() {
-		this.movementHelper = movement.moveTowards;
-		this.movementHelper(getClosestPlayer(this.pos));
+        this.movementHelper = movement.moveTowards;
+        this.movementHelper(getClosestPlayer(this.pos));
     },
 
     /**
@@ -43,7 +43,7 @@ var movement = {
 
         // Movement
         var speed = this.get('speed');
-		this.move(this.direction.x * speed, this.direction.y * speed);
+        this.move(this.direction.x * speed, this.direction.y * speed);
 
         // Looking direction
         var player = getClosestPlayer(this.pos);
@@ -164,82 +164,82 @@ var movement = {
         // Move forward
         this.move(this.forward().x * this.speed, this.forward().y * this.speed);
     },
-	
-	/**
-	 * Movement pattern for moving towards other enemies and healing them
-	 */
-	medic: function() {
-	
-		// Turn towards the nearest damaged enemy, ignoring faster units and
-		// prioritizing non-healers
-		var target, dSq;
-		if (this.forcedTarget) {
-			target = this.forcedTarget;
-			dSq = target.pos.distanceSq(this.pos);
-		}
-		else {
-			for (var i = 0; i < enemyManager.enemies.length; i++) {
-				var e = enemyManager.enemies[i];
-				if (e == this || e.health >= e.maxHealth || e.speed > this.speed) continue;
-				var temp = e.pos.distanceSq(this.pos);
-				if (!dSq || ((!e.heal || target.heal) && temp < dSq)) {
-					dSq = temp;
-					target = e;
-				}
-			}
-		}
+    
+    /**
+     * Movement pattern for moving towards other enemies and healing them
+     */
+    medic: function() {
+    
+        // Turn towards the nearest damaged enemy, ignoring faster units and
+        // prioritizing non-healers
+        var target, dSq;
+        if (this.forcedTarget) {
+            target = this.forcedTarget;
+            dSq = target.pos.distanceSq(this.pos);
+        }
+        else {
+            for (var i = 0; i < enemyManager.enemies.length; i++) {
+                var e = enemyManager.enemies[i];
+                if (e == this || e.health >= e.maxHealth || e.speed > this.speed) continue;
+                var temp = e.pos.distanceSq(this.pos);
+                if (!dSq || ((!e.heal || target.heal) && temp < dSq)) {
+                    dSq = temp;
+                    target = e;
+                }
+            }
+        }
 
-		// Move randomly when there's no targets to heal
-		if (!target) {
-			while (!this.backup || this.pos.distanceSq(this.backup) < sq(this.range + 100)) {
-				this.backup = new Vector(rand(game.width), rand(game.height));
-			}
-			target = this.backup;
-		}
+        // Move randomly when there's no targets to heal
+        if (!target) {
+            while (!this.backup || this.pos.distanceSq(this.backup) < sq(this.range + 100)) {
+                this.backup = new Vector(rand(game.width), rand(game.height));
+            }
+            target = this.backup;
+        }
 
-		// Heal the enemy if close enough
-		else if (dSq <= sq(this.range + 10)) {
-			target.health += this.heal;
-			if (target.health > target.maxHealth) {
-				target.health = target.maxHealth;
-			}
-		}
+        // Heal the enemy if close enough
+        else if (dSq <= sq(this.range + 10)) {
+            target.health += this.heal;
+            if (target.health > target.maxHealth) {
+                target.health = target.maxHealth;
+            }
+        }
 
         // Move towards the target
         this.movementHelper = movement.moveTowards;
         this.movementHelper(target);
-	},
-	
-	/**
-	 * Movement pattern for orbiting around the player
-	 */
-	orbit: function() {
-	
-		// Move normally if not in the preferred range
-		var player = getClosestPlayer(this.pos);
-		var ds = this.pos.distanceSq(player.pos);
-		var tooFar = ds > sq(this.range + 100);
-		var tooClose = ds < sq(this.range - 100);
-		
-		// Turn towards the player
-		var d = player.pos.clone().subtractv(this.pos);
-		var d1 = d.dot(this.rotation);
-		
-		// Turn in the correct direction
-		this.movementHelper = movement.moveTowards;
-		if (tooFar) {
-			this.movementHelper(player);
-		}
-		else if (tooClose) {
-			this.movementHelper({ pos: d.multiply(-500, -500).addv(this.pos) });
-		}
-		else if (d1 > 0) {
-			this.lookTowards(d.rotate(0, 1).multiply(500, 500).addv(this.pos), this.turnVec);
-			this.movementHelper({ pos: d });
-		}
-		else if (d1 < 0) {
-			this.lookTowards(d.rotate(0, -1).multiply(500, 500).addv(this.pos), this.turnVec);
-			this.movementHelper({ pos: d });
-		}
-	}
+    },
+    
+    /**
+     * Movement pattern for orbiting around the player
+     */
+    orbit: function() {
+    
+        // Move normally if not in the preferred range
+        var player = getClosestPlayer(this.pos);
+        var ds = this.pos.distanceSq(player.pos);
+        var tooFar = ds > sq(this.range + 100);
+        var tooClose = ds < sq(this.range - 100);
+        
+        // Turn towards the player
+        var d = player.pos.clone().subtractv(this.pos);
+        var d1 = d.dot(this.rotation);
+        
+        // Turn in the correct direction
+        this.movementHelper = movement.moveTowards;
+        if (tooFar) {
+            this.movementHelper(player);
+        }
+        else if (tooClose) {
+            this.movementHelper({ pos: d.multiply(-500, -500).addv(this.pos) });
+        }
+        else if (d1 > 0) {
+            this.lookTowards(d.rotate(0, 1).multiply(500, 500).addv(this.pos), this.turnVec);
+            this.movementHelper({ pos: d });
+        }
+        else if (d1 < 0) {
+            this.lookTowards(d.rotate(0, -1).multiply(500, 500).addv(this.pos), this.turnVec);
+            this.movementHelper({ pos: d });
+        }
+    }
 };

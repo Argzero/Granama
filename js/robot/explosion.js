@@ -43,7 +43,7 @@ function RocketExplosion(type, pos, size) {
     var zero = new Vector(0, 0);
 
     this.type = type;
-	this.pos = pos;
+    this.pos = pos;
     this.size = size;
     this.frame = 0;
 
@@ -116,7 +116,7 @@ function ExplosionPiece(sprite, id, x, y, size, vel, alpha, alphaDecay, alphaDel
     this.super(sprite, x, y);
     this.fadeIn = fadeIn;
     this.id = id;
-	this.setScale(size / this.width, size / this.height);
+    this.setScale(size / this.width, size / this.height);
     this.vel = vel;
     this.alpha = fadeIn ? 0 : alpha;
     this.targetAlpha = alpha;

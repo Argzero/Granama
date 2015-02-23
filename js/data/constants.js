@@ -2,26 +2,26 @@ var
 
 // Images used by death explosions
 EXPLOSION_IMGS = new Array(
-	new Sprite("EX1", 0, 0),
-	new Sprite("EX2", 0, 0),
-	new Sprite("EX3", 0, 0),
-	new Sprite("EX4", 0, 0),
-	new Sprite("EX5", 0, 0),
-	new Sprite("EX6", 0, 0),
-	new Sprite("EX7", 0, 0),
-	new Sprite("EX8", 0, 0),
-	new Sprite("EX9", 0, 0),
-	new Sprite("EX10", 0, 0),
-	new Sprite("PEX1", 0, 0),
-	new Sprite("PEX2", 0, 0),
-	new Sprite("PEX3", 0, 0),
-	new Sprite("PEX4", 0, 0),
-	new Sprite("PEX5", 0, 0),
-	new Sprite("PEX6", 0, 0),
-	new Sprite("PEX7", 0, 0),
-	new Sprite("PEX8", 0, 0),
-	new Sprite("PEX9", 0, 0),
-	new Sprite("PEX10", 0, 0)
+    new Sprite("EX1", 0, 0),
+    new Sprite("EX2", 0, 0),
+    new Sprite("EX3", 0, 0),
+    new Sprite("EX4", 0, 0),
+    new Sprite("EX5", 0, 0),
+    new Sprite("EX6", 0, 0),
+    new Sprite("EX7", 0, 0),
+    new Sprite("EX8", 0, 0),
+    new Sprite("EX9", 0, 0),
+    new Sprite("EX10", 0, 0),
+    new Sprite("PEX1", 0, 0),
+    new Sprite("PEX2", 0, 0),
+    new Sprite("PEX3", 0, 0),
+    new Sprite("PEX4", 0, 0),
+    new Sprite("PEX5", 0, 0),
+    new Sprite("PEX6", 0, 0),
+    new Sprite("PEX7", 0, 0),
+    new Sprite("PEX8", 0, 0),
+    new Sprite("PEX9", 0, 0),
+    new Sprite("PEX10", 0, 0)
 ),
 
 // Sizes
@@ -56,107 +56,105 @@ TURRET_RANGE = 500,
 
 // Skill Data
 PLAYER_DATA = [
-	{
-		player : PlayerGuardian,
-		preview: 'pDefense',
-		name   : 'Guardian',
-		ups    : ['MinigunAttackSpeed', 'BlastRadius', 'Knockback', 'ShieldRecharge', 'MovementSpeed'],
-		icons  : ['Minigun', 'Explosion', 'Knockback', 'Shield', 'Speed'],
-		color  : '#d0d',
-		weapons: ['Rocket Launcher', 'Minigun'],
-		skills : [
-			//{ name: 'Recharger', callback: SkillRecharger },
-			{name: 'Perfect Shield', callback: skillPerfectShield},
-			{name: 'Reflector', callback: skillReflector},
-			{name: 'Stasis', callback: skillStasis}
-		]
-	},
-	{
-		player : PlayerBlitz,
-		preview: 'pSpeed',
-		name   : 'Blitz',
-		ups    : ['CooldownReduction', 'ShotgunProjectiles', 'SlowingDuration', 'ShieldRecharge', 'MovementSpeed'],
-		icons  : ['Cooldown', 'Shotgun', 'Slow', 'Shield', 'Speed'],
-		color  : '#06f',
-		weapons: ['Static Gun', 'Shotgun'],
-		skills : [
-			{name: 'Blink', callback: skillBlink},
-			{name: 'Critical Blast', callback: skillCriticalBlast},
-			{name: 'Overdrive', callback: skillOverdrive}
-		]
-	},
-	{
-		player : PlayerSlayer,
-		preview: 'pPower',
-		name   : 'Slayer',
-		ups    : ['AttackSpeed', 'LaserSpread', 'FlamethrowerRange', 'ShieldRecharge', 'MovementSpeed'],
-		icons  : ['Laser', 'Spread', 'Flamethrower', 'Shield', 'Speed'],
-		color  : '#0f0',
-		weapons: ['Laser Gun', 'Flamethrower'],
-		skills : [
-			{ name: 'KO Cannon', callback: skillKOCannon },
-			{ name: 'Decimation', callback: skillDecimation },
-			{ name: 'Wave Burst', callback: skillWaveburst } 
-		]
-	},
-	{
-		player : PlayerKnight,
-		preview: 'pKnight',
-		name   : 'Knight',
-		ups    : ['GrappleStun', 'SwordSwingArc', 'SwordLifeSteal', 'ShieldRecharge', 'MovementSpeed'],
-		icons  : ['Grapple', 'Slash', 'Lifesteal', 'Shield', 'Speed'],
-		color  : '#fcf',
-		weapons: ['Grappling Hook', 'Sword'],
-		skills : [
-			{name: 'Piercing Arrow', callback: skillPiercingArrow},
-			{name: 'Gyro Slash', callback: skillGyroSlash},
-			{name: 'Sweeping Blade', callback: skillSweepingBlade}
-		]
-	},
-	{
-		player : PlayerValkyrie,
-		preview: 'pValkyrie',
-		name   : 'Valkyrie',
-		ups    : ['ChargeSpeed', 'RailGunRange', 'DualShot', 'ShieldRecharge', 'MovementSpeed'],
-		icons  : ['Charge', 'Range', 'Dual', 'Shield', 'Speed'],
-		color  : '#0ff',
-		weapons: ['Rail Gun', 'Double Shot'],
-		skills : [
-			{name: 'Ionic Thunder', callback: skillIonicThunder},
-			{name: 'Lock Down', callback: skillLockdown},
-			{name: 'Artillery', callback: skillArtillery}
-		]
-	},
-	{
-		player : PlayerCommando,
-		preview: 'pCommando',
-		name   : 'Commando',
-		ups    : ['DroneRange', 'DroneShots', 'LMGBaseDamage', 'ShieldRecharge', 'MovementSpeed'],
-		icons  : ['DroneRange', 'DroneShots', 'LMGDamage', 'Shield', 'Speed'],
-		color  : '#070',
-		weapons: ['Drone Kit', 'Light Machine Gun'],
-		skills : [
-			{name: 'Missile Barrage', callback: skillMissileBarrage},
-			{name: 'Targeter', callback: skillTargeter},
-			{name: 'Laser Bomb', callback: skillLaserBomb}
-		]
-	}
-    /*
-	{
-		player : PlayerAngelType,
-		preview: 'pAngel',
-		name   : 'Angel',
-		ups    : ['StaticAura', 'PowerAura', 'PrismBeamPower', 'ShieldRecharge', 'MovementSpeed'],
-		icons  : ['DroneRange', 'DroneShots', 'LMGDamage', 'Shield', 'Speed'],
-		color  : '#fff',
-		weapons: ['Prism Beam', 'Healing Kit'],
-		skills : [
-			{name: 'Angelic Assault', callback: SkillAngelicAssault},
-			{name: 'Aura Blast', callback: SkillAuraBlast},
-			{name: 'Medic', callback: SkillMedic}
-		]
-	}
-    */
+    {
+        player : PlayerGuardian,
+        preview: 'pDefense',
+        name   : 'Guardian',
+        ups    : ['MinigunAttackSpeed', 'BlastRadius', 'Knockback', 'ShieldRecharge', 'MovementSpeed'],
+        icons  : ['Minigun', 'Explosion', 'Knockback', 'Shield', 'Speed'],
+        color  : '#d0d',
+        weapons: ['Rocket Launcher', 'Minigun'],
+        skills : [
+            //{ name: 'Recharger', callback: SkillRecharger },
+            {name: 'Perfect Shield', callback: skillPerfectShield},
+            {name: 'Reflector', callback: skillReflector},
+            {name: 'Stasis', callback: skillStasis}
+        ]
+    },
+    {
+        player : PlayerBlitz,
+        preview: 'pSpeed',
+        name   : 'Blitz',
+        ups    : ['CooldownReduction', 'ShotgunProjectiles', 'SlowingDuration', 'ShieldRecharge', 'MovementSpeed'],
+        icons  : ['Cooldown', 'Shotgun', 'Slow', 'Shield', 'Speed'],
+        color  : '#06f',
+        weapons: ['Static Gun', 'Shotgun'],
+        skills : [
+            {name: 'Blink', callback: skillBlink},
+            {name: 'Critical Blast', callback: skillCriticalBlast},
+            {name: 'Overdrive', callback: skillOverdrive}
+        ]
+    },
+    {
+        player : PlayerSlayer,
+        preview: 'pPower',
+        name   : 'Slayer',
+        ups    : ['AttackSpeed', 'LaserSpread', 'FlamethrowerRange', 'ShieldRecharge', 'MovementSpeed'],
+        icons  : ['Laser', 'Spread', 'Flamethrower', 'Shield', 'Speed'],
+        color  : '#0f0',
+        weapons: ['Laser Gun', 'Flamethrower'],
+        skills : [
+            { name: 'KO Cannon', callback: skillKOCannon },
+            { name: 'Decimation', callback: skillDecimation },
+            { name: 'Wave Burst', callback: skillWaveburst } 
+        ]
+    },
+    {
+        player : PlayerKnight,
+        preview: 'pKnight',
+        name   : 'Knight',
+        ups    : ['GrappleStun', 'SwordSwingArc', 'SwordLifeSteal', 'ShieldRecharge', 'MovementSpeed'],
+        icons  : ['Grapple', 'Slash', 'Lifesteal', 'Shield', 'Speed'],
+        color  : '#fcf',
+        weapons: ['Grappling Hook', 'Sword'],
+        skills : [
+            {name: 'Piercing Arrow', callback: skillPiercingArrow},
+            {name: 'Gyro Slash', callback: skillGyroSlash},
+            {name: 'Sweeping Blade', callback: skillSweepingBlade}
+        ]
+    },
+    {
+        player : PlayerValkyrie,
+        preview: 'pValkyrie',
+        name   : 'Valkyrie',
+        ups    : ['ChargeSpeed', 'RailGunRange', 'DualShot', 'ShieldRecharge', 'MovementSpeed'],
+        icons  : ['Charge', 'Range', 'Dual', 'Shield', 'Speed'],
+        color  : '#0ff',
+        weapons: ['Rail Gun', 'Double Shot'],
+        skills : [
+            {name: 'Ionic Thunder', callback: skillIonicThunder},
+            {name: 'Lock Down', callback: skillLockdown},
+            {name: 'Artillery', callback: skillArtillery}
+        ]
+    },
+    {
+        player : PlayerCommando,
+        preview: 'pCommando',
+        name   : 'Commando',
+        ups    : ['DroneRange', 'DroneShots', 'LMGBaseDamage', 'ShieldRecharge', 'MovementSpeed'],
+        icons  : ['DroneRange', 'DroneShots', 'LMGDamage', 'Shield', 'Speed'],
+        color  : '#070',
+        weapons: ['Drone Kit', 'Light Machine Gun'],
+        skills : [
+            {name: 'Missile Barrage', callback: skillMissileBarrage},
+            {name: 'Targeter', callback: skillTargeter},
+            {name: 'Laser Bomb', callback: skillLaserBomb}
+        ]
+    },
+    {
+        player : PlayerAngel,
+        preview: 'pAngel',
+        name   : 'Angel',
+        ups    : ['StaticAura', 'PowerAura', 'PrismBeamPower', 'ShieldRecharge', 'MovementSpeed'],
+        icons  : ['DroneRange', 'DroneShots', 'LMGDamage', 'Shield', 'Speed'],
+        color  : '#fff',
+        weapons: ['Prism Beam', 'Healing Kit'],
+        skills : [
+            {name: 'Angelic Assault', callback: skillAngelicAssault},
+            {name: 'Aura Blast', callback: skillAuraBlast},
+            {name: 'Medic', callback: skillRepulse}
+        ]
+    }
 ],
 
 // Animation
@@ -173,64 +171,64 @@ SPAWN_SCALE = 0.3,
 MAX_ENEMIES = 30,
 MINIBOSS_START = 8,
 SPAWN_DATA = [
-	90, 0, LightGunner,
-	45, 1, HeavyGunner,
-	60, 0, LightArtillery,
-	30, 1, HeavyArtillery,
-	15, 0, LightMelee,
-	10, 1, HeavyMelee,
-	30, 0, LightBomber,
-	15, 1, HeavyBomber,
-	20, 0, LightOrbiter,
-	10, 1, HeavyOrbiter,
-	15, 0, LightSpinner,
-	10, 1, HeavySpinner,
-	15, 5, LightMedic,
-	10, 5, HeavyMedic,
-	30, 0, LightGrabber,
-	20, 1, HeavyGrabber,
-	1, 3, Turreter,
-	1, 3, Railer,
-	1, 3, Paladin,
-	1, 3, Hunter,
-	1, 3, Solar,
-	1, 3, Snatcher,
-	2, 6, Turreter,
-	2, 6, Railer,
-	2, 6, Paladin,
-	2, 6, Hunter,
-	2, 6, Solar,
-	2, 6, Snatcher
+    90, 0, LightGunner,
+    45, 1, HeavyGunner,
+    60, 0, LightArtillery,
+    30, 1, HeavyArtillery,
+    15, 0, LightMelee,
+    10, 1, HeavyMelee,
+    30, 0, LightBomber,
+    15, 1, HeavyBomber,
+    200000, 0, LightOrbiter,
+    10, 1, HeavyOrbiter,
+    15, 0, LightSpinner,
+    10, 1, HeavySpinner,
+    15, 5, LightMedic,
+    10, 5, HeavyMedic,
+    30, 0, LightGrabber,
+    20, 1, HeavyGrabber,
+    1, 3, Turreter,
+    1, 3, Railer,
+    1, 3, Paladin,
+    1, 3, Hunter,
+    1, 3, Solar,
+    1, 3, Snatcher,
+    2, 6, Turreter,
+    2, 6, Railer,
+    2, 6, Paladin,
+    2, 6, Hunter,
+    2, 6, Solar,
+    2, 6, Snatcher
 ],
 /*
 BOSS_SPAWNS = [
-	HeavyBoss,
-	FireBoss,
-	PunchBoss,
-	QueenBoss,
-	TankBoss,
-	DragonBoss
+    HeavyBoss,
+    FireBoss,
+    PunchBoss,
+    QueenBoss,
+    TankBoss,
+    DragonBoss
 ],
 DRAGON_SPAWNS = [
-	1, 0, HunterEnemy
+    1, 0, HunterEnemy
 ],
 HEAVY_SPAWNS = [
-	1, 0, SolarEnemy
+    1, 0, SolarEnemy
 ],
 HEAVY_EASY_SPAWNS = [
-	1, 0, LightBomberEnemy,
-	1, 0, HeavyBomberEnemy
+    1, 0, LightBomberEnemy,
+    1, 0, HeavyBomberEnemy
 ],
 PUNCH_SPAWNS = [
-	1, 0, PaladinEnemy
+    1, 0, PaladinEnemy
 ],
 FIRE_SPAWNS = [
-	10, 0, HeavyGrabberEnemy,
-	1, 0, SnatcherEnemy
+    10, 0, HeavyGrabberEnemy,
+    1, 0, SnatcherEnemy
 ],
 QUEEN_SPAWNS = [
-	4, 0, HiveDroneEnemy,
-	1, 0, HiveDefenderEnemy
+    4, 0, HiveDroneEnemy,
+    1, 0, HiveDefenderEnemy
 ],
 */
 

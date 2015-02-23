@@ -10,7 +10,7 @@
 extend('Mine', 'Sprite');
 function Mine(shooter, pos, damage, type, target) {
     this.super(type + 'Mine', pos.x, pos.y);
-	this.shooter = shooter;
+    this.shooter = shooter;
     this.lifespan = MINE_DURATION;
     this.power = damage;
     this.exploded = false;
@@ -46,7 +46,7 @@ Mine.prototype.damage = function(amount, source) {
  */
 Mine.prototype.explode = function() {
     if (this.exploded) {
-		this.expired = true;
+        this.expired = true;
         return;
     }
     this.exploded = true;
@@ -57,5 +57,5 @@ Mine.prototype.explode = function() {
             r.damage(this.power, this.shooter);
         }
     }
-	this.expired = true;
+    this.expired = true;
 }

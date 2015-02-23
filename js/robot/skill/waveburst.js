@@ -1,8 +1,8 @@
 function skillWaveburst(player) {
-	
-	/**
-	 * Updates ability effects each frame while not dead
-	 */
+    
+    /**
+     * Updates ability effects each frame while not dead
+     */
     player.onUpdate = function() {
 
         // Activating the ability

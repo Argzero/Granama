@@ -15,18 +15,18 @@ gamepadActive  = true;
  * @param {Number} y - vertical coordinate
  */
 function getClosestPlayer(x, y) {
-	var r = undefined;
-	var min = 9999999;
-	for (var i = 0; i < this.players.length; i++) {
-		var robot = this.players[i];
-		if (robot.health <= 0) continue;
-		var dSq = (robot.x - x) * (robot.x - x) + (robot.y - y) * (robot.y - y);
-		if (dSq < min) {
-			min = dSq;
-			r = robot;
-		}
-	}
-	return r || this.players[0];
+    var r = undefined;
+    var min = 9999999;
+    for (var i = 0; i < this.players.length; i++) {
+        var robot = this.players[i];
+        if (robot.health <= 0) continue;
+        var dSq = (robot.x - x) * (robot.x - x) + (robot.y - y) * (robot.y - y);
+        if (dSq < min) {
+            min = dSq;
+            r = robot;
+        }
+    }
+    return r || this.players[0];
 }
 
 /**
@@ -35,30 +35,30 @@ function getClosestPlayer(x, y) {
  * @param {Number} amount - the amount of players to set up
  */
 function setPlayerCount(amount) {
-	this.players = [];
-	while (this.players.length < amount && (this.players.length < 1 || controls.GAMEPADS_SUPPORTED)) {
-		this.players.push(new PlayerWrapper(this.players.length - 1));
-	}
-	this.keyboardActive = true;
-	this.gamepadActive = players.length > 1;
+    this.players = [];
+    while (this.players.length < amount && (this.players.length < 1 || controls.GAMEPADS_SUPPORTED)) {
+        this.players.push(new PlayerWrapper(this.players.length - 1));
+    }
+    this.keyboardActive = true;
+    this.gamepadActive = players.length > 1;
 }
 
 /**
  * Cleans the list of players, removing players that did not join
  */
 function cleanPlayerList() {
-	this.keyboardActive = false;
-	this.gamepadActive = false;
-	for (var i = 0; i < this.players.length; i++) {
-		if (!players[i].health) {
-			this.players.splice(i, 1);
-			i--;
-		}
-		else if (players[i].input.id === undefined) {
-			this.keyboardActive = true;
-		}
-		else this.gamepadActive = true;
-	}
+    this.keyboardActive = false;
+    this.gamepadActive = false;
+    for (var i = 0; i < this.players.length; i++) {
+        if (!players[i].health) {
+            this.players.splice(i, 1);
+            i--;
+        }
+        else if (players[i].input.id === undefined) {
+            this.keyboardActive = true;
+        }
+        else this.gamepadActive = true;
+    }
 }
 
 /**

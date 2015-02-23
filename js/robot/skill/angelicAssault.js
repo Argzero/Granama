@@ -4,7 +4,7 @@
  *
  * @param {Player} player - player to set up for
  */ 
-function SkillAngelicAssault(player) {
+function skillAngelicAssault(player) {
 
     /**
      * Updates the skill each frame, handling casting
@@ -21,7 +21,17 @@ function SkillAngelicAssault(player) {
         }
         
         // Base value buffs
-        this.speed = this.speedBase * (this.skillDuration > 0 ? 1.5 : 1);
-        this.revSpeed = this.revBase * (this.skillDuration > 0 ? 2.5 : 1);
+        if (this.skillDuration > 0) {
+            this.speed = this.baseSpeed * 1.5;
+            this.revSpeed = this.revBase * 2.5;
+            this.prismData.sprite = 'abilityPrismBeam';
+        }
+        
+        // Reset when not active
+        else {
+            this.speed = this.baseSpeed;
+            this.revSpeed = this.revBase;
+            this.prismData.sprite = 'prismBeam';
+        }
     }
 }

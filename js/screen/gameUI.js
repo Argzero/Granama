@@ -3,43 +3,43 @@ depend('data/images');
 // Handles drawing the UI in the game
 var ui = {
 
-	// UI canvas
-	canvas: undefined,
-	ctx: undefined,
-	
+    // UI canvas
+    canvas: undefined,
+    ctx: undefined,
+    
     ready: undefined,
     hovered: undefined,
     start: undefined,
     upgradeAlpha: 0,
-	cursor: GetImage('cursor'),
-	
-	/**
-	 * Clears the UI canvas
-	 */
-	clear: function() {
+    cursor: GetImage('cursor'),
+    
+    /**
+     * Clears the UI canvas
+     */
+    clear: function() {
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-	},
-	
-	/**
-	 * Draws the background of the game
-	 */ 
-	drawBackground: function() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    },
+    
+    /**
+     * Draws the background of the game
+     */ 
+    drawBackground: function() {
         var modX = -camera.pos.x - (-camera.pos.x) % TILE.width;
         var modY = -camera.pos.y - (-camera.pos.y) % TILE.height;
-		if (TILE && TILE.width) {
-			var width = camera.canvas.width;
-			var height = camera.canvas.height;
-			for (var i = -1; i < width / TILE.width + 3; i++) {
-				var x = i * TILE.width;
-				for (var j = -1; j < height / TILE.height + 3; j++) {
-					var y = j * TILE.height;
-					TILE.moveTo(x + modX, y + modY);
-					TILE.draw(camera);
-				}
-			}
-		}
-	},
+        if (TILE && TILE.width) {
+            var width = camera.canvas.width;
+            var height = camera.canvas.height;
+            for (var i = -1; i < width / TILE.width + 3; i++) {
+                var x = i * TILE.width;
+                for (var j = -1; j < height / TILE.height + 3; j++) {
+                    var y = j * TILE.height;
+                    TILE.moveTo(x + modX, y + modY);
+                    TILE.draw(camera);
+                }
+            }
+        }
+    },
     
     /**
      * Draws the overlay for a paused game with the provided player
@@ -49,26 +49,26 @@ var ui = {
      */
     drawPauseOverlay: function(player) {
         ui.ctx.globalAlpha = 0.65;
-		ui.ctx.fillStyle = 'black';
-		ui.ctx.fillRect(SIDEBAR_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-		ui.ctx.globalAlpha = 1;
-		ui.ctx.fillStyle = 'white';
-		ui.ctx.font = '48px Flipbash';
-		ui.ctx.textAlign = 'center';
-		ui.ctx.fillText('Paused By', WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 - 50);
-		ui.ctx.fillStyle = gameScreen.paused.color;
-		ui.ctx.fillText(gameScreen.paused.name, WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 + 20);
+        ui.ctx.fillStyle = 'black';
+        ui.ctx.fillRect(SIDEBAR_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+        ui.ctx.globalAlpha = 1;
+        ui.ctx.fillStyle = 'white';
+        ui.ctx.font = '48px Flipbash';
+        ui.ctx.textAlign = 'center';
+        ui.ctx.fillText('Paused By', WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 - 50);
+        ui.ctx.fillStyle = gameScreen.paused.color;
+        ui.ctx.fillText(gameScreen.paused.name, WINDOW_WIDTH / 2 + SIDEBAR_WIDTH, WINDOW_HEIGHT / 2 + 20);
     },
-	
-	/**
-	 * Draws the UI cursor
-	 */
-	drawCursor: function() {
-		if (keyboardActive) {
-			this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-			this.ctx.drawImage(this.cursor, controls.mouse.x - this.cursor.width / 2, controls.mouse.y - this.cursor.height / 2);
-		}
-	},
+    
+    /**
+     * Draws the UI cursor
+     */
+    drawCursor: function() {
+        if (keyboardActive) {
+            this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+            this.ctx.drawImage(this.cursor, controls.mouse.x - this.cursor.width / 2, controls.mouse.y - this.cursor.height / 2);
+        }
+    },
 
     /**
      * Draws the HUDs around each player
@@ -100,7 +100,7 @@ var ui = {
                 ui.ctx.drawImage(img, -img.width / 2, -120);
                 ui.ctx.globalAlpha = 1;
                 ui.ctx.setTransform(1, 0, 0, 1, 0, 0);
-				ui.ctx.translate(SIDEBAR_WIDTH + gameScreen.scrollX, gameScreen.scrollY);
+                ui.ctx.translate(SIDEBAR_WIDTH + gameScreen.scrollX, gameScreen.scrollY);
 
                 player.levelFrame++;
                 if (player.levelFrame >= 210) {
@@ -194,7 +194,7 @@ var ui = {
         }
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     },
-	
+    
     // Draws the sidebar with the upgrades
     drawStatBar: function() {
 
@@ -290,115 +290,115 @@ var ui = {
         }
     },
 
-	// Draws the upgrade UI for the game
-	drawUpgradeUI: function() {
+    // Draws the upgrade UI for the game
+    drawUpgradeUI: function() {
 
-		this.upgradeAlpha = Math.min(1, this.upgradeAlpha + 0.02);
+        this.upgradeAlpha = Math.min(1, this.upgradeAlpha + 0.02);
 
-		this.ctx.globalAlpha = this.upgradeAlpha;
+        this.ctx.globalAlpha = this.upgradeAlpha;
 
-		// Draw the title box
-		var x = (element.width + SIDEBAR_WIDTH) / 2;
-		var y = element.height / 2;
-		this.ctx.font = "40px Flipbash";
-		this.ctx.fillStyle = "#484848";
-		this.ctx.fillRect(x - 395, y - 380, 790, 80);
-		this.ctx.fillStyle = "#000000";
-		this.ctx.fillRect(x - 385, y - 370, 770, 60);
+        // Draw the title box
+        var x = (element.width + SIDEBAR_WIDTH) / 2;
+        var y = element.height / 2;
+        this.ctx.font = "40px Flipbash";
+        this.ctx.fillStyle = "#484848";
+        this.ctx.fillRect(x - 395, y - 380, 790, 80);
+        this.ctx.fillStyle = "#000000";
+        this.ctx.fillRect(x - 385, y - 370, 770, 60);
 
-		// Draw the title
-		this.ctx.fillStyle = "#FFFFFF";
-		this.ctx.textAlign = 'center';
-		this.ctx.textBaseline = 'top';
-		this.ctx.fillText("Upgrades", x, y - 380);
+        // Draw the title
+        this.ctx.fillStyle = "#FFFFFF";
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'top';
+        this.ctx.fillText("Upgrades", x, y - 380);
 
-		// Draw player stats
-		var baseX = x - (players.length - 1) * 135;
-		for (var i = 0; i < players.length; i++) {
-			var player = players[i];
+        // Draw player stats
+        var baseX = x - (players.length - 1) * 135;
+        for (var i = 0; i < players.length; i++) {
+            var player = players[i];
 
-			x = baseX + 270 * i;
+            x = baseX + 270 * i;
 
-			// Draw the boxes for the options
-			this.ctx.fillStyle = '#484848';
-			this.ctx.fillRect(x - 125, y - 280, 250, 600);
-			this.ctx.fillStyle = (this.ready[i] ? '#666' : '#000');
-			this.ctx.fillRect(x - 115, y - 270, 230, 580);
+            // Draw the boxes for the options
+            this.ctx.fillStyle = '#484848';
+            this.ctx.fillRect(x - 125, y - 280, 250, 600);
+            this.ctx.fillStyle = (this.ready[i] ? '#666' : '#000');
+            this.ctx.fillRect(x - 115, y - 270, 230, 580);
 
-			// Input
-			var input = players[i].input;
+            // Input
+            var input = players[i].input;
 
-			// Name
-			this.ctx.font = '32px Flipbash';
-			this.ctx.textAlign = 'center';
-			this.ctx.textBaseline = 'top';
-			this.ctx.fillStyle = player.color;
-			this.ctx.fillText(player.name, x, y - 260);
+            // Name
+            this.ctx.font = '32px Flipbash';
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'top';
+            this.ctx.fillStyle = player.color;
+            this.ctx.fillText(player.name, x, y - 260);
 
-			// Points
-			this.ctx.font = '24px Flipbash';
-			this.ctx.fillStyle = 'white';
-			this.ctx.fillText('Points: ' + player.points, x, y - 220);
+            // Points
+            this.ctx.font = '24px Flipbash';
+            this.ctx.fillStyle = 'white';
+            this.ctx.fillText('Points: ' + player.points, x, y - 220);
 
-			// Upgrades
-			for (var j = 0; j < 5; j++) {
-				for (var k = 0; k < 10; k++) {
-					var upped = player.upgrades[j] > k;
-					var newUpped = upped && this.start[i][j] <= k;
-					this.ctx.drawImage(GetImage((newUpped ? 'Full' : (upped ? player.name : 'Empty')) + 'Bar'), x + 17 * k - 57, y - 150 + j * 90);
-				}
-				var img = GetImage(player.name + player.ups[j] + 'UI' + (this.hovered[i] == j ? 'Selected' : ''));
-				this.ctx.drawImage(img, x - 115, y - 175 + j * 90);
-			}
+            // Upgrades
+            for (var j = 0; j < 5; j++) {
+                for (var k = 0; k < 10; k++) {
+                    var upped = player.upgrades[j] > k;
+                    var newUpped = upped && this.start[i][j] <= k;
+                    this.ctx.drawImage(GetImage((newUpped ? 'Full' : (upped ? player.name : 'Empty')) + 'Bar'), x + 17 * k - 57, y - 150 + j * 90);
+                }
+                var img = GetImage(player.name + player.ups[j] + 'UI' + (this.hovered[i] == j ? 'Selected' : ''));
+                this.ctx.drawImage(img, x - 115, y - 175 + j * 90);
+            }
 
-			// Ready button
-			this.ctx.fillStyle = '#484848';
-			this.ctx.fillRect(x - 125, y + 300, 250, 80);
-			this.ctx.fillStyle = (this.hovered[i] == 5 ? '#666' : '#000');
-			this.ctx.fillRect(x - 115, y + 310, 230, 60);
-			this.ctx.fillStyle = 'white';
-			this.ctx.font = '32px Flipbash';
-			this.ctx.fillText('Ready', x, y + 310);
+            // Ready button
+            this.ctx.fillStyle = '#484848';
+            this.ctx.fillRect(x - 125, y + 300, 250, 80);
+            this.ctx.fillStyle = (this.hovered[i] == 5 ? '#666' : '#000');
+            this.ctx.fillRect(x - 115, y + 310, 230, 60);
+            this.ctx.fillStyle = 'white';
+            this.ctx.font = '32px Flipbash';
+            this.ctx.fillText('Ready', x, y + 310);
 
-			if (input.up == 1 && this.hovered[i] > 0 && !this.ready[i]) {
-				this.hovered[i]--;
-			}
-			if (input.down == 1 && this.hovered[i] < 5 && !this.ready[i]) {
-				this.hovered[i]++;
-			}
+            if (input.up == 1 && this.hovered[i] > 0 && !this.ready[i]) {
+                this.hovered[i]--;
+            }
+            if (input.down == 1 && this.hovered[i] < 5 && !this.ready[i]) {
+                this.hovered[i]++;
+            }
 
-			if (input.confirm == 1 || (input.right == 1 && input.id === undefined)) {
-				if (this.hovered[i] < 5) {
-					if (player.points > 0 && player.upgrades[this.hovered[i]] < 10) {
-						player.upgrades[this.hovered[i]]++;
-						player.points--;
-					}
-				}
-				else if (input.confirm == 1) {
-					this.ready[i] = true;
+            if (input.confirm == 1 || (input.right == 1 && input.id === undefined)) {
+                if (this.hovered[i] < 5) {
+                    if (player.points > 0 && player.upgrades[this.hovered[i]] < 10) {
+                        player.upgrades[this.hovered[i]]++;
+                        player.points--;
+                    }
+                }
+                else if (input.confirm == 1) {
+                    this.ready[i] = true;
 
-					var allReady = true;
-					for (var j = 0; j < this.ready.length; j++) {
-						if (!this.ready[j]) allReady = false;
-					}
-					if (allReady) {
-						gameScreen = this.screen;
-						gameScreen.paused = false;
-					}
-				}
-			}
-			if (input.cancel == 1 || (input.left == 1 && input.id === undefined)) {
-				if (this.hovered[i] < 5) {
-					if (player.upgrades[this.hovered[i]] > this.start[i][this.hovered[i]]) {
-						player.upgrades[this.hovered[i]]--;
-						player.points++;
-					}
-				}
-				else if (input.cancel == 1) this.ready[i] = false;
-			}
-		}
+                    var allReady = true;
+                    for (var j = 0; j < this.ready.length; j++) {
+                        if (!this.ready[j]) allReady = false;
+                    }
+                    if (allReady) {
+                        gameScreen = this.screen;
+                        gameScreen.paused = false;
+                    }
+                }
+            }
+            if (input.cancel == 1 || (input.left == 1 && input.id === undefined)) {
+                if (this.hovered[i] < 5) {
+                    if (player.upgrades[this.hovered[i]] > this.start[i][this.hovered[i]]) {
+                        player.upgrades[this.hovered[i]]--;
+                        player.points++;
+                    }
+                }
+                else if (input.cancel == 1) this.ready[i] = false;
+            }
+        }
 
-		// Reset the alpha
-		this.ctx.globalAlpha = 1;
-	}
+        // Reset the alpha
+        this.ctx.globalAlpha = 1;
+    }
 }

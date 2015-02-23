@@ -12,12 +12,12 @@ depend('robot/skill/targeter');
 extend('PlayerCommando', 'Player');
 function PlayerCommando() {
     //         Sprite Name      X  Y  Type          HP   Speed  HP+  Damage+  Shield+  Speed+
-	this.super('pCommandoBody', 0, 0, Robot.PLAYER, 100, 3,     26,  1,       1,       1);
+    this.super('pCommandoBody', 0, 0, Robot.PLAYER, 100, 3,     26,  1,       1,       1);
 
     // Sprites drawn on top of the robot's body
-	this.postChildren.push(
-        new Sprite('pCommandoShield', 30, 0).child(this, true),
-        new Sprite('pCommandoLMG', -30, 0).child(this, true),
+    this.postChildren.push(
+        new Sprite('pCommandoShield', 31, 13).child(this, true),
+        new Sprite('pCommandoLMG', -28, 11).child(this, true),
         new Sprite('pCommandoDroneKit', 0, -10).child(this, true)
     );
     
@@ -153,17 +153,18 @@ CommandoDrone.prototype.update = function() {
         this.targetRot.setMagnitude(this.radius);
     }
 
+    // Rotate around the player to the desired position
+    this.offset.rotateTowards(this.targetRot.clone().rotate(this.player.rotation.x, this.player.rotation.y), new Vector(COS_1, SIN_1));
+    this.moveTo(this.player.pos.x + this.offset.x, this.player.pos.y + this.offset.y);
+    
     // Look to the correct angle when the player turns
     if (this.player.charging) {
         var target = this.player.forward().multiply(LASER_BOMB_OFFSET, LASER_BOMB_OFFSET);
-        this.lookAt(target);
         this.chargeData.range = target.distance(this.offset) / 1.5;
+        this.lookAt(target.addv(this.player.pos));
         this.rail(this.chargeData);
     }
     else {
-    
-        // Rotate around the player to the desired position
-        this.offset.rotateTowards(this.targetRot.clone().rotate(this.player.rotation.x, this.player.rotation.y), new Vector(COS_1, SIN_1));
     
         // Update rotation
         var enemy = this.getTarget();
@@ -171,8 +172,6 @@ CommandoDrone.prototype.update = function() {
             this.lookTowards(enemy.pos, new Vector(COS_3, SIN_3));
         }
         
-        this.moveTo(this.player.pos.x + this.offset.x, this.player.pos.y + this.offset.y);
-
         // Drone gun
         this.gunData.damage = 5 * this.player.get('power');
         this.gunData.range = (349 + 25 * this.player.upgrades[DRONE_RANGE_ID]) * this.player.droneRangeM;

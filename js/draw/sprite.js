@@ -16,7 +16,7 @@ extend('Sprite', 'Transform');
 function Sprite(name, x, y) {
     this.super();
     
-	this.src = name;
+    this.src = name;
     this.sprite = images.get(name);
     this.parent = undefined;
     this.keepRotate = false;
@@ -26,17 +26,17 @@ function Sprite(name, x, y) {
     this.pivot = new Vector(0, 0);
     this.alpha = 1;
     this.moveTo(x, y);
-	this.width = this.sprite.width;
-	this.height = this.sprite.height;
-	
+    this.width = this.sprite.width;
+    this.height = this.sprite.height;
+    
     // Load width when the image loads
-	if (!this.width) {
-		this.sprite.sprite = this;
-		this.sprite.onload = function() {
-			this.sprite.width = this.width;
-			this.sprite.height = this.height;
-		}
-	}
+    if (!this.width) {
+        this.sprite.sprite = this;
+        this.sprite.onload = function() {
+            this.sprite.width = this.width;
+            this.sprite.height = this.height;
+        }
+    }
     
     /** 
      * Event called before the sprite or its children are drawn.
@@ -72,7 +72,7 @@ Sprite.prototype.getWorldPos = function() {
 Sprite.prototype.getWorldRotation = function() {
     var parent = this.parent;
     var child = this;
-    var rot = this.rotation;
+    var rot = this.rotation.clone();
     while (parent) {
         if (child.keepRotate) {
             rot.rotate(parent.rotation.x, parent.rotation.y);
@@ -84,6 +84,15 @@ Sprite.prototype.getWorldRotation = function() {
 };
 
 /**
+ * Gets the angle of rotation for the sprite
+ */
+Sprite.prototype.getAngle = function() {
+    var angle = Math.acos(this.rotation.x);
+    if (this.rotation.y < 0) angle = Math.PI * 2 - angle;
+    return angle;
+};
+
+/**
  * Sets the parent of the sprite, optionally inheriting rotation
  *
  * @param {Sprite}  [parent] - the parent to inherit transforms from
@@ -92,9 +101,9 @@ Sprite.prototype.getWorldRotation = function() {
  * @returns {Sprite} this
  */
 Sprite.prototype.child = function(parent, rotate) {
-	this.parent = parent;
-	this.keepRotate = rotate;
-	return this;
+    this.parent = parent;
+    this.keepRotate = rotate;
+    return this;
 }
 
 /**
@@ -105,15 +114,15 @@ Sprite.prototype.child = function(parent, rotate) {
 Sprite.prototype.draw = function(camera) {
     if (this.hidden) return;
     if (!this.pos) debugger;
-	
+    
     camera.ctx.globalAlpha *= this.alpha;
     camera.ctx.translate(this.pos.x, this.pos.y);
-	if (this.onPreDraw) this.onPreDraw(camera);
+    if (this.onPreDraw) this.onPreDraw(camera);
     this.drawList(camera, this.preChildren, false);
     this.applyRotation(camera, false);
-	this.drawList(camera, this.preChildren, true);
+    this.drawList(camera, this.preChildren, true);
     camera.ctx.drawImage(this.sprite, (-this.sprite.width / 2 - this.pivot.x) * this.size.x, (-this.sprite.height / 2 - this.pivot.y) * this.size.y, this.sprite.width * this.size.x, this.sprite.height * this.size.y);
-	this.drawList(camera, this.postChildren, true);
+    this.drawList(camera, this.postChildren, true);
     this.applyRotation(camera, true);
     this.drawList(camera, this.postChildren, false);
     if (this.onDraw) this.onDraw(camera);
@@ -152,10 +161,10 @@ Sprite.prototype.setPivot = function(x, y) {
  */
 Sprite.prototype.drawList = function(camera, list, rotate) {
     for (var i = 0; i < list.length; i++) {
-		if (list[i].keepRotate == rotate)
-		{
-			list[i].draw(camera);
-		}
+        if (list[i].keepRotate == rotate)
+        {
+            list[i].draw(camera);
+        }
     }
 };
 

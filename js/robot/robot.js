@@ -31,20 +31,20 @@ extend('Robot', 'Sprite');
 function Robot(name, x, y, type, health, speed) {
     this.super(name, x, y);
 
-	this.type = type;
+    this.type = type;
     this.maxHealth = health;
     this.health = health;
     this.maxShield = 0;
     this.shield = 0;
     this.speed = speed;
     this.baseSpeed = speed;
-	
-	this.damageTaken = 0;
-	this.damageDealt = 0;
-	this.damageAbsorbed = 0;
-	this.deaths = 0;
+    
+    this.damageTaken = 0;
+    this.damageDealt = 0;
+    this.damageAbsorbed = 0;
+    this.deaths = 0;
 
-	this.pierceDamage = 1;
+    this.pierceDamage = 1;
     this.defense = 1;
     this.power = 1;
     this.knockbackFactor = 1;
@@ -54,34 +54,34 @@ function Robot(name, x, y, type, health, speed) {
 
     this.knockbackDir = new Vector(0, 0);
     this.buffs = {};
-	
-	////////////
-	// Events //
-	////////////
-	
-	/**
-	 * Called after knockback and buffs are updated each update
-	 */
-	this.onUpdate = this.onUpdate || undefined;
-	
-	/**
-	 * Called when the robot takes damage
-	 *
-	 * @param {Number} amount - amount of damage taken
-	 * @param {Robot}  source - source of the damage
-	 *
-	 * @returns {Number} modified damage amount or undefined if no changes
-	 */
-	this.onDamaged = this.onDamaged || undefined;
-	
-	/**
-	 * Called when the robot is healed by any source
-	 *
-	 * @param {Number} amount - healing amount
-	 *
-	 * @returns {Number} modified healing amount or undefined if no changes
-	 */
-	this.onHealed = this.onHealed || undefined;
+    
+    ////////////
+    // Events //
+    ////////////
+    
+    /**
+     * Called after knockback and buffs are updated each update
+     */
+    this.onUpdate = this.onUpdate || undefined;
+    
+    /**
+     * Called when the robot takes damage
+     *
+     * @param {Number} amount - amount of damage taken
+     * @param {Robot}  source - source of the damage
+     *
+     * @returns {Number} modified damage amount or undefined if no changes
+     */
+    this.onDamaged = this.onDamaged || undefined;
+    
+    /**
+     * Called when the robot is healed by any source
+     *
+     * @param {Number} amount - healing amount
+     *
+     * @returns {Number} modified healing amount or undefined if no changes
+     */
+    this.onHealed = this.onHealed || undefined;
 }
 
 /**
@@ -91,41 +91,40 @@ function Robot(name, x, y, type, health, speed) {
  * @param {Robot}  source - the source of the damage
  */
 Robot.prototype.damage = function(amount, source) {
-	
-	// Ignore damage when dead
-	if (this.dead || amount <= 0) return;
+    
+    // Ignore damage when dead
+    if (this.dead || amount <= 0) return;
 
-	// Defense application
+    // Defense application
     amount *= this.get('defense');
 
     // Event for taking damage
     if (this.onDamaged) {
-		var result = this.onDamaged(amount, source);
+        var result = this.onDamaged(amount, source);
         if (result !== undefined) {
             amount = result;
         }
-	}
-	
-	// Credit source of damage with the dealt damage
-	source.damageDealt += amount;
+    }
+    
+    // Credit source of damage with the dealt damage
+    source.damageDealt += amount;
 
     // Shield absorbs all the damage
     if (this.shield > amount) {
         this.shield -= amount;
-		this.damageAbsorbed += amount;
+        this.damageAbsorbed += amount;
     }
 
     // Taking health damage
     else {
         amount -= this.shield;
-		this.damageAbsorbed += this.shield;
-		this.shield = 0;
-		this.damageTaken += amount;
+        this.damageAbsorbed += this.shield;
+        this.shield = 0;
+        this.damageTaken += amount;
         this.health -= amount;
-		this.dead = this.health <= 0;
-		if (this.dead) {
+        this.dead = this.health <= 0;
+        if (this.dead) {
             this.deaths++;
-            
         }
     }
 };
@@ -139,11 +138,11 @@ Robot.prototype.heal = function(amount) {
 
     // Event for healing
     if (this.onHealed) {
-		var result = this.onHealed(amount);
-		if (result !== undefined) {
-			amount = result;
-		}
-	}
+        var result = this.onHealed(amount);
+        if (result !== undefined) {
+            amount = result;
+        }
+    }
 
     // Apply healing
     this.health = Math.min(this.health + amount, this.maxHealth);

@@ -9,7 +9,7 @@ depend('robot/skill/lockdown');
  */
 function PlayerValkyrieType() {
     //         Sprite Name      X  Y  Type          HP   Speed  HP+  Damage+  Shield+  Speed+
-	this.super('pValkyrieBody', 0, 0, Robot.PLAYER, 100, 3,     14,  2,       1,       1.5);
+    this.super('pValkyrieBody', 0, 0, Robot.PLAYER, 100, 3,     14,  2,       1,       1.5);
 
     // Moving sprites
     this.shell1 = new Sprite('pValkyrieShell', 0, 0).child(this, true);
@@ -23,7 +23,7 @@ function PlayerValkyrieType() {
     this.scope = new Sprite('pValkyrieScope', 0, 0).child(this, true);
     
     // Sprites drawn on top of the robot's body
-	this.postChildren.push(
+    this.postChildren.push(
         new Sprite('pValkyrieShield', 30, 0).child(this, true),
         new Sprite('pValkyrieGun', -30, 0).child(this, true),
         this.shell1,

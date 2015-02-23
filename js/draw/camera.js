@@ -56,9 +56,9 @@ Camera.prototype.move = function(x, y) {
  * @param {Sprite[]} sprites - the list of sprites to draw
  */
 Camera.prototype.drawList = function(sprites) {
-	for (var i = 0; i < sprites.length; i++) {
-		sprites[i].draw(this);
-	}
+    for (var i = 0; i < sprites.length; i++) {
+        sprites[i].draw(this);
+    }
 };
 
 /**
@@ -69,8 +69,8 @@ Camera.prototype.drawList = function(sprites) {
  * @returns {boolean} true if visible, false otherwise
  */
 Camera.prototype.isVisible = function(sprite) {
-	return sprite.xMax() >= this.pos.x && sprite.xMin() <= this.pos.x + this.canvas.width
-		&& sprite.yMax() >= this.pos.y && sprite.yMin() <= this.pos.y + this.canvas.height
+    return sprite.xMax() >= this.pos.x && sprite.xMin() <= this.pos.x + this.canvas.width
+        && sprite.yMax() >= this.pos.y && sprite.yMin() <= this.pos.y + this.canvas.height
 };
 
 /**

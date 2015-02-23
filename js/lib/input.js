@@ -66,20 +66,20 @@ var controls = {
 
     // The mouse data
     mouse: { x: 0, y: 0, ox: 0, oy: 0, left: false, right: false, xOffset: 0, yOffset: 0 },
-	
-	/**
-	 * Sets the offset for the input updates to convert screen coordinates to
-	 * game world coordinates while determining mouse position
-	 *
-	 * @param {Number} x - horizontal offet
-	 * @param {Number} y - vertical offset
-	 */
-	setOffset: function(x, y) {
-		this.mouse.ox = this.mouse.x - x;
-		this.mouse.oy = this.mouse.y - y;
-		this.mouse.xOffset = x;
-		this.mouse.yOffset = y;
-	},
+    
+    /**
+     * Sets the offset for the input updates to convert screen coordinates to
+     * game world coordinates while determining mouse position
+     *
+     * @param {Number} x - horizontal offet
+     * @param {Number} y - vertical offset
+     */
+    setOffset: function(x, y) {
+        this.mouse.ox = this.mouse.x - x;
+        this.mouse.oy = this.mouse.y - y;
+        this.mouse.xOffset = x;
+        this.mouse.yOffset = y;
+    },
 
     /**
      * Checks whether or not a key is currently pressed
@@ -372,8 +372,8 @@ window.addEventListener('mouseup', function(e) {
 window.addEventListener('mousemove', function(event) {
     controls.mouse.x = event.pageX - event.target.offsetLeft;
     controls.mouse.y = event.pageY - event.target.offsetTop;
-	controls.mouse.ox = controls.mouse.x - controls.mouse.xOffset;
-	controls.mouse.oy = controls.mouse.y - controls.mouse.yOffset;
+    controls.mouse.ox = controls.mouse.x - controls.mouse.xOffset;
+    controls.mouse.oy = controls.mouse.y - controls.mouse.yOffset;
 });
 
 // Mouse out event

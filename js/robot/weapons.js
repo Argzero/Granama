@@ -2,6 +2,9 @@ depend('lib/math');
 depend('lib/2d/vector');
 depend('robot/projectile');
 
+// Various weapons usable by robots to attack that control
+// how to fire projectiles. For projectile properties themselves,
+// templates and event listeners are used.
 var weapon = {
 
     // Constants
@@ -66,8 +69,8 @@ var weapon = {
         if (data.angleOffset) {
             angle += data.angleOffset * Math.PI / 180;
         }
-		
-		return angle;
+        
+        return angle;
     },
 
     /**
@@ -95,7 +98,7 @@ var weapon = {
      */
     fireBullet: function(source, data) {
         var pos = weapon.getPosition(source, data);
-			
+            
         // Create the projectile
         var projectile = new Projectile(
             data.sprite || 'bullet',
@@ -108,6 +111,11 @@ var weapon = {
             data.pierce,
             data.target
         );
+        
+        // Size scaling
+        if (data.size) {
+            projectile.scale(data.size, data.size);
+        }
         
         // Copy over provided buffs
         if (data.buffs) {
@@ -162,13 +170,14 @@ var weapon = {
     /**
      * A simple gun weapon that fires one or more bullets
      * <ul>
-	 *     <li>{number}   target           - the ID of the target group the bullet hits</li>
+     *     <li>{number}   target           - the ID of the target group the bullet hits</li>
      *     <li>{number}   rate             - the number of frames between shots</li>
      *     <li>{number}   damage           - the damage dealt by the bullet</li>
      *     <li>{number}   range            - the range of the bullet</li>
-	 *     <li>{number}   [distance]       - how far the bullet travels</li>
+     *     <li>{number}   [distance]       - how far the bullet travels</li>
      *     <li>{string}   [sprite]         - the name of the bullet sprite</li>
      *     <li>{number}   [speed]          - the speed of the bullet</li>
+     *     <li>{number}   [size]           - size of the bullet</li>
      *     <li>{number}   [dx]             - horizontal position offset assuming no rotation</li>
      *     <li>{number}   [dy]             - vertical position offset assuming no rotation</li>
      *     <li>{boolean}  [pierce]         - whether or not the bullets pierce</li>
@@ -176,7 +185,7 @@ var weapon = {
      *     <li>{number}   [angleOffset]    - definite angle for spread</li>
      *     <li>{number}   [spread]         - the number of bullets to spread</li>
      *     <li>{number}   [delay]          - the delay before shooting while in range</li>
-	 *     <li>{Robot}    [shooter]        - the actual shooter of the bullet</li>
+     *     <li>{Robot}    [shooter]        - the actual shooter of the bullet</li>
      *     <li>{Array}    [buffs]          - buffs to apply on hit { stat, multiplier, duration }</li>
      *     <li>{Array}    [templates]      - templates to apply { name, args }</li>
      *     <li>{function} [onUpdate]       - onUpdate event handler (projEvent function)</li>
@@ -189,8 +198,8 @@ var weapon = {
      * @param {Object} data - weapon data
      */
     gun: function(data) {
-	
-		// Must meet the conditions
+    
+        // Must meet the conditions
         if (weapon.checkTime(data, this.isInRange(data.range))) {
             weapon.fireBullet(this, data);
         }
@@ -254,14 +263,38 @@ var weapon = {
      * you should add the values for the sub weapon to the weapon data. Any values used by this
      * that are also used by the sub weapon are ignored in the sub weapon.
      * <ul>
+     *     <li>{number}   target           - the ID of the target group the bullet hits</li>
+     *     <li>{number}   rate             - the number of frames between shots</li>
+     *     <li>{number}   damage           - the damage dealt by the bullet</li>
+     *     <li>{number}   range            - the range of the bullet</li>
+     *     <li>{number}   duration         - the firing interval time in frames</li>
+     *     <li>{number}   range            - the range of the weapon</li>
+     *     <li>{number}   [interval]       - the delay between each shot during the firing interval</li>
+     *     <li>{boolean}  [initial]        - whether or not to skip the first charging time</li>
+     *     <li>{number}   [bullets]        - the number of bullets to fire per shot</li>
+     *     <li>{number}   [delay]          - the delay before firing outside of charging up</li>
+     *     <li>{number}   [distance]       - how far the bullet travels</li>
+     *     <li>{string}   [sprite]         - the name of the bullet sprite</li>
+     *     <li>{number}   [speed]          - the speed of the bullet</li>
+     *     <li>{number}   [size]           - size of the bullet</li>
+     *     <li>{number}   [dx]             - horizontal position offset assuming no rotation</li>
+     *     <li>{number}   [dy]             - vertical position offset assuming no rotation</li>
+     *     <li>{boolean}  [pierce]         - whether or not the bullets pierce</li>
+     *     <li>{number}   [angle]          - random angle range for spread</li>
+     *     <li>{number}   [angleOffset]    - definite angle for spread</li>
+     *     <li>{number}   [spread]         - the number of bullets to spread</li>
+     *     <li>{Robot}    [shooter]        - the actual shooter of the bullet</li>
+     *     <li>{Array}    [buffs]          - buffs to apply on hit { stat, multiplier, duration }</li>
+     *     <li>{Array}    [templates]      - templates to apply { name, args }</li>
+     *     <li>{function} [onUpdate]       - onUpdate event handler (projEvent function)</li>
+     *     <li>{function} [onCollideCheck] - onCoolideCheck event handler (projEvent function)</li>
+     *     <li>{function} [onHit]          - onHit event handler (projEvent function)</li>
+     *     <li>{function} [onBlocked]      - onBlocked event handler (projEvent function)</li>
+     *     <li>{function} [onExpire]       - onExpire event handler (projEvent function)</li>
+     * </ul>
+     * <ul>
      *     <li>{function} subWeapon  - the weapon to fire</li>
      *     <li>{number}   rate       - the charge up time in frames</li>
-     *     <li>{number}   duration   - the firing interval time in frames</li>
-     *     <li>{number}   range      - the range of the weapon</li>
-     *     <li>{number}   [interval] - the delay between each shot during the firing interval</li>
-     *     <li>{boolean}  [initial]  - whether or not to skip the first charging time</li>
-     *     <li>{number}   [bullets]  - the number of bullets to fire per shot</li>
-     *     <li>{number}   [delay]    - the delay before firing outside of charging up</li>
      * </ul>
      *
      * @param {Object} data - weapon data

@@ -52,12 +52,10 @@ Orbiter.prototype.isInRange = function(range) {
 };
 
 /**
- * Draws the orbiter tail before the orbiter is drawn
- *
- * @param {Camera} camera - camera to draw to
+ * Updates the tail each frame
  */
-Orbiter.prototype.onPreDraw = function(camera) {
-    this.tail.draw(camera);
+Orbiter.prototype.onUpdate = function() {
+    this.tail.update();
 };
 
 /**

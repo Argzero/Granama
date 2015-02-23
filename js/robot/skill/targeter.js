@@ -8,7 +8,7 @@ function skillTargeter(player) {
     /** 
      * Handles casting the skill and applying drone buffs
      */
-    player.onMove = function() {
+    player.onUpdate = function() {
 
         // Activating the ability
         if (this.isSkillCast()) {
@@ -19,7 +19,7 @@ function skillTargeter(player) {
                 'targeterMissile',
                 0, 0,
                 this, this,
-                10,
+                20,
                 0,
                 5 * this.get('power'),
                 999,
@@ -65,6 +65,7 @@ extend('TargeterParticle', 'Sprite');
 function TargeterParticle(target) {
     this.super('pCommandoTarget', target.pos.x, target.pos.y);
        
+    this.pos = target.pos;
     this.target = target,
     this.lifespan = TARGET_LIFESPAN,
     this.updateSize();
@@ -86,11 +87,14 @@ TargeterParticle.prototype.updateSize = function() {
  */
 TargeterParticle.prototype.update = function() {
 
+    this.pos = this.target.pos;
+
     // Switching targets when the current dies
     if (this.target.dead) {
         var newTarget = gameScreen.getClosest(this.target.pos, Robot.ENEMY);
         if (newTarget && this.target.pos.distanceSq(newTarget.pos) < sq(TARGET_INFECT_RADIUS)) {
             this.target = newTarget;
+            this.lifespan = TARGET_LIFESPAN;
             newTarget.buff('defense', 2, TARGET_LIFESPAN);
             this.updateSize();
         }

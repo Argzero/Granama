@@ -211,7 +211,7 @@ Transform.prototype.applyRect = function(rect) {
  * @returns {Number} distance between the transforms
  */
 Transform.prototype.distance = function(transform) {
-	return transform.pos.distance(this.pos);
+    return transform.pos.distance(this.pos);
 }
 
 /**
@@ -222,5 +222,5 @@ Transform.prototype.distance = function(transform) {
  * @returns {Number} squared distance between the transforms
  */
 Transform.prototype.distance = function(transform) {
-	return transform.pos.distanceSq(this.pos);
+    return transform.pos.distanceSq(this.pos);
 }

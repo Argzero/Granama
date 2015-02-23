@@ -16,42 +16,40 @@ depend('robot/robot');
  */
 extend('Player', 'Robot');
 function Player(name, x, y, type, health, speed, healthScale, damageScale, shieldScale, speedScale) {
-	this.super(name, x, y, type, health, speed);
-	
-	/**
-	 * Event called when the player levels up
-	 */
-	this.onLevel = this.onLevel || undefined;
-	
-	////////////
-	// Fields //
-	////////////
-	
-	this.skillCd       = 0;
-	this.skillDuration = 0;
-	this.exp           = 0;
-	this.totalExp      = 0;
-	this.level         = 1;
-	this.points        = 0;
+    this.super(name, x, y, type, health, speed);
+    
+    /**
+     * Event called when the player levels up
+     */
+    this.onLevel = this.onLevel || undefined;
+    
+    this.skillCd       = 0;
+    this.skillDuration = 0;
+    this.exp           = 0;
+    this.totalExp      = 0;
+    this.level         = 1;
+    this.points        = 0;
     this.maxShield     = health * SHIELD_MAX;
     this.shield        = this.maxShield;
-	this.shieldCd      = SHIELD_RATE;
-	this.healthScale   = healthScale || 10;
-	this.damageScale   = (damageScale || 1) / 10; 
-	this.shieldScale   = shieldScale || 1;
-	this.speedScale    = (speedScale || 1) / 15;
-	this.upgrades      = [0, 0, 0, 0, 0];
-	this.power         = 1;
-	this.mPower        = 1;
-	this.mSpeed        = 1;
-	this.mHealth       = 1;
-	this.rescue        = 1;
-	this.deaths        = 0;
-	this.rescues       = 0;
-	this.enemiesKilled = 0;
-	this.damageAlpha   = 0;
-	this.levelFrame    = -1;
-	this.input         = undefined;
+    this.shieldCd      = SHIELD_RATE;
+    this.healthScale   = healthScale || 10;
+    this.damageScale   = (damageScale || 1) / 10; 
+    this.shieldScale   = shieldScale || 1;
+    this.speedScale    = (speedScale || 1) / 15;
+    this.upgrades      = [0, 0, 0, 0, 0];
+    this.revBase       = 1 / 300;
+    this.revSpeed      = this.revBase;
+    this.power         = 1;
+    this.mPower        = 1;
+    this.mSpeed        = 1;
+    this.mHealth       = 1;
+    this.rescue        = 1;
+    this.deaths        = 0;
+    this.rescues       = 0;
+    this.enemiesKilled = 0;
+    this.damageAlpha   = 0;
+    this.levelFrame    = -1;
+    this.input         = undefined;
 }
 
 /**
@@ -61,32 +59,32 @@ function Player(name, x, y, type, health, speed, healthScale, damageScale, shiel
  */ 
 Player.prototype.giveExp = function(amount) {
 
-	this.exp += amount;
-	this.totalExp += amount;
+    this.exp += amount;
+    this.totalExp += amount;
 
-	// Level up as many times as needed
-	while (this.exp >= this.level * 200) {
-	
-		// Point rewards
-		if (this.level <= 25) {
-			this.points += 2;
-		}
+    // Level up as many times as needed
+    while (this.exp >= this.level * 200) {
+    
+        // Point rewards
+        if (this.level <= 25) {
+            this.points += 2;
+        }
 
-		// Apply the level
-		this.exp -= this.level * 200;
-		this.level++;
-		
-		// Stat increases
-		this.maxHealth += this.healthScale * this.level;
-		this.health += this.healthScale * this.level;
-		this.power += this.damageScale * this.level;
-		this.levelFrame = 0;
+        // Apply the level
+        this.exp -= this.level * 200;
+        this.level++;
+        
+        // Stat increases
+        this.maxHealth += this.healthScale * this.level;
+        this.health += this.healthScale * this.level;
+        this.power += this.damageScale * this.level;
+        this.levelFrame = 0;
 
-		// Level up event
-		if (this.onLevel) {
-			this.onLevel();
-		}
-	}
+        // Level up event
+        if (this.onLevel) {
+            this.onLevel();
+        }
+    }
 }
 
 /**
@@ -103,32 +101,37 @@ Player.prototype.update = function() {
     
     this.alpha = 1;
     
-	this.updatePause();
+    this.updatePause();
     this.updateRobot();
     
-	// Shield regeneration
-	this.shieldCd -= this.get('shieldBuff');
-	if (this.shieldCd <= 0) {
-		this.shieldCd += 60 / (this.shieldScale * (this.upgrades[SHIELD_ID] + 1) * 1 / 10);
-		this.shield += this.maxHealth * SHIELD_GAIN;
-		if (this.shield > this.maxHealth * SHIELD_MAX) {
-			this.shield = this.maxHealth * SHIELD_MAX;
-		}
-	}
-	
-	// Player's ability
-	if (this.skillDuration > 0) {
-		this.skillDuration--;
-	}
-	else if (this.skillCd > 0 && this.skillDuration == 0) {
-		this.skillCd--;
-	}
+    // Shield regeneration
+    this.shieldCd -= this.get('shieldBuff');
+    if (this.shieldCd <= 0) {
+        this.shieldCd += 60 / (this.shieldScale * (this.upgrades[SHIELD_ID] + 1) * 1 / 10);
+        this.shield += this.maxHealth * SHIELD_GAIN;
+        if (this.shield > this.maxHealth * SHIELD_MAX) {
+            this.shield = this.maxHealth * SHIELD_MAX;
+        }
+    }
+    
+    // Health regeneration
+    if (this.buffs.healthBuff) {
+        this.heal(this.get('healthBuff') * this.maxHealth);
+    }
+    
+    // Player's ability
+    if (this.skillDuration > 0) {
+        this.skillDuration--;
+    }
+    else if (this.skillCd > 0 && this.skillDuration == 0) {
+        this.skillCd--;
+    }
 
-	// Updates when not stunned
-	if (!this.isStunned()) {
+    // Updates when not stunned
+    if (!this.isStunned()) {
 
-		// Get speed
-		var speed = this.get('speed') * (1 + this.speedScale * this.upgrades[SPEED_ID]);
+        // Get speed
+        var speed = this.get('speed') * (1 + this.speedScale * this.upgrades[SPEED_ID]);
         if (speed > 0.000001) {
 
             // Movement
@@ -146,7 +149,7 @@ Player.prototype.update = function() {
         if (this.applyUpdate) {
             this.applyUpdate();
         }
-	}
+    }
 };
 
 /**
@@ -154,37 +157,37 @@ Player.prototype.update = function() {
  */
 Player.prototype.updateDead = function() {
 
-	// See if a player is in range to rescue the player
-	var inRange = false;
-	for (var i = 0; i < players.length; i++) {
-		var p = players[i];
-		if (p.dead) continue;
-		if (this.pos.distanceSq(p.pos) < 10000) {
-			inRange = true;
-		}
-	}
+    // See if a player is in range to rescue the player
+    var inRange = false;
+    for (var i = 0; i < players.length; i++) {
+        var p = players[i];
+        if (p.dead) continue;
+        if (this.pos.distanceSq(p.pos) < 10000) {
+            inRange = true;
+        }
+    }
 
-	// Apply rescue effects
-	if (inRange) {
-		this.rescue -= 1 / 300;
-		if (this.rescue <= 0) {
-			this.health = this.maxHealth * 0.5;
-			this.rescue = 1;
+    // Apply rescue effects
+    if (inRange) {
+        this.rescue -= 1 / 300;
+        if (this.rescue <= 0) {
+            this.health = this.maxHealth * 0.5;
+            this.rescue = 1;
 
-			for (var i = 0; i < players.length; i++) {
-				var p = players[i];
-				if (p.dead) continue;
-				if (this.pos.distanceSq(p.pos) < 10000) {
-					p.rescues++;
-				}
-			}
-		}
-	}
-	else if (this.rescue < 1) {
-		this.rescue = Math.min(1, this.rescue + 1 / 300);
-	}
+            for (var i = 0; i < players.length; i++) {
+                var p = players[i];
+                if (p.dead) continue;
+                if (this.pos.distanceSq(p.pos) < 10000) {
+                    p.rescues++;
+                }
+            }
+        }
+    }
+    else if (this.rescue < 1) {
+        this.rescue = Math.min(1, this.rescue + 1 / 300);
+    }
 
-	this.updatePause();
+    this.updatePause();
 };
 
 /**
@@ -194,24 +197,24 @@ Player.prototype.updatePause = function() {
 
     this.input.update();
 
-	// Pause when controls are invalid
-	if (this.input.invalid && !gameScreen.paused) {
-		gameScreen.pause(this);
-	}
+    // Pause when controls are invalid
+    if (this.input.invalid && !gameScreen.paused) {
+        gameScreen.pause(this);
+    }
 
-	// Pausing
-	else if (!this.input.invalid && this.input.button(PAUSE) == 1) {
-		gameScreen.pause(this);
-	}
+    // Pausing
+    else if (!this.input.invalid && this.input.button(PAUSE) == 1) {
+        gameScreen.pause(this);
+    }
 };
 
 // Checks whether or not a skill is being cast
 Player.prototype.isSkillCast = function() {
-	if (this.skillCd > 0 || this.skillDuration > 0) return false;
-	return this.input.button(SKILL) == 1;
+    if (this.skillCd > 0 || this.skillDuration > 0) return false;
+    return this.input.button(SKILL) == 1;
 };
 
 // Function for telling weapons when they can fire
 Player.prototype.isInRange = function() {
-	return this.input.button(SHOOT);
+    return this.input.button(SHOOT);
 };

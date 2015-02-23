@@ -12,10 +12,10 @@ depend('robot/skill/targeter');
 extend('PlayerCommando', 'Player');
 function PlayerCommando() {
     //         Sprite Name      X  Y  Type          HP   Speed  HP+  Damage+  Shield+  Speed+
-	this.super('pCommandoBody', 0, 0, Robot.PLAYER, 100, 3,     26,  1,       1,       1);
+    this.super('pCommandoBody', 0, 0, Robot.PLAYER, 100, 3,     26,  1,       1,       1);
 
     // Sprites drawn on top of the robot's body
-	this.postChildren.push(
+    this.postChildren.push(
         new Sprite('pCommandoShield', 30, 0).child(this, true),
         new Sprite('pCommandoLMG', -30, 0).child(this, true),
         new Sprite('pCommandoDroneKit', 0, -10).child(this, true)

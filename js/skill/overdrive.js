@@ -8,10 +8,10 @@ function skillOverdrive(player) {
     // List of player copies when running fast
     player.copies = [];
 
-	/**
-	 * Applies casting the ability, applying buffs,
-	 * and creating ghost images each frame
-	 */
+    /**
+     * Applies casting the ability, applying buffs,
+     * and creating ghost images each frame
+     */
     player.onUpdate = function() {
 
         // Activating the ability
@@ -19,7 +19,7 @@ function skillOverdrive(player) {
             this.skillDuration = 300;
             this.skillCd = 960 * this.cdm;
             this.rm = 0.75;
-			this.buff('speed', 1.5, this.skillDuration);
+            this.buff('speed', 1.5, this.skillDuration);
         }
         if (this.skillDuration <= 0) {
             this.rm = 1;
@@ -42,22 +42,22 @@ function skillOverdrive(player) {
 
             // Make a new copy every 5 frames
             if (this.skillDuration % 5 == 0) {
-				var copy = new Sprite('pSpeedBody', this.pos.x, this.pos.y);
-				copy.rotation = this.rotation.clone();
-				copy.alpha = 0.9;
-				copy.postChildren = this.postChildren;
+                var copy = new Sprite('pSpeedBody', this.pos.x, this.pos.y);
+                copy.rotation = this.rotation.clone();
+                copy.alpha = 0.9;
+                copy.postChildren = this.postChildren;
                 this.copies.push(copy);
             }
         }
     };
 
-	/**
-	 * Draws the ghost images before the player is drawn
-	 */
+    /**
+     * Draws the ghost images before the player is drawn
+     */
     player.onPreDraw = function() {
         for (var i = 0; i < this.copies.length; i++) {
             var copy = this.copies[i];
-			copy.draw(camera);
+            copy.draw(camera);
         }
     };
 }

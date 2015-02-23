@@ -38,8 +38,8 @@ function Grabber(name, x, y, type, health, speed, range, exp, rank, patternMin, 
         rate    : mRate,
         slow    : mSlow,
         duration: 60,
-		target  : Robot.PLAYER,
-		buufs   : [{ name: 'speed', multiplier: mSlow, duration: 60 }]
+        target  : Robot.PLAYER,
+        buufs   : [{ name: 'speed', multiplier: mSlow, duration: 60 }]
     });
 
     // Grapple weapon
@@ -48,8 +48,8 @@ function Grabber(name, x, y, type, health, speed, range, exp, rank, patternMin, 
         damage   : gDamage * Enemy.sum(),
         range    : gRange,
         rate     : gRate,
-		target   : Robot.PLAYER,
-		speed    : 20,
+        target   : Robot.PLAYER,
+        speed    : 20,
         templates: [{ name: 'setupGrapple', args: [1, gSelf] }]
     });
 

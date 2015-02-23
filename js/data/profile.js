@@ -32,7 +32,7 @@ var STAT = {
     MINIBOSS     : 'miniboss',
     BOSS         : 'boss',
     DRAGON       : 'dragon',
-	HYDRA        : 'hydra',
+    HYDRA        : 'hydra',
     GAMES        : 'games'
 }
 
@@ -52,10 +52,10 @@ function Profile(name) {
     if (PROFILE_DATA[name] === undefined) {
         PROFILE_DATA[name] = {};
     }
-	
-	// Profile data
-	this.name = name;
-	this.data = PROFILE_DATA[name];
+    
+    // Profile data
+    this.name = name;
+    this.data = PROFILE_DATA[name];
 }
 
 /**
@@ -67,24 +67,24 @@ function Profile(name) {
  */
 Profile.prototype.addStat = function(name, stat, amount) {
 
-	// Overall stat
-	if (!this.data[stat]) {
-		this.data[stat] = amount;
-	}
-	else {
-		this.data[stat] += amount;
-	}
+    // Overall stat
+    if (!this.data[stat]) {
+        this.data[stat] = amount;
+    }
+    else {
+        this.data[stat] += amount;
+    }
 
-	// Stat for the robot
-	if (!this.data[name]) {
-		this.data[name] = {};
-	}
-	if (!this.data[name][stat]) {
-		this.data[name][stat] = amount;
-	}
-	else {
-		this.data[name][stat] += amount;
-	}
+    // Stat for the robot
+    if (!this.data[name]) {
+        this.data[name] = {};
+    }
+    if (!this.data[name][stat]) {
+        this.data[name][stat] = amount;
+    }
+    else {
+        this.data[name][stat] += amount;
+    }
 };
 
 /**
@@ -97,32 +97,32 @@ Profile.prototype.addStat = function(name, stat, amount) {
  */
 Profile.prototype.addList = function(name, stat, max, amount) {
 
-	// Overall stat
-	if (!this.data[stat]) {
-		this.data[stat] = [amount];
-	}
-	else {
-		var arr = this.data[stat];
-		arr.unshift(amount);
-		if (arr.length > max) {
-			arr.pop();
-		}
-	}
+    // Overall stat
+    if (!this.data[stat]) {
+        this.data[stat] = [amount];
+    }
+    else {
+        var arr = this.data[stat];
+        arr.unshift(amount);
+        if (arr.length > max) {
+            arr.pop();
+        }
+    }
 
-	// Robot stat
-	if (!this.data[name]) {
-		this.data[name] = {};
-	}
-	if (!this.data[name][stat]) {
-		this.data[name][stat] = [amount];
-	}
-	else {
-		var arr = this.data[name][stat];
-		arr.unshift(amount);
-		if (arr.length > max) {
-			arr.pop();
-		}
-	}
+    // Robot stat
+    if (!this.data[name]) {
+        this.data[name] = {};
+    }
+    if (!this.data[name][stat]) {
+        this.data[name][stat] = [amount];
+    }
+    else {
+        var arr = this.data[name][stat];
+        arr.unshift(amount);
+        if (arr.length > max) {
+            arr.pop();
+        }
+    }
 };
 
 /**
@@ -134,20 +134,20 @@ Profile.prototype.addList = function(name, stat, max, amount) {
  */
 Profile.prototype.setBest = function(name, stat, amount) {
 
-	// Overall stat
-	var current = this.getStat(stat);
-	if (amount > current) {
-		this.data[stat] = amount;
-	}
+    // Overall stat
+    var current = this.getStat(stat);
+    if (amount > current) {
+        this.data[stat] = amount;
+    }
 
-	// Robot stat
-	var current = this.getRobotStat(name, stat);
-	if (amount > current) {
-		if (!this.data[name]) {
-			this.data[name] = {};
-		}
-		this.data[name][stat] = amount;
-	}
+    // Robot stat
+    var current = this.getRobotStat(name, stat);
+    if (amount > current) {
+        if (!this.data[name]) {
+            this.data[name] = {};
+        }
+        this.data[name][stat] = amount;
+    }
 };
 
 /**
@@ -158,12 +158,12 @@ Profile.prototype.setBest = function(name, stat, amount) {
  * @returns {Number} the found stat value or 0 if not found
  */
 Profile.prototype.getStat = function(stat) {
-	if (this.data[stat]) {
-		return this.data[stat];
-	}
-	else {
-		return 0;
-	}
+    if (this.data[stat]) {
+        return this.data[stat];
+    }
+    else {
+        return 0;
+    }
 };
 
 /**
@@ -175,10 +175,10 @@ Profile.prototype.getStat = function(stat) {
  * @returns {Number} the found stat value or 0 if not found
  */
 Profile.prototype.getRobotStat = function(name, stat) {
-	if (this.data[name] && this.data[name][stat]) {
-		return this.data[name][stat];
-	}
-	else {
-		return 0;
-	}
+    if (this.data[name] && this.data[name][stat]) {
+        return this.data[name][stat];
+    }
+    else {
+        return 0;
+    }
 };

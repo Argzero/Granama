@@ -12,7 +12,7 @@ depend('robot/skill/lockdown');
 extend('PlayerValkyrie', 'Player');
 function PlayerValkyrie() {
     //         Sprite Name      X  Y  Type          HP   Speed  HP+  Damage+  Shield+  Speed+
-	this.super('pValkyrieBody', 0, 0, Robot.PLAYER, 100, 3,     14,  2,       1,       1.5);
+    this.super('pValkyrieBody', 0, 0, Robot.PLAYER, 100, 3,     14,  2,       1,       1.5);
 
     // Moving sprites
     this.shell1 = new Sprite('pValkyrieShell', 0, -20).child(this, true);
@@ -26,7 +26,7 @@ function PlayerValkyrie() {
     this.scope = new Sprite('pValkyrieScope', 0, 93).child(this, true);
     
     // Sprites drawn on top of the robot's body
-	this.postChildren.push(
+    this.postChildren.push(
         new Sprite('pValkyrieShield', 37, 0).child(this, true),
         new Sprite('pValkyrieGun', -30, 0).child(this, true),
         this.shell1,
@@ -50,7 +50,7 @@ function PlayerValkyrie() {
         pierce: true,
         target: Robot.ENEMY
     };
-	this.gunData2 = {
+    this.gunData2 = {
         sprite: 'laser',
         cd    : 0,
         range : 499,
@@ -80,14 +80,14 @@ PlayerValkyrie.prototype.applyUpdate = function() {
         this.gun(this.gunData1);
         this.gun(this.gunData2);
     }
-	
-	// Update sprite positions
-	this.shell1.pos.y = Math.max(-38, -18 - 4 * this.charge / 5);
-	this.rod2.pos.y = 10 + this.charge / 2;
-	this.leftRail.pos.y = this.rightRail.pos.y = Math.min(24, Math.max(0, this.charge - 25));
-	this.leftRail.pos.x = -(this.rightRail.pos.x = Math.min(20, Math.max(0, (this.charge - 50) * 4 / 5)));
-	this.turret.pos.y = this.leftRail.pos.y + 32 + Math.max(0, this.charge - 75);
-	this.scope.pos.y = this.turret.pos.y + 61;
-	this.shell2.pos.y = this.leftRail.pos.y + 5;
-	this.scope.hidden = this.speed != 0;
+    
+    // Update sprite positions
+    this.shell1.pos.y = Math.max(-38, -18 - 4 * this.charge / 5);
+    this.rod2.pos.y = 10 + this.charge / 2;
+    this.leftRail.pos.y = this.rightRail.pos.y = Math.min(24, Math.max(0, this.charge - 25));
+    this.leftRail.pos.x = -(this.rightRail.pos.x = Math.min(20, Math.max(0, (this.charge - 50) * 4 / 5)));
+    this.turret.pos.y = this.leftRail.pos.y + 32 + Math.max(0, this.charge - 75);
+    this.scope.pos.y = this.turret.pos.y + 61;
+    this.shell2.pos.y = this.leftRail.pos.y + 5;
+    this.scope.hidden = this.speed != 0;
 };

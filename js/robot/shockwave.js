@@ -21,7 +21,9 @@
  * @constructor
  */
 function Shockwave(source, color1, color2, x, y, speed, min, max, radius, thickness, damage, range, knockback, target) {
-    this.arc = new Arc(new Vector(x, y), radius, thickness, min, max);
+    var base = source.getAngle();
+    
+    this.arc = new Arc(new Vector(x, y), radius, thickness, min + base, max + base);
     this.source = source;
     this.color1 = color1;
     this.color2 = color2;
@@ -76,9 +78,9 @@ Shockwave.prototype.hit = function(target) {
     target.damage(this.damage, this.source);
 
     // Knockback if applicable
-    if (this.knockback && target.Knockback) {
-        var dir = target.pos.clone().subtractv(this.arc.clone());
-        dir.setLength(this.knockback);
+    if (this.knockback && target.knockback) {
+        var dir = target.pos.clone().subtractv(this.arc.pos.clone());
+        dir.setMagnitude(this.knockback);
         target.knockback(dir);
     }
 };

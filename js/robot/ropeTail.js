@@ -1,3 +1,5 @@
+depend('robot/tailSegment');
+
 /**
  * Represents a tail that uses simple rope-like physics to bend
  *
@@ -16,7 +18,7 @@
 extend('RopeTail', 'Sprite');
 function RopeTail(source, segment, end, length, offset, base, endOffset, constraint, front) {
     this.super(length <= 1 ? end : segment, 0, -base - offset);
-
+    
     // Apply parenting
     if (front) source.postChildren.push(this);
     else source.preChildren.unshift(this);
@@ -32,8 +34,8 @@ function RopeTail(source, segment, end, length, offset, base, endOffset, constra
     var parent = this;
     for (var i = 0; i < length - 1; i++) {
         var seg = new TailSegment(parent, i == length - 2 ? end : segment, i == length - 2 ? endOffset + offset : offset, constraint);
-        if (front) source.postChildren.push(seg);
-        else source.preChildren.unshift(seg);
+        if (front) parent.postChildren.push(seg);
+        else parent.preChildren.unshift(seg);
         seg.child(parent, true);
         this.segments[i] = seg;
         parent = seg;
