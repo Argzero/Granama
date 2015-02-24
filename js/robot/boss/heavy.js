@@ -120,7 +120,7 @@ HeavyBoss.prototype.onUpdate = function() {
     }
     else if (this.pattern == 0 && this.coverOffset > 0) {
         this.coverOffset--;
-        this.coverRight.move(-1, 0);
-        this.coverLeft.move(1, 0);
+        this.coverRight.move(1, 0);
+        this.coverLeft.move(-1, 0);
     }
 };

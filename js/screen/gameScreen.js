@@ -10,6 +10,7 @@ function GameScreen() {
     this.bossScore = Math.floor(1 * (0.6 + 0.4 * players.length));
     this.bossIncrement = this.bossScore;
     this.bossCount = 0;
+    this.boss = undefined;
 
     // Various data
     this.score = 0;
@@ -199,7 +200,7 @@ GameScreen.prototype.draw = function() {
 
     // Draw the upgrade screen if applicable
     if (this.paused == true) {
-        this.ui.drawUpgradeUI();
+        ui.drawUpgradeUI();
     }
     
     ui.drawCursor();
@@ -246,8 +247,17 @@ GameScreen.prototype.checkSpawns = function() {
 
     // Transition to upgrade screen
     if (this.bossStatus == ACTIVE_BOSS) {
-        if (this.enemyCount == 0) {
+        if (this.boss.dead) {
             this.timer++;
+            if (this.timer == 1) {
+                for (var i = 0; i < this.robots.length; i++) {
+                    var r = this.robots[i];
+                    if (r.type && !(r.type & Robot.PLAYER)) {
+                        r.dead = true;
+                        r.expired = true;
+                    }
+                }
+            }
             if (this.timer >= 600) {
                 ui.setupUpgradeUI();
                 this.bossStatus = ACTIVE_NONE;
@@ -358,7 +368,8 @@ GameScreen.prototype.spawnBoss = function() {
     }
 
     // Spawn the boss
-    this.robots.push(new BOSS_SPAWNS[this.bossCount % BOSS_SPAWNS.length](x, y));
+    this.boss = new BOSS_SPAWNS[this.bossCount % BOSS_SPAWNS.length](x, y);
+    this.robots.push(this.boss);
 };
 
 /**

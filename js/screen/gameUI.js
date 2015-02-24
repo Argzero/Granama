@@ -272,7 +272,7 @@ var ui = {
 
     // Sets up the end screen to show the stats of the given game screen
     setupUpgradeUI: function() {
-        this.gameScreen.paused = true;
+        gameScreen.paused = true;
 
         // Start off with no one ready
         this.upgradeAlpha = 0;
@@ -298,8 +298,8 @@ var ui = {
         this.ctx.globalAlpha = this.upgradeAlpha;
 
         // Draw the title box
-        var x = (element.width + SIDEBAR_WIDTH) / 2;
-        var y = element.height / 2;
+        var x = (this.canvas.width + SIDEBAR_WIDTH) / 2;
+        var y = this.canvas.height / 2;
         this.ctx.font = "40px Flipbash";
         this.ctx.fillStyle = "#484848";
         this.ctx.fillRect(x - 395, y - 380, 790, 80);
@@ -360,21 +360,21 @@ var ui = {
             this.ctx.font = '32px Flipbash';
             this.ctx.fillText('Ready', x, y + 310);
 
-            if (input.up == 1 && this.hovered[i] > 0 && !this.ready[i]) {
+            if ((input.button(UP_1) == 1 || input.button(UP_2) == 1) && this.hovered[i] > 0 && !this.ready[i]) {
                 this.hovered[i]--;
             }
-            if (input.down == 1 && this.hovered[i] < 5 && !this.ready[i]) {
+            if ((input.button(DOWN_1) == 1 || input.button(DOWN_2)) && this.hovered[i] < 5 && !this.ready[i]) {
                 this.hovered[i]++;
             }
 
-            if (input.confirm == 1 || (input.right == 1 && input.id === undefined)) {
+            if (input.button(SELECT_1) || input.button(SELECT_2) || (input instanceof KeyboardInput && (input.button(RIGHT_1) || input.button(RIGHT_2)))) {
                 if (this.hovered[i] < 5) {
                     if (player.points > 0 && player.upgrades[this.hovered[i]] < 10) {
                         player.upgrades[this.hovered[i]]++;
                         player.points--;
                     }
                 }
-                else if (input.confirm == 1) {
+                else if (input.button(SELECT_1) || input.button(SELECT_2)) {
                     this.ready[i] = true;
 
                     var allReady = true;
@@ -387,7 +387,7 @@ var ui = {
                     }
                 }
             }
-            if (input.cancel == 1 || (input.left == 1 && input.id === undefined)) {
+            if (input.button(CANCEL_1) || input.button(CANCEL_2) || (input instanceof KeyboardInput && (input.button(LEFT_1) || input.button(LEFT_2)))) {
                 if (this.hovered[i] < 5) {
                     if (player.upgrades[this.hovered[i]] > this.start[i][this.hovered[i]]) {
                         player.upgrades[this.hovered[i]]--;
