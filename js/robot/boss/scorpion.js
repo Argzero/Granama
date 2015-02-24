@@ -22,8 +22,8 @@ function ScorpionBoss(x, y) {
     this.pierceDamage = 0.2;
     
     // Claw data
-    this.leftClaw = new Sprite('bossFireClawLeft', 90, 40).child(this, true);
-    this.rightClaw = new Sprite('bossFireClawRight', -90, 40).child(this, true);
+    this.leftClaw = new Sprite('bossFireClawLeft', 100, 70).child(this, true);
+    this.rightClaw = new Sprite('bossFireClawRight', -100, 70).child(this, true);
     this.postChildren.push(this.leftClaw);
     this.postChildren.push(this.rightClaw);
     this.sword = false;
@@ -78,8 +78,8 @@ function ScorpionBoss(x, y) {
         rate  : 60,
         damage: damageScale,
         angle : 0,
-        dx    : -90,
-        dy    : 0,
+        dx    : -100,
+        dy    : 70,
         pierce: true,
         target: Robot.PLAYER,
         //                                 args: [radius, arc,             knockback, lifesteal]

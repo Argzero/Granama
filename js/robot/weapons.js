@@ -352,6 +352,7 @@ var weapon = {
      *     <li>{number}  start       - the starting angle of the shockwave</li>
      *     <li>{number}  end         - the ending angle of the shockwave</li>
      *     <li>{number}  radius      - the starting radius of the arc</li>
+     *     <li>{number}  [target]    - target robot group to hit</li>
      *     <li>{number}  [thickness] - the width of the shockwave</li>
      *     <li>{string}  [color1]    - the primary color of the shockwave</li>
      *     <li>{string}  [color2]    - the secondary color of the shockwave</li>
@@ -372,17 +373,19 @@ var weapon = {
                 this,
                 data.color1 || '#ff9933',
                 data.color2 || '#f70',
-                pos,
+                pos.x,
+                pos.y,
                 data.speed || 5,
-                data.start + this.angle,
-                data.end + this.angle,
+                data.start,
+                data.end,
                 data.radius,
                 data.thickness || 20,
                 data.damage,
                 data.range,
-                data.knockback
+                data.knockback,
+                data.target || Robot.PLAYER
             );
-            data.list.push(shockwave);
+            gameScreen.bullets.push(shockwave);
             if (data.alternate) {
                 var temp = Math.PI - data.end;
                 data.end = Math.PI - data.start;

@@ -18,8 +18,8 @@ function Arc(pos, radius, thickness, start, end) {
     this.start = start;
     this.end = end;
     
-    this.startTrig = new Vector(Math.cos(start), Math.sin(start));
-    this.endTrig = new Vector(Math.cos(end), Math.sin(end));
+    this.startTrig = new Vector(Math.cos(start), Math.sin(start)).rotate(0, 1);
+    this.endTrig = new Vector(Math.cos(end), Math.sin(end)).rotate(0, -1);
 }
 
 /**
@@ -37,6 +37,6 @@ Arc.prototype.collides = function(target) {
     
     return dSq < sq(this.radius + thickness) 
         && dSq > sq(this.radius - thickness) 
-        && this.endTrig.dot(dif) 
+        && this.endTrig.dot(dif) <= 0
         && this.startTrig.dot(dif) <= 0;
 }

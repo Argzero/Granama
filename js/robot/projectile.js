@@ -301,6 +301,7 @@ Projectile.prototype.setupSword = function(radius, arc, knockback, lifesteal) {
 Projectile.prototype.setupFist = function(delay, side) {
     this.onUpdate = projEvents.fistUpdate;
     this.onBlocked = projEvents.fistBlocked;
+    this.onExpire = projEvents.fistExpired;
     
     this.delay = delay;
     this.side = side.toLowerCase();
@@ -387,7 +388,8 @@ var projEvents = {
      * returning back after reaching the range and pausing
      */
     fistUpdate: function() {
-        this.expired = this.expired || (this.returning && this.delay <= 0 && this.target.dead);
+        this.expired = this.expired || (this.returning && this.delay <= 0 && this.shooter.dead);
+        this.shooter['fist' + this.side] = this.expired;
         
         // Updates after the fist reached it's range limit
         if (this.returning) {
@@ -404,17 +406,11 @@ var projEvents = {
                 this.vel = this.shooter.pos.clone().subtractv(this.pos);
                 this.vel.setMagnitude(this.speed);
                 
-                if (this.pos.distanceSq(this.origin) < 22500) {
-                    this.block();
+                if (this.pos.distanceSq(this.shooter.pos) < 22500) {
+                    this.expired = true;
+                    this.shooter['fist' + this.side] = true;
                 }
             }
-        }
-        
-        // Move straight out to the range limit before returning
-        else if (this.pos.distanceSq(this.shooter.pos) >= sq(this.range)) {
-            this.returning = true;
-            this.actualDamage = this.damage;
-            this.damage = 0;
         }
     },
     
@@ -422,8 +418,18 @@ var projEvents = {
      * Restores the fist to the boss when blocked
      */
     fistBlocked: function() {
-        this.expired = true;
+        this.onExpire();
+        this.delay = 0;
+        this.damage = this.actualDamage;
+    },
+    
+    /**
+     * Cancels a fist expiring, causing it to retreat instead
+     */ 
+    fistExpired: function() {
+        this.expired = false;
         this.returning = true;
+        this.damage = 0;
     },
     
     /**
