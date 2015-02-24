@@ -24,9 +24,10 @@ function BrawlerBoss(x, y) {
     // Specific values
     this.leftFist = true;
     this.rightFist = true;
-    this.leftFistImg = new Sprite('fistLeft', 100, 0).child(this, true);
-    this.rightFistImg = new Sprite('fistRight', -100, 0).child(this, true);
-    this.postChildren.push(this.leftFistImg, this.rightFistImg)
+    this.leftFistImg = new Sprite('fistLeft', 120, 0).child(this, true);
+    this.rightFistImg = new Sprite('fistRight', -120, 0).child(this, true);
+    this.postChildren.push(this.leftFistImg, this.rightFistImg);
+    this.changing = false;
 
     // Movement pattern
     this.movement = movement.basic;
@@ -41,7 +42,7 @@ function BrawlerBoss(x, y) {
         range : 400,
         damage: damageScale,
         pierce: true,
-        dx    : 100,
+        dx    : 120,
         target: Robot.PLAYER,
         //
         templates: [{ name: 'setupFist', args: [60, 'left'] }]
@@ -93,4 +94,12 @@ BrawlerBoss.prototype.onUpdate = function() {
     console.log(this.pattern);
     this.leftFistImg.hidden = !this.leftFist;
     this.rightFistImg.hidden = !this.rightFist;
+    if (this.changing && this.leftFist && this.rightFist) {
+        var fistData = this.patterns[0][0];
+        var right = fistData.sprite == 'fistLeft';
+        fistData.templates[0].args[1] = right ? 'right' : 'left';
+        fistData.dx = -fistData.dx;
+        fistData.sprite = right ? 'fistRight' : 'fistLeft';
+    }
+    this.changing = !this.leftFist || !this.rightFist;
 };

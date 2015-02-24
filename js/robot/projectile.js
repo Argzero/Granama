@@ -389,7 +389,7 @@ var projEvents = {
      */
     fistUpdate: function() {
         this.expired = this.expired || (this.returning && this.delay <= 0 && this.shooter.dead);
-        this.shooter['fist' + this.side] = this.expired;
+        this.shooter[this.side + 'Fist'] = this.expired;
         
         // Updates after the fist reached it's range limit
         if (this.returning) {
@@ -408,7 +408,7 @@ var projEvents = {
                 
                 if (this.pos.distanceSq(this.shooter.pos) < 22500) {
                     this.expired = true;
-                    this.shooter['fist' + this.side] = true;
+                    this.shooter[this.side + 'Fist'] = true;
                 }
             }
         }

@@ -234,11 +234,11 @@ var movement = {
             this.movementHelper({ pos: d.multiply(-500, -500).addv(this.pos) });
         }
         else if (d1 > 0) {
-            this.lookTowards(d.rotate(0, 1).multiply(500, 500).addv(this.pos), this.turnVec);
+            d.rotate(0, 1).multiply(500, 500).addv(this.pos);
             this.movementHelper({ pos: d });
         }
         else if (d1 < 0) {
-            this.lookTowards(d.rotate(0, -1).multiply(500, 500).addv(this.pos), this.turnVec);
+            d.rotate(0, -1).multiply(500, 500).addv(this.pos);
             this.movementHelper({ pos: d });
         }
     }
