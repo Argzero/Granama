@@ -21,8 +21,9 @@ function Plus(x, y, velX, velY, lifespan) {
  * Moves the particle each frame and marks it as
  * expired after its lifespan is up
  */ 
-Plus.prototype.onPreDraw = function() {
+Plus.prototype.update = function() {
     this.move(this.velX, this.velY);
     this.lifespan--;
     this.expired = this.lifespan <= 0;
+    console.log('Pos(' + this.pos.x + ', ' + this.pos.y + ') Expired=' + this.expired);
 }

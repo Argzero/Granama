@@ -7,9 +7,6 @@ function skillPerfectShield(player) {
     player.perfectShield.alpha = 0;
     player.perfectShield.hidden = true;
     player.postChildren.push(player.perfectShield);
-    player.arc = new Arc(new Vector(0, 0), 100, 25, -Math.PI / 4, Math.PI / 4);
-    player.arc.initialStart = player.arc.startTrig.clone();
-    player.arc.initialEnd = player.arc.endTrig.clone();
 
     /**
      * Updates the skill each frame, applying activation
@@ -37,20 +34,16 @@ function skillPerfectShield(player) {
         if (this.perfectShield.alpha > 0.5) {
             
             // Update the arc
-            this.arc.pos.x = this.x;
-            this.arc.pos.y = this.y;
-            this.arc.startTrig.x = this.arc.initialStart.x;
-            this.arc.startTrig.y = this.arc.initialStart.y;
-            this.arc.endTrig.x = this.arc.initialEnd.x;
-            this.arc.endTrig.y = this.arc.initialEnd.y;
-            this.arc.startTrig.rotate(this.rotation.x, this.rotation.y);
-            this.arc.endTrig.rotate(this.rotation.x, this.rotation.y);
+            var angle = this.getAngle() + Math.PI / 4;
+            var arc = new Arc(this.pos, 100, 25, angle, angle + Math.PI / 2);
             
             // Check bullet collision
             var bullets = gameScreen.bullets;
             for (var i = 0; i < bullets.length; i++) {
                 var bullet = bullets[i];
-                if ((bullet.group & this.type) && this.arc.collides(bullet)) {
+                var type = bullet.group & this.type;
+                var collides = arc.collides(bullet);
+                if (type && collides) {
                     bullet.block();
                 }
             }

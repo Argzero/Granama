@@ -26,7 +26,7 @@ function skillStasis(player) {
                 var angle = Math.random() * 2 * Math.PI;
                 var c = Math.cos(angle);
                 var s = Math.sin(angle);
-                gameScreen.particles.push(new Plus(this.x, this.y, 2 * c, 2 * s, 75));
+                gameScreen.particles.push(new Plus(this.pos.x, this.pos.y, 2 * c, 2 * s, 75));
             }
 
             return 0;

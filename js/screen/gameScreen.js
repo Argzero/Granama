@@ -15,6 +15,7 @@ function GameScreen() {
     this.score = 0;
     this.spawnCd = 0;
     this.enemyCount = 0;
+    this.timer = 0;
     this.gameOver = false;
     this.paused = undefined;
     
