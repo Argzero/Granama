@@ -26,7 +26,9 @@ function RopeTail(source, segment, end, length, offset, base, endOffset, constra
     
     // Data
     this.source = source;
-    this.rel = Vector(1, 0);
+    this.rel = new Vector(1, 0);
+    this.dir = new Vector(0, 1);
+    this.offset = this.pos.y;
     
     constraint *= Math.PI / 180;
     
@@ -34,9 +36,6 @@ function RopeTail(source, segment, end, length, offset, base, endOffset, constra
     var parent = this;
     for (var i = 0; i < length - 1; i++) {
         var seg = new TailSegment(parent, i == length - 2 ? end : segment, i == length - 2 ? endOffset + offset : offset, constraint);
-        if (front) parent.postChildren.push(seg);
-        else parent.preChildren.unshift(seg);
-        seg.child(parent, true);
         this.segments[i] = seg;
         parent = seg;
     }
@@ -61,9 +60,28 @@ RopeTail.prototype.setBaseDir = function(dir) {
  * constraints and bending according to the source's movement
  */
 RopeTail.prototype.update = function() {
-    for (var i = 0; i < this.segments.length; i++) {
-        this.segments[i].update();
+    this.dir = this.source.rotation.clone().rotate(0, 1).rotate(this.rel.x, this.rel.y);
+    this.pos.x = 0;
+    this.pos.y = this.offset;
+    this.pos.rotate(this.dir.y, -this.dir.x);
+    this.pos.addv(this.source.pos);
+    
+    camera.ctx.translate(-this.source.pos.x, -this.source.pos.y);
+    if (!this.front) {
+        this.draw(camera);
+        for (var i = 0; i < this.segments.length; i++) {
+            this.segments[i].update();
+            this.segments[i].draw(camera);
+        }
     }
+    else {
+        for (var i = this.segments.length - 1; i >= 0; i--) {
+            this.segments[i].update();
+            this.segments[i].draw(camera);
+        }
+        this.draw(camera);
+    }
+    camera.ctx.translate(this.source.pos.x, this.source.pos.y);
 }
 
 /**

@@ -54,7 +54,7 @@ Orbiter.prototype.isInRange = function(range) {
 /**
  * Updates the tail each frame
  */
-Orbiter.prototype.onUpdate = function() {
+Orbiter.prototype.onPreDraw = function() {
     this.tail.update();
 };
 
@@ -91,7 +91,7 @@ function LightOrbiter(x, y) {
         /* End        */ 'enemyLightOrbiterTail',
         /* Length     */ 3,
         /* Offset     */ 28,
-        /* Base       */ 40,
+        /* Base       */ 12,
         /* End Offset */ 0,
         /* Constraint */ 30
     );
@@ -130,7 +130,7 @@ function HeavyOrbiter(x, y) {
         /* End        */ 'enemyHeavyOrbiterTail',
         /* Length     */ 3,
         /* Offset     */ 30,
-        /* Base       */ 35,
+        /* Base       */ 5,
         /* End Offset */ 0,
         /* Constraint */ 30
     );
@@ -169,7 +169,7 @@ function Hunter(x, y) {
         /* End        */ 'enemyHunterEnd',
         /* Length     */ 4,
         /* Offset     */ 27,
-        /* Base       */ 33,
+        /* Base       */ 6,
         /* End Offset */ 0,
         /* Constraint */ 30
     );
@@ -177,10 +177,8 @@ function Hunter(x, y) {
 
 /**
  * Switches to melee form when low on health
- *
- * @param {Camera} camera - camera drawing to
  */
-Hunter.prototype.onDraw = function(camera) {
+Hunter.prototype.onUpdate = function() {
     if (this.health < this.maxHealth * 0.5 && this.movement != movement.basic) {
         this.movement = movement.basic;
         this.range = 50;
