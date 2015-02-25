@@ -14,21 +14,12 @@ function TailSegment(parent, sprite, offset, constraint) {
     this.constraint = constraint;
     this.offset = offset;
     this.lim = new Vector(Math.cos(constraint), Math.sin(constraint));
-    this.prev = this.getWorldPos();
+    this.prev = this.getWorldPos().subtractv(this.parent.getWorldPos());
 }
 
 /**
- * Updates the tail segment, applying rotations and clamping to the constraint
+ * Updates the tail segment, applying rotations and clamping to the constraintsd
  */
 TailSegment.prototype.update = function() {
-    var pos = this.parent.getWorldPos();
-    var dir = this.prev.subtractv(pos).normalize();
-    if (dir.lengthSq() > 0) {
-        var rot = this.parent.getWorldRotation();
-        rot.y = -rot.y;
-        dir.rotate(rot.x, rot.y);
-        //this.rotation = dir.normalize();
-        this.pos = dir.multiply(this.offset, this.offset);
-        this.prev = pos.addv(this.pos);
-    }
-}
+    
+};

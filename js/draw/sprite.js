@@ -58,8 +58,13 @@ function Sprite(name, x, y) {
 Sprite.prototype.getWorldPos = function() {
     var parent = this.parent;
     var pos = this.pos.clone();
+    var rot = this.keepRotate;
     while (parent) {
+        if (rot) {
+            pos.rotate(parent.rotation.x, parent.rotation.y);
+        }
         pos.addv(parent.pos);
+        rot = parent.keepRotate;
         parent = parent.parent;
     }
     return pos;

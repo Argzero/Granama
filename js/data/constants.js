@@ -179,7 +179,7 @@ SPAWN_DATA = [
     10, 1, HeavyMelee,
     30, 0, LightBomber,
     15, 1, HeavyBomber,
-    20, 0, LightOrbiter,
+    2000000, 0, LightOrbiter,
     10, 1, HeavyOrbiter,
     15, 0, LightSpinner,
     10, 1, HeavySpinner,
