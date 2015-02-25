@@ -6,9 +6,11 @@
 function GameScreen() {
 
     // Boss data
+    var multiplier = (0.6 + 0.4 * players.length);
     this.bossStatus = ACTIVE_NONE;
-    this.bossScore = Math.floor(1 * (0.6 + 0.4 * players.length));
+    this.bossScore = Math.floor(50 * multiplier);
     this.bossIncrement = this.bossScore;
+    this.bossScale = Math.floor(5 * multiplier) * 5;
     this.bossCount = 0;
     this.boss = undefined;
 
@@ -238,6 +240,12 @@ GameScreen.prototype.applyScrolling = function() {
         this.playerMaxX = Math.min(GAME_WIDTH, Math.max(avgX + WINDOW_WIDTH / 2, this.scrollX + WINDOW_WIDTH) - 100);
         this.playerMaxY = Math.min(GAME_HEIGHT, Math.max(avgY + WINDOW_HEIGHT / 2, this.scrollY + WINDOW_HEIGHT) - 100);
     }
+};
+
+GameScreen.prototype.startNextRound = function() {
+    this.paused = false;
+    this.bossScore += this.bossIncrement;
+    this.bossIncrement += this.bossScale;
 };
 
 /**

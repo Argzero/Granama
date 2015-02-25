@@ -25,7 +25,7 @@ function LightArtillery(x, y) {
         damage: Enemy.sum(),
         rate  : 45,
         range : 400,
-        spread: rand((enemyManager.bossScore + 1) / 3),
+        spread: rand((enemyManager.bossCount + 1) / 3),
         dx    : 0,
         dy    : 38
     });
@@ -61,7 +61,7 @@ function HeavyArtillery(x, y) {
         damage: 2 * Enemy.sum(),
         rate  : 35,
         range : 425,
-        spread: rand((enemyManager.bossScore + 1) / 3),
+        spread: rand((enemyManager.bossCount + 1) / 3),
         dx    : 0,
         dy    : 53
     });

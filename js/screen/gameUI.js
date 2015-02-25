@@ -363,18 +363,18 @@ var ui = {
             if ((input.button(UP_1) == 1 || input.button(UP_2) == 1) && this.hovered[i] > 0 && !this.ready[i]) {
                 this.hovered[i]--;
             }
-            if ((input.button(DOWN_1) == 1 || input.button(DOWN_2)) && this.hovered[i] < 5 && !this.ready[i]) {
+            if ((input.button(DOWN_1) == 1 || input.button(DOWN_2) == 1) && this.hovered[i] < 5 && !this.ready[i]) {
                 this.hovered[i]++;
             }
 
-            if (input.button(SELECT_1) || input.button(SELECT_2) || (input instanceof KeyboardInput && (input.button(RIGHT_1) || input.button(RIGHT_2)))) {
+            if (input.button(SELECT_1) == 1 || input.button(SELECT_2) == 1 || (input instanceof KeyboardInput && (input.button(RIGHT_1) == 1 || input.button(RIGHT_2) == 1))) {
                 if (this.hovered[i] < 5) {
                     if (player.points > 0 && player.upgrades[this.hovered[i]] < 10) {
                         player.upgrades[this.hovered[i]]++;
                         player.points--;
                     }
                 }
-                else if (input.button(SELECT_1) || input.button(SELECT_2)) {
+                else if (input.button(SELECT_1) == 1 || input.button(SELECT_2) == 1) {
                     this.ready[i] = true;
 
                     var allReady = true;
@@ -382,19 +382,18 @@ var ui = {
                         if (!this.ready[j]) allReady = false;
                     }
                     if (allReady) {
-                        gameScreen = this.screen;
-                        gameScreen.paused = false;
+                        gameScreen.startNextRound();
                     }
                 }
             }
-            if (input.button(CANCEL_1) || input.button(CANCEL_2) || (input instanceof KeyboardInput && (input.button(LEFT_1) || input.button(LEFT_2)))) {
+            if (input.button(CANCEL_1) == 1 || input.button(CANCEL_2) == 1 || (input instanceof KeyboardInput && (input.button(LEFT_1) == 1 || input.button(LEFT_2) == 1))) {
                 if (this.hovered[i] < 5) {
                     if (player.upgrades[this.hovered[i]] > this.start[i][this.hovered[i]]) {
                         player.upgrades[this.hovered[i]]--;
                         player.points++;
                     }
                 }
-                else if (input.cancel == 1) this.ready[i] = false;
+                else if (input.button(CANCEL_1) == 1 || input.button(CANCEL_2) == 1) this.ready[i] = false;
             }
         }
 
