@@ -1,9 +1,13 @@
+// AI Movement patterns available for enemies
 var movement = {
 
     /**
      * Helper function for moving towards a target
+     *
+     * @param {Robot}   target      - target to move towards
+     * @param {boolean} [backwards] - whether or not to face backwards
      */
-    moveTowards: function(target) {
+    moveTowards: function(target, backwards) {
     
         // Turning values
         this.turnVec = this.turnVec || new Vector(Math.cos(this.speed / this.turnDivider), Math.sin(this.speed / this.turnDivider));
@@ -14,6 +18,10 @@ var movement = {
 
         // Get the direction to move
         var forward = this.forward();
+        if (backwards) {
+            forward.x = -forward.x;
+            forward.y = -forward.y;
+        }
         var m = forward.dot(this.pos.clone().subtractv(target.pos)) > 0 ? -1 : 1;
 
         // Move the enemy to their preferred range
@@ -27,6 +35,16 @@ var movement = {
         }
     },
 
+    /**
+     * Basic movement pattern which moves towards the player up until the
+     * preferred range and moving away when too close while facing away
+     * from the player at the same time.
+     */
+    backwards: function() {
+        this.movementHelper = movement.moveTowards;
+        this.movementHelper(getClosestPlayer(this.pos), true);
+    },
+    
     /**
      * Basic movement pattern which moves towards the player up until the
      * preferred range and moving away when too close.
@@ -173,14 +191,14 @@ var movement = {
         // Turn towards the nearest damaged enemy, ignoring faster units and
         // prioritizing non-healers
         var target, dSq;
-        if (this.forcedTarget) {
-            target = this.forcedTarget;
+        if (this.spawner) {
+            target = this.spawner;
             dSq = target.pos.distanceSq(this.pos);
         }
         else {
-            for (var i = 0; i < enemyManager.enemies.length; i++) {
-                var e = enemyManager.enemies[i];
-                if (e == this || e.health >= e.maxHealth || e.speed > this.speed) continue;
+            for (var i = 0; i < gameScreen.robots.length; i++) {
+                var e = gameScreen.robots[i];
+                if (e == this || e.health >= e.maxHealth || e.speed > this.speed || !(e.type & Robot.MOBILE)) continue;
                 var temp = e.pos.distanceSq(this.pos);
                 if (!dSq || ((!e.heal || target.heal) && temp < dSq)) {
                     dSq = temp;
@@ -191,8 +209,8 @@ var movement = {
 
         // Move randomly when there's no targets to heal
         if (!target) {
-            while (!this.backup || this.pos.distanceSq(this.backup) < sq(this.range + 100)) {
-                this.backup = new Vector(rand(game.width), rand(game.height));
+            while (!this.backup || this.pos.distanceSq(this.backup.pos) < sq(this.range + 100)) {
+                this.backup = { pos: new Vector(rand(GAME_WIDTH), rand(GAME_HEIGHT)) };
             }
             target = this.backup;
         }

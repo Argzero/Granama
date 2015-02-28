@@ -179,7 +179,7 @@ SPAWN_DATA = [
     10, 1, HeavyMelee,
     30, 0, LightBomber,
     15, 1, HeavyBomber,
-    2000000, 0, LightOrbiter,
+    20, 0, LightOrbiter,
     10, 1, HeavyOrbiter,
     15, 0, LightSpinner,
     10, 1, HeavySpinner,
@@ -198,14 +198,14 @@ SPAWN_DATA = [
     2, 6, Paladin,
     2, 6, Hunter,
     2, 6, Solar,
-    2, 6, Snatcher
-    //10000, 0, BrawlerBoss
+    2, 6, Snatcher,
+    10000, 0, HiveQueenBoss
 ],
 BOSS_SPAWNS = [
     HeavyBoss,
     ScorpionBoss,
     BrawlerBoss,
-    //QueenBoss,
+    HiveQueenBoss
     //TankBoss,
     //DragonBoss
 ],
@@ -226,12 +226,10 @@ FIRE_SPAWNS = [
     10, 0, HeavyGrabber,
     1, 0, Snatcher
 ],
-/*
 QUEEN_SPAWNS = [
     4, 0, HiveDrone,
     1, 0, HiveDefender
 ],
-*/
 
 // Drop names (Do not modify these values)
 // General

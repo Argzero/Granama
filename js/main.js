@@ -22,6 +22,7 @@ depend('screen/controlsScreen');
 depend('screen/creditsScreen');
 depend('screen/gameScreen');
 depend('screen/gameUI');
+depend('screen/loadScreen');
 depend('screen/selectScreen');
 depend('screen/statScreen');
 depend('screen/titleButton');
@@ -55,6 +56,7 @@ depend('robot/player/valkyrie');
 depend('robot/boss/boss');
 depend('robot/boss/brawler');
 depend('robot/boss/heavy');
+depend('robot/boss/hiveQueen');
 depend('robot/boss/scorpion');
 
 // Enemy scripts
@@ -127,7 +129,7 @@ onLoaderDone = function() {
     controls.mapDirectionKey(MOVE, controls.KEY_A, controls.KEY_D, controls.KEY_W, controls.KEY_S, controls.AXIS_LX, controls.AXIS_LY);
     controls.mapDirectionMouse(LOOK, true, controls.AXIS_RX, controls.AXIS_RY);
     
-    gameScreen = new TitleScreen();
+    gameScreen = new LoadingScreen();
     
     // Cancel the context menu
     camera.canvas.oncontextmenu = function(e) {

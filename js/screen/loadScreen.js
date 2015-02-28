@@ -1,4 +1,8 @@
-// Loading gameScreen for loading all assets before starting the game
+/**
+ * Loading gameScreen for loading all assets before starting the game
+ *
+ * @constructor
+ */
 function LoadingScreen() {
 
     this.images = [
@@ -108,8 +112,6 @@ function LoadingScreen() {
         'EmptyBar',
         'enemyHeavyArtillery',
         'enemyHeavyBomber',
-        'enemyHeavyBouncer',
-        'enemyHeavyBouncerBack',
         'enemyHeavyGrabber',
         'enemyHeavyGrabberArm',
         'enemyHeavyGrabberArmLeft',
@@ -119,6 +121,8 @@ function LoadingScreen() {
         'enemyHeavyOrbiter',
         'enemyHeavyOrbiterTail',
         'enemyHeavyRanged',
+        'enemyHeavySpinner',
+        'enemyHeavySpinnerBack',
         'enemyHiveDefender',
         'enemyHiveDefenderAbdomen',
         'enemyHiveDefenderWingLeft',
@@ -132,8 +136,6 @@ function LoadingScreen() {
         'enemyHunterSegment',
         'enemyLightArtillery',
         'enemyLightBomber',
-        'enemyLightBouncer',
-        'enemyLightBouncerBack',
         'enemyLightGrabber',
         'enemyLightGrabberArm',
         'enemyLightMedic',
@@ -141,6 +143,8 @@ function LoadingScreen() {
         'enemyLightOrbiter',
         'enemyLightOrbiterTail',
         'enemyLightRanged',
+        'enemyLightSpinner',
+        'enemyLightSpinnerBack',
         'enemyPaladin',
         'enemyPointer',
         'enemyRailer',
@@ -367,7 +371,7 @@ LoadingScreen.prototype.imageLoaded = function() {
 /**
  * Updates the loading screen, transitioning when needed
  */ 
-LoadingScreen.prototype.update() {
+LoadingScreen.prototype.update = function() {
 
     // Start loading the images
     if (!this.loading) {
@@ -383,11 +387,13 @@ LoadingScreen.prototype.update() {
     }
 };
 
-// Draws the loading gameScreen
-LoadingScreen.prototype.draw = function(camera) {
+/**
+ * Draws the loading gameScreen
+ */
+LoadingScreen.prototype.draw = function() {
 
-    var cx = mx - camera.canvas.offsetLeft + pageScrollX;
-    var cy = my - camera.canvas.offsetTop + pageScrollY;
+    var cx = controls.mouse.x;
+    var cy = controls.mouse.y;
 
     var wx = camera.canvas.width / 2;
     var wy = camera.canvas.height / 2;
@@ -398,7 +404,7 @@ LoadingScreen.prototype.draw = function(camera) {
     camera.ctx.font = '50px Flipbash';
     camera.ctx.fillStyle = '#FFFFFF';
     var text = Math.round(100 * this.index / this.images.length) + '%';
-    canvas.fillText(text, wx - camera.ctx.measureText(text) / 2, wy);
+    camera.ctx.fillText(text, wx - camera.ctx.measureText(text) / 2, wy);
 
     // Draw the cursor
     ui.drawCursor();

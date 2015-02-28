@@ -422,6 +422,7 @@ var weapon = {
             var enemy = gameScreen.spawnEnemy(data.enemies, pos.x, pos.y);
             enemy.exp = 0;
             enemy.points = 0;
+            enemy.spawner = this;
         }
     },
 

@@ -1,5 +1,6 @@
 /**
- * Boss that uses a minigun, mines, and rockets to fight
+ * The Scorpion boss that uses rockets, claws, and fire
+ * to fight the players.
  *
  * @param {number} x - horizontal starting position
  * @param {number} y - vertical starting position
