@@ -22,12 +22,12 @@ var controls = {
     KEY_5: 53, KEY_6: 54, KEY_7: 55, KEY_8: 56, KEY_9: 57,
 
     // Arrow keys
-    KEY_LEFT: 37, KEY_UP: 38, KEY_RIGHT: 39, KEY_DOWN: 40, KEY_DEL: 46,
+    KEY_LEFT: 37, KEY_UP: 38, KEY_RIGHT: 39, KEY_DOWN: 40, 
 
     // Special keys
     KEY_BACK: 8,   KEY_TAB: 9,      KEY_ENTER: 13, KEY_SHIFT: 16,
     KEY_CTRL: 17,  KEY_ALT: 18,     KEY_ESC: 27,   KEY_SPACE: 32,
-    KEY_PG_UP: 33, KEY_PG_DOWN: 34,
+    KEY_PG_UP: 33, KEY_PG_DOWN: 34, KEY_DEL: 46,
 
     // Mouse buttons
     MOUSE_LEFT: 998, MOUSE_RIGHT: 999,

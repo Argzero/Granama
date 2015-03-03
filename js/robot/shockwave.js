@@ -84,3 +84,8 @@ Shockwave.prototype.hit = function(target) {
         target.knockback(dir);
     }
 };
+
+/**
+ * Shockwaves can't be blocked, but need a function in case it is attempted
+ */
+Shockwave.prototype.block = function() { };

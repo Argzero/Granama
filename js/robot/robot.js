@@ -122,6 +122,7 @@ Robot.prototype.damage = function(amount, source) {
         this.shield = 0;
         this.damageTaken += amount;
         this.health -= amount;
+        if (isNaN(this.health)) debugger;
         this.dead = this.health <= 0;
         if (this.dead) {
             this.deaths++;

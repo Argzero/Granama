@@ -10,18 +10,17 @@ var movement = {
     moveTowards: function(target, backwards) {
     
         // Turning values
-        this.turnVec = this.turnVec || new Vector(Math.cos(this.speed / this.turnDivider), Math.sin(this.speed / this.turnDivider));
+        if (this.prevTurnDivider != this.turnDivider) {
+            this.turnVec = new Vector(Math.cos(this.speed / this.turnDivider), Math.sin(this.speed / this.turnDivider));
+            this.prevTurnDivider = this.turnDivider;
+        }
 
         // Turn towards the player
-        if (this.backwards) this.lookAway(target.pos, this.turnVec);
+        if (backwards) this.lookAway(target.pos, this.turnVec);
         else this.lookTowards(target.pos, this.turnVec);
 
         // Get the direction to move
         var forward = this.forward();
-        if (backwards) {
-            forward.x = -forward.x;
-            forward.y = -forward.y;
-        }
         var m = forward.dot(this.pos.clone().subtractv(target.pos)) > 0 ? -1 : 1;
 
         // Move the enemy to their preferred range
