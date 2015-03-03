@@ -29,7 +29,7 @@ function FortressBoss(x, y) {
     this.armRight = new Sprite('bossTankArmRight', 120, 70).child(this, true);
     this.overlay = new Sprite('bossTankShield', 0, 235).child(this, true);
     this.postChildren.push(this.armLeft, this.armRight, this.overlay);
-    this.armLeft.pivot.x = -(this.armRight.pivot.x = -58);
+    this.armLeft.pivot.x = -(this.armRight.pivot.x = -68);
     this.armLeft.pivot.y = this.armRight.pivot.y = -112;
     this.overlay.hidden = true;
     
@@ -39,12 +39,12 @@ function FortressBoss(x, y) {
     this.hook = new Sprite('bossTankGrapple', 0, 0);
     this.hooksActive = 0;
     this.hooks = [
-        new FortressHook(this, new Vector(-132, -100), new Vector(-1, 0)),
-        new FortressHook(this, new Vector(-132, -30), new Vector(-1, 0)),
-        new FortressHook(this, new Vector(-132, 40), new Vector(-1, 0)),
-        new FortressHook(this, new Vector(132, -100), new Vector(1, 0)),
-        new FortressHook(this, new Vector(132, -30), new Vector(1, 0)),
-        new FortressHook(this, new Vector(132, 40), new Vector(1, 0))
+        new FortressHook(this, new Vector(-132, -70), new Vector(-1, 0)),
+        new FortressHook(this, new Vector(-132, 0), new Vector(-1, 0)),
+        new FortressHook(this, new Vector(-132, 70), new Vector(-1, 0)),
+        new FortressHook(this, new Vector(132, -70), new Vector(1, 0)),
+        new FortressHook(this, new Vector(132, 0), new Vector(1, 0)),
+        new FortressHook(this, new Vector(132, 70), new Vector(1, 0))
     ];
     for (var i = 0; i < this.hooks.length; i++) {
         this.postChildren.push(this.hooks[i]);
@@ -243,9 +243,10 @@ function FortressHook(boss, root, rot) {
     this.root = root;
     this.rot = rot;
     this.rotation = rot.clone();
-    this.pos = root.clone();
+    this.pos = root.clone().addv(boss.pos);
     this.worldPos = new Vector(0, 0);
     this.rvel = new Vector(0, 0);
+    this.keepRotate = false;
 }
 
 FortressHook.RESTORE_ROT = new Vector(Math.cos(Math.PI / 180), Math.sin(Math.PI / 180));
@@ -259,9 +260,9 @@ FortressHook.prototype.update = function() {
 
         // Movement outwards
         if (this.vel.x || this.vel.y) {
-            this.rotation.x = this.arot.clone();
+            this.rotation = this.arot.clone();
             this.pos.addv(this.vel);
-            if (this.pos.lengthSq() > 490000) {
+            if (this.pos.distanceSq(this.boss.pos) > 490000) {
                 this.vel.x = 0;
                 this.vel.y = 0;
             }
@@ -276,12 +277,12 @@ FortressHook.prototype.update = function() {
         else {
             this.rotation.rotateTowards(this.rot, FortressHook.RESTORE_ROT);
             
-            this.rvel.x = -this.pos.x;
-            this.rvel.y = -this.pos.y;
+            this.rvel.x = this.boss.pos.x - this.pos.x;
+            this.rvel.y = this.boss.pos.y - this.pos.y;
             this.rvel.setMagnitude(18);
             this.pos.addv(this.rvel);
 
-            if (this.pos.lengthSq() < 2500) {
+            if (this.pos.distanceSq(this.boss.pos) < 2500) {
                 this.active = false;
                 this.rotation = this.rot.clone();
                 this.boss.hooksActive--;
@@ -303,6 +304,10 @@ FortressHook.prototype.update = function() {
             }
         }
     }
+    if (!this.active) {
+        this.pos = this.root.clone().rotate(this.boss.rotation.x, this.boss.rotation.y).addv(this.boss.pos);
+        this.rotation = this.rot.clone().rotate(this.boss.rotation.x, this.boss.rotation.y);
+    }
 }
 
 /**
@@ -312,15 +317,15 @@ FortressHook.prototype.update = function() {
 FortressHook.prototype.draw = function() {
 
     // Draw the hook
-    this.boss.hook.pos.moveTo(this.pos.x, this.pos.y);
-    this.boss.hook.rotation.set(this.rotation.x, this.rotation.y);
+    this.boss.hook.moveTo(this.pos.x - this.boss.pos.x, this.pos.y - this.boss.pos.y);
+    this.boss.hook.setRotation(this.rotation.x, this.rotation.y);
     this.boss.hook.draw(camera);
     
     // Chain drawing
     if (this.active) {
         
         var dir = this.rvel.clone();
-        var temp = this.pos.clone().addv(this.boss.pos).addv(new Vector(0, -45).rotate(this.rotation.x, this.rotation.y));
+        var temp = this.pos.clone().addv(new Vector(-45, 0).rotate(this.rotation.x, this.rotation.y));
         var rot = this.rvel.clone().normalize().multiply(-1, -1);
         dir.setMagnitude(30);
 
@@ -328,13 +333,13 @@ FortressHook.prototype.draw = function() {
         var difY = this.boss.pos.y - temp.y;
         while (difX * (this.boss.pos.x - temp.x) > 0 && difY * (this.boss.pos.y - temp.y) > 0) {
             
-            this.boss.chainUp.moveTo(temp.x, temp.y);
+            this.boss.chainUp.moveTo(temp.x - this.boss.pos.x, temp.y - this.boss.pos.y);
             this.boss.chainUp.setRotation(rot.x, rot.y);
             this.boss.chainUp.draw(camera);
             
             temp.addv(this.dir);
             
-            this.boss.chainFlat.moveTo(temp.x, temp.y);
+            this.boss.chainFlat.moveTo(temp.x - this.boss.pos.x, temp.y - this.boss.pos.y);
             this.boss.chainFlat.setRotation(rot.x, rot.y);
             this.boss.chainFlat.draw(camera);
             
