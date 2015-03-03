@@ -123,13 +123,11 @@ Sprite.prototype.draw = function(camera) {
     camera.ctx.globalAlpha *= this.alpha;
     camera.ctx.translate(this.pos.x, this.pos.y);
     if (this.onPreDraw) this.onPreDraw(camera);
-    this.drawList(camera, this.preChildren, false);
     this.applyRotation(camera, false);
-    this.drawList(camera, this.preChildren, true);
+    this.drawList(camera, this.preChildren);
     camera.ctx.drawImage(this.sprite, (-this.sprite.width / 2 - this.pivot.x) * this.size.x, (-this.sprite.height / 2 - this.pivot.y) * this.size.y, this.sprite.width * this.size.x, this.sprite.height * this.size.y);
-    this.drawList(camera, this.postChildren, true);
+    this.drawList(camera, this.postChildren);
     this.applyRotation(camera, true);
-    this.drawList(camera, this.postChildren, false);
     if (this.onDraw) this.onDraw(camera);
     camera.ctx.translate(-this.pos.x, -this.pos.y);
     camera.ctx.globalAlpha /= this.alpha;
@@ -165,12 +163,16 @@ Sprite.prototype.setPivot = function(x, y) {
  * @param {boolean}  rotate - whether or not rotation is applied 
  */
 Sprite.prototype.drawList = function(camera, list, rotate) {
+	var applied = true;
     for (var i = 0; i < list.length; i++) {
-        if (list[i].keepRotate == rotate)
+        if (list[i].keepRotate != applied)
         {
-            list[i].draw(camera);
+            this.applyRotation(camera, applied);
+			applied = !applied;
         }
+		list[i].draw(camera);
     }
+	if (!applied) this.applyRotation(camera, false);
 };
 
 /**
