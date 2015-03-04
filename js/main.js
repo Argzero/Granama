@@ -55,6 +55,7 @@ depend('robot/player/valkyrie');
 // Boss Scrupts
 depend('robot/boss/boss');
 depend('robot/boss/brawler');
+depend('robot/boss/dragon');
 depend('robot/boss/fortress');
 depend('robot/boss/heavy');
 depend('robot/boss/hiveQueen');

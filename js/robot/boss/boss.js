@@ -75,9 +75,10 @@ Boss.prototype.buff = function(name, multiplier, duration) {
  * Bosses cannot be walked over by players
  */
 Boss.prototype.subUpdate = function() {
+    if (this.movement == movement.flying || this.movement == movement.flyCenter) return;
     for (var i = 0; i < players.length; i++) {
         var p = players[i];
-        if (this.collides(p)) {
+        if (!p.dead && this.collides(p)) {
             var d = p.pos.clone().subtractv(this.pos);
             d.setMagnitude((this.width + p.width) / 2);
             d.addv(this.pos);

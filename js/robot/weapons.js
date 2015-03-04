@@ -23,6 +23,8 @@ var weapon = {
      * @returns {boolean} true when able to fire, false otherwise
      */
     checkTime: function(data, inRange) {
+        
+        if (gameScreen.paused) return false;
 
         // Initialize data
         if (data.delayTimer === undefined) data.delayTimer = 0;
@@ -443,7 +445,7 @@ var weapon = {
     turret: function(data) {
         if (weapon.checkTime(data, this.isInRange(data.range))) {
             var pos = weapon.getPosition(this, data).addv(this.pos);
-            gameScreen.robots.push(new Turret(pos, data.damage, data.health));
+            gameScreen.robots.push(new Turret('turretGun', 'turretBase', pos.x, pos.y, data.damage, data.health));
         }
     }
 };

@@ -29,7 +29,8 @@ function Camera(id) {
  * @returns {Camera} the Camera object
  */
 Camera.prototype.moveTo = function(x, y) {
-    this.ctx.translate(x - this.pos.x, y - this.pos.y);
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    this.ctx.translate(x, y);
     this.pos.x = x;
     this.pos.y = y;
     return this;

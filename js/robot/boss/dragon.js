@@ -5,7 +5,7 @@
  * @param {number} y - vertical starting position
  */
 extend('DragonBoss', 'Boss');
-function FortressBoss(x, y) {
+function DragonBoss(x, y) {
     this.super(
         /* Sprite      */ 'bossDragonHead', 
         /* Position    */ x, y, 
@@ -20,11 +20,13 @@ function FortressBoss(x, y) {
     );
     
     this.pierceDamage = 0.4;
+    this.turnDivider = 300;
+    this.ignoreClamp = true;
 	
     // Wing sprites
-    this.postChildren.push(
-		new Sprite('bossDragonLeftWing', 113, -166),
-		new Sprite('bossDragonRightWing' -113, -166)
+    this.preChildren.push(
+		new Sprite('bossDragonLeftWing', 278, -66).child(this, true),
+		new Sprite('bossDragonRightWing', -278, -66).child(this, true)
 	);
 
     // Movement pattern
@@ -46,12 +48,14 @@ function FortressBoss(x, y) {
             pierce: true
         });
     }
-    this.addWeapon(weapon.fire, {
-        damage: 0.1 * damageScale,
-        range : 300,
-        rate  : 3,
-        dx    : 0,
-        dy    : 100
+    this.addWeapon(weapon.gun, {
+        sprite  : 'bossFlame',
+        damage  : 0.1 * damageScale,
+        range   : 300,
+        rate    : 3,
+        dx      : 0,
+        dy      : 100,
+        onUpdate: projEvents.fireUpdate
     });
 
     // Attack pattern 1 - Spawning minibosses
@@ -62,13 +66,14 @@ function FortressBoss(x, y) {
         rate   : 120,
         delay  : 300,
         dx     : 0,
-        dy     : -100
+        dy     : -100,
+        range  : 9999
     }, 1);
 
     // Attack pattern 2 - Homing missiles
     this.setMovement(2, movement.dragon);
     this.addWeapon(weapon.gun, {
-		sprite: 'bossFire',
+		sprite: 'bossFlame',
         damage: 0.05 * damageScale,
         range : 300,
         rate  : 3,
@@ -99,22 +104,33 @@ function FortressBoss(x, y) {
 	// The enemy's tail
     this.tail = new RopeTail(
         /* Robot      */ this,
-        /* Segment    */ 'enemyLightOrbiterTail',
-        /* End        */ 'enemyLightOrbiterTail',
-        /* Length     */ 3,
-        /* Offset     */ 28,
-        /* Base       */ 12,
+        /* Segment    */ 'bossDragonEnd',
+        /* End        */ 'bossDragonEnd',
+        /* Length     */ 5,
+        /* Offset     */ 150,
+        /* Base       */ 0,
         /* End Offset */ 0,
-        /* Constraint */ 30
+        /* Constraint */ 45,
+        /* Front      */ true
     );
-	
-    // Dragon's tail
-    this.tail2 = EnemyTail(enemy, GetImage('bossDragonEnd'), GetImage('bossDragonEnd'), 0, 1, 0, 90);
-    this.tail = EnemyTail(enemy, GetImage('bossDragonEnd'), GetImage('bossDragonEnd'), 150, 5, 240, 0);
-    this.tail.SetTurrets(GetImage('bossDragonTurret'), GetImage('bullet'), damageScale, 60, false, 0, 48);
+    this.tail.setTurrets(
+        /* Sprite */ 'bossDragonTurret',
+        /* DX     */ 0,
+        /* DY     */ 0,
+        /* Weapon */ {
+            damage: damageScale,
+            range : 1000,
+            rate  : 60,
+            dx    : 0,
+            dy    : 48,
+            target: Robot.PLAYER
+        }
+    );
+}
 
-    // Drawing wings
-    enemy.ApplySprite = function() {
-        canvas.drawImage(this.leftWing, this.sprite.width - 10, -50);
-        canvas.drawImage(this.rightWing, 10 - this.rightWing.width, -50);
-    }
+/**
+ * Updates and draws the tail before the dragon is drawn
+ */
+DragonBoss.prototype.onPreDraw = function() {
+    this.tail.update();
+};

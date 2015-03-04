@@ -184,7 +184,10 @@ Enemy.prototype.update = function() {
     // Updates specific to enemies vs bosses
     this.subUpdate();
 
-    this.clamp();
+    // Clamp unless marked otherwise
+    if (!this.ignoreClamp) {
+        this.clamp();
+    }
 };
 
 /**

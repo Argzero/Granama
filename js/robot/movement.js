@@ -142,18 +142,21 @@ var movement = {
     flying: function() {
 
         // Turning values
-        this.turnVec = this.turnVec || new Vector(Math.cos(this.speed / this.turnDivider), Math.sin(this.speed / this.turnDivider));
+        if (this.prevTurnDivider != this.turnDivider) {
+            this.turnVec = new Vector(Math.cos(this.speed / this.turnDivider), Math.sin(this.speed / this.turnDivider));
+            this.prevTurnDivider = this.turnDivider;
+        }
 
         // Turn towards the player or the center if too close to an edge
         var target;
         var padding = 400;
         if (this.pos.x < padding || this.pos.x > game.width - padding || this.pos.y < padding || this.pos.y > game.height - padding) {
-            target = new Vector(game.width / 2, game.height / 2);
+            target = new Vector(GAME_WIDTH / 2, GAME_HEIGHT / 2);
         }
         else {
             var player = getClosestPlayer(this.pos);
             if (this.pos.distanceSq(player.pos) > sq(this.turnRange || padding)) {
-                target = player;
+                target = player.pos;
             }
         }
 
@@ -175,7 +178,7 @@ var movement = {
         this.turnVec = this.turnVec || new Vector(Math.cos(this.speed / this.turnDivider), Math.sin(this.speed / this.turnDivider));
 
         // Turn towards the center
-        var target = new Vector(game.width / 2, game.height / 2);
+        var target = new Vector(GAME_WIDTH / 2, GAME_HEIGHT / 2);
         this.lookTowards(target, this.turnVec);
 
         // Move forward

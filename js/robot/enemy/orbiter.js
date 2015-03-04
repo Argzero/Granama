@@ -168,7 +168,7 @@ function Hunter(x, y) {
         /* Segment    */ 'enemyHunterSegment',
         /* End        */ 'enemyHunterEnd',
         /* Length     */ 4,
-        /* Offset     */ 27,
+        /* Offset     */ 40,
         /* Base       */ 6,
         /* End Offset */ 0,
         /* Constraint */ 30
@@ -185,7 +185,8 @@ Hunter.prototype.onUpdate = function() {
         this.addWeapon(weapon.melee, {
             damage: 4 * Enemy.sum(),
             rate  : 40,
-            range : 50
+            range : 50,
+            target: Robot.PLAYER
         });
     }
 };

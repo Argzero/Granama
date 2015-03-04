@@ -16,6 +16,8 @@ extend('Sprite', 'Transform');
 function Sprite(name, x, y) {
     this.super();
     
+    if (name !== name) debugger;
+    
     this.src = name;
     this.sprite = images.get(name);
     this.parent = undefined;

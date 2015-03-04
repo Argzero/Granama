@@ -1,5 +1,3 @@
-depend('robot/tailSegment');
-
 /**
  * Represents a tail that uses simple rope-like physics to bend
  *
@@ -25,6 +23,7 @@ function RopeTail(source, segment, end, length, offset, base, endOffset, constra
     this.child(source, true);
     
     // Data
+    this.front = front;
     this.source = source;
     this.rel = new Vector(1, 0);
     this.dir = new Vector(0, 1);
@@ -33,11 +32,30 @@ function RopeTail(source, segment, end, length, offset, base, endOffset, constra
     constraint *= Math.PI / 180;
     
     this.segments = new Array(length - 1);
+    this.turrets = [];
     var parent = this;
     for (var i = 0; i < length - 1; i++) {
         var seg = new TailSegment(parent, i == length - 2 ? end : segment, i == length - 2 ? endOffset + offset : offset, constraint);
         this.segments[i] = seg;
         parent = seg;
+    }
+}
+
+/**
+ * Adds turrets to the tail
+ *
+ * @param {string} sprite     - name of the turret's gun sprite
+ * @param {number} dx         - horizontal offset of the turret
+ * @param {number} dy         - vertical offset of the turret
+ * @param {Object} weaponData - the gun data to use for the turrets
+ */
+RopeTail.prototype.setTurrets = function(sprite, dx, dy, weaponData)
+{
+    this.turretOffset = new Vector(dx, dy);
+    for (var i = 0; i < this.segments.length; i++)
+    {
+        var turret = new TailTurret(sprite, weaponData);
+        this.turrets.push(turret);
     }
 }
 
@@ -65,6 +83,7 @@ RopeTail.prototype.update = function() {
     this.pos.y = this.offset;
     this.pos.rotate(this.dir.y, -this.dir.x);
     this.pos.addv(this.source.pos);
+    this.rotation = this.source.rotation.clone().rotate(this.rel.x, this.rel.y);
     
     camera.ctx.translate(-this.source.pos.x, -this.source.pos.y);
     if (!this.front) {
@@ -72,16 +91,33 @@ RopeTail.prototype.update = function() {
         for (var i = 0; i < this.segments.length; i++) {
             this.segments[i].update();
             this.segments[i].draw(camera);
+            this.updateTurret(i);
         }
     }
     else {
         for (var i = this.segments.length - 1; i >= 0; i--) {
             this.segments[i].update();
             this.segments[i].draw(camera);
+            this.updateTurret(i);
         }
         this.draw(camera);
     }
     camera.ctx.translate(this.source.pos.x, this.source.pos.y);
+}
+
+/**
+ * Updates a turret on the tail if it exists
+ */
+RopeTail.prototype.updateTurret = function(index) 
+{
+    if (this.turrets.length > index && index >= 0)
+    {
+        var pos = this.segments[index].pos.clone();
+        pos.addv(this.turretOffset.clone().rotate(this.segments[index].rotation.x, this.segments[index].rotation.y));
+        this.turrets[index].moveTo(pos.x, pos.y);
+        this.turrets[index].update();
+        this.turrets[index].draw(camera);
+    }
 }
 
 /**
@@ -141,3 +177,98 @@ RopeTail.prototype.turnTowards = function(dir, speed, mode) {
         }
     }
 }
+
+/**
+ * Represents a single segment of a Rope Tail
+ *
+ * @param {RopeTail|TailSegment} parent     - parent of the segment
+ * @param {string}               sprite     - name of the sprite of the segment
+ * @param {number}               offset     - distance between segments
+ * @param {number}               constraint - maximum angle segments can bend
+ */
+extend('TailSegment', 'Sprite');
+function TailSegment(parent, sprite, offset, constraint) {
+    this.super(sprite, 0, -offset);
+
+    this.parent = parent;
+    this.constraint = constraint;
+    this.offset = offset;
+    this.lim = new Vector(Math.cos(constraint), Math.sin(constraint));
+    this.dir = new Vector(0, 1);
+}
+
+/**
+ * Updates the tail segment, applying rotations and clamping to the constraintsd
+ */
+TailSegment.prototype.update = function() {
+    var dir = this.parent.dir;
+    var limMax = dir.clone().rotate(this.lim.x, this.lim.y).rotate(0, -1);
+    var limMin = dir.clone().rotate(this.lim.x, -this.lim.y).rotate(0, 1);
+    
+    // When directly on top of the parent segment, move straight back
+    if (this.pos.x == this.parent.pos.x && this.pos.y == this.parent.pos.y) {
+        this.pos.x = 0;
+        this.pos.y = -this.offset;
+        this.pos.rotate(this.dir.y, -this.dir.x);
+        this.pos.addv(this.parent.pos);
+        this.dir.x = this.parent.dir.x;
+        this.dir.y = this.parent.dir.y;
+    }
+    
+    // Otherwise, move according to the current angle to the parent segment
+    else {
+        this.dir.x = this.parent.pos.x - this.pos.x;
+        this.dir.y = this.parent.pos.y - this.pos.y;
+        if (this.dir.dot(limMin) < 0) {
+            limMin.rotate(0, -1);
+            this.dir.x = limMin.x;
+            this.dir.y = limMin.y;
+        }
+        else if (this.dir.dot(limMax) < 0) {
+            limMax.rotate(0, 1);
+            this.dir.x = limMax.x;
+            this.dir.y = limMax.y;
+        }
+        else this.dir.normalize();
+        this.pos.x = this.parent.pos.x - this.dir.x * this.offset;
+        this.pos.y = this.parent.pos.y - this.dir.y * this.offset;
+        
+        this.setRotation(this.dir.x, this.dir.y);
+        this.rotation.rotate(0, -1);
+    }
+};
+
+/**
+ * Represents a simple turret that gets mounted on top of a
+ * robot's tail and shoots independently
+ *
+ * @param {string} sprite  - the sprite of the turret's gun
+ * @param {Object} gunData - the data to use for the turret's gun
+ */
+extend('TailTurret', 'Sprite')
+function TailTurret(sprite, gunData) {
+    this.super(sprite, 0, 0);
+    
+    this.fire = weapon.gun;
+    this.gunData = gunData;
+}
+
+/**
+ * Checks whether or not the turret should fire
+ */
+TailTurret.prototype.isInRange = function() {
+    return true;
+};
+
+/**
+ * Updates the turret's orientation and fires its gun
+ */
+TailTurret.prototype.update = function() {
+    
+    // Update the turret's angle
+    var player = getClosestPlayer(this.pos);
+    this.lookAt(player.pos);
+    
+    // Fire if in range
+    this.fire(this.gunData);
+};

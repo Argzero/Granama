@@ -1,22 +1,25 @@
 /**
  * A turret that is placed and fires bullets at the player
  * 
- * @param {Number} x      - initial horizontal coordinate
- * @param {Number} y      - initial vertical coordinate
- * @param {Number} damage - damage the turret deals
+ * @param {string} sprite - name of the turret sprite
+ * @param {string} base   - name of the turret's base sprite
+ * @param {number} x      - initial horizontal coordinate
+ * @param {number} y      - initial vertical coordinate
+ * @param {number} damage - damage the turret deals
+ * @param {number} health - the amount of health the turret has
  *
  * @constructor
  */
 extend('Turret', 'Robot');
-function Turret(x, y, damage, health) {
-    this.super('turretGun', x, y, Robot.TURRET, health, 0);
+function Turret(sprite, base, x, y, damage, health) {
+    this.super(sprite, x, y, Robot.TURRET, health, 0);
     
-    this.preChildren.push(new Sprite('turretBase', 0, 0).child(this, false));
+    this.preChildren.push(new Sprite(base, 0, 0).child(this, false));
     this.gunData = {
         cd    : 0,
         damage: damage,
-        range : TURRET_RANGE * 1.5,
-        rate  : TURRET_RATE,
+        range : 750,
+        rate  : 15,
         dx    : 0,
         dy    : 22,
         target: Robot.PLAYER
@@ -27,7 +30,7 @@ function Turret(x, y, damage, health) {
 /**
  * Updates the turret
  */
-this.Update = function() {
+Turret.prototype.update = function() {
 
     // Update the turret's angle
     var player = getClosestPlayer(this.pos);

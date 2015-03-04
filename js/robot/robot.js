@@ -126,6 +126,7 @@ Robot.prototype.damage = function(amount, source) {
         this.dead = this.health <= 0;
         if (this.dead) {
             this.deaths++;
+            this.health = 0;
         }
     }
 };

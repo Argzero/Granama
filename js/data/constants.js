@@ -199,7 +199,7 @@ SPAWN_DATA = [
     2, 6, Hunter,
     2, 6, Solar,
     2, 6, Snatcher,
-    10000, 0, FortressBoss
+    10000, 0, DragonBoss
 ],
 BOSS_SPAWNS = [
     HeavyBoss,
@@ -207,7 +207,7 @@ BOSS_SPAWNS = [
     BrawlerBoss,
     HiveQueenBoss,
     FortressBoss,
-    //DragonBoss
+    DragonBoss
 ],
 DRAGON_SPAWNS = [
     1, 0, Hunter
