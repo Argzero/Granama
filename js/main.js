@@ -52,13 +52,14 @@ depend('robot/player/playerManager');
 depend('robot/player/slayer');
 depend('robot/player/valkyrie');
 
-// Boss Scrupts
+// Boss Scripts
 depend('robot/boss/boss');
 depend('robot/boss/brawler');
 depend('robot/boss/dragon');
 depend('robot/boss/fortress');
 depend('robot/boss/heavy');
 depend('robot/boss/hiveQueen');
+depend('robot/boss/hydra');
 depend('robot/boss/scorpion');
 
 // Enemy scripts

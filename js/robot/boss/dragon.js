@@ -42,7 +42,7 @@ function DragonBoss(x, y) {
             damage: 0.1 * damageScale,
             range : 1000,
             rate  : 30,
-            dx    : -185 + 370 * i,
+            dx    : -142 + 284 * i,
             dy    : 17,
             speed : 15,
             pierce: true
@@ -78,7 +78,7 @@ function DragonBoss(x, y) {
         range : 300,
         rate  : 3,
         dx    : 0,
-        dy    : 42,
+        dy    : 100,
 		onUpdate: projEvents.fireUpdate
     }, 2);
     for (var i = 0; i < 2; i++) {
@@ -89,7 +89,7 @@ function DragonBoss(x, y) {
             radius   : 100,
             knockback: 150,
             rate     : 90,
-            dx       : -238 + 476 * i,
+            dx       : -215 + 430 * i,
             dy       : -10,
             speed    : 8,
 			templates: [
