@@ -153,6 +153,7 @@ function RoyalHydra(x, y) {
 	this.patternTimer = this.patternMax;
     this.pattern = 3;
     this.rotateSpeed = Math.PI / 240;
+    this.turrets = 0;
 	
     // Specific values
     this.fireball = new Sprite('Fireball', 0, 550);
@@ -239,71 +240,85 @@ function RoyalHydra(x, y) {
 	}, 4);
 	
     // Hydra's tail   
-	enemy.tail = new RopeTail(enemy, GetImage('hydraRoyalTail'), GetImage('hydraRoyalEnd'), 7, 175, 150, 175, 20);
-	enemy.ApplyDraw = function() {
-	
-		// Turret laying stops when all are occupied
-		if (this.pattern == 3 && gameScreen.enemyManager.turrets.length == 4) {
-			this.pattern = 0;
-			this.ApplyMove = this.movements[0];
-		}
-		
-		// Hyper beam
-		if (this.pattern == 1) 
-		{
-			for (var i = 0; i < playerManager.players.length; i++)
-			{
-				var r = playerManager.players[i].robot;
-				var dx = r.x - this.x;
-				var dy = r.y - this.y;
-				if (dx * dx + dy * dy < Sq(600))
-				{
-					var d = Math.sqrt(dx * dx + dy * dy);
-					dx /= d;
-					dy /= d;
-					r.Knockback(dx * 100, dy * 100);
-				}
-			}
-		}
-		if (this.hyperBeamData.cd < 0 && !this.firinLazors) {
+    this.tail = new RopeTail(
+        /* Robot      */ this,
+        /* Segment    */ 'hydraRoyalTail',
+        /* End        */ 'hydraRoyalEnd',
+        /* Length     */ 7,
+        /* Offset     */ 150,
+        /* Base       */ 0,
+        /* End Offset */ 100,
+        /* Constraint */ 20,
+        /* Front      */ true
+    );
+}
+
+/**
+ * Manages special mechanics of the Royal
+ * Hydra's attack patterns
+ */
+HydraRoyal.prototype.onUpdate() {
+    
+    // Turret laying stops when all are occupied
+    if (this.pattern == 3 && this.turrets == 4) {
+        this.pattern = 0;
+        this.ApplyMove = this.movements[0];
+    }
+    
+    // Hyper beam management
+    if (this.pattern == 1) 
+    {
+        // Knock back nearby players
+        for (var i = 0; i < players.length; i++)
+        {
+            var r = players[i];
+            var dir = r.pos.clone().subtractv(this.pos);
+            var dSq = r.lengthSq();
+            if (dSq < 360000)
+            {
+                var d = Math.sqrt(dSq);
+                dir.multiply(100 / d, 100 / d);
+                r.knockback(dir);
+            }
+        }
+        
+        // Stop the attack after one rotation
+        if (this.hyperBeamData.cd < 0 && !this.firinLazors) {
 			this.firinLazors = true;
 		}
 		else if (this.hyperBeamData.cd > 0 && this.firinLazors) {
 			this.firinLazors = false;
 			this.pattern = 0;
-			this.ApplyMove = this.movements[0];
+			this.movement = this.movements[0];
 			this.patternTimer = this.patternMax;
 		}
+    }
+    
+    // Scaling/showing the fireball when applicable
+    if (!gameScreen.paused) {
+        var scale = this.patterns[4][0].cd;
+        scale = (1 - scale / 90);
+        this.fireball.hidden = this.pattern != 1 || scale <= 0;
+        this.fireball.setScale(scale, scale);    
+        this.fireball.rotate(HydraBoss.FIREBALL_ROT.x, HydraBoss.FIREBALL_ROT.y);
+    }
+}
+
+/**
+ * Updates and draws the tail before the dragon is drawn
+ */
+HydraBoss.prototype.onPreDraw = function() {
+    this.tail.update();
 	
-        // Tail
-        this.tail.update();
-        
-        canvas.save();
-        canvas.translate(this.sprite.width / 2, this.sprite.height / 2);
-		canvas.transform(this.sin, -this.cos, this.cos, this.sin, 0, 0);
-        
-		// Fireball charging
-		if (this.pattern == 4) {
-			var cd = this.patterns[4][0].cd;
-			if (cd < 90) {
-				var w = (1 - cd / 90) * this.fireball.width;
-				canvas.save();
-				canvas.translate(0, 550);
-				canvas.rotate(cd * Math.PI / 20);
-				canvas.drawImage(this.fireball, -w/2, -w/2, w, w);
-				canvas.restore();
-			}
-		}
-		else this.patterns[4][0].cd = this.patterns[4][0].rate;
-		
-		canvas.translate(-this.sprite.width / 2, -this.sprite.height / 2);
-		
-        // Wings
-        canvas.drawImage(this.rightWing, this.sprite.width - 250, -325);
-        canvas.drawImage(this.leftWing, 250 - this.leftWing.width, -325);
-        
-        canvas.restore();
-	}
+    // Scaling/showing the fireball when applicable
+    if (!gameScreen.paused) {
+        var scale = this.patterns[4][0].cd;
+        scale = (1 - scale / 90);
+        this.fireball.hidden = this.pattern != 1 || scale <= 0;
+        this.fireball.setScale(scale, scale);    
+        this.fireball.rotate(HydraBoss.FIREBALL_ROT.x, HydraBoss.FIREBALL_ROT.y);
+    }
+};
     
     // Hydra's heads
     enemy.head = new RopeTail(enemy, GetImage('hydraRoyalNeck'), GetImage('hydraRoyalHeadLarge'), 3, 125, 150, 0, 0);
@@ -397,14 +412,14 @@ function ConsumeAttackHelper() {
     var holdX = this.x + this.cos * 150;
     var holdY = this.y + this.sin * 150;
     if (!this.held && this.hydra.pattern != 1 && this.heldTimer <= 0) {
-        var p = playerManager.getClosest(this.x, this.y);
+        var p = getClosestPlayer(this.pos);
         var dx = p.x - holdX;
         var dy = p.y - holdY;
         if (dx * dx + dy * dy < 10000) {
             this.held = p;
             this.heldTimer = 300;
-            p.disableClamp = true;
-            p.Damage(this.consumeDamageStart, this.hydra);
+            p.ignoreClamp = true;
+            p.damage(this.consumeDamageStart, this.hydra);
         }
     }
     else if (this.held) {
