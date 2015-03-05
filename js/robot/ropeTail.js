@@ -127,6 +127,20 @@ RopeTail.prototype.getEndDir = function() {
     return this.segments[this.segments.length - 1].getWorldRotation();
 }
 
+/**
+ * Causes the tail to drift towards the parent
+ */
+RopeTail.prototype.followParent = function() {
+    
+    if (this.prev) {
+        this.pos.addv(this.source.pos).subtractv(this.prev);
+        for (var i = 0; i < this.segments.length; i++) {
+            this.segments[i].pos.addv(this.source.pos).subtractv(this.prev);
+        }
+    }
+    
+    this.prev = this.source.pos.clone();
+}
 
 // Modes for the turnTowards method
 ROPE_TURN_ALL = 0;  // Turns all segments the same amount
@@ -143,9 +157,9 @@ ROPE_TURN_ROOT = 2; // Turns the base of the tail faster than the end
 RopeTail.prototype.turnTowards = function(dir, speed, mode) {
     
     var d = this.getEndDir();
-    if (d.Dot(dir) > 0.95) return;
-    d.Rotate(0, 1);
-    var m = d.Dot(dir) > 0 ? 1 : -1;
+    if (d.dot(dir) > 0.95) return;
+    d.rotate(0, 1);
+    var m = d.dot(dir) > 0 ? 1 : -1;
     
     // Turn End mode
     if (mode == 1) {

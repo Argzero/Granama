@@ -156,11 +156,11 @@ function RoyalHydra(x, y) {
     this.turrets = 0;
 	
     // Specific values
-    this.fireball = new Sprite('Fireball', 0, 550);
+    this.fireball = new Sprite('Fireball', 0, 550).child(this, true);
     this.preChildren.push(
         this.fireball,
-        new Sprite('hydraRoyalWingLeft', 0, 0),
-        new Sprite('hydraRoyalWingRight', 0, 0)
+        new Sprite('hydraRoyalWingLeft', -460, -180).child(this, true),
+        new Sprite('hydraRoyalWingRight', 460, 180).child(this, true)
     );
     
     // Movement pattern
@@ -182,7 +182,7 @@ function RoyalHydra(x, y) {
 				dx: m * (400 + 340 * j),
 				dy: 100 - 100 * j,
 				speed: 16,
-                target: Robot.PLAYER
+                target: Robot.PLAYER,
                 //                                 args: [type,   radius, knockback
                 templates: [{ name: 'setupRocket', args: ['Enemy', 100,   150] }]
 			}, 0);
@@ -203,7 +203,7 @@ function RoyalHydra(x, y) {
 		pierce: true,
         target: Robot.PLAYER
     };
-	this.addWeapon(wepaon.rail, this.hyperBeamData, 1);
+	this.addWeapon(weapon.rail, this.hyperBeamData, 1);
 	
 	// Attack pattern 2 - Spawn baby
 	this.setMovement(2, movement.flyCenter);
@@ -251,13 +251,56 @@ function RoyalHydra(x, y) {
         /* Constraint */ 20,
         /* Front      */ true
     );
+	
+	// Hydra's heads
+	this.head = new RopeTail(
+		/* Robot      */ this,
+        /* Segment    */ 'hydraRoyalNeck',
+        /* End        */ 'hydraRoyalHeadLarge',
+        /* Length     */ 3,
+        /* Offset     */ 125,
+        /* Base       */ 0,
+        /* End Offset */ 125,
+        /* Constraint */ 0,
+        /* Front      */ false
+    );
+    this.headLeft = new RoyalHydraSideHead(this, new RopeTail(
+		/* Robot      */ this,
+        /* Segment    */ 'hydraRoyalNeck',
+        /* End        */ 'hydraRoyalHeadSmall',
+        /* Length     */ 3,
+        /* Offset     */ 125,
+        /* Base       */ 0,
+        /* End Offset */ 125,
+        /* Constraint */ 20,
+        /* Front      */ false
+    ), damageScale);
+	this.headRight = new RoyalHydraSideHead(this, new RopeTail(
+		/* Robot      */ this,
+        /* Segment    */ 'hydraRoyalNeck',
+        /* End        */ 'hydraRoyalHeadSmall',
+        /* Length     */ 3,
+        /* Offset     */ 125,
+        /* Base       */ 0,
+        /* End Offset */ 125,
+        /* Constraint */ 20,
+        /* Front      */ false
+    ), damageScale);
+	
+    this.headLeft.rope.setBaseDir(new Vector(COS_60, SIN_60));
+    this.headRight.rope.setBaseDir(new Vector(COS_60, -SIN_60));
+    this.head.held = undefined;
+    this.head.heldTimer = 0;
+    this.head.hydra = this;
+    this.consumeDamage = damageScale * 5;
+    this.head.consume = RoyalHydra.consume;
 }
 
 /**
  * Manages special mechanics of the Royal
  * Hydra's attack patterns
  */
-HydraRoyal.prototype.onUpdate() {
+RoyalHydra.prototype.onUpdate = function() {
     
     // Turret laying stops when all are occupied
     if (this.pattern == 3 && this.turrets == 4) {
@@ -307,7 +350,7 @@ HydraRoyal.prototype.onUpdate() {
 /**
  * Updates and draws the tail before the dragon is drawn
  */
-HydraBoss.prototype.onPreDraw = function() {
+RoyalHydra.prototype.onPreDraw = function() {
     this.tail.update();
 	
     // Scaling/showing the fireball when applicable
@@ -319,38 +362,22 @@ HydraBoss.prototype.onPreDraw = function() {
         this.fireball.rotate(HydraBoss.FIREBALL_ROT.x, HydraBoss.FIREBALL_ROT.y);
     }
 };
-    
-    // Hydra's heads
-    enemy.head = new RopeTail(enemy, GetImage('hydraRoyalNeck'), GetImage('hydraRoyalHeadLarge'), 3, 125, 150, 0, 0);
-    enemy.headLeft = new RoyalHydraSideHead(enemy, new RopeTail(enemy, GetImage('hydraRoyalNeck'), GetImage('hydraRoyalHeadSmall'), 4, 125, 250, 0, 20), damageScale);
-    enemy.headRight = new RoyalHydraSideHead(enemy, new RopeTail(enemy, GetImage('hydraRoyalNeck'), GetImage('hydraRoyalHeadSmall'), 4, 125, 250, 50, 20), damageScale);
-    enemy.head.reverse = enemy.headLeft.rope.reverse = enemy.headRight.rope.reverse = true;
-    enemy.headLeft.rope.rel = Vector(COS_60, SIN_60);
-    enemy.headRight.rope.rel = Vector(COS_60, -SIN_60);
-    enemy.head.held = null;
-    enemy.head.heldTimer = 0;
-    enemy.head.hydra = enemy;
-    enemy.head.consumeDamageStart = damageScale;
-    enemy.head.consumeDamageTick = damageScale * 0.02;
-    enemy.head.consume = ConsumeAttackHelper;
-    enemy.ApplySprite = function() {
-        var end = this.head.segments[this.head.segments.length - 1];
-        this.head.update();
-        this.headLeft.update();
-		this.headRight.update();
-        
-        // Consumption attack
-        var rot = this.head.getEndDir();
-		rot.Rotate(-1, 0);
-		this.head.cos = rot.x;
-		this.head.sin = rot.y;
-        this.head.x = end.pos.x;
-        this.head.y = end.pos.y;
-        this.head.consume();
-    }
 
-    return enemy;
-}
+/**
+ * Updates and draws the heads of the hydra
+ */
+RoyalHydra.prototype.onDraw = function() {
+	var end = this.head.segments[this.head.segments.length - 1];
+	this.head.update();
+	this.headLeft.update();
+	this.headRight.update();
+	
+	// Consumption attack
+	var rot = this.head.getEndDir();
+	this.head.rotation = rot;
+	this.head.pos = end.pos.clone();
+	this.head.consume();
+};
 
 function RoyalHydraSideHead(hydra, rope, damage) {
 
@@ -359,29 +386,31 @@ function RoyalHydraSideHead(hydra, rope, damage) {
 	this.pattern = 0;
     this.held = null;
     this.heldTimer = 0;
-    this.consumeDamageStart = damage * 5;
-    this.consumeDamageTick = damage;
-    this.consume = ConsumeAttackHelper;
+    this.consume = RoyalHydra.consume;
 	
 	// Side head weapon 0 - flamethrower
-	this.flamethrower = EnemyWeaponRail;
+	this.rail = weapon.rail;
 	this.fireData = {
-		subWeapon: EnemyWeaponFire,
-		damage: 0.1 * damage,
-        range: 400,
-        interval: 3,
-        dx: 120,
-        dy: 0,
+		sprite   : 'bossFlame',
+		shooter  : hydra,
+		damage   : 0.1 * damage,
+        range    : 400,
+        interval : 3,
+        dx       : 120,
+        dy       : 0,
 		discharge: 0,
-        duration: 240,
-		rate: 120,
-        speed: 14,
-		cd: 0,
-		list: gameScreen.enemyManager.bullets
+        duration : 240,
+		rate     : 120,
+        speed    : 14,
+		cd       : 0,
+		taret    : Robot.PLAYER,
+		onUpdate : projEvents.fireUpdate
 	};
 }
 
-RoyalHydraSideHead.prototype.IsInRange = function() { return true; }
+RoyalHydraSideHead.prototype.isInRange = function() { return true; };
+RoyalHydraSideHead.prototype.getWorldRotation = function() { return this.rotation; };
+RoyalHydraSideHead.prototype.getWorldPos = function() { return this.pos; };
 
 RoyalHydraSideHead.prototype.update = function() {
 	if (!gameScreen.paused) {
@@ -389,48 +418,46 @@ RoyalHydraSideHead.prototype.update = function() {
 		this.rope.followParent();
 		
 		var end = this.rope.segments[this.rope.segments.length - 1];
-		this.x = end.pos.x;
-		this.y = end.pos.y;
-		var rot = this.rope.getEndDir();
-		rot.Rotate(-1, 0);
-		this.cos = rot.x;
-		this.sin = rot.y;
-		this.angle = Math.atan2(this.sin, this.cos);
+		this.pos = end.pos.clone();
+		this.rotation = this.rope.getEndDir();
         
         this.consume();
         
         if (!this.held) {
-            this.flamethrower(this.fireData);
+            this.rail(this.fireData);
         }
 	}
 	this.rope.update();
 }
 
-function ConsumeAttackHelper() {
+RoyalHydra.consumeOffset = new Vector(0, 150);
+
+/**
+ * Manages the consume attack for the hydra where each head can pick
+ * up a player and drag them around the map
+ */
+RoyalHydra.consume = function() {
 
     // Consume attack
-    var holdX = this.x + this.cos * 150;
-    var holdY = this.y + this.sin * 150;
+	var holdPos = this.pos.clone().addv(RoyalHydra.consumeOffset.clone().rotate(this.rotation.x, this.rotation.y));
     if (!this.held && this.hydra.pattern != 1 && this.heldTimer <= 0) {
-        var p = getClosestPlayer(this.pos);
-        var dx = p.x - holdX;
-        var dy = p.y - holdY;
-        if (dx * dx + dy * dy < 10000) {
+		var p = getClosestPlayer(this.pos);
+		var dSq = p.pos.distanceSq(holdPos);
+        if (dSq < 10000) {
             this.held = p;
             this.heldTimer = 300;
             p.ignoreClamp = true;
-            p.damage(this.consumeDamageStart, this.hydra);
+            p.damage(this.hydra.consumeDamage, this.hydra);
         }
     }
     else if (this.held) {
-        //this.held.Damage(this.consumeDamageTick, this.hydra);
         this.held.x = holdX;
         this.held.y = holdY;
         this.heldTimer--;
         if (this.heldTimer <= 0 || this.hydra.pattern == 1) {
             this.heldTimer = 300;
-            this.held.disableClamp = false;
-            this.held = null;
+            this.held.ignoreClamp = false;
+            this.held = undefined;
         }
     }
     else if (this.heldTimer > 0) {
