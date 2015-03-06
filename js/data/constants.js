@@ -168,15 +168,14 @@ ACTIVE_BOSS = 1,
 
 SPAWN_RATE = 180,
 SPAWN_SCALE = 0.3,
-MAX_ENEMIES = 1,
-MINIBOSS_START = 8,
+MAX_ENEMIES = 30,
 SPAWN_DATA = [
     90, 0, LightGunner,
     45, 1, HeavyGunner,
     60, 0, LightArtillery,
     30, 1, HeavyArtillery,
-    15, 0, LightMelee,
-    10, 1, HeavyMelee,
+    15, 1, LightMelee,
+    10, 2, HeavyMelee,
     30, 0, LightBomber,
     15, 1, HeavyBomber,
     20, 0, LightOrbiter,
@@ -185,8 +184,8 @@ SPAWN_DATA = [
     10, 1, HeavySpinner,
     15, 5, LightMedic,
     10, 5, HeavyMedic,
-    30, 0, LightGrabber,
-    20, 1, HeavyGrabber,
+    30, 2, LightGrabber,
+    20, 3, HeavyGrabber,
     1, 3, Turreter,
     1, 3, Railer,
     1, 3, Paladin,
@@ -198,16 +197,14 @@ SPAWN_DATA = [
     2, 6, Paladin,
     2, 6, Hunter,
     2, 6, Solar,
-    2, 6, Snatcher,
-    100000, 0, RoyalHydra
+    2, 6, Snatcher
 ],
 BOSS_SPAWNS = [
     HeavyBoss,
     ScorpionBoss,
     BrawlerBoss,
     HiveQueenBoss,
-    FortressBoss,
-    DragonBoss
+    FortressBoss
 ],
 DRAGON_SPAWNS = [
     1, 0, Hunter
@@ -230,30 +227,6 @@ QUEEN_SPAWNS = [
     4, 0, HiveDrone,
     1, 0, HiveDefender
 ],
-
-// Drop names (Do not modify these values)
-// General
-SHIELD = "Shield",
-HEALTH = "Health",
-DAMAGE = "Damage",
-HEAL = "Heal",
-SPEED = "Speed",
-// Speed 
-COOLDOWN = "Cooldown",
-SHOTGUN = "Shotgun",
-SLOW = "Slow",
-// Power
-LASER = "Laser",
-FLAMETHROWER = "Flamethrower",
-SPREAD_SHOT = "Spread",
-// Defense
-MINIGUN = "Minigun",
-EXPLOSION = "Explosion",
-KNOCKBACK = "Knockback",
-// Knight
-ARROW = "Arrow",
-SLASH_ARC = "Slash",
-LIFESTEAL = "Lifesteal",
 
 // Drop IDs
 LASER_ID = 0,
@@ -283,15 +256,6 @@ DAMAGE_ID = 5,
 HEALTH_ID = 6,
 HEAL_ID = 7,
 
-// Drop data
-BOSS_DROPS = 7,
-DROP_COUNT = 8,
-DROP_VALUES = 4,
-DROP_CHANCE = 0,
-DROP_TYPE = 1,
-DROP_MAX = 2,
-DROP_BACKUP = 3,
-
 // Drop values
 MAX_DROPS = 50,
 FLAME_UP = 4,
@@ -307,28 +271,6 @@ SHIELD_RATE = 850,
 SHIELD_SCALE = 15,
 KNOCKBACK_SCALE = 10,
 KNOCKBACK_SPEED = 10,
-
-// Input (Do not modify these values)
-KEY_UNUSED = -1,
-KEY_W = 0,
-KEY_A = 1,
-KEY_S = 2,
-KEY_D = 3,
-KEY_ESC = 4,
-KEY_LMB = 5,
-KEY_SPACE = 6,
-KEY_UP = 7,
-KEY_DOWN = 8,
-KEY_LEFT = 9,
-KEY_RIGHT = 10,
-KEY_ENTER = 11,
-
-// Menu IDs (Do not modify these values)
-TITLE_SCREEN = 0,
-CHARACTER_SELECT = 1,
-CONTROLS = 2,
-CREDITS = 3,
-GAME = 4,
 
 // Menu color codes
 BUTTON_BORDER = "#484848",

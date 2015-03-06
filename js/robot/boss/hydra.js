@@ -203,6 +203,7 @@ function RoyalHydra(x, y) {
         target: Robot.PLAYER
     };
 	this.addWeapon(weapon.rail, this.hyperBeamData, 1);
+	this.hyperBeamData.cd = 60;
 	
 	// Attack pattern 2 - Spawn baby
 	this.setMovement(2, movement.flyCenter);
@@ -374,9 +375,18 @@ RoyalHydra.prototype.onDraw = function() {
 	
 	// Consumption attack
 	var rot = this.head.getEndDir();
-	this.head.rotation = rot;
+	this.head.rotation = rot.rotate(-1, 0);
 	this.head.pos = end.pos.clone();
 	this.head.consume();
+	
+	camera.ctx.fillStyle = 'blue';
+	camera.ctx.strokeStyle = 'red';
+	camera.ctx.lineWidth = 3;
+	camera.ctx.beginPath();
+	camera.ctx.moveTo(this.head.pos.x - this.pos.x, this.head.pos.y - this.pos.y);
+	camera.ctx.lineTo(this.head.pos.x - this.pos.x + this.head.rotation.x * 100, this.head.pos.y - this.pos.y + this.head.rotation.y * 100);
+	camera.ctx.stroke();
+	camera.ctx.fillRect(this.head.pos.x - this.pos.x - 5, this.head.pos.y - this.pos.y - 5, 10, 10);
 };
 
 function RoyalHydraSideHead(hydra, rope, damage) {
@@ -412,14 +422,19 @@ RoyalHydraSideHead.prototype.isInRange = function() { return true; };
 RoyalHydraSideHead.prototype.getWorldRotation = function() { return this.rotation; };
 RoyalHydraSideHead.prototype.getWorldPos = function() { return this.pos; };
 
+/**
+ * Updates the side head, breathing fire and picking up players when
+ * applicable along with updating/drawing the RopeTail neck
+ */
 RoyalHydraSideHead.prototype.update = function() {
+	this.rope.update();
 	if (!gameScreen.paused) {
 		this.rope.turnTowards(this.hydra.head.dir, 0.04, ROPE_TURN_END);
 		this.rope.followParent();
 		
 		var end = this.rope.segments[this.rope.segments.length - 1];
 		this.pos = end.pos.clone();
-		this.rotation = this.rope.getEndDir();
+		this.rotation = this.rope.getEndDir().rotate(0, 1);
         
         this.consume();
         
@@ -427,7 +442,15 @@ RoyalHydraSideHead.prototype.update = function() {
             this.rail(this.fireData);
         }
 	}
-	this.rope.update();
+	
+	camera.ctx.fillStyle = 'blue';
+	camera.ctx.strokeStyle = 'red';
+	camera.ctx.lineWidth = 3;
+	camera.ctx.beginPath();
+	camera.ctx.moveTo(this.pos.x - this.hydra.pos.x, this.pos.y - this.hydra.pos.y);
+	camera.ctx.lineTo(this.pos.x - this.hydra.pos.x + this.rotation.x * 100, this.pos.y - this.hydra.pos.y + this.rotation.y * 100);
+	camera.ctx.stroke();
+	camera.ctx.fillRect(this.pos.x - this.hydra.pos.x - 5, this.pos.y - this.hydra.pos.y - 5, 10, 10);
 }
 
 RoyalHydra.consumeOffset = new Vector(0, 150);

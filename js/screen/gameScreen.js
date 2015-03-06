@@ -12,6 +12,8 @@ function GameScreen() {
     this.bossIncrement = this.bossScore;
     this.bossScale = Math.floor(5 * multiplier) * 5;
     this.bossCount = 0;
+	this.bossId = 0;
+	this.superBossId = 0;
     this.boss = undefined;
 
     // Various data
@@ -376,8 +378,37 @@ GameScreen.prototype.spawnBoss = function() {
     }
 
     // Spawn the boss
-    this.boss = new BOSS_SPAWNS[this.bossCount % BOSS_SPAWNS.length](x, y);
+	if (this.bossId < 5) {
+		this.boss = new BOSS_SPAWNS[this.bossId % BOSS_SPAWNS.length](x, y);
+		this.bossId++;
+	}
+	else {
+		if (this.superBossId == 0) {
+			this.boss = new DragonBoss(x, y);
+		}
+		else {
+			this.boss = new HydraBoss(x, y);
+		}
+		this.superBossId++;
+		this.shuffleBosses();
+	}
+    
     this.robots.push(this.boss);
+};
+
+/** 
+ * Shuffles the order of boss spawns around
+ */
+GameScreen.prototype.shuffleBosses = function() {
+	var list = [];
+	while (BOSS_SPAWNS.length > 0)
+	{
+		var id = rand(BOSS_SPAWNS.length);
+		list.push(BOSS_SPAWNS[id]);
+		BOSS_SPAWNS.splice(id, 1);
+	}
+	BOSS_SPAWNS = list;
+	this.bossId = 0;
 };
 
 /**
