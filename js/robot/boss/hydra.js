@@ -120,7 +120,6 @@ HydraBoss.prototype.onPreDraw = function() {
         var scale = this.patterns[1][0].cd;
         scale = (1 - scale / 90) * this.patterns[1][0].size;
         this.fireball.hidden = this.pattern != 1 || scale <= 0;
-        console.log(scale);
         this.fireball.setScale(scale, scale);    
         this.fireball.rotate(HydraBoss.FIREBALL_ROT.x, HydraBoss.FIREBALL_ROT.y);
     }
@@ -245,7 +244,7 @@ function RoyalHydra(x, y) {
         /* Segment    */ 'hydraRoyalTail',
         /* End        */ 'hydraRoyalEnd',
         /* Length     */ 7,
-        /* Offset     */ 150,
+        /* Offset     */ 175,
         /* Base       */ 0,
         /* End Offset */ 100,
         /* Constraint */ 20,
@@ -258,9 +257,9 @@ function RoyalHydra(x, y) {
         /* Segment    */ 'hydraRoyalNeck',
         /* End        */ 'hydraRoyalHeadLarge',
         /* Length     */ 3,
-        /* Offset     */ 125,
-        /* Base       */ 0,
-        /* End Offset */ 125,
+        /* Offset     */ 110,
+        /* Base       */ 65,
+        /* End Offset */ 65,
         /* Constraint */ 0,
         /* Front      */ false
     );
@@ -269,9 +268,9 @@ function RoyalHydra(x, y) {
         /* Segment    */ 'hydraRoyalNeck',
         /* End        */ 'hydraRoyalHeadSmall',
         /* Length     */ 3,
-        /* Offset     */ 125,
-        /* Base       */ 0,
-        /* End Offset */ 125,
+        /* Offset     */ 110,
+        /* Base       */ 115,
+        /* End Offset */ 65,
         /* Constraint */ 20,
         /* Front      */ false
     ), damageScale);
@@ -280,15 +279,16 @@ function RoyalHydra(x, y) {
         /* Segment    */ 'hydraRoyalNeck',
         /* End        */ 'hydraRoyalHeadSmall',
         /* Length     */ 3,
-        /* Offset     */ 125,
-        /* Base       */ 0,
-        /* End Offset */ 125,
+        /* Offset     */ 110,
+        /* Base       */ 115,
+        /* End Offset */ 65,
         /* Constraint */ 20,
         /* Front      */ false
     ), damageScale);
 	
-    this.headLeft.rope.setBaseDir(new Vector(COS_60, SIN_60));
-    this.headRight.rope.setBaseDir(new Vector(COS_60, -SIN_60));
+    this.headLeft.rope.setBaseDir(new Vector(-COS_60, SIN_60));
+    this.headRight.rope.setBaseDir(new Vector(-COS_60, -SIN_60));
+    this.head.setBaseDir(new Vector(-1, 0));
     this.head.held = undefined;
     this.head.heldTimer = 0;
     this.head.hydra = this;
@@ -316,7 +316,7 @@ RoyalHydra.prototype.onUpdate = function() {
         {
             var r = players[i];
             var dir = r.pos.clone().subtractv(this.pos);
-            var dSq = r.lengthSq();
+            var dSq = dir.lengthSq();
             if (dSq < 360000)
             {
                 var d = Math.sqrt(dSq);
@@ -451,8 +451,7 @@ RoyalHydra.consume = function() {
         }
     }
     else if (this.held) {
-        this.held.x = holdX;
-        this.held.y = holdY;
+        this.held.moveTo(holdPos.x, holdPos.y);
         this.heldTimer--;
         if (this.heldTimer <= 0 || this.hydra.pattern == 1) {
             this.heldTimer = 300;

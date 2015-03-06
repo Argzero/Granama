@@ -261,5 +261,66 @@ var movement = {
             d.rotate(0, -1).multiply(500, 500).addv(this.pos);
             this.movementHelper({ pos: d });
         }
+    },
+    
+    /**
+     * Movement pattern for flying over the pads, dropping turrets
+     */
+    pads: function() {
+    
+        // Turning values
+        if (this.prevTurnDivider != this.turnDivider) {
+            this.turnVec = new Vector(Math.cos(this.speed / this.turnDivider), Math.sin(this.speed / this.turnDivider));
+            this.prevTurnDivider = this.turnDivider;
+        }
+    
+        this.pads = this.pads || [];
+    
+        // Get a random pad
+        if (!this.pad)
+        {
+            var x, y;
+            do {
+                x = (rand(2) + 1) * GAME_WIDTH / 3;
+                y = (rand(2) + 1) * GAME_HEIGHT / 3;
+            }
+            while ((this.pos.x - x) * (this.pos.x - x) + (this.pos.y - y) * (this.pos.y - y) < sq(GAME_WIDTH / 8));
+            this.pad = new Vector(x, y);
+        }
+    
+        // Move towards the target pad
+        this.lookTowards(this.pad, this.turnVec);
+        this.move(this.forward().x * this.speed, this.forward().y * this.speed);
+        
+        // Drop a turret if applicable
+        if (this.pos.distanceSq(this.pad) < sq(this.speed * 2)) {
+            
+            var occupied = false;
+            for (var i = 0; i < this.pads.length; i++) {
+                var t = this.pads[i];
+                occupied = occupied || (t.pos.x == this.pad.x && t.pos.y == this.pad.y);
+            }
+            if (!occupied) {
+                var turret = new Turret(
+                    'padTurretTop',
+                    'padTurretBase',
+                    this.pad.x,
+                    this.pad.y,
+                    Boss.sum(),
+                    125 * Enemy.pow(1.2) * players.length
+                );
+                turret.gunData.dy = 50;
+                gameScreen.robots.push(turret);
+            }
+        
+            this.pad = false;
+        }
+    },
+    
+    /**
+     * Rotates the enemy in place
+     */
+    rotate: function() {
+        this.rotation.rotateAngle(Math.PI / 360);
     }
 };

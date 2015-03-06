@@ -44,6 +44,19 @@ Turret.prototype.update = function() {
     if (this.expired) {
         gameScreen.particles.push(new Explosion(this.pos.x, this.pos.y, this.width / 150));
     }
+    
+    // Solid turrets
+    for (var i = 0; i < players.length; i++) 
+    {
+        var p = players[i];
+        var r = (p.width + this.width) / 2;
+        if (!p.ignoreClamp && !p.dead && p.pos.distanceSq(this.pos) < r * r)
+        {
+            p.pos.subtractv(this.pos);
+            p.pos.setMagnitude(r);
+            p.pos.addv(this.pos);
+        }
+    }
 };
 
 /**

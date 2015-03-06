@@ -124,7 +124,7 @@ RopeTail.prototype.updateTurret = function(index)
  * Gets the orientation of the end of the tail
  */
 RopeTail.prototype.getEndDir = function() {
-    return this.segments[this.segments.length - 1].getWorldRotation();
+    return this.segments[this.segments.length - 1].rotation;
 }
 
 /**
