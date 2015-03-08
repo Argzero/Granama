@@ -16,7 +16,8 @@ function HydraBoss(x, y) {
         /* Experience  */ 0,
         /* Stat Rank   */ Enemy.BOSS,
         /* Pattern Min */ 600,
-        /* Pattern Max */ 750
+        /* Pattern Max */ 750,
+        /* Title       */ 'Hydra'
     );
     
     this.pierceDamage = 0.5;
@@ -143,7 +144,8 @@ function RoyalHydra(x, y) {
         /* Experience  */ Enemy.HYDRA_EXP,
         /* Stat Rank   */ Enemy.HYDRA_ENEMY,
         /* Pattern Min */ 720,
-        /* Pattern Max */ 900
+        /* Pattern Max */ 900,
+        /* Title       */ 'Royal Hydra'
     );
     
     this.pierceDamage = 0.1;

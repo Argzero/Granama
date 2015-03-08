@@ -16,7 +16,8 @@ function DragonBoss(x, y) {
         /* Experience  */ Enemy.DRAGON_EXP,
         /* Stat Rank   */ Enemy.DRAGON_ENEMY,
         /* Pattern Min */ 600,
-        /* Pattern Max */ 750
+        /* Pattern Max */ 750,
+        /* Title       */ 'Dragon'
     );
     
     this.pierceDamage = 0.4;

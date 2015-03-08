@@ -2,24 +2,26 @@
  * A boss in the game that takes reduced effects from slows, stuns, and debuffs while not caring
  * about orientation for being "in range"
  *
- * @param {string} name         - name of the enemy sprite image
- * @param {number} x            - initial horizontal position
- * @param {number} y            - initial vertical position
- * @param {number} type         - Robot type ID of the enemy (should be Robot.BOSS)
- * @param {number} health       - max health
- * @param {number} speed        - movement speed
- * @param {number} range        - attack range
- * @param {number} exp          - experience yield
- * @param {string} rank         - difficulty rank
- * @param {number} [patternMin] - minimum time between switching attack patterns
- * @param {number} [patternMax] - maximum time between switching attack patterns
+ * @param {string} name       - name of the enemy sprite image
+ * @param {number} x          - initial horizontal position
+ * @param {number} y          - initial vertical position
+ * @param {number} type       - Robot type ID of the enemy (should be Robot.BOSS)
+ * @param {number} health     - max health
+ * @param {number} speed      - movement speed
+ * @param {number} range      - attack range
+ * @param {number} exp        - experience yield
+ * @param {string} rank       - difficulty rank
+ * @param {number} patternMin - minimum time between switching attack patterns
+ * @param {number} patternMax - maximum time between switching attack patterns
+ * @param {string} title      - the title of the boss
  *
  * @constructor
  */
 extend('Boss', 'Enemy');
-function Boss(name, x, y, type, health, speed, range, exp, rank, patternMin, patternMax) {
+function Boss(name, x, y, type, health, speed, range, exp, rank, patternMin, patternMax, title) {
     this.super(name, x, y, type, health, speed, range, exp, rank, patternMin, patternMax);
     this.knockbackFactor = 0.2;
+    this.title = title;
 }
 
 /** 

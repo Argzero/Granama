@@ -12,6 +12,7 @@ function GameScreen() {
     this.bossIncrement = this.bossScore;
     this.bossScale = Math.floor(5 * multiplier) * 5;
     this.bossCount = 0;
+    this.bossTimer = 0;
 	this.bossId = 0;
 	this.superBossId = 0;
     this.boss = undefined;
@@ -32,6 +33,8 @@ function GameScreen() {
     this.playerMaxY = 9999;
     this.scrollX = 0;
     this.scrollY = 0;
+    this.targetX = 0;
+    this.targetY = 0;
     
     // Healing pads
     this.pads = [
@@ -238,18 +241,45 @@ GameScreen.prototype.applyScrolling = function() {
         var avgX = (maxX + minX) / 2;
         var avgY = (maxY + minY) / 2;
 
-        // Scroll bounds
-        this.scrollX = -clamp(avgX - WINDOW_WIDTH / 2, 0, GAME_WIDTH - WINDOW_WIDTH);
-        this.scrollY = -clamp(avgY - WINDOW_HEIGHT / 2, 0, GAME_HEIGHT - WINDOW_HEIGHT);
+        // Set target position
+        this.targetX = WINDOW_WIDTH / 2 - avgX;
+        this.targetY = WINDOW_HEIGHT / 2 - avgY;
 
-        // player bounds
-        this.playerMinX = Math.max(0, Math.min(avgX - WINDOW_WIDTH / 2, this.scrollX) + 100);
-        this.playerMinY = Math.max(0, Math.min(avgY - WINDOW_HEIGHT / 2, this.scrollY) + 100);
-        this.playerMaxX = Math.min(GAME_WIDTH, Math.max(avgX + WINDOW_WIDTH / 2, this.scrollX + WINDOW_WIDTH) - 100);
-        this.playerMaxY = Math.min(GAME_HEIGHT, Math.max(avgY + WINDOW_HEIGHT / 2, this.scrollY + WINDOW_HEIGHT) - 100);
+        // Clamp if not doing a boss preview
+        if (this.bossTimer == 0) {
+            this.targetX = clamp(this.targetX, WINDOW_WIDTH - GAME_WIDTH, 0);
+            this.targetY = clamp(this.targetY, WINDOW_HEIGHT - GAME_HEIGHT, 0);
+        }
+        
+        // Smooth scroll to the target
+        if (!this.paused) {
+            var dx = this.targetScrollX - this.scrollX;
+            var dy = this.targetScrollY - this.scrollY;
+            var dSq = dx * dx + dy * dy;
+            if (dSq > 0) {
+                dSq = Math.sqrt(dSq);
+                dSq = Math.min(dSq, 25) / dSq;
+                dx *= dSq;
+                dy *= dSq;
+                
+                this.scrollX += dx;
+                this.scrollY += dy;
+            }
+        }
+        
+        // Update player bounds when not doing a boss preview
+        if (this.bossTimer == 0) {
+            this.playerMinX = Math.max(0, Math.min(avgX - WINDOW_WIDTH / 2, this.scrollX) + 100);
+            this.playerMinY = Math.max(0, Math.min(avgY - WINDOW_HEIGHT / 2, this.scrollY) + 100);
+            this.playerMaxX = Math.min(GAME_WIDTH, Math.max(avgX + WINDOW_WIDTH / 2, this.scrollX + WINDOW_WIDTH) - 100);
+            this.playerMaxY = Math.min(GAME_HEIGHT, Math.max(avgY + WINDOW_HEIGHT / 2, this.scrollY + WINDOW_HEIGHT) - 100);
+        }
     }
 };
 
+/**
+ * Starts the next round of the game
+ */
 GameScreen.prototype.startNextRound = function() {
     this.paused = false;
     this.bossScore += this.bossIncrement;
