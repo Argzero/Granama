@@ -157,18 +157,12 @@ PLAYER_DATA = [
     }
 ],
 
-// Animation
-GAME_FPS = 60,
-DAMAGE_ALPHA = 0.3,
-DAMAGE_ALPHA_DECAY = 0.02,
-
 // Boss statuses
 ACTIVE_NONE = 0,
 ACTIVE_BOSS = 1,
 
 SPAWN_RATE = 180,
 SPAWN_SCALE = 0.3,
-MAX_ENEMIES = 1,
 MINIBOSS_START = 8,
 SPAWN_DATA = [
     90, 0, LightGunner,
@@ -198,16 +192,14 @@ SPAWN_DATA = [
     2, 6, Paladin,
     2, 6, Hunter,
     2, 6, Solar,
-    2, 6, Snatcher,
-    100000, 0, RoyalHydra
+    2, 6, Snatcher
 ],
 BOSS_SPAWNS = [
     HeavyBoss,
     ScorpionBoss,
     BrawlerBoss,
     HiveQueenBoss,
-    FortressBoss,
-    DragonBoss
+    FortressBoss
 ],
 DRAGON_SPAWNS = [
     1, 0, Hunter

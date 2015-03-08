@@ -21,6 +21,7 @@ function GameScreen() {
     this.timer = 0;
     this.gameOver = false;
     this.paused = undefined;
+    this.maxEnemies = 30 * (0.85 + 0.15 * players.length);
     
     // Scroll data
     this.playerMinX = 0;
@@ -189,6 +190,11 @@ GameScreen.prototype.draw = function() {
     
     ui.drawEnemyHealth();
     ui.drawPlayerHUDs();
+    
+    // Enemy indicators
+    if (this.score >= this.bossScore - 10) {
+        ui.drawEnemyIndicators();
+    }
 
     // Reset scrolling for UI elements
     camera.moveTo(0, 0);
@@ -286,7 +292,7 @@ GameScreen.prototype.checkSpawns = function() {
     // Don't spawn enemies if there are too many or one has just spawned
     if (this.bossStatus == ACTIVE_NONE
         && this.spawnCd <= 0
-        && this.enemyCount < MAX_ENEMIES * (0.85 + 0.15 * players.length)
+        && this.enemyCount < this.maxEnemies
         && this.enemyCount + this.score < this.bossScore) {
 
         // Get a spawn point off of the gameScreen

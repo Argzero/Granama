@@ -49,6 +49,7 @@ function Player(name, x, y, type, health, speed, healthScale, damageScale, shiel
     this.enemiesKilled = 0;
     this.damageAlpha   = 0;
     this.levelFrame    = -1;
+    this.lastHelath    = 0;
     this.input         = undefined;
 }
 
@@ -98,6 +99,15 @@ Player.prototype.update = function() {
         this.alpha = 0.5;
         return;
     }
+    
+    // Damage detection
+    if (this.health < this.lastHealth) {
+        this.damageAlpha = 0.3;
+    }
+    else {
+        this.damageAlpha -= 0.02;
+    }
+    this.lastHealth = this.health;
     
     this.alpha = 1;
     

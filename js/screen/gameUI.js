@@ -12,6 +12,7 @@ var ui = {
     start: undefined,
     upgradeAlpha: 0,
     cursor: GetImage('cursor'),
+    pointer: undefined,
     
     /**
      * Clears the UI canvas
@@ -113,7 +114,6 @@ var ui = {
                 ui.ctx.globalAlpha = player.damageAlpha;
                 ui.ctx.drawImage(GetImage('damage'), player.pos.x - 75, player.pos.y - 75, 150, 150);
                 ui.ctx.globalAlpha = 1;
-                player.damageAlpha -= DAMAGE_ALPHA_DECAY;
             }
             
             // Draw HUD if alive
@@ -191,6 +191,36 @@ var ui = {
             this.ctx.fillRect(r.pos.x - r.width / 2, r.pos.y - r.height / 2 - 10, greenWidth, 5);
             this.ctx.fillStyle = "#FF0000";
             this.ctx.fillRect(r.pos.x + greenWidth - r.width / 2, r.pos.y - r.height / 2 - 10, r.width - greenWidth, 5);
+        }
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    },
+    
+    /**
+     * Draws indicators pointing to enemies
+     */
+    drawEnemyIndicators: function() {
+        this.pointer = this.pointer || images.get('enemyPointer');//new Sprite('enemyPointer', 0, 0);
+        this.ctx.translate(SIDEBAR_WIDTH, 0);
+        var halfX = WINDOW_WIDTH / 2;
+        var halfY = WINDOW_HEIGHT / 2;
+        var midX = halfX - gameScreen.scrollX;
+        var midY = halfY - gameScreen.scrollY;
+        for (var i = 0; i < gameScreen.robots.length; i++) {
+            var e = gameScreen.robots[i];
+            if (e.type != Robot.BOSS && e.type != Robot.MOB) continue;
+            if (Math.abs(midX - e.pos.x) > halfX + e.width / 2 && Math.abs(midY - e.pos.y) > halfY + e.width / 2) {
+                var d = new Vector(e.pos.x - midX, e.pos.y - midY);
+                var xs = Math.abs(halfX / d.x);
+                var ys = Math.abs(halfY / d.y);
+                var s = xs < ys ? xs : ys;
+                d.x *= s;
+                d.y *= s;
+                this.ctx.translate(halfX + d.x, halfY + d.y);
+                
+                d.normalize().rotate(0, -1);
+                this.ctx.transform(d.x, d.y, -d.y, d.x, 0, 0);
+                this.ctx.drawImage(this.pointer, -this.pointer.width / 2, -this.pointer.height);
+            }
         }
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     },
