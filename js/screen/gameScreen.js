@@ -178,7 +178,7 @@ GameScreen.prototype.draw = function() {
     }
     
     // Buffs
-    //ui.drawBuffs();
+    ui.drawBuffs();
     
     // Particles
     for (var i = 0; i < this.particles.length; i++) {
@@ -191,6 +191,12 @@ GameScreen.prototype.draw = function() {
     
     ui.drawEnemyHealth();
     ui.drawPlayerHUDs();
+    
+    // Boss titles
+    if (this.bossTimer < 180)
+    {
+        ui.drawBossTitle();
+    }
 
     // Reset scrolling for UI elements
     camera.moveTo(0, 0);
@@ -394,6 +400,7 @@ GameScreen.prototype.spawnBoss = function() {
 	}
     
     this.robots.push(this.boss);
+    this.bossTimer = 300;
 };
 
 /** 

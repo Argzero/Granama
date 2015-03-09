@@ -11,7 +11,15 @@ var ui = {
     hovered: undefined,
     start: undefined,
     upgradeAlpha: 0,
-    cursor: GetImage('cursor'),
+    cursor: images.get('cursor'),
+    
+    // Buff map
+    buffs: {
+        'defense'   : { img: 'Def',    positive: false, threshold: 1 },
+        'shieldBuff': { img: 'Shield', positive: true,  threshold: 1 },
+        'speed'     : { img: 'Speed',  positive: true,  threshold: 1 },
+        'healthBuff': { img: 'Hp',     positive: true,  threshold: 0 }
+    },
     
     /**
      * Clears the UI canvas
@@ -39,6 +47,55 @@ var ui = {
                 }
             }
         }
+    },
+    
+    /**
+     * Draws the buffs for all robots on the screen
+     */
+    drawBuffs: function() {
+        this.ctx.translate(SIDEBAR_WIDTH + gameScreen.scrollX, gameScreen.scrollY);
+        for (var i = 0; i < gameScreen.robots.length; i++)
+        {
+            // If something doesn't have buff support, ignore it
+            var r = gameScreen.robots[i];
+            if (!r.get) continue;
+            r.buffDir = r.buffDir || new Vector(1, 0);
+            
+            var x;
+            
+            // Count how many buffs are applied
+            var count = 0;
+            for (x in this.buffs)
+            {
+                if (r.buffs[x] !== undefined)
+                {
+                    count++;
+                }
+            }
+            if (count == 0) 
+            {
+                r.buffDir.x = 1;
+                r.buffDir.y = 0;
+                continue;
+            }
+            
+            // Calculate the rotation
+            var angle = Math.PI * 2 / count;
+            var rot = new Vector(Math.cos(angle), Math.sin(angle));
+            
+            // Draw the trails
+            for (x in this.buffs)
+            {
+                if (!r.buffs[x]) continue;
+                var value = r.get(x);
+                var buff = this.buffs[x];
+                var positive = (value > buff.threshold) == buff.positive;
+                var img = images.get('buff' + buff.img + (positive ? 'Up' : 'Down'));
+                this.ctx.drawImage(img, r.pos.x + r.buffDir.x * r.width * 0.75 - img.width / 2, r.pos.y + r.buffDir.y * r.width * 0.75 - img.height / 2);
+            }
+            r.buffDir.rotate(rot.x, rot.y);
+        }
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     },
     
     /**
@@ -193,6 +250,32 @@ var ui = {
             this.ctx.fillRect(r.pos.x + greenWidth - r.width / 2, r.pos.y - r.height / 2 - 10, r.width - greenWidth, 5);
         }
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    },
+    
+    /**
+     * Draws the title for bosses
+     */ 
+    drawBossTitle: function() {
+        var elapsed = 180 - gameScreen.bossTimer;
+        var remaining = gameScreen.bossTimer;
+        
+        var x;
+        if (elapsed < remaining) 
+        {
+            x = Math.max(0.5, 1.5 - elapsed / 30) * WINDOW_WIDTH;
+        }
+        else 
+        {
+            x = Math.min(0.5, remaining / 30 - 0.5) * WINDOW_WIDTH;
+        }
+        
+        this.ctx.fillStyle = 'black';
+        this.ctx.fillRect(x - WINDOW_WIDTH / 2, WINDOW_HEIGHT - 150, WINDOW_WIDTH, 100);
+        this.ctx.fillStyle = 'white';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.textAlign = 'center';
+        this.ctx.font = '48px Flipbash';
+        this.ctx.fillText(gameScreen.boss.title, WINDOW_WIDTH - x, WINDOW_HEIGHT - 100);
     },
     
     // Draws the sidebar with the upgrades
