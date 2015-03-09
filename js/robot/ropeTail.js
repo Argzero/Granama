@@ -17,11 +17,6 @@ extend('RopeTail', 'Sprite');
 function RopeTail(source, segment, end, length, offset, base, endOffset, constraint, front) {
     this.super(length <= 1 ? end : segment, 0, -base - offset);
     
-    // Apply parenting
-    if (front) source.postChildren.push(this);
-    else source.preChildren.unshift(this);
-    this.child(source, true);
-    
     // Data
     this.front = front;
     this.source = source;
@@ -31,12 +26,12 @@ function RopeTail(source, segment, end, length, offset, base, endOffset, constra
     
     constraint *= Math.PI / 180;
     
-    this.segments = new Array(length - 1);
+    this.segments = [];
     this.turrets = [];
     var parent = this;
     for (var i = 0; i < length - 1; i++) {
         var seg = new TailSegment(parent, i == length - 2 ? end : segment, i == length - 2 ? endOffset + offset : offset, constraint);
-        this.segments[i] = seg;
+        this.segments.push(seg);
         parent = seg;
     }
 }

@@ -252,7 +252,7 @@ var movement = {
             this.movementHelper(player);
         }
         else if (tooClose) {
-            this.movementHelper({ pos: d.multiply(-500, -500).addv(this.pos) });
+            this.movementHelper({ pos: this.rotation.clone().rotate(d1 > 0 ? -1 : 1, 0).multiply(1000, 1000).addv(this.pos) });
         }
         else if (d1 > 0) {
             d.rotate(0, 1).multiply(500, 500).addv(this.pos);
