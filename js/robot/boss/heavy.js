@@ -16,7 +16,8 @@ function HeavyBoss(x, y) {
         /* Experience  */ Enemy.BOSS_EXP,
         /* Stat Rank   */ Enemy.BOSS_ENEMY,
         /* Pattern Min */ 300,
-        /* Pattern Max */ 400
+        /* Pattern Max */ 400,
+        /* Title       */ 'Heavy'
     );
     
     this.pierceDamage = 0.1;

@@ -19,7 +19,8 @@ function HiveQueenBoss(x, y) {
         /* Experience  */ Enemy.BOSS_EXP,
         /* Stat Rank   */ Enemy.BOSS_ENEMY,
         /* Pattern Min */ 600,
-        /* Pattern Max */ 600
+        /* Pattern Max */ 600,
+        /* Title       */ 'Hive Queen'
     );
     
     this.pierceDamage = 0.2;

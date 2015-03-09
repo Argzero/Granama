@@ -151,7 +151,7 @@ onLoaderDone = function() {
             }
             gameScreen.draw();
         }
-    }, 1000 / GAME_FPS);
+    }, 1000 / 60);
 
     resizeCanvas();
 }

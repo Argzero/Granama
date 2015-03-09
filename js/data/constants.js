@@ -157,18 +157,12 @@ PLAYER_DATA = [
     }
 ],
 
-// Animation
-GAME_FPS = 60,
-DAMAGE_ALPHA = 0.3,
-DAMAGE_ALPHA_DECAY = 0.02,
-
 // Boss statuses
 ACTIVE_NONE = 0,
 ACTIVE_BOSS = 1,
 
 SPAWN_RATE = 180,
 SPAWN_SCALE = 0.3,
-MAX_ENEMIES = 30,
 SPAWN_DATA = [
     90, 0, LightGunner,
     45, 1, HeavyGunner,

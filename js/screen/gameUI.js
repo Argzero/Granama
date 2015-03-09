@@ -20,6 +20,7 @@ var ui = {
         'speed'     : { img: 'Speed',  positive: true,  threshold: 1 },
         'healthBuff': { img: 'Hp',     positive: true,  threshold: 0 }
     },
+    pointer: undefined,
     
     /**
      * Clears the UI canvas
@@ -170,7 +171,6 @@ var ui = {
                 ui.ctx.globalAlpha = player.damageAlpha;
                 ui.ctx.drawImage(GetImage('damage'), player.pos.x - 75, player.pos.y - 75, 150, 150);
                 ui.ctx.globalAlpha = 1;
-                player.damageAlpha -= DAMAGE_ALPHA_DECAY;
             }
             
             // Draw HUD if alive
@@ -278,7 +278,40 @@ var ui = {
         this.ctx.fillText(gameScreen.boss.title, WINDOW_WIDTH - x, WINDOW_HEIGHT - 100);
     },
     
-    // Draws the sidebar with the upgrades
+    /**
+     * Draws indicators pointing to enemies
+     */
+    drawEnemyIndicators: function() {
+        this.pointer = this.pointer || images.get('enemyPointer');//new Sprite('enemyPointer', 0, 0);
+        this.ctx.translate(SIDEBAR_WIDTH, 0);
+        var halfX = WINDOW_WIDTH / 2;
+        var halfY = WINDOW_HEIGHT / 2;
+        var midX = halfX - gameScreen.scrollX;
+        var midY = halfY - gameScreen.scrollY;
+        for (var i = 0; i < gameScreen.robots.length; i++) {
+            var e = gameScreen.robots[i];
+            if (e.type != Robot.BOSS && e.type != Robot.MOB) continue;
+            if (Math.abs(midX - e.pos.x) > halfX + e.width / 2 && Math.abs(midY - e.pos.y) > halfY + e.width / 2) {
+                var d = new Vector(e.pos.x - midX, e.pos.y - midY);
+                var xs = Math.abs(halfX / d.x);
+                var ys = Math.abs(halfY / d.y);
+                var s = xs < ys ? xs : ys;
+                d.x *= s;
+                d.y *= s;
+                this.ctx.translate(halfX + d.x, halfY + d.y);
+                
+                d.normalize().rotate(0, -1);
+                this.ctx.transform(d.x, d.y, -d.y, d.x, 0, 0);
+                this.ctx.drawImage(this.pointer, -this.pointer.width / 2, -this.pointer.height);
+            }
+        }
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    },
+    
+    /**
+     * Draws the stat bar on the side containing basic player
+     * information such as upgrades, level, and health.
+     */
     drawStatBar: function() {
 
         // Background
@@ -353,7 +386,10 @@ var ui = {
         }
     },
 
-    // Sets up the end screen to show the stats of the given game screen
+    /**
+     * Prepares the game for transitioning to the upgrade
+     * screen after a boss fight
+     */
     setupUpgradeUI: function() {
         gameScreen.paused = true;
 
@@ -373,7 +409,10 @@ var ui = {
         }
     },
 
-    // Draws the upgrade UI for the game
+    /**
+     * Draws and handles controls for the upgrade
+     * screen after each boss fight
+     */
     drawUpgradeUI: function() {
 
         this.upgradeAlpha = Math.min(1, this.upgradeAlpha + 0.02);
