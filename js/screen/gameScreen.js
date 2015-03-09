@@ -25,6 +25,7 @@ function GameScreen() {
     this.gameOver = false;
     this.paused = undefined;
     this.maxEnemies = 30 * (0.85 + 0.15 * players.length);
+    this.isPlaying = true;
     this.julian = false;
     
     // Scroll data

@@ -43,6 +43,7 @@ function Robot(name, x, y, type, health, speed) {
     this.damageDealt = 0;
     this.damageAbsorbed = 0;
     this.deaths = 0;
+    this.kills = 0;
 
     this.pierceDamage = 1;
     this.defense = 1;
@@ -125,11 +126,21 @@ Robot.prototype.damage = function(amount, source) {
         if (isNaN(this.health)) debugger;
         this.dead = this.health <= 0;
         if (this.dead) {
+            source.giveKill(this);
             this.deaths++;
             this.health = 0;
         }
     }
 };
+
+/**
+ * Credits the robot with a kill
+ *
+ * @param {Robot} victim - the killed robot
+ */
+Robot.prototype.giveKill = function(victim) {
+    this.kills++;
+}
 
 /**
  * Heals the robot

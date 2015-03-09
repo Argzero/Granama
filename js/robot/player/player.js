@@ -50,6 +50,7 @@ function Player(name, x, y, type, health, speed, healthScale, damageScale, shiel
     this.damageAlpha   = 0;
     this.levelFrame    = -1;
     this.lastHelath    = 0;
+    this.killTypes     = {};
     this.input         = undefined;
 }
 
@@ -227,4 +228,45 @@ Player.prototype.isSkillCast = function() {
 // Function for telling weapons when they can fire
 Player.prototype.isInRange = function() {
     return this.input.button(SHOOT);
+};
+
+/**
+ * Credits the robot with a kill
+ *
+ * @param {Robot} victim - the killed robot
+ */
+Player.prototype.giveKill = function(victim) {
+    this.kills++;
+    this.killTypes[victim.type]++;
+}
+
+/**
+ * Submits the profile stats for the player
+ */
+Player.prototype.submitStats = function() {
+    this.profile.addStat(this.name, STAT.TOTAL_KILLS, this.kills);
+    this.profile.addStat(this.name, STAT.TOTAL_DEATHS, this.deaths);
+    this.profile.addStat(this.name, STAT.TOTAL_RESCUES, this.rescues);
+    this.profile.addStat(this.name, STAT.TOTAL_DEALT, this.damageDealt);
+    this.profile.addStat(this.name, STAT.TOTAL_TAKEN, this.damageTaken);
+    this.profile.addStat(this.name, STAT.TOTAL_ABSORBED, this.damageAbsorbed);
+    this.profile.addStat(this.name, STAT.TOTAL_EXP, this.totalExp);
+    this.profile.addStat(this.name, STAT.LIGHT, this.killTypes[Robot.LIGHT_ENEMY]);
+    this.profile.addStat(this.name, STAT.HEAVY, this.killTypes[Robot.HEAVY_ENEMY]);
+    this.profile.addStat(this.name, STAT.MINIBOSS, this.killTypes[Robot.MINIBOSS_ENEMY]);
+    this.profile.addStat(this.name, STAT.BOSS, this.killTypes[Robot.BOSS_ENEMY]);
+    this.profile.addStat(this.name, STAT.DRAGON, this.killTypes[Robot.DRAGON_ENEMY]);
+    this.profile.addStat(this.name, STAT.HYDRA, this.killTypes[Robot.HYDRA_ENEMY]);
+    this.profile.addStat(this.name, STAT.GAMES, 1);
+    
+    this.profile.setBest(this.name, STAT.MOST_KILLS, this.kills);
+    this.profile.setBest(this.name, STAT.MOST_DEATHS, this.deaths);
+    this.profile.setBest(this.name, STAT.MOST_RESCUES, this.rescues);
+    this.profile.setBest(this.name, STAT.MOST_DEALT, this.damageDealt);
+    this.profile.setBest(this.name, STAT.MOST_TAKEN, this.damageTaken);
+    this.profile.setBest(this.name, STAT.MOST_ABSORBED, this.damageAbsorbed);
+    this.profile.setBest(this.name, STAT.BEST_SCORE, gameScreen.score);
+    this.profile.setBest(this.name, STAT.HIGHEST_LEVEL, this.level);
+    
+    this.profile.addList(this.name, STAT.LAST_10, 10, gameScreen.score);
 };

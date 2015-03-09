@@ -1,10 +1,10 @@
-depend('data/io', function() { PROFILE_DATA = io.getObject(PROFILE_DATA_KEY) || {}; });
-
 // The key which profile data is saved to
 var PROFILE_DATA_KEY = 'profiles';
 
 // The serializable object representation of profile data
 var PROFILE_DATA = {};
+
+depend('data/io', function() { PROFILE_DATA = io.getObject(PROFILE_DATA_KEY) || {}; });
 
 // Available stats
 var STAT = {
@@ -38,7 +38,12 @@ var STAT = {
 
 // Update profile data before exiting
 window.addEventListener('beforeunload', function() {
-    userData.setObject(PROFILE_DATA_KEY, PROFILE_DATA);
+    if (gameScreen.isPlaying) {
+        for (var i = 0; i < players.length; i++) {
+            players[i].submitStats();
+        }
+    }
+    io.setObject(PROFILE_DATA_KEY, PROFILE_DATA);
 });
 
 /**

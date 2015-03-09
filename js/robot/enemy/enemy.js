@@ -43,12 +43,12 @@ Enemy.DRAGON_EXP = 1188;
 Enemy.HYDRA_EXP = 8880;
 
 // Experience constants
-Enemy.LIGHT_ENEMY = 'l';
-Enemy.HEAVY_ENEMY = 'h';
-Enemy.MINIBOSS_ENEMY = 'm';
-Enemy.BOSS_ENEMY = 'b';
-Enemy.DRAGON_ENEMY = 'd';
-Enemy.HYDRA_ENEMY = 'DOOM';
+Enemy.LIGHT_ENEMY = 'light';
+Enemy.HEAVY_ENEMY = 'heavy';
+Enemy.MINIBOSS_ENEMY = 'miniboss';
+Enemy.BOSS_ENEMY = 'boss';
+Enemy.DRAGON_ENEMY = 'dragon';
+Enemy.HYDRA_ENEMY = 'hydra';
 
 // Experience data
 Enemy.EXP_M = [1, 5 / 3, 9 / 4, 8 / 3, 35 / 12];

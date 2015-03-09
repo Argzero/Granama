@@ -210,7 +210,7 @@ SelectScreen.prototype.draw = function() {
                 ui.ctx.globalAlpha = 1;
 
                 // Next option
-                if ((input.button(DOWN_1) == 1) || (input.button(DOWN_2))) {
+                if ((input.button(DOWN_1) == 1) || (input.button(DOWN_2) == 1)) {
                     settings.profile = Math.min(settings.profile + 1, this.profilesArray.length - 1);
                 }
 
@@ -220,7 +220,7 @@ SelectScreen.prototype.draw = function() {
                 }
 
                 // Next screen
-                if (input.button(SELECT_1) == 1 || input.button(SELECT_2)) {
+                if (input.button(SELECT_1) == 1 || input.button(SELECT_2) == 1) {
 
                     if (settings.profile < this.profilesArray.length - 1) {
                         settings.part++;
@@ -286,13 +286,13 @@ SelectScreen.prototype.draw = function() {
                 // Input for navigating the letter grid
                 var r = Math.floor(settings.frame / perRow);
                 var c = settings.frame % perRow;
-                if (input.left == 1) {
+                if (input.button(LEFT_1) == 1 || input.button(LEFT_2) == 1) {
                     c = (c + perRow - 1) % perRow;
                     if (settings.frame > ALPHABET.length) {
                         c = ALPHABET.length % perRow;
                     }
                 }
-                if (input.right == 1) {
+                if (input.button(RIGHT_1) == 1 || input.button(RIGHT_2) == 1) {
                     c = (c + 1) % perRow;
                     if (settings.frame == ALPHABET.length) {
                         settings.frame += 2;
@@ -301,10 +301,10 @@ SelectScreen.prototype.draw = function() {
                         c = 0;
                     }
                 }
-                if (input.down == 1) {
+                if (input.button(DOWN_1) == 1 || input.button(DOWN_2) == 1) {
                     r = (r + 1) % rows;
                 }
-                if (input.up == 1) {
+                if (input.button(UP_1) == 1 || input.button(UP_2) == 1) {
                     r = (r + rows - 1) % rows;
                 }
                 settings.frame = c + r * perRow;
@@ -561,8 +561,6 @@ SelectScreen.prototype.draw = function() {
         cleanPlayerList();
         for (var i = 0; i < players.length; i++) {
             var robot = players[i];
-            robot.profile.addStat(robot.name, STAT.GAMES, 1);
-            robot.profile.addStat(robot.name, robot.ability, 1);
         }
         gameScreen = new GameScreen(false);
     }
