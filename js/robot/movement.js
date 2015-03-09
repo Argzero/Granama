@@ -57,6 +57,7 @@ var movement = {
      * Movement pattern that moves in a straight line, bouncing off walls or players
      */
     bounce: function() {
+        this.ignoreClamp = true;
 
         // Movement
         var speed = this.get('speed');
@@ -70,13 +71,13 @@ var movement = {
         if (this.xMin() <= 0) {
             this.direction.x = Math.abs(this.direction.x);
         }
-        if (this.xMax() >= game.width) {
+        if (this.xMax() >= GAME_WIDTH) {
             this.direction.x = -Math.abs(this.direction.x);
         }
         if (this.yMin() < 0) {
             this.direction.y = Math.abs(this.direction.y);
         }
-        if (this.yMax() > game.height) {
+        if (this.yMax() > GAME_HEIGHT) {
             this.direction.y = -Math.abs(this.direction.y);
         }
 
@@ -85,7 +86,7 @@ var movement = {
             this.direction = this.pos.clone().subtractv(player.pos).normalize();
             player.damage(this.power, this);
 
-            var knockback = this.direction.multiply(-this.distance, -this.distance);
+            var knockback = this.direction.clone().multiply(-this.distance, -this.distance);
             player.knockback(knockback);
         }
     },

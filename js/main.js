@@ -181,3 +181,8 @@ function resizeCanvas() {
         gameScreen.draw();
     }
 }
+
+// Dear god why
+function julian(extreme) {
+    gameScreen.julian = extreme ? 'EXTREME' : true;
+}

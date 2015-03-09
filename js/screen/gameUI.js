@@ -34,6 +34,14 @@ var ui = {
      * Draws the background of the game
      */ 
     drawBackground: function() {
+        if (gameScreen.julian) {
+            camera.ctx.save();
+            camera.ctx.setTransform(1, 0, 0, 1, 0, 0);
+            camera.ctx.fillStyle = 'black';
+            camera.ctx.fillRect(0, 0, camera.canvas.width, camera.canvas.height);
+            camera.ctx.restore();
+            return;
+        }
         var modX = -camera.pos.x - (-camera.pos.x) % TILE.width;
         var modY = -camera.pos.y - (-camera.pos.y) % TILE.height;
         if (TILE && TILE.width) {
@@ -482,6 +490,7 @@ var ui = {
             this.ctx.font = '32px Flipbash';
             this.ctx.fillText('Ready', x, y + 310);
 
+            // Up/down controls
             if ((input.button(UP_1) == 1 || input.button(UP_2) == 1) && this.hovered[i] > 0 && !this.ready[i]) {
                 this.hovered[i]--;
             }
@@ -489,13 +498,18 @@ var ui = {
                 this.hovered[i]++;
             }
 
+            // Select controls
             if (input.button(SELECT_1) == 1 || input.button(SELECT_2) == 1 || (input instanceof KeyboardInput && (input.button(RIGHT_1) == 1 || input.button(RIGHT_2) == 1))) {
+                
+                // Upgrading an ability
                 if (this.hovered[i] < 5) {
                     if (player.points > 0 && player.upgrades[this.hovered[i]] < 10) {
                         player.upgrades[this.hovered[i]]++;
                         player.points--;
                     }
                 }
+                
+                // Readying up
                 else if (input.button(SELECT_1) == 1 || input.button(SELECT_2) == 1) {
                     this.ready[i] = true;
 
@@ -508,18 +522,95 @@ var ui = {
                     }
                 }
             }
+            
+            // Cancel controls
             if (input.button(CANCEL_1) == 1 || input.button(CANCEL_2) == 1 || (input instanceof KeyboardInput && (input.button(LEFT_1) == 1 || input.button(LEFT_2) == 1))) {
+                
+                // Downgrading an ability
                 if (this.hovered[i] < 5) {
                     if (player.upgrades[this.hovered[i]] > this.start[i][this.hovered[i]]) {
                         player.upgrades[this.hovered[i]]--;
                         player.points++;
                     }
                 }
+                
+                // Cancel being ready
                 else if (input.button(CANCEL_1) == 1 || input.button(CANCEL_2) == 1) this.ready[i] = false;
             }
         }
 
         // Reset the alpha
         this.ctx.globalAlpha = 1;
+    },
+    
+    /**
+     * The infamous Julian mode draw routines
+     */
+    julian: function() 
+    {
+        var x = SIDEBAR_WIDTH + 5;
+        this.ctx.textAlign = 'left';
+        this.ctx.textBaseline = 'top';
+        this.ctx.font = '12px Tahoma';
+        this.ctx.lineWidth = 1;
+        var y = 5;
+        
+        for (var i = 0; i < players.length; i++)
+        {
+            var p = players[i];
+            this.ctx.fillStyle = this.ctx.strokeStyle = p.color;
+            var pos = this.julianRecurse(p, x, y);
+            x = pos.x;
+            y = pos.y;
+        }
+        var id = 0;
+        var colors = [ 'red', 'orange' ];
+        for (var i = 0; i < gameScreen.robots.length && x < WINDOW_WIDTH && gameScreen.julian == 'EXTREME'; i++) {
+            var r = gameScreen.robots[i];
+            if ((r.type & Robot.MOBILE) == 0) continue;
+            this.ctx.fillStyle = this.ctx.strokeStyle = colors[id++ % 2];
+            var pos = this.julianRecurse(r, x, y);
+            x = pos.x;
+            y = pos.y;
+        }
+    },
+    julianRecurse: function(obj, x, y)
+    {
+        obj.julianing = true;
+        var z;
+        for (z in obj)
+        {
+            if (typeof(obj[z]) === 'function' || obj[z] == null || obj[z] === undefined || obj[z].julianing || z == 'julianing') continue;
+            else if (obj[z][0] && (typeof(obj[z][0]) == 'function' || typeof(obj[z][0] == '[object Object]'))) continue;
+            else if (obj[z].toString() === '[object Object]') {
+                this.ctx.fillText(z + ' =', x, y);
+                var pos = this.julianRecurse(obj[z], x + 10, y + 15);
+                this.ctx.beginPath();
+                this.ctx.moveTo(x + 5, y + 13);
+                if (x == pos.x - 10) {
+                    this.ctx.lineTo(x + 5, pos.y - 5);
+                    this.ctx.lineTo(x + 8, pos.y - 5);
+                }
+                else {
+                    this.ctx.lineTo(x + 5, WINDOW_HEIGHT + 10);
+                    this.ctx.moveTo(pos.x - 5, -10);
+                    this.ctx.lineTo(pos.x - 5, pos.y - 5);
+                    this.ctx.lineTo(pos.x - 2, pos.y - 5);
+                }
+                this.ctx.stroke();
+                x = pos.x - 10;
+                y = pos.y;
+                continue;
+            }
+            else if (obj[z].toFixed) this.ctx.fillText(z + ' = ' + obj[z].toFixed(5), x, y);
+            else this.ctx.fillText(z + ' = ' + obj[z], x, y);
+            y += 15;
+            if (y >= WINDOW_HEIGHT) {
+                x += 200;
+                y = 5;
+            }
+        }
+        obj.julianing = false;
+        return { x: x, y: y };
     }
 }

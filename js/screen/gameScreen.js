@@ -25,6 +25,7 @@ function GameScreen() {
     this.gameOver = false;
     this.paused = undefined;
     this.maxEnemies = 30 * (0.85 + 0.15 * players.length);
+    this.julian = false;
     
     // Scroll data
     this.playerMinX = 0;
@@ -202,7 +203,7 @@ GameScreen.prototype.draw = function() {
     }
     
     // Boss titles
-    if (this.bossTimer < 180)
+    if (this.bossTimer < 180 && this.bossTimer > 0)
     {
         ui.drawBossTitle();
     }
@@ -214,6 +215,9 @@ GameScreen.prototype.draw = function() {
     if (this.paused && this.paused !== true) {
         ui.drawPauseOverlay(this.paused);
     }
+    
+    // Yeah...
+    if (this.julian) ui.julian();
 
     ui.drawStatBar();
 
@@ -259,8 +263,8 @@ GameScreen.prototype.applyScrolling = function() {
         
         // Smooth scroll to the target
         if (!this.paused) {
-            var dx = this.targetScrollX - this.scrollX;
-            var dy = this.targetScrollY - this.scrollY;
+            var dx = this.targetX - this.scrollX;
+            var dy = this.targetY - this.scrollY;
             var dSq = dx * dx + dy * dy;
             if (dSq > 0) {
                 dSq = Math.sqrt(dSq);
