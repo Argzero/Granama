@@ -217,6 +217,7 @@ Robot.prototype.updateRobot = function() {
 
     // Update buffs, removing them when expired
     for (var buff in this.buffs) {
+        if (typeof(this.buffs[buff]) == 'function') continue;
         if (--this.buffs[buff].duration <= 0) {
             delete this.buffs[buff];
         }

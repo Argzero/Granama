@@ -93,6 +93,7 @@ var ui = {
             var rot = new Vector(Math.cos(angle), Math.sin(angle));
             
             // Draw the trails
+            var temp = r.buffDir.clone();
             for (x in this.buffs)
             {
                 if (!r.buffs[x]) continue;
@@ -100,9 +101,20 @@ var ui = {
                 var buff = this.buffs[x];
                 var positive = (value > buff.threshold) == buff.positive;
                 var img = images.get('buff' + buff.img + (positive ? 'Up' : 'Down'));
-                this.ctx.drawImage(img, r.pos.x + r.buffDir.x * r.width * 0.75 - img.width / 2, r.pos.y + r.buffDir.y * r.width * 0.75 - img.height / 2);
+                var trail = images.get('buff' + buff.img + (positive ? 'Up' : 'Down') + 'Trail');
+                this.ctx.drawImage(img, r.pos.x + temp.x * 100 - img.width / 2, r.pos.y + temp.y * 100 - img.height / 2);
+                
+                var next = temp.clone().rotate(rot.x, rot.y);
+                this.trailRot = this.trailRot || new Vector(Math.cos(Math.PI / 12), Math.sin(Math.PI / 12));
+                for (var j = 0; j < 3; j++) {
+                    temp.rotate(this.trailRot.x, -this.trailRot.y);
+                    this.ctx.drawImage(trail, r.pos.x + temp.x * 100 - trail.width / 2, r.pos.y + temp.y * 100 - trail.height / 2);
+                }
+                temp = next;
             }
-            r.buffDir.rotate(rot.x, rot.y);
+            
+            this.buffRot = this.buffRot || new Vector(Math.cos(0.05), Math.sin(0.05));
+            r.buffDir.rotate(this.buffRot.x, this.buffRot.y);
         }
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     },
