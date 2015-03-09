@@ -44,7 +44,7 @@ function LightGunner(x, y) {
  *
  * @constructor
  */
-extend('HeavyGunner', 'Gunner');
+extend('HeavyGunner', 'Robot');
 function HeavyGunner(x, y) {
     this.super(
         /* sprite name */ 'enemyHeavyRanged',

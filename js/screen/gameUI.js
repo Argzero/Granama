@@ -34,6 +34,8 @@ var ui = {
      * Draws the background of the game
      */ 
     drawBackground: function() {
+        
+        // Julian mode background
         if (gameScreen.julian) {
             camera.ctx.save();
             camera.ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -42,6 +44,8 @@ var ui = {
             camera.ctx.restore();
             return;
         }
+        
+        // Normal background
         var modX = -camera.pos.x - (-camera.pos.x) % TILE.width;
         var modY = -camera.pos.y - (-camera.pos.y) % TILE.height;
         if (TILE && TILE.width) {
@@ -55,6 +59,17 @@ var ui = {
                     TILE.draw(camera);
                 }
             }
+        }
+        
+        // Shade the background if focusing on boss
+        if (gameScreen.bossTimer) {
+            var shadeAlpha = Math.max(0, Math.min(1, 2 - Math.abs(120 - gameScreen.bossTimer) / 60));
+            camera.ctx.save();
+            camera.ctx.setTransform(1, 0, 0, 1, SIDEBAR_WIDTH, 0);
+            camera.ctx.globalAlpha = shadeAlpha * 0.5;
+            camera.ctx.fillStyle = 'black';
+            camera.ctx.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+            camera.ctx.restore();
         }
     },
     
@@ -114,7 +129,9 @@ var ui = {
             }
             
             this.buffRot = this.buffRot || new Vector(Math.cos(0.05), Math.sin(0.05));
-            r.buffDir.rotate(this.buffRot.x, this.buffRot.y);
+            if (!gameScreen.paused) {
+                r.buffDir.rotate(this.buffRot.x, this.buffRot.y);
+            }
         }
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     },
@@ -289,6 +306,7 @@ var ui = {
             x = Math.min(0.5, remaining / 30 - 0.5) * WINDOW_WIDTH;
         }
         
+        this.ctx.translate(SIDEBAR_WIDTH, 0);
         this.ctx.fillStyle = 'black';
         this.ctx.fillRect(x - WINDOW_WIDTH / 2, WINDOW_HEIGHT - 150, WINDOW_WIDTH, 100);
         this.ctx.fillStyle = 'white';
@@ -296,6 +314,7 @@ var ui = {
         this.ctx.textAlign = 'center';
         this.ctx.font = '48px Flipbash';
         this.ctx.fillText(gameScreen.boss.title, WINDOW_WIDTH - x, WINDOW_HEIGHT - 100);
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     },
     
     /**
@@ -310,8 +329,8 @@ var ui = {
         var midY = halfY - gameScreen.scrollY;
         for (var i = 0; i < gameScreen.robots.length; i++) {
             var e = gameScreen.robots[i];
-            if (e.type != Robot.BOSS && e.type != Robot.MOB) continue;
-            if (Math.abs(midX - e.pos.x) > halfX + e.width / 2 && Math.abs(midY - e.pos.y) > halfY + e.width / 2) {
+            if ((e.type & Robot.MOBILE) == 0) continue;
+            if (Math.abs(midX - e.pos.x) > halfX + e.width / 2 || Math.abs(midY - e.pos.y) > halfY + e.width / 2) {
                 var d = new Vector(e.pos.x - midX, e.pos.y - midY);
                 var xs = Math.abs(halfX / d.x);
                 var ys = Math.abs(halfY / d.y);

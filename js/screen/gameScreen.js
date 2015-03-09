@@ -8,7 +8,7 @@ function GameScreen() {
     // Boss data
     var multiplier = (0.6 + 0.4 * players.length);
     this.bossStatus = ACTIVE_NONE;
-    this.bossScore = Math.floor(50 * multiplier);
+    this.bossScore = Math.floor(1 * multiplier);
     this.bossIncrement = this.bossScore;
     this.bossScale = Math.floor(5 * multiplier) * 5;
     this.bossCount = 0;
@@ -66,6 +66,13 @@ GameScreen.prototype.update = function() {
         // Update robots
         for (var i = 0; i < this.robots.length; i++)
         {
+            // During boss preview, only dragon/hydra can move
+            if (this.bossTimer > 0 
+                    && this.robots[i].title != 'Dragon'
+                    && this.robots[i].title != 'Hydra'
+                    && this.robots[i].title != 'Royal Hydra') {
+                continue;
+            }
             this.robots[i].update();
             if (this.robots[i].expired) {
                 if (this.robots[i].type == Robot.MOB) {
@@ -203,6 +210,7 @@ GameScreen.prototype.draw = function() {
     }
     
     // Boss titles
+    this.bossTimer = Math.max(0, this.bossTimer - 1);
     if (this.bossTimer < 180 && this.bossTimer > 0)
     {
         ui.drawBossTitle();
@@ -239,14 +247,25 @@ GameScreen.prototype.applyScrolling = function() {
     var minY = 9999;
     var maxX = 0;
     var maxY = 0;
-    for (var i = 0; i < players.length; i++) {
-        var r = players[i];
-        if (r.health <= 0) continue;
-        if (r.pos.x < minX) minX = r.pos.x;
-        if (r.pos.x > maxX) maxX = r.pos.x;
-        if (r.pos.y < minY) minY = r.pos.y;
-        if (r.pos.y > maxY) maxY = r.pos.y;
+
+    // When focused on players, take the midpoint of the min/max bounds
+    if (this.bossTimer == 0) {
+        for (var i = 0; i < players.length; i++) {
+            var r = players[i];
+            if (r.health <= 0) continue;
+            if (r.pos.x < minX) minX = r.pos.x;
+            if (r.pos.x > maxX) maxX = r.pos.x;
+            if (r.pos.y < minY) minY = r.pos.y;
+            if (r.pos.y > maxY) maxY = r.pos.y;
+        }
     }
+    
+    // When focused on a boss, just take its position
+    else {
+        minX = maxX = this.boss.pos.x;
+        minY = maxY = this.boss.pos.y;
+    }
+    
     if (minX != 9999) {
         var avgX = (maxX + minX) / 2;
         var avgY = (maxY + minY) / 2;

@@ -175,13 +175,14 @@ function updateBit(explosion) {
 
     // Scale slightly down
     if (!this.oSize) {
-        this.oSize = this.size;
+        this.oSize = this.size.clone();
         this.oAlpha = this.alpha;
     }
-    this.size = (0.5 + (0.5 * this.alpha / this.oAlpha)) * this.oSize;
+    var size = (0.5 + (0.5 * this.alpha / this.oAlpha)) * this.oSize.x;
+    this.setScale(size, size);
 
     // Spawn smoke trail
     if (this.alpha > 0.4 && this.frame % 3 == 0) {
-        explosion.pieces.splice(8, 0, new ExplosionPiece('explodeSmoke' + (rand(4) + 1), 8, this.x, this.y, this.size, new Vector(0, 0), this.alpha, 0.02, 20, false));
+        explosion.pieces.splice(8, 0, new ExplosionPiece('explodeSmoke' + (rand(4) + 1), 8, this.pos.x, this.pos.y, this.size.x * this.width, new Vector(0, 0), this.alpha, 0.02, 20, false));
     }
 }
