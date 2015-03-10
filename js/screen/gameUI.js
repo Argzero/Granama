@@ -1,5 +1,3 @@
-depend('data/images');
-
 // Handles drawing the UI in the game
 var ui = {
 

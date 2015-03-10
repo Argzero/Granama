@@ -201,12 +201,14 @@ SPAWN_DATA = [
     1, 3, Hunter,
     1, 3, Solar,
     1, 3, Snatcher,
+	1, 3, Harrier,
     2, 6, Turreter,
     2, 6, Railer,
     2, 6, Paladin,
     2, 6, Hunter,
     2, 6, Solar,
-    2, 6, Snatcher
+    2, 6, Snatcher,
+	2, 6, Harrier
 ],
 BOSS_SPAWNS = [
     HeavyBoss,

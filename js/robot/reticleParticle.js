@@ -14,7 +14,7 @@ function ReticleParticle(sprite, pos, lifespan, data) {
 	this.super(sprite, pos.x, pos.y);
 	
 	this.data = data;
-	this.lifespan = data;
+	this.lifespan = lifespan;
 }
 
 /**

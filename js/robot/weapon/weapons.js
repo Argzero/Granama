@@ -1,7 +1,3 @@
-depend('lib/math');
-depend('lib/2d/vector');
-depend('robot/projectile');
-
 // Various weapons usable by robots to attack that control
 // how to fire projectiles. For projectile properties themselves,
 // templates and event listeners are used.
@@ -164,9 +160,13 @@ var weapon = {
      *     <li>{number}   damage           - the damage dealt by the bullet</li>
      *     <li>{number}   range            - the minimum range to start firing from</li>
      *     <li>{string}   [sprite]         - the name of the explosion type</li>
+	 *     <li>{string}   [fromSelf]       - whether or not to originate from yourself instead of the target</li>
 	 *     <li>{number}   [chargeTime]     - time in frames before the explosion happens</li>
      *     <li>{number}   [dx]             - horizontal position offset assuming no rotation</li>
      *     <li>{number}   [dy]             - vertical position offset assuming no rotation</li>
+	 *     <li>{number}   [randX]          - random horizontal offset for the position to place the mark</li>
+     *     <li>{number}   [randY]          - random vertical offset for the position to place the mark</li>
+	 *     <li>{number}   [delay]          - frames before setting of the mark</li>
      *     <li>{Robot}    [shooter]        - the actual shooter of the bullet</li>
      *     <li>{Array}    [buffs]          - buffs to apply on hit { stat, multiplier, duration }</li>
      * </ul>
@@ -183,7 +183,7 @@ var weapon = {
 			var closest = gameScreen.getClosest(this.pos, data.target || Robot.PLAYER);
 			var pos = data.fromSelf ? 
 					weapon.getPosition(this, data).rotatev(this.getWorldRotation()).addv(this.getWorldPos()) : 
-					closest.pos.addv(new Vector(data.dx || 0, data.dy || 0).rotate(closest.rotation.x, closest.rotation.y));
+					closest.pos.clone().addv(new Vector(data.dx || 0, data.dy || 0).rotate(closest.rotation.x, closest.rotation.y));
 			
 			// Set up the data needed to set off the explosion
 			var artilleryData = {
@@ -194,6 +194,7 @@ var weapon = {
 				group: data.target || Robot.PLAYER,
 				shooter: data.shooter || this,
 				type: data.type || 'Enemy',
+				buffs: data.buffs || [],
 				explode: projEvents.rocketExpire,
 				applyBuffs: Projectile.prototype.applyBuffs
 			};
@@ -203,7 +204,7 @@ var weapon = {
 			if (data.randY) artilleryData.pos.y += rand(data.randY);
 			
 			// Create the particle
-			this.artilleryParticle = new ReticleParticle(data.sprite || 'EnemyTarget', artilleryData.pos, this.chargeTimer, artilleryData);
+			this.artilleryParticle = new ReticleParticle(data.sprite || 'enemyTargeter', artilleryData.pos, this.chargeTimer, artilleryData);
 			gameScreen.particles.push(this.artilleryParticle);
 		}
 	},

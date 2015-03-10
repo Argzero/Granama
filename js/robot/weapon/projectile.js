@@ -1,6 +1,3 @@
-depend('lib/math');
-depend('lib/2d/vector');
-
 /**
  * The base code for the bullets in the game
  *
