@@ -31,15 +31,17 @@ depend('screen/uiBox');
 
 // Robot scripts
 depend('robot/explosion');
-depend('robot/mine');
 depend('robot/movement');
 depend('robot/pad');
 depend('robot/plus');
-depend('robot/projectile');
 depend('robot/robot');
-depend('robot/shockwave');
-depend('robot/turret');
-depend('robot/weapons');
+
+// Weapon scripts
+depend('robot/weapon/mine');
+depend('robot/weapon/projectile');
+depend('robot/weapon/shockwave');
+depend('robot/weapon/turret');
+depend('robot/weapon/weapons');
 
 // Player scripts
 depend('robot/player/angel');
