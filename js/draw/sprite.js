@@ -1,8 +1,3 @@
-depend('draw/camera');
-depend('lib/image');
-depend('lib/2d/transform');
-depend('lib/2d/vector');
-
 /**
  * A drawable in the game
  *

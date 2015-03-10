@@ -69,7 +69,7 @@ function HeavyRocketer(x, y) {
         dy    : 30,
         target: Robot.PLAYER,
         //                                 args: [type,    radius, knockback
-        templates: [{ name: 'setupRocket', args: ['Enemy', 200,    150] }]
+        templates: [{ name: 'setupRocket', args: ['Enemy', 150,    150] }]
     });
 
     // Movement
@@ -81,38 +81,51 @@ function HeavyRocketer(x, y) {
  *
  * @param {number} x - horizontal position
  * @param {number} y - vertical position
- *
+ *<li>{number}   target           - the ID of the target group the bullet hits</li>
+     *     <li>{number}   rate             - the number of frames between shots</li>
+     *     <li>{number}   damage           - the damage dealt by the bullet</li>
+     *     <li>{number}   range            - the minimum range to start firing from</li>
+     *     <li>{string}   [sprite]         - the name of the explosion type</li>
+	 *     <li>{string}   [fromSelf]       - whether or not to originate from yourself instead of the target</li>
+	 *     <li>{number}   [chargeTime]     - time in frames before the explosion happens</li>
+     *     <li>{number}   [dx]             - horizontal position offset assuming no rotation</li>
+     *     <li>{number}   [dy]             - vertical position offset assuming no rotation</li>
+     *     <li>{Robot}    [shooter]        - the actual shooter of the bullet</li>
+     *     <li>{Array}    [buffs]          - buffs to apply on hit { stat, multiplier, duration }</li>
  * @constructor
  */
-// extend('enemyHarrier', 'Enemy');
-// function Paladin(x, y) {
-    // this.super(
-        // /* sprite name */ 'enemyPaladin',
-        // /* x position  */ x,
-        // /* y position  */ y,
-        // /* enemy type  */ Robot.MOB,
-        // /* health      */ 100 * Enemy.pow(1.1),
-        // /* speed       */ 3 + 0.25 * gameScreen.bossCount,
-        // /* range       */ 300,
-        // /* exp         */ Enemy.MINIBOSS_EXP,
-        // /* rank        */ Enemy.MINIBOSS_ENEMY
-    // );
+extend('Harrier', 'Enemy');
+function Harrier(x, y) {
+    this.super(
+        /* sprite name */ 'enemyHarrier',
+        /* x position  */ x,
+        /* y position  */ y,
+        /* enemy type  */ Robot.MOB,
+        /* health      */ 100 * Enemy.pow(1.1),
+        /* speed       */ 3 + 0.25 * gameScreen.bossCount,
+        /* range       */ 500,
+        /* exp         */ Enemy.MINIBOSS_EXP,
+        /* rank        */ Enemy.MINIBOSS_ENEMY
+    );
 
-    // // Weapon data
-    // this.addWeapon(weapon.gun, {
-        // sprite: 'hammer',
-        // damage: 4 * Enemy.sum(),
-        // rate  : 60,
-        // range : 300,
-        // spread: Math.min((gameScreen.bossCount - 3) / 4, 2),
-        // dx    : 0,
-        // dy    : 45,
-        // target: Robot.PLAYER
-    // });
+    // Weapon data
+	for (var i = 0; i < 4; i++) {
+		this.addWeapon(weapon.artillery, {
+			damage    : 10 * Enemy.sum(),
+			rate      : 240,
+			range     : 525,
+			radius    : 200,
+			chargeTime: 120,
+			randX     : 150,
+			randY     : 150,
+			delay     : 15 * i,
+			target    : Robot.PLAYER
+		});
+	}
 
-    // // Movement
-    // this.movement = movement.basic;
+    // Movement
+    this.movement = movement.basic;
 
-    // // Knockback reduction
-    // this.knockbackFactor = 0.4;
-// }
+    // Knockback reduction
+    this.knockbackFactor = 0.4;
+}

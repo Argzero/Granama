@@ -1,5 +1,3 @@
-depend('robot/robot');
-
 /**
  * Base constructor for player types
  *

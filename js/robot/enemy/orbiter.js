@@ -1,5 +1,3 @@
-depend('robot/ropeTail');
-
 /**
  * An enemy that orbits players while shooting bullets sideways
  *

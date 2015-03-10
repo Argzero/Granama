@@ -1,5 +1,3 @@
-depend('lib/input');
-
 // Active players
 var players = [];
 
