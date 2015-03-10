@@ -66,7 +66,7 @@ function RocketExplosion(type, pos, size) {
 RocketExplosion.prototype.draw = function() {
 
     // Add new bits occasionally
-    if (this.frame < 7) {
+    if (this.frame < 6) {
         var angle = rand(360) * Math.PI / 180;
         var speed = this.size * (rand(10) + 5) / 600;
         var dir = new Vector(speed * Math.cos(angle), speed * Math.sin(angle));

@@ -36,6 +36,7 @@ depend('robot/pad');
 depend('robot/plus');
 depend('robot/reticleParticle');
 depend('robot/robot');
+depend('robot/ropeTail');
 
 // Weapon scripts
 depend('robot/weapon/mine');

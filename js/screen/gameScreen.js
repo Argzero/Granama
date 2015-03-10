@@ -28,15 +28,19 @@ function GameScreen() {
     this.isPlaying = true;
     this.julian = false;
     
+    // Set the game dimensions
+    GAME_WIDTH = 3000;
+    GAME_HEIGHT = 3000;
+    
     // Scroll data
     this.playerMinX = 0;
     this.playerMinY = 0;
     this.playerMaxX = 9999;
     this.playerMaxY = 9999;
-    this.scrollX = 0;
-    this.scrollY = 0;
-    this.targetX = 0;
-    this.targetY = 0;
+    this.scrollX = (WINDOW_WIDTH - GAME_WIDTH) * 0.5;
+    this.scrollY = (WINDOW_HEIGHT - GAME_HEIGHT) * 0.5;
+    this.targetX;
+    this.targetY;
     
     // Healing pads
     this.pads = [
@@ -50,10 +54,6 @@ function GameScreen() {
     this.particles = [];
     this.bullets = [];
     this.robots = players.slice(0);
-    
-    // Set the game dimensions
-    GAME_WIDTH = 3000;
-    GAME_HEIGHT = 3000;
 }
 
 /**

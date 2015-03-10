@@ -21,6 +21,9 @@ function Player(name, x, y, type, health, speed, healthScale, damageScale, shiel
      */
     this.onLevel = this.onLevel || undefined;
     
+    this.pos.x = GAME_WIDTH / 2;
+    this.pos.y = GAME_HEIGHT / 2;
+    
     this.skillCd       = 0;
     this.skillDuration = 0;
     this.exp           = 0;
@@ -100,13 +103,14 @@ Player.prototype.update = function() {
     }
     
     // Damage detection
-    if (this.health < this.lastHealth) {
+    var now = this.health + this.shield;
+    if (now < this.lastHealth) {
         this.damageAlpha = 0.3;
     }
     else {
         this.damageAlpha -= 0.02;
     }
-    this.lastHealth = this.health;
+    this.lastHealth = now;
     
     this.alpha = 1;
     
@@ -158,6 +162,12 @@ Player.prototype.update = function() {
         if (this.applyUpdate) {
             this.applyUpdate();
         }
+    }
+    
+    // Clamping to the game region
+    if (!this.ignoreClamp) {
+        this.pos.x = Math.max(Math.min(this.pos.x, GAME_WIDTH - this.width / 2), this.width / 2);
+        this.pos.y = Math.max(Math.min(this.pos.y, GAME_HEIGHT - this.height / 2), this.height / 2);
     }
 };
 
@@ -236,6 +246,7 @@ Player.prototype.isInRange = function() {
  */
 Player.prototype.giveKill = function(victim) {
     this.kills++;
+    if (!this.killTypes[victim.type]) this.killTypes[victim.type] = 0;
     this.killTypes[victim.type]++;
 };
 

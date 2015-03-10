@@ -143,7 +143,7 @@ Projectile.prototype.hit = function(target) {
  * Clones the projectile including its events
  */
 Projectile.prototype.clone = function() {
-    var projectile = new Projectile(this.src, 0, 0, this.shooter, this.shooter, this.speed, 0, this.damage, this.range, this.pierce, this.target);
+    var projectile = new Projectile(this.src, 0, 0, this.shooter, this.shooter, this.speed, 0, this.damage, this.range, this.pierce, this.group);
     projectile.pos = this.pos.clone();
     projectile.rotation = this.rotation.clone();
     projectile.vel = this.vel.clone();
@@ -193,10 +193,10 @@ Projectile.prototype.spread = function(amount) {
     }
 
     // Spread the bullet
-    for (var i = 1; i <= amount; i++) {
+    for (var i = 0; i <= amount; i++) {
         for (var j = -1; j < 2; j += 2) {
             var proj = this.clone();
-            for (var k = 0; k < i; k++) {
+            for (var k = 0; k < i + 1; k++) {
                 proj.vel.rotate(cos, j * sin);
                 proj.rotate(cos, j * sin);
             }

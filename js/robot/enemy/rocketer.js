@@ -115,6 +115,7 @@ function Harrier(x, y) {
 			rate      : 240,
 			range     : 525,
 			radius    : 200,
+            knockback : 200,
 			chargeTime: 120,
 			randX     : 150,
 			randY     : 150,
