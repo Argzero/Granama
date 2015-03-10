@@ -19,14 +19,14 @@ function getClosestPlayer(x, y) {
     var min = 9999999;
     for (var i = 0; i < this.players.length; i++) {
         var robot = this.players[i];
-        if (robot.health <= 0) continue;
+        if (robot.health <= 0 || robot.stealth) continue;
         var dSq = (robot.x - x) * (robot.x - x) + (robot.y - y) * (robot.y - y);
         if (dSq < min) {
             min = dSq;
             r = robot;
         }
     }
-    return r || this.players[0];
+    return r;
 }
 
 /**

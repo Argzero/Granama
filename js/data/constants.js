@@ -65,7 +65,6 @@ PLAYER_DATA = [
         color  : '#d0d',
         weapons: ['Rocket Launcher', 'Minigun'],
         skills : [
-            //{ name: 'Recharger', callback: SkillRecharger },
             {name: 'Perfect Shield', callback: skillPerfectShield},
             {name: 'Reflector', callback: skillReflector},
             {name: 'Stasis', callback: skillStasis}
@@ -154,6 +153,20 @@ PLAYER_DATA = [
             {name: 'Aura Blast', callback: skillAuraBlast},
             {name: 'Medic', callback: skillRepulse}
         ]
+    },
+    {
+        player : PlayerBeta,
+        preview: 'pBeta',
+        name   : 'Beta',
+        ups    : ['ShurikenPierce', 'StealthDuration', 'ChargeSpeed', 'ShieldRecharge', 'MovementSpeed'],
+        icons  : ['ShurikenPierce', 'StealthDuration', 'ChargeSpeed', 'Shield', 'Speed'],
+        color  : '#727',
+        weapons: ['Shuriken', 'Beta Blade'],
+        skills : [
+            {name: 'Piercing Arrow', callback: skillPiercingArrow},
+            {name: 'Stealth', callback: skillStealth},
+            {name: 'Sweeping Blade', callback: skillSweepingBlade}
+        ]
     }
 ],
 
@@ -230,6 +243,7 @@ ARROW_ID = 0,
 CHARGE_ID = 0,
 DRONE_RANGE_ID = 0,
 STATIC_AURA_ID = 0,
+SHURIKEN_PIERCE_ID = 0,
 SPREAD_ID = 1,
 SHOTGUN_ID = 1,
 EXPLOSION_ID = 1,
@@ -237,6 +251,7 @@ SLASH_ID = 1,
 RAIL_ID = 1,
 DRONE_SHOTS_ID = 1,
 POWER_AURA_ID = 1,
+STEALTH_DURATION_ID = 1,
 FLAME_ID = 2,
 SLOW_ID = 2,
 KNOCKBACK_ID = 2,
@@ -244,6 +259,7 @@ LIFESTEAL_ID = 2,
 DUAL_ID = 2,
 LMG_DAMAGE_ID = 2,
 PRISM_POWER_ID = 2,
+CHARGE_SPEED_ID = 2,
 SHIELD_ID = 3,
 SPEED_ID = 4,
 DAMAGE_ID = 5,

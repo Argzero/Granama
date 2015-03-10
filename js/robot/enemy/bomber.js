@@ -35,15 +35,14 @@ function Bomber(name, x, y, type, health, speed, range, exp, rank, patternMin, p
 }
 
 /**
- * Checks to see if the bomber is in range while ignoring orientation
+ * Bombers are always in range :D
  *
  * @param {number} range - weapon range
  *
  * @returns {boolean} true if in range, false otherwise
  */
 Bomber.prototype.isInRange = function(range) {
-    var player = getClosestPlayer(this.pos);
-    return player.health > 0 && this.pos.distanceSq(player.pos) < sq(range + this.speed);
+    return true;
 };
 
 /**

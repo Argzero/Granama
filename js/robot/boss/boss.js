@@ -52,7 +52,7 @@ Boss.prototype.isBoss = function() {
  */
 Boss.prototype.isInRange = function(range) {
     var player = getClosestPlayer(this.pos);
-    return player.health > 0 && this.pos.distanceSq(player.pos) < sq(range + this.speed);
+    return player && player.health > 0 && this.pos.distanceSq(player.pos) < sq(range + this.speed);
 };
 
 /**

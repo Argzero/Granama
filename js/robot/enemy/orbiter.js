@@ -48,7 +48,7 @@ function Orbiter(name, x, y, type, health, speed, range, exp, rank, patternMin, 
  */
 Orbiter.prototype.isInRange = function(range) {
     var player = getClosestPlayer(this.pos);
-    return player.health > 0 && this.pos.distanceSq(player.pos) < sq(range + this.speed);
+    return player && player.health > 0 && this.pos.distanceSq(player.pos) < sq(range + this.speed);
 };
 
 /**

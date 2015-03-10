@@ -120,9 +120,9 @@ Projectile.prototype.block = function() {
  * @returns {boolean} true if collides with the target, false otherwise
  */
 Projectile.prototype.isHitting = function(target) {
-    var valid = !target.dead && (target.type & this.group) && (target != this.shooter);
+    var valid = !target.dead && (target.type & this.group) && (target != this.shooter) && this.collides(target);
     if (this.onCollideCheck) valid = valid && this.onCollideCheck(target);
-    return valid && this.collides(target);
+    return valid;
 };
 
 /**
@@ -208,16 +208,36 @@ Projectile.prototype.spread = function(amount) {
 
 // ------------------------------- Templates --------------------------------- //
 
-/** 
- * Sets up a projectile that does bonus damage to slowed targets
+/**
+ * Sets up a boss fist projectile
  *
- * @param {number} multiplier - the damage multiplier to apply
+ * @param {number} delay - the delay in frames before the fist starts returning
+ * @param {string} side  - the key of the side the fist is being fired from
  */
-Projectile.prototype.setupSlowBonus = function(multiplier) {
-    this.onHit = projEvents.slowedBonusHit;
+Projectile.prototype.setupFist = function(delay, side) {
+    this.onUpdate = projEvents.fistUpdate;
+    this.onBlocked = projEvents.fistBlocked;
+    this.onExpire = projEvents.fistExpired;
     
-    this.slowMultiplier = multiplier;
-    return this;
+    this.delay = delay;
+    this.side = side.toLowerCase();
+};
+
+/** 
+ * Sets up a grapple projectile
+ *
+ * @param {number}  stun - the stun duration in frames
+ * @param {boolean} self - whether or not the grapple pulls in the shooter
+ */
+Projectile.prototype.setupGrapple = function(stun, self) {
+    this.onUpdate = projEvents.grappleUpdate;
+    this.onHit = projEvents.grappleHit;
+    this.onBlocked = projEvents.grappleBlocked;
+    this.onExpire = projEvents.grappleExpire;
+    this.onCollideCheck = projEvents.grappleCollide;
+    
+    this.stun = stun;
+    this.self = self;
 };
 
 /** 
@@ -258,6 +278,18 @@ Projectile.prototype.setupRocket = function(type, radius, knockback) {
     return this;
 };
 
+/** 
+ * Sets up a projectile that does bonus damage to slowed targets
+ *
+ * @param {number} multiplier - the damage multiplier to apply
+ */
+Projectile.prototype.setupSlowBonus = function(multiplier) {
+    this.onHit = projEvents.slowedBonusHit;
+    
+    this.slowMultiplier = multiplier;
+    return this;
+};
+
 /**
  * Sets up a spinning projectile
  *
@@ -292,54 +324,10 @@ Projectile.prototype.setupSword = function(radius, arc, knockback, lifesteal) {
     this.range = 999999;
 };
 
-/**
- * Sets up a boss fist projectile
- *
- * @param {number} delay - the delay in frames before the fist starts returning
- * @param {string} side  - the key of the side the fist is being fired from
- */
-Projectile.prototype.setupFist = function(delay, side) {
-    this.onUpdate = projEvents.fistUpdate;
-    this.onBlocked = projEvents.fistBlocked;
-    this.onExpire = projEvents.fistExpired;
-    
-    this.delay = delay;
-    this.side = side.toLowerCase();
-};
-
-/** 
- * Sets up a grapple projectile
- *
- * @param {number}  stun - the stun duration in frames
- * @param {boolean} self - whether or not the grapple pulls in the shooter
- */
-Projectile.prototype.setupGrapple = function(stun, self) {
-    this.onUpdate = projEvents.grappleUpdate;
-    this.onHit = projEvents.grappleHit;
-    this.onBlocked = projEvents.grappleBlocked;
-    this.onExpire = projEvents.grappleExpire;
-    this.onCollideCheck = projEvents.grappleCollide;
-    
-    this.stun = stun;
-    this.self = self;
-};
-
 // ------------------------------- Individual Events --------------------------------- //
 
 // Event implementations used by various projectiles
 var projEvents = {
-    
-    /**
-     * Deals extra damage to the target if they are slowed
-     *
-     * @param {Robot}  target - the target being hit
-     * @param {Number} damage - damage being dealt
-     */
-    slowedBonusHit: function(target, damage) {
-        if (target.get('speed') < target.speed) {
-            target.damage(damage * (this.slowMultiplier - 1), this.shooter);
-        }
-    },
     
     /**
      * Gives the target experience on collision
@@ -356,31 +344,6 @@ var projEvents = {
      */
     fireUpdate: function() {
         this.size.x = this.size.y = 0.1 + 0.9 * this.pos.distanceSq(this.origin) / sq(this.range * 0.75);
-    },
-    
-    /**
-     * Limits homing projectiles to only hitting their designated target
-     *
-     * @param {Robot} target - the target being checked against
-     *
-     * @returns {boolean} true if matches the designated target, false otherwise
-     */
-    homingCollide: function(target) {
-        return target == this.target;
-    },
-    
-    /**
-     * Updates homing bullets, turning their velocity towards their target
-     */
-    homingUpdate: function() {
-        this.lifespan--;
-        this.expired = this.expired || this.target.dead || this.lifespan <= 0;
-        
-        var cross = this.pos.clone().subtractv(this.target.pos).cross(this.vel);
-        var angle = cross < 0 ? -this.rotSpeed : this.rotSpeed;
-        this.rotSpeed += 0.0001;
-        this.vel.rotateAngle(angle);
-        this.rotation.rotateAngle(angle);
     },
     
     /**
@@ -430,6 +393,180 @@ var projEvents = {
         this.expired = false;
         this.returning = true;
         this.damage = 0;
+    },
+    
+    /**
+     * Updates a grappling hook, moving it back to the owner after
+     * expiring and dragging along any targets it has
+     */
+    grappleUpdate: function() {
+        this.shooter.grapple = this;
+        if (this.returning) {
+            this.vel = this.shooter.pos.clone().subtractv(this.pos).setMagnitude(this.speed);
+            if (this.target && this.target.pos.distanceSq(this.shooter.pos) >= 10000) {
+                this.target.stun(this.stun || 2);
+                if (this.self) {
+                    this.shooter.move(-this.vel.x, -this.vel.y);
+                    this.shooter.stun(2);
+                    this.vel.x = 0;
+                    this.vel.y = 0;
+                }
+                else {
+                    this.target.moveTo(this.pos.x + this.offset.x, this.pos.y + this.offset.y);
+                }
+            }
+            if (this.pos.distanceSq(this.shooter.pos) <= 400) {
+                this.expired = true;
+                this.shooter.grapple = false;
+            }
+        }
+    },
+    
+    /**
+     * Grabs a target upon hitting it instead of expiring
+     *
+     * @param {Robot}  target - the target that was hit
+     * @param {Number} damage - the amount of damage dealt
+     */
+    grappleHit: function(target, damage) {
+        if (target.attachedGrapple) 
+        {
+            target.attachedGrapple.target = undefined;
+        }
+        target.attachedGrapple = this;
+        this.expired = false;
+        this.returning = true;
+        this.target = target;
+        this.offset = target.pos.clone().subtractv(this.pos);
+    },
+    
+    /**
+     * Prevents a grappling hook from hitting other targets
+     * after it already grabbed onto another robot
+     *
+     * @param {Robot} target - the target being checked for collision
+     */
+    grappleCollide: function(target) {
+        return !this.target;
+    },
+    
+    /**
+     * Instead of expiring, grappling hooks return to the shooter
+     */
+    grappleExpire: function() {
+        this.expired = false;
+        this.returning = true;
+    },
+    
+    /**
+     * When blocked, returns to the user rather than disappearing
+     */
+    grappleBlocked: function() {
+        this.expired = false;
+        this.returning = true;
+    },
+    
+    /**
+     * Limits homing projectiles to only hitting their designated target
+     *
+     * @param {Robot} target - the target being checked against
+     *
+     * @returns {boolean} true if matches the designated target, false otherwise
+     */
+    homingCollide: function(target) {
+        return target == this.target;
+    },
+    
+    /**
+     * Updates homing bullets, turning their velocity towards their target
+     */
+    homingUpdate: function() {
+        this.lifespan--;
+        this.expired = this.expired || this.target.dead || this.lifespan <= 0;
+        
+        var cross = this.pos.clone().subtractv(this.target.pos).cross(this.vel);
+        var angle = cross < 0 ? -this.rotSpeed : this.rotSpeed;
+        this.rotSpeed += 0.0001;
+        this.vel.rotateAngle(angle);
+        this.rotation.rotateAngle(angle);
+    },
+    
+    /**
+     * Applies knockback on hit
+     *
+     * @param {Robot} target - the target to apply knockback to
+     */
+    knockbackHit: function(target) {
+        if (this.knockback) {
+            target.knockback(this.vel.clone().setMagnitude(this.knockback));
+        }
+    },
+
+    /**
+     * Checks whether or not the target is an ally, modifies
+     * the damage accordingly, and returns whether or not the
+     * target could get hit (allies would not get hit if full health).
+     *
+     * @param {Robot} target - target to check collision against
+     */
+    mixedCollide: function(target) {
+        if (target.type & this.shooter.type) {
+            if (target.health >= target.maxHealth) return false;
+            this.damage = -Math.abs(this.damage);
+        }
+        else this.damage = Math.abs(this.damage);
+        return true;
+    },
+    
+    /**
+     * Blows up the rocket when expired or blocked
+     *
+     * @param {Robot} [ignore] - robot to ignore if any
+     */
+    rocketExpire: function(ignore) {
+        for (var i = 0; i < gameScreen.robots.length; i++) {
+            var r = gameScreen.robots[i];
+            if ((r.type & this.group) && this.pos.distanceSq(r.pos) < this.radius * this.radius) {
+                if (r != ignore) {
+                    r.damage(this.damage, this.shooter);
+                    this.applyBuffs(r);
+                }
+                if (this.knockback) {
+                    var dir = r.pos.clone().subtractv(this.pos).setMagnitude(this.knockback);
+                    r.knockback(dir);
+                }
+            }
+        }
+        gameScreen.particles.push(new RocketExplosion(this.type, this.pos, this.radius));
+    },
+    
+    /**
+     * Rockets blow up when blocked
+     */
+    rocketBlocked: function() {
+        this.onExpire();
+    },
+    
+    /**
+     * Blows up the rocket when it hits something
+     *
+     * @param {Robot}  target - the target that was hit
+     * @param {Number} damage - the amount of damage dealt
+     */
+    rocketHit: function(target, damage) {
+        this.onExpire(target);
+    },
+    
+    /**
+     * Deals extra damage to the target if they are slowed
+     *
+     * @param {Robot}  target - the target being hit
+     * @param {Number} damage - damage being dealt
+     */
+    slowedBonusHit: function(target, damage) {
+        if (target.get('speed') < target.speed) {
+            target.damage(damage * (this.slowMultiplier - 1), this.shooter);
+        }
     },
     
     /**
@@ -520,128 +657,18 @@ var projEvents = {
     },
     
     /**
-     * Blows up the rocket when expired or blocked
+     * Prevents a bullet from hitting the same target more than once
      *
-     * @param {Robot} [ignore] - robot to ignore if any
+     * @param {Robot} target - target to check for collision against
      */
-    rocketExpire: function(ignore) {
-        for (var i = 0; i < gameScreen.robots.length; i++) {
-            var r = gameScreen.robots[i];
-            if ((r.type & this.group) && this.pos.distanceSq(r.pos) < this.radius * this.radius) {
-                if (r != ignore) {
-                    r.damage(this.damage, this.shooter);
-                    this.applyBuffs(r);
-                }
-                if (this.knockback) {
-                    var dir = r.pos.clone().subtractv(this.pos).setMagnitude(this.knockback);
-                    r.knockback(dir);
-                }
-            }
+    uniqueCollide: function(target) {
+        this.hitList = this.hitList || [];
+        var canHit = this.hitList.indexOf(target) == -1;
+        if (canHit) {
+            this.pierceNum--;
+            this.hitList.push(target);
         }
-        gameScreen.particles.push(new RocketExplosion(this.type, this.pos, this.radius));
-    },
-    
-    /**
-     * Rockets blow up when blocked
-     */
-    rocketBlocked: function() {
-        this.onExpire();
-    },
-    
-    /**
-     * Blows up the rocket when it hits something
-     *
-     * @param {Robot}  target - the target that was hit
-     * @param {Number} damage - the amount of damage dealt
-     */
-    rocketHit: function(target, damage) {
-        this.onExpire(target);
-    },
-    
-    /**
-     * Updates a grappling hook, moving it back to the owner after
-     * expiring and dragging along any targets it has
-     */
-    grappleUpdate: function() {
-        this.shooter.grapple = this;
-        if (this.returning) {
-            this.vel = this.shooter.pos.clone().subtractv(this.pos).setMagnitude(this.speed);
-            if (this.target && this.target.pos.distanceSq(this.shooter.pos) >= 10000) {
-                this.target.stun(this.stun || 2);
-                if (this.self) {
-                    this.shooter.move(-this.vel.x, -this.vel.y);
-                    this.shooter.stun(2);
-                    this.vel.x = 0;
-                    this.vel.y = 0;
-                }
-                else {
-                    this.target.moveTo(this.pos.x + this.offset.x, this.pos.y + this.offset.y);
-                }
-            }
-            if (this.pos.distanceSq(this.shooter.pos) <= 400) {
-                this.expired = true;
-                this.shooter.grapple = false;
-            }
-        }
-    },
-    
-    /**
-     * Grabs a target upon hitting it instead of expiring
-     *
-     * @param {Robot}  target - the target that was hit
-     * @param {Number} damage - the amount of damage dealt
-     */
-    grappleHit: function(target, damage) {
-        if (target.attachedGrapple) 
-        {
-            target.attachedGrapple.target = undefined;
-        }
-        target.attachedGrapple = this;
-        this.expired = false;
-        this.returning = true;
-        this.target = target;
-        this.offset = target.pos.clone().subtractv(this.pos);
-    },
-    
-    /**
-     * Prevents a grappling hook from hitting other targets
-     * after it already grabbed onto another robot
-     *
-     * @param {Robot} target - the target being checked for collision
-     */
-    grappleCollide: function(target) {
-        return !this.target;
-    },
-    
-    /**
-     * Instead of expiring, grappling hooks return to the shooter
-     */
-    grappleExpire: function() {
-        this.expired = false;
-        this.returning = true;
-    },
-    
-    /**
-     * When blocked, returns to the user rather than disappearing
-     */
-    grappleBlocked: function() {
-        this.expired = false;
-        this.returning = true;
-    },
-    
-    /**
-     * Checks whether or not the target is an ally, modifies
-     * the damage accordingly, and returns whether or not the
-     * target could get hit (allies would not get hit if full health).
-     *
-     * @param {Robot} target - target to check collision against
-     */
-    mixedCollide: function(target) {
-        if (target.type & this.shooter.type) {
-            if (target.health >= target.maxHealth) return false;
-            this.damage = -Math.abs(this.damage);
-        }
-        else this.damage = Math.abs(this.damage);
-        return true;
+        this.expired = this.pierceNum <= 0;
+        return canHit;
     }
 };

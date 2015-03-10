@@ -1,5 +1,24 @@
 // AI Movement patterns available for enemies
 var movement = {
+    
+    /**
+     * Gets a target player (or player equivalent) to move towards
+     * for the given enemy
+     */
+    getTargetPlayer: function(enemy) {
+        var player = getClosestPlayer(enemy.pos);
+        if (player) {
+            enemy.temp = false;
+            return player;
+        }
+        else {
+            enemy.temp = enemy.temp;
+            while (!enemy.temp || enemy.temp.distanceSq(enemy.pos) < 90000) {
+                enemy.temp = new Vector(rand(GAME_WIDTH), rand(GAME_HEIGHT));
+            }
+            return { pos: enemy.temp };
+        }
+    },
 
     /**
      * Helper function for moving towards a target
@@ -8,7 +27,7 @@ var movement = {
      * @param {boolean} [backwards] - whether or not to face backwards
      */
     moveTowards: function(target, backwards) {
-    
+        
         // Turning values
         if (this.prevTurnDivider != this.turnDivider) {
             this.turnVec = new Vector(Math.cos(this.speed / this.turnDivider), Math.sin(this.speed / this.turnDivider));
@@ -41,7 +60,7 @@ var movement = {
      */
     backwards: function() {
         this.movementHelper = movement.moveTowards;
-        this.movementHelper(getClosestPlayer(this.pos), true);
+        this.movementHelper(movement.getTargetPlayer(this), true);
     },
     
     /**
@@ -50,7 +69,7 @@ var movement = {
      */
     basic: function() {
         this.movementHelper = movement.moveTowards;
-        this.movementHelper(getClosestPlayer(this.pos));
+        this.movementHelper(movement.getTargetPlayer(this));
     },
 
     /**
@@ -64,7 +83,7 @@ var movement = {
         this.move(this.direction.x * speed, this.direction.y * speed);
 
         // Looking direction
-        var player = getClosestPlayer(this.pos);
+        var player = movement.getTargetPlayer(this);
         this.lookAt(player.pos);
 
         // Bounds
@@ -82,12 +101,15 @@ var movement = {
         }
 
         // Collision
-        if (player.health > 0 && this.collides(player)) {
-            this.direction = this.pos.clone().subtractv(player.pos).normalize();
-            player.damage(this.power, this);
+        for (var i = 0; i < players.length; i++) {
+            var p = players[i];
+            if (p.health > 0 && this.collides(p)) {
+                this.direction = this.pos.clone().subtractv(p.pos).normalize();
+                p.damage(this.power, this);
 
-            var knockback = this.direction.clone().multiply(-this.distance, -this.distance);
-            player.knockback(knockback);
+                var knockback = this.direction.clone().multiply(-this.distance, -this.distance);
+                p.knockback(knockback);
+            }
         }
     },
 
@@ -155,7 +177,7 @@ var movement = {
             target = new Vector(GAME_WIDTH / 2, GAME_HEIGHT / 2);
         }
         else {
-            var player = getClosestPlayer(this.pos);
+            var player = movement.getTargetPlayer(this);
             if (this.pos.distanceSq(player.pos) > sq(this.turnRange || padding)) {
                 target = player.pos;
             }
@@ -237,7 +259,7 @@ var movement = {
     orbit: function() {
     
         // Move normally if not in the preferred range
-        var player = getClosestPlayer(this.pos);
+        var player = movement.getTargetPlayer(this);
         var ds = this.pos.distanceSq(player.pos);
         var tooFar = ds > sq(this.range + 100);
         var tooClose = ds < sq(this.range - 100);

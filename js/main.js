@@ -43,6 +43,7 @@ depend('robot/weapons');
 
 // Player scripts
 depend('robot/player/angel');
+depend('robot/player/beta');
 depend('robot/player/blitz');
 depend('robot/player/commando');
 depend('robot/player/guardian');

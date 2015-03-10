@@ -52,6 +52,7 @@ function Robot(name, x, y, type, health, speed) {
     this.knockbackSpeed = 10;
     this.dead = false;
     this.expired = false;
+    this.stealth = false;
 
     this.knockbackDir = new Vector(0, 0);
     this.buffs = {};
@@ -225,6 +226,8 @@ Robot.prototype.knockback = function(knockback) {
  * The base update function for robots
  */
 Robot.prototype.updateRobot = function() {
+    
+    this.alpha = this.stealth ? 0.5 : 1;
 
     // Update buffs, removing them when expired
     for (var buff in this.buffs) {

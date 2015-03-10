@@ -162,6 +162,7 @@ GameScreen.prototype.pause = function(player) {
 GameScreen.prototype.draw = function() {
 
     camera.moveTo(SIDEBAR_WIDTH + this.scrollX, this.scrollY);
+    camera.ctx.globalAlpha = 1;
     ui.drawBackground();
 
     // Apply scroll offsets
@@ -363,7 +364,8 @@ GameScreen.prototype.checkSpawns = function() {
         do {
             pos.x = rand(GAME_WIDTH - 200 + 100);
             pos.y = rand(GAME_HEIGHT - 200 + 100);
-            visible = getClosestPlayer(pos).pos.distanceSq(pos) < sq(WINDOW_WIDTH / 2);
+            var visible = x > -this.scrollX - 100 && x < -this.scrollX + 100 + WINDOW_WIDTH
+                && y > -this.scrollY && y < -this.scrollY + 100 + WINDOW_HEIGHT;
         }
         while (visible);
 
@@ -492,7 +494,7 @@ GameScreen.prototype.getClosest = function(pos, type) {
     var dSq;
     for (var i = 0; i < this.robots.length; i++) {
         var r = this.robots[i];
-        if ((r.type & type) && !r.dead) {
+        if ((r.type & type) && !r.dead && !r.stealth) {
             var d = r.pos.distanceSq(pos);
             if (!dSq || d < dSq) {
                 dSq = d;
