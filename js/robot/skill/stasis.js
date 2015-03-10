@@ -22,7 +22,7 @@ function skillStasis(player) {
                 this.health = this.maxHealth;
                 this.skillDuration = 0;
             }
-            else if (this.skillDuration % 15 == 0) {
+            else if (this.skillDuration % 15 === 0) {
                 var angle = Math.random() * 2 * Math.PI;
                 var c = Math.cos(angle);
                 var s = Math.sin(angle);
@@ -31,7 +31,7 @@ function skillStasis(player) {
 
             return 0;
         }
-    }
+    };
 
     /**
      * Reduces damage dealt to the player while the skill is active
@@ -45,5 +45,5 @@ function skillStasis(player) {
         if (this.skillDuration > 0) {
             return amount * 0.1;
         }
-    }
+    };
 }

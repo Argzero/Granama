@@ -89,5 +89,5 @@ PlayerValkyrie.prototype.applyUpdate = function() {
     this.turret.pos.y = this.leftRail.pos.y + 32 + Math.max(0, this.charge - 75);
     this.scope.pos.y = this.turret.pos.y + 61;
     this.shell2.pos.y = this.leftRail.pos.y + 5;
-    this.scope.hidden = this.speed != 0;
+    this.scope.hidden = this.speed !== 0;
 };

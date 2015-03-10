@@ -26,13 +26,13 @@ function skillAuraBlast(player) {
             {
                 color1 = '#0ff';
                 color2 = '#06c';
-                damage = this.get('power') * (2 + .2 * player.upgrades[STATIC_AURA_ID]);
+                damage = this.get('power') * (2 + 0.2 * player.upgrades[STATIC_AURA_ID]);
             }
             else
             {
                 color1 = '#f0f';
                 color2 = '#c06';
-                damage = this.get('power') * (2 + .2 * player.upgrades[POWER_AURA_ID]);
+                damage = this.get('power') * (2 + 0.2 * player.upgrades[POWER_AURA_ID]);
             }
             
             // Release the shockwave
@@ -49,7 +49,7 @@ function skillAuraBlast(player) {
                     Math.PI * i,
                     Math.PI * (i + 1),
                     30,
-                    this.getAuraRadius() * .5,
+                    this.getAuraRadius() * 0.5,
                     damage,
                     700,
                     0,
@@ -59,5 +59,5 @@ function skillAuraBlast(player) {
                 gameScreen.bullets.push(shockwave);
             }
         }
-    }
+    };
 }

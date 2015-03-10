@@ -70,8 +70,7 @@ Camera.prototype.drawList = function(sprites) {
  * @returns {boolean} true if visible, false otherwise
  */
 Camera.prototype.isVisible = function(sprite) {
-    return sprite.xMax() >= this.pos.x && sprite.xMin() <= this.pos.x + this.canvas.width
-        && sprite.yMax() >= this.pos.y && sprite.yMin() <= this.pos.y + this.canvas.height
+    return sprite.xMax() >= this.pos.x && sprite.xMin() <= this.pos.x + this.canvas.width && sprite.yMax() >= this.pos.y && sprite.yMin() <= this.pos.y + this.canvas.height;
 };
 
 /**
@@ -84,8 +83,7 @@ Camera.prototype.isVisible = function(sprite) {
  */
 Camera.prototype.isVisible = function(point, padding) {
     padding = padding ? padding : 0;
-    return point.x + padding >= this.pos.x && point.x - padding <= this.pos.x + this.canvas.width
-           && point.y + padding >= this.pos.y && point.y - padding <= this.pos.y + this.canvas.height;
+    return point.x + padding >= this.pos.x && point.x - padding <= this.pos.x + this.canvas.width && point.y + padding >= this.pos.y && point.y - padding <= this.pos.y + this.canvas.height;
 };
 
 /**

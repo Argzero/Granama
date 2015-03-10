@@ -44,7 +44,8 @@ function ScorpionBoss(x, y) {
 
     // Weapon pattern 0 - rockets and fire
     this.setRange(0, 200);
-    for (var i = 0; i < 2; i++) {
+    var i;
+    for (i = 0; i < 2; i++) {
         this.addWeapon(weapon.gun, {
             sprite  : 'bossFlame',
             damage  : 0.02 * damageScale,
@@ -57,7 +58,7 @@ function ScorpionBoss(x, y) {
             onUpdate: projEvents.fireUpdate
         });
     }
-    for (var i = 0; i < 3; i++) {
+    for (i = 0; i < 3; i++) {
         this.addWeapon(weapon.gun, {
             sprite: 'rocket',
             damage: 4 * damageScale,
@@ -110,12 +111,12 @@ ScorpionBoss.prototype.onUpdate = function() {
     this.tail.update();
     
     // Rotate for fire attack
-    if (this.pattern == 0 && this.clawRotCount < 30) {
+    if (this.pattern === 0 && this.clawRotCount < 30) {
         this.leftClaw.rotation.rotate(COS_1, SIN_1);
         this.rightClaw.rotation.rotate(COS_1, -SIN_1);
         this.clawRotCount++;
     }
-    else if (this.pattern != 0 && this.clawRotCount > 0) {
+    else if (this.pattern !== 0 && this.clawRotCount > 0) {
         this.leftClaw.rotation.rotate(COS_1, -SIN_1);
         this.rightClaw.rotation.rotate(COS_1, SIN_1);
         this.clawRotCount--;

@@ -28,7 +28,7 @@ function skillPerfectShield(player) {
             this.perfectShield.alpha = Math.min(1, this.perfectShield.alpha + 0.05);
         }
         else this.perfectShield.alpha = Math.max(0, this.perfectShield.alpha - 0.05);
-        this.perfectShield.hidden = this.perfectShield.alpha == 0;
+        this.perfectShield.hidden = this.perfectShield.alpha === 0;
 
         // Stop bullets
         if (this.perfectShield.alpha > 0.5) {

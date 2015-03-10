@@ -23,7 +23,7 @@ function HydraBoss(x, y) {
     this.pierceDamage = 0.5;
     this.turnDivider = 300;
     this.ignoreClamp = true;
-	this.canTransform = gameScreen.enemyCount == 0;
+	this.canTransform = gameScreen.enemyCount === 0;
 	
     // Specific values
 	this.fireball = new Sprite("FireBall", 0, 100).child(this, true);
@@ -37,7 +37,7 @@ function HydraBoss(x, y) {
 	);
 	
     // Movement pattern
-    this.movement = movement.flying
+    this.movement = movement.flying;
     
     var damageScale = Boss.sum();
     
@@ -348,7 +348,7 @@ RoyalHydra.prototype.onUpdate = function() {
         this.fireball.setScale(scale, scale);    
         this.fireball.rotate(HydraBoss.FIREBALL_ROT.x, HydraBoss.FIREBALL_ROT.y);
     }
-}
+};
 
 /**
  * Updates and draws the tail before the dragon is drawn
@@ -453,7 +453,7 @@ RoyalHydraSideHead.prototype.update = function() {
 	camera.ctx.lineTo(this.pos.x - this.hydra.pos.x + this.rotation.x * 100, this.pos.y - this.hydra.pos.y + this.rotation.y * 100);
 	camera.ctx.stroke();
 	camera.ctx.fillRect(this.pos.x - this.hydra.pos.x - 5, this.pos.y - this.hydra.pos.y - 5, 10, 10);
-}
+};
 
 RoyalHydra.consumeOffset = new Vector(0, 150);
 
@@ -487,4 +487,4 @@ RoyalHydra.consume = function() {
     else if (this.heldTimer > 0) {
         this.heldTimer--;
     }
-}
+};

@@ -47,7 +47,8 @@ function FortressBoss(x, y) {
         new FortressHook(this, new Vector(132, 0), new Vector(1, 0)),
         new FortressHook(this, new Vector(132, 70), new Vector(1, 0))
     ];
-    for (var i = 0; i < this.hooks.length; i++) {
+    var i;
+    for (i = 0; i < this.hooks.length; i++) {
         this.postChildren.push(this.hooks[i]);
     }
     
@@ -72,7 +73,7 @@ function FortressBoss(x, y) {
     this.armRot = new Vector(COS_3, SIN_3);
     
     // Attack Pattern 0 - Rocket barrage
-    for (var i = 0; i < 2; i++) {
+    for (i = 0; i < 2; i++) {
         this.addWeapon(weapon.rail, {
 
             sprite     : 'rocket',
@@ -131,7 +132,8 @@ FortressBoss.prototype.onUpdate = function() {
     }
     
     // Update each hook
-    for (var i = 0; i < this.hooks.length; i++) {
+    var i;
+    for (i = 0; i < this.hooks.length; i++) {
         this.hooks[i].update();
     }
     
@@ -167,16 +169,16 @@ FortressBoss.prototype.onUpdate = function() {
         p2.add(this.pos.x - po.x, this.pos.y - po.y);
         
         // Block bullets
-        for (var i = 0; i < gameScreen.bullets.length; i++) {
+        for (i = 0; i < gameScreen.bullets.length; i++) {
             var b = gameScreen.bullets[i];
-            if ((b.group & Robot.MOBILE) == 0) continue;
+            if ((b.group & Robot.MOBILE) === 0) continue;
             
             if (b.pos.segmentDistanceSq(p1, p2) < 2500) {
                 b.block();
             }
         }
     }
-}
+};
 
 /**
  * Represents a large, independently rotating cannon used
@@ -218,7 +220,7 @@ FortressCannon.prototype.update = function() {
     this.lookTowards(target.pos.clone().subtractv(this.boss.pos), FortressCannon.LOOK_ROT);
     
     this.rail(this.cannonData);
-}
+};
 
 /**
  * Checks whether or not the cannon is in range to fire the beam.
@@ -228,7 +230,7 @@ FortressCannon.prototype.update = function() {
  */
 FortressCannon.prototype.isInRange = function(range) {
     return this.boss.cannonTarget || getClosestPlayer(this.boss.pos).pos.distanceSq(this.boss.pos) < sq(range);
-}
+};
 
 /**
  * Represents a single hook used by the Fortress Boss
@@ -307,7 +309,7 @@ FortressHook.prototype.update = function() {
         this.pos = this.root.clone().rotate(this.boss.rotation.x, this.boss.rotation.y).addv(this.boss.pos);
         this.rotation = this.rot.clone().rotate(this.boss.rotation.x, this.boss.rotation.y);
     }
-}
+};
 
 /**
  * Draws the hook including any chain segments that
@@ -346,7 +348,7 @@ FortressHook.prototype.draw = function() {
             temp.addv(dir);
         }
     }
-}
+};
 
 /**
  * Launches the hook out from the Fortress boss
@@ -358,4 +360,4 @@ FortressHook.prototype.launch = function() {
     this.arot.rotate(this.boss.rotation.x, this.boss.rotation.y);
     this.vel = new Vector(this.arot.x * 15, this.arot.y * 15);
     this.worldPos = this.pos.clone().addv(this.boss.pos);
-}
+};

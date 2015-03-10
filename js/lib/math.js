@@ -8,7 +8,7 @@
  * @returns {number} the clamped value
  */
 function clamp(value, min, max) {
-    return Math.min(Math.max(value, min), max)
+    return Math.min(Math.max(value, min), max);
 }
 
 /**
@@ -49,6 +49,7 @@ function sq(num) {
  */
 function solveEq(a, b, c, d) {
     var solutions = [];
+    var disc;
 
     // Cubic equations
     if (a !== 0) {
@@ -63,14 +64,16 @@ function solveEq(a, b, c, d) {
         var p = c - b * b / 3;
         var q = b * (2 * b * b - 9 * c) / 27 + d;
         var p3 = p * p * p;
-        var disc = q * q + 4 * p3 / 27;
+        disc = q * q + 4 * p3 / 27;
         var offset = -b / 3;
 
+        var u, v;
+        
         // One real root
         if (disc > 0) {
             z = Math.sqrt(disc);
-            var u = ( -q + z) / 2;
-            var v = ( -q - z) / 2;
+            u = ( -q + z) / 2;
+            v = ( -q - z) / 2;
             u = (u >= 0) ? Math.pow(u, 1 / 3) : -Math.pow(-u, 1 / 3);
             v = (v >= 0) ? Math.pow(v, 1 / 3) : -Math.pow(-v, 1 / 3);
             solution.push(u + v + offset);
@@ -79,8 +82,8 @@ function solveEq(a, b, c, d) {
 
         // Three real roots
         else if (disc < 0) {
-            var u = 2 * Math.sqrt(-p / 3);
-            var v = Math.acos(-Math.sqrt(-27 / p3) * q / 2) / 3;
+            u = 2 * Math.sqrt(-p / 3);
+            v = Math.acos(-Math.sqrt(-27 / p3) * q / 2) / 3;
             solution.push(u * Math.cos(v) + offset);
             solution.push(u * Math.cos(v + 2 * Math.PI / 3) + offset);
             solution.push(u * Math.cos(v + 4 * Math.PI / 3) + offset);
@@ -89,7 +92,6 @@ function solveEq(a, b, c, d) {
 
         // Two real roots
         else {
-            var u;
             if (q < 0) u = Math.pow(-q / 2, 1 / 3);
             else u = -Math.pow(q / 2, 1 / 3);
             solution.push(2 * u + offset);
@@ -117,7 +119,7 @@ function solveEq(a, b, c, d) {
         // Quadratic equation
         else {
 
-            var disc = c * c - 4 * b * d;
+            disc = c * c - 4 * b * d;
 
             // No real roots
             if (disc < 0) return solution;

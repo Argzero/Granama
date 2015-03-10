@@ -88,7 +88,7 @@ PlayerBeta.prototype.applyUpdate = function() {
         this.gun(this.swordData);
         
         // Make the charge follow the sword
-        if (this.sword && this.sword.preChildren.length == 0) {
+        if (this.sword && this.sword.preChildren.length === 0) {
             this.sword.preChildren.push(this.swordCharge);
         }
     }

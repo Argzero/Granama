@@ -3,8 +3,8 @@
  */
 function TitleScreen() {
 
-    delete PROFILE_DATA['Overall'];
-    delete PROFILE_DATA['Guest'];
+    delete PROFILE_DATA.Overall;
+    delete PROFILE_DATA.Guest;
 
     // Set up UI
     this.ui = UIGrid(600, 75)
@@ -38,4 +38,4 @@ TitleScreen.prototype.draw = function() {
     ui.drawBackground();
     this.ui.draw();
     ui.drawCursor();
-}
+};

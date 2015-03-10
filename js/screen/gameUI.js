@@ -96,7 +96,7 @@ var ui = {
                     count++;
                 }
             }
-            if (count == 0) 
+            if (count === 0) 
             {
                 r.buffDir.x = 1;
                 r.buffDir.y = 0;
@@ -329,7 +329,7 @@ var ui = {
         var midY = halfY - gameScreen.scrollY;
         for (var i = 0; i < gameScreen.robots.length; i++) {
             var e = gameScreen.robots[i];
-            if ((e.type & Robot.MOBILE) == 0) continue;
+            if ((e.type & Robot.MOBILE) === 0) continue;
             if (Math.abs(midX - e.pos.x) > halfX + e.width / 2 || Math.abs(midY - e.pos.y) > halfY + e.width / 2) {
                 var d = new Vector(e.pos.x - midX, e.pos.y - midY);
                 var xs = Math.abs(halfX / d.x);
@@ -365,7 +365,7 @@ var ui = {
         this.ctx.fillText("Kills", 10, 30);
         this.ctx.fillText("Boss", SIDEBAR_WIDTH - this.ctx.measureText("Boss").width - 10, 30);
         this.ctx.fillRect(5, 35, SIDEBAR_WIDTH - 10, 2);
-        this.ctx.fillStyle = "#0f0"
+        this.ctx.fillStyle = "#0f0";
         this.ctx.font = '20px Flipbash';
         this.ctx.fillText(gameScreen.score, 10, 70);
         this.ctx.fillText(gameScreen.bossScore, SIDEBAR_WIDTH - this.ctx.measureText(gameScreen.bossScore).width - 10, 70);
@@ -502,7 +502,8 @@ var ui = {
             this.ctx.fillText('Points: ' + player.points, x, y - 220);
 
             // Upgrades
-            for (var j = 0; j < 5; j++) {
+            var j;
+            for (j = 0; j < 5; j++) {
                 for (var k = 0; k < 10; k++) {
                     var upped = player.upgrades[j] > k;
                     var newUpped = upped && this.start[i][j] <= k;
@@ -545,7 +546,7 @@ var ui = {
                     this.ready[i] = true;
 
                     var allReady = true;
-                    for (var j = 0; j < this.ready.length; j++) {
+                    for (j = 0; j < this.ready.length; j++) {
                         if (!this.ready[j]) allReady = false;
                     }
                     if (allReady) {
@@ -577,8 +578,7 @@ var ui = {
     /**
      * The infamous Julian mode draw routines
      */
-    julian: function() 
-    {
+    julian: function() {
         var x = SIDEBAR_WIDTH + 5;
         this.ctx.textAlign = 'left';
         this.ctx.textBaseline = 'top';
@@ -586,32 +586,32 @@ var ui = {
         this.ctx.lineWidth = 1;
         var y = 5;
         
-        for (var i = 0; i < players.length; i++)
+        var i, pos;
+        for (i = 0; i < players.length; i++)
         {
             var p = players[i];
             this.ctx.fillStyle = this.ctx.strokeStyle = p.color;
-            var pos = this.julianRecurse(p, x, y);
+            pos = this.julianRecurse(p, x, y);
             x = pos.x;
             y = pos.y;
         }
         var id = 0;
         var colors = [ 'red', 'orange' ];
-        for (var i = 0; i < gameScreen.robots.length && x < WINDOW_WIDTH && gameScreen.julian == 'EXTREME'; i++) {
+        for (i = 0; i < gameScreen.robots.length && x < WINDOW_WIDTH && gameScreen.julian == 'EXTREME'; i++) {
             var r = gameScreen.robots[i];
-            if ((r.type & Robot.MOBILE) == 0) continue;
+            if ((r.type & Robot.MOBILE) === 0) continue;
             this.ctx.fillStyle = this.ctx.strokeStyle = colors[id++ % 2];
-            var pos = this.julianRecurse(r, x, y);
+            pos = this.julianRecurse(r, x, y);
             x = pos.x;
             y = pos.y;
         }
     },
-    julianRecurse: function(obj, x, y)
-    {
+    julianRecurse: function(obj, x, y) {
         obj.julianing = true;
         var z;
         for (z in obj)
         {
-            if (typeof(obj[z]) === 'function' || obj[z] == null || obj[z] === undefined || obj[z].julianing || z == 'julianing') continue;
+            if (typeof(obj[z]) === 'function' || obj[z] === null || obj[z] === undefined || obj[z].julianing || z == 'julianing') continue;
             else if (obj[z][0] && (typeof(obj[z][0]) == 'function' || typeof(obj[z][0] == '[object Object]'))) continue;
             else if (obj[z].toString() === '[object Object]') {
                 this.ctx.fillText(z + ' =', x, y);
@@ -644,4 +644,4 @@ var ui = {
         obj.julianing = false;
         return { x: x, y: y };
     }
-}
+};

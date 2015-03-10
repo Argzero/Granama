@@ -26,7 +26,8 @@ HealingPad.prototype.update = function() {
 
     // Get the list of players on the pad
     var list = [];
-    for (var i = 0; i < players.length; i++) {
+    var i;
+    for (i = 0; i < players.length; i++) {
         var robot = players[i];
         if (robot.health > 0 && robot.health < robot.maxHealth && this.charge > 0 && robot.pos.distanceSq(this.pos) < sq(this.sprite.width / 2)) {
             list.push(robot);
@@ -37,7 +38,7 @@ HealingPad.prototype.update = function() {
     var amount = Math.min(HEAL_RATE * list.length, this.charge);
     this.charge -= amount;
     amount /= list.length;
-    for (var i = 0; i < list.length; i++) {
+    for (i = 0; i < list.length; i++) {
         list[i].health += list[i].maxHealth * amount / 100;
         if (list[i].health > list[i].maxHealth) {
             list[i].health = list[i].maxHealth;

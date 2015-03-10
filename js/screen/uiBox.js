@@ -28,7 +28,7 @@ function UIGrid(width, buttonHeight) {
             ui.ctx.fillStyle = '#333';
             ui.ctx.fillRect(x - 25, 0, 25, ui.canvas.height);
             ui.ctx.fillRect(x + this.width, 0, 25, ui.canvas.height);
-            ui.ctx.fillStyle = '#878787'
+            ui.ctx.fillStyle = '#878787';
             ui.ctx.fillRect(x - 17, 0, 9, ui.canvas.height);
             ui.ctx.fillRect(x + this.width + 8, 0, 9, ui.canvas.height);
 
@@ -184,7 +184,7 @@ function UITitle(content, yOffset, width, height) {
             ui.ctx.drawImage(tr, x + width + 18 - tr.width, y - 19);
             ui.ctx.drawImage(br, x + width + 18 - br.width, y + this.height - 17);
         }
-    }
+    };
 }
 
 // A fancy button for the title screen

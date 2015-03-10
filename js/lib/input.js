@@ -256,7 +256,7 @@ KeyboardInput.prototype.axis = function(key, target) {
         else return controls.mouse.oy > target.pos.y ? 1 : -1;
     }
     else return (controls.keyPressed(mapping.key1) ? -1 : 0) + (controls.keyPressed(mapping.key2) ? 1 : 0);
-}
+};
 
 /**
  * Checks the state of a mapped direction value
@@ -321,7 +321,7 @@ GamepadInput.prototype.button = function(key) {
     var mapping = controls.mapping.button[key];
     if (mapping === undefined) return 0;
     else if (mapping >= 100) {
-        var p = mapping % 2 == 0;
+        var p = mapping % 2 === 0;
         return (this.data[Math.floor(mapping.key - 100) / 2] > 0) == p;
     }
     else if (this.data[mapping.key]) return this.data[mapping.key];

@@ -3,7 +3,7 @@
  */
 function StatScreen() {
 
-    PROFILE_DATA['Overall'] = {};
+    PROFILE_DATA.Overall = {};
 
     this.boxes     = [];
     this.profiles  = [];
@@ -40,7 +40,8 @@ StatScreen.prototype.draw = function() {
     // Profile list
     ui.ctx.font = '40px Flipbash';
     ui.ctx.textBaseline = 'middle';
-    for (var i = 0; i < this.profiles.length; i++) {
+    var i;
+    for (i = 0; i < this.profiles.length; i++) {
         this.boxes[i].active = this.index == i;
         this.boxes[i].draw();
         ui.ctx.fillStyle = '#fff';
@@ -49,7 +50,7 @@ StatScreen.prototype.draw = function() {
 
     // Get the data to show
     var data;
-    if (this.section == 0) {
+    if (this.section === 0) {
         data = new Profile(this.profiles[this.index]);
     }
     else {
@@ -84,9 +85,9 @@ StatScreen.prototype.draw = function() {
     // Robot graph
     var drawn = false;
     var r = Math.min(125, (ui.canvas.width - 325) / 8);
-    if (this.section == 0) {
+    if (this.section === 0) {
         var robotData = [];
-        for (var i = 0; i < PLAYER_DATA.length; i++) {
+        for (i = 0; i < PLAYER_DATA.length; i++) {
             robotData.push({
                 text : PLAYER_DATA[i].name,
                 color: PLAYER_DATA[i].color,
@@ -100,9 +101,9 @@ StatScreen.prototype.draw = function() {
     else {
         var abilityData = PLAYER_DATA[this.section - 1].skills;
         var graphData = [];
-        for (var i = 0; i < 3; i++) {
+        for (i = 0; i < 3; i++) {
             var color;
-            if (i == 0) color = '#0ff';
+            if (i === 0) color = '#0ff';
             if (i == 1) color = '#0f0';
             if (i == 2) color = '#00f';
             graphData.push({
@@ -125,8 +126,8 @@ StatScreen.prototype.draw = function() {
     ui.ctx.fillStyle = '#333';
     ui.ctx.strokeStyle = '#000';
     ui.ctx.lineWidth = 10;
-    var ratio = this.scroll / this.maxScroll
-    var r = 30;
+    var ratio = this.scroll / this.maxScroll;
+    r = 30;
     var y = (ui.canvas.height - 2 * r) * ratio + r;
     ui.ctx.beginPath();
     ui.ctx.arc(312.5, y, r - 5, 0, Math.PI * 2);
@@ -212,7 +213,7 @@ StatScreen.prototype.drawSection = function(data, list, xo, yo) {
     }
 
     return rows * (119 * scale);
-},
+};
 
 /**
  * Draws a graph for statistic data
@@ -228,10 +229,11 @@ StatScreen.prototype.drawGraph = function(x, y, r, data) {
 
     // Get total weight
     var total = 0;
-    for (var i = 0; i < data.length; i++) {
+    var i;
+    for (i = 0; i < data.length; i++) {
         total += data[i].value;
     }
-    if (total == 0) return false;
+    if (total === 0) return false;
 
     // Draw the graph
     var cumulative = 0;
@@ -240,7 +242,7 @@ StatScreen.prototype.drawGraph = function(x, y, r, data) {
     ui.ctx.textBaseline = 'middile';
     ui.ctx.textAlign = 'left';
     ui.ctx.lineWidth = 1;
-    for (var i = 0; i < data.length; i++) {
+    for (i = 0; i < data.length; i++) {
         var angle = Math.PI * 2 * data[i].value / total;
         var start = cumulative;
         cumulative += angle;
@@ -279,8 +281,13 @@ StatScreen.prototype.format = function(num) {
         return (num / 1000).toFixed(0) + 'K';
     }
     else return num.toFixed(0);
-},
+};
 
+/**
+ * Applies mouse scrolling to the scroll of the page
+ *
+ * @param {Event} e - event details
+ */
 StatScreen.prototype.applyScroll = function(e) {
     this.scroll = Math.max(0, Math.min(this.maxScroll, this.scroll + e.deltaY / 4));
     e.preventDefault();
@@ -306,12 +313,12 @@ StatScreen.prototype.setup = function() {
     }
 
     // Calculate overall stats
-    var i = 0;
-    var data = PROFILE_DATA['Overall'];
-    for (var stat in STAT) {
-
-        var name = STAT[stat];
-
+    i = 0;
+    var data = PROFILE_DATA.Overall;
+    var stat, name, value, j;
+    for (stat in STAT) {
+        name = STAT[stat];
+        
         data[name] = 0;
 
         if (stat == 'LAST_10') continue;
@@ -326,9 +333,9 @@ StatScreen.prototype.setup = function() {
         }
         else this.total.push(statData);
 
-        for (var j = 1; j < this.profiles.length; j++) {
+        for (j = 1; j < this.profiles.length; j++) {
 
-            var value = new Profile(this.profiles[j]).getStat(name);
+            value = new Profile(this.profiles[j]).getStat(name);
 
             // "Most" stats
             if (i >= 6 && i < 14) {
@@ -349,18 +356,18 @@ StatScreen.prototype.setup = function() {
 
         this.sections.push({text: robotName, color: PLAYER_DATA[k].color});
 
-        var i = 0;
-        for (var stat in STAT) {
+        i = 0;
+        for (stat in STAT) {
 
-            var name = STAT[stat];
+            name = STAT[stat];
 
             data[robotName][name] = 0;
 
             if (stat == 'LAST_10') continue;
 
-            for (var j = 1; j < this.profiles.length; j++) {
+            for (j = 1; j < this.profiles.length; j++) {
 
-                var value = new Profile(this.profiles[j]).getRobotStat(robotName, name);
+                value = new Profile(this.profiles[j]).getRobotStat(robotName, name);
 
                 // "Most" stats
                 if (i >= 6 && i < 14) {
@@ -375,21 +382,21 @@ StatScreen.prototype.setup = function() {
 
             i++;
         }
-        for (var i = 0; i < 3; i++) {
+        for (i = 0; i < 3; i++) {
             var ability = PLAYER_DATA[k].skills[i].name;
 
             data[robotName][ability] = 0;
 
             if (stat == 'LAST_10') continue;
 
-            for (var j = 1; j < this.profiles.length; j++) {
+            for (j = 1; j < this.profiles.length; j++) {
 
-                var value = new Profile(this.profiles[j]).getRobotStat(robotName, ability);
+                value = new Profile(this.profiles[j]).getRobotStat(robotName, ability);
                 data[robotName][ability] += value;
             }
         }
     }
 
-    this.wheel = document.onmousewheel
+    this.wheel = document.onmousewheel;
     document.onmousewheel = this.applyScroll.bind(this);
-}
+};

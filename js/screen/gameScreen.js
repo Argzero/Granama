@@ -62,16 +62,14 @@ function GameScreen() {
 GameScreen.prototype.update = function() {
 
     // Update when not paused
+    var i;
     if (!this.paused) {
     
         // Update robots
-        for (var i = 0; i < this.robots.length; i++)
+        for (i = 0; i < this.robots.length; i++)
         {
             // During boss preview, only dragon/hydra can move
-            if (this.bossTimer > 0 
-                    && this.robots[i].title != 'Dragon'
-                    && this.robots[i].title != 'Hydra'
-                    && this.robots[i].title != 'Royal Hydra') {
+            if (this.bossTimer > 0 && this.robots[i].title != 'Dragon' && this.robots[i].title != 'Hydra' && this.robots[i].title != 'Royal Hydra') {
                 continue;
             }
             this.robots[i].update();
@@ -85,7 +83,7 @@ GameScreen.prototype.update = function() {
         }
     
         // Update bullets
-        for (var i = 0; i < this.bullets.length; i++) {
+        for (i = 0; i < this.bullets.length; i++) {
             this.bullets[i].update();
             for (var j = 0; j < this.robots.length; j++) {
                 var r = this.robots[j];
@@ -100,12 +98,12 @@ GameScreen.prototype.update = function() {
         }
     
         // Update healing pads
-        for (var i = 0; i < this.pads.length; i++) {
+        for (i = 0; i < this.pads.length; i++) {
             this.pads[i].update();
         }
         
         // Particles
-        for (var i = 0; i < this.particles.length; i++) {
+        for (i = 0; i < this.particles.length; i++) {
             if (this.particles[i].update) {
                 this.particles[i].update();
             }
@@ -120,19 +118,19 @@ GameScreen.prototype.update = function() {
     
     // Update paused players
     else {
-        for (var i = 0; i < players.length; i++) {
+        for (i = 0; i < players.length; i++) {
             players[i].updatePause();
         }
     }
     
     // Check for losing
-    for (var i = 0; i < players.length; i++) {
+    for (i = 0; i < players.length; i++) {
         if (players[i].health > 0) return;
     }
     if (!this.gameOver) {
         this.gameOver = true;
 
-        for (var i = 0; i < players.length; i++) {
+        for (i = 0; i < players.length; i++) {
             var p = players[i];
             p.profile.setBest(p.name, STAT.BEST_SCORE, this.score);
             p.profile.addList(p.name, STAT.LAST_10, 10, this.score);
@@ -169,12 +167,13 @@ GameScreen.prototype.draw = function() {
     controls.setOffset(this.scrollX + SIDEBAR_WIDTH, this.scrollY);
 
     // Draw healing pads
-    for (var i = 0; i < this.pads.length; i++) {
+    var i;
+    for (i = 0; i < this.pads.length; i++) {
         this.pads[i].draw(camera);
     }
 
     // Aura draw
-    for (var i = 0; i < players.length; i++) {
+    for (i = 0; i < players.length; i++) {
         var r = players[i];
         if (r.onAuraDraw) {
             r.onAuraDraw(camera);
@@ -182,12 +181,12 @@ GameScreen.prototype.draw = function() {
     }
     
     // Draw sprites
-    for (var i = 0; i < this.robots.length; i++) {
+    for (i = 0; i < this.robots.length; i++) {
         this.robots[i].draw(camera);
     }
 
     // Bullets
-    for (var i = 0; i < this.bullets.length; i++) {
+    for (i = 0; i < this.bullets.length; i++) {
         this.bullets[i].draw(camera);
     }
     
@@ -195,7 +194,7 @@ GameScreen.prototype.draw = function() {
     ui.drawBuffs();
     
     // Particles
-    for (var i = 0; i < this.particles.length; i++) {
+    for (i = 0; i < this.particles.length; i++) {
         this.particles[i].draw(camera);
         if (this.particles[i].expired) {
             this.particles.splice(i, 1);
@@ -232,7 +231,7 @@ GameScreen.prototype.draw = function() {
     ui.drawStatBar();
 
     // Draw the upgrade screen if applicable
-    if (this.paused == true) {
+    if (this.paused === true) {
         ui.drawUpgradeUI();
     }
     
@@ -251,7 +250,7 @@ GameScreen.prototype.applyScrolling = function() {
     var maxY = 0;
 
     // When focused on players, take the midpoint of the min/max bounds
-    if (this.bossTimer == 0) {
+    if (this.bossTimer === 0) {
         for (var i = 0; i < players.length; i++) {
             var r = players[i];
             if (r.health <= 0) continue;
@@ -277,7 +276,7 @@ GameScreen.prototype.applyScrolling = function() {
         this.targetY = WINDOW_HEIGHT / 2 - avgY;
 
         // Clamp if not doing a boss preview
-        if (this.bossTimer == 0) {
+        if (this.bossTimer === 0) {
             this.targetX = clamp(this.targetX, WINDOW_WIDTH - GAME_WIDTH, 0);
             this.targetY = clamp(this.targetY, WINDOW_HEIGHT - GAME_HEIGHT, 0);
         }
@@ -299,7 +298,7 @@ GameScreen.prototype.applyScrolling = function() {
         }
         
         // Update player bounds when not doing a boss preview
-        if (this.bossTimer == 0) {
+        if (this.bossTimer === 0) {
             this.playerMinX = Math.max(0, Math.min(avgX - WINDOW_WIDTH / 2, this.scrollX) + 100);
             this.playerMinY = Math.max(0, Math.min(avgY - WINDOW_HEIGHT / 2, this.scrollY) + 100);
             this.playerMaxX = Math.min(GAME_WIDTH, Math.max(avgX + WINDOW_WIDTH / 2, this.scrollX + WINDOW_WIDTH) - 100);
@@ -353,10 +352,7 @@ GameScreen.prototype.checkSpawns = function() {
     }
 
     // Don't spawn enemies if there are too many or one has just spawned
-    if (this.bossStatus == ACTIVE_NONE
-        && this.spawnCd <= 0
-        && this.enemyCount < this.maxEnemies
-        && this.enemyCount + this.score < this.bossScore) {
+    if (this.bossStatus == ACTIVE_NONE && this.spawnCd <= 0 && this.enemyCount < this.maxEnemies && this.enemyCount + this.score < this.bossScore) {
 
         // Get a spawn point off of the gameScreen
         var pos = new Vector(0, 0);
@@ -364,8 +360,7 @@ GameScreen.prototype.checkSpawns = function() {
         do {
             pos.x = rand(GAME_WIDTH - 200 + 100);
             pos.y = rand(GAME_HEIGHT - 200 + 100);
-            var visible = x > -this.scrollX - 100 && x < -this.scrollX + 100 + WINDOW_WIDTH
-                && y > -this.scrollY && y < -this.scrollY + 100 + WINDOW_HEIGHT;
+            visible = x > -this.scrollX - 100 && x < -this.scrollX + 100 + WINDOW_WIDTH && y > -this.scrollY && y < -this.scrollY + 100 + WINDOW_HEIGHT;
         }
         while (visible);
 
@@ -393,7 +388,8 @@ GameScreen.prototype.spawnEnemy = function(data, x, y) {
 
     // Sum the weights
     var spawnWeight = 0;
-    for (var i = 0; i < data.length; i += 3) {
+    var i;
+    for (i = 0; i < data.length; i += 3) {
         if (data[i + 1] <= this.bossCount) {
             spawnWeight += data[i];
         }
@@ -403,7 +399,7 @@ GameScreen.prototype.spawnEnemy = function(data, x, y) {
     var r = rand(spawnWeight);
     var total = 0;
     var enemy;
-    for (var i = 0; i < data.length; i += 3) {
+    for (i = 0; i < data.length; i += 3) {
         if (data[i + 1] <= this.bossCount) {
             total += data[i];
         }
@@ -451,7 +447,7 @@ GameScreen.prototype.spawnBoss = function() {
 		this.bossId++;
 	}
 	else {
-		if (this.superBossId == 0) {
+		if (this.superBossId === 0) {
 			this.boss = new DragonBoss(x, y);
 		}
 		else {
@@ -503,4 +499,4 @@ GameScreen.prototype.getClosest = function(pos, type) {
         }
     }
     return closest;
-}
+};

@@ -26,4 +26,4 @@ Plus.prototype.update = function() {
     this.lifespan--;
     this.expired = this.lifespan <= 0;
     console.log('Pos(' + this.pos.x + ', ' + this.pos.y + ') Expired=' + this.expired);
-}
+};

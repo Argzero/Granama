@@ -328,7 +328,7 @@ Vector.prototype.lengthSq = function() {
  */
 Vector.prototype.length = function() {
     return Math.sqrt(this.x * this.x + this.y * this.y);
-}
+};
 
 /**
  * Normalizes the vector if not currently 0 length
@@ -337,7 +337,7 @@ Vector.prototype.length = function() {
  */
 Vector.prototype.normalize = function() {
     var magSq = this.x * this.x + this.y * this.y;
-    if (magSq != 0 && magSq != 1) {
+    if (magSq !== 0 && magSq != 1) {
         var mag = Math.sqrt(magSq);
         this.x /= mag;
         this.y /= mag;
@@ -354,7 +354,7 @@ Vector.prototype.normalize = function() {
  */
 Vector.prototype.setMagnitude = function(length) {
     var magSq = this.x * this.x + this.y * this.y;
-    if (magSq != 0 && magSq != 1) {
+    if (magSq !== 0 && magSq != 1) {
         var mag = Math.sqrt(magSq);
         this.x /= mag;
         this.y /= mag;

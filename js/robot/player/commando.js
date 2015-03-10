@@ -65,7 +65,7 @@ PlayerCommando.prototype.addDrone = function() {
  */
 PlayerCommando.prototype.applyUpdate = function() {
 
-    if (this.drones.length == 0) this.addDrone();
+    if (this.drones.length === 0) this.addDrone();
 
     // Get damage multiplier
     var m = this.get('power');

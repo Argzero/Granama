@@ -52,7 +52,7 @@ RopeTail.prototype.setTurrets = function(sprite, dx, dy, weaponData)
         var turret = new TailTurret(sprite, weaponData);
         this.turrets.push(turret);
     }
-}
+};
 
 /**
  * Set the base direction for the tail. This is the direction
@@ -66,7 +66,7 @@ RopeTail.prototype.setBaseDir = function(dir) {
     this.rotation = dir.clone();
     this.rel = dir.clone();
     return this;
-}
+};
 
 /**
  * Updates the tail including all segments, applying
@@ -81,16 +81,17 @@ RopeTail.prototype.update = function() {
     this.rotation = this.source.rotation.clone().rotate(this.rel.x, this.rel.y);
     
     camera.ctx.translate(-this.source.pos.x, -this.source.pos.y);
+    var i;
     if (!this.front) {
         this.draw(camera);
-        for (var i = 0; i < this.segments.length; i++) {
+        for (i = 0; i < this.segments.length; i++) {
             this.segments[i].update();
             this.segments[i].draw(camera);
             this.updateTurret(i);
         }
     }
     else {
-        for (var i = this.segments.length - 1; i >= 0; i--) {
+        for (i = this.segments.length - 1; i >= 0; i--) {
             this.segments[i].update();
             this.segments[i].draw(camera);
             this.updateTurret(i);
@@ -98,7 +99,7 @@ RopeTail.prototype.update = function() {
         this.draw(camera);
     }
     camera.ctx.translate(this.source.pos.x, this.source.pos.y);
-}
+};
 
 /**
  * Updates a turret on the tail if it exists
@@ -113,14 +114,14 @@ RopeTail.prototype.updateTurret = function(index)
         this.turrets[index].update();
         this.turrets[index].draw(camera);
     }
-}
+};
 
 /**
  * Gets the orientation of the end of the tail
  */
 RopeTail.prototype.getEndDir = function() {
     return this.segments[this.segments.length - 1].rotation;
-}
+};
 
 /**
  * Causes the tail to drift towards the parent
@@ -135,7 +136,7 @@ RopeTail.prototype.followParent = function() {
     }
     
     this.prev = this.source.pos.clone();
-}
+};
 
 // Modes for the turnTowards method
 ROPE_TURN_ALL = 0;  // Turns all segments the same amount
@@ -157,10 +158,11 @@ RopeTail.prototype.turnTowards = function(dir, speed, mode) {
     var m = d.dot(dir) > 0 ? 1 : -1;
     
     // Turn End mode
+    var i, s, t;
     if (mode == 1) {
-        var t = (this.segments.length + 1) * (this.segments.length / 2);
-        var s = 0;
-        for (var i = 0; i < this.segments.length; i++) {
+        t = (this.segments.length + 1) * (this.segments.length / 2);
+        s = 0;
+        for (i = 0; i < this.segments.length; i++) {
             s += speed * (i + 1) / t;
             this.segments[i].rotate(Math.cos(s), m * Math.sin(s));
         }
@@ -168,9 +170,9 @@ RopeTail.prototype.turnTowards = function(dir, speed, mode) {
     
     // Turn Root mode
     else if (mode == 2) {
-        var t = (this.segments.length + 1) * (this.segments.length / 2);
-        var s = 0;
-        for (var i = 0; i < this.segments.length; i++) {
+        t = (this.segments.length + 1) * (this.segments.length / 2);
+        s = 0;
+        for (i = 0; i < this.segments.length; i++) {
             s += speed * (this.segments.length - i) / t;
             this.segments[i].rotate(Math.cos(s), m * Math.sin(s));
         }
@@ -178,14 +180,14 @@ RopeTail.prototype.turnTowards = function(dir, speed, mode) {
     
     // Turn All mode
     else {
-        var t = speed / this.segments.length;
-        var s = 0;
-        for (var i = 0; i < this.segments.length; i++) {
+        t = speed / this.segments.length;
+        s = 0;
+        for (i = 0; i < this.segments.length; i++) {
             s += t;
             this.segments[i].rotate(Math.cos(s), m * Math.sin(s));
         }
     }
-}
+};
 
 /**
  * Represents a single segment of a Rope Tail
@@ -254,7 +256,7 @@ TailSegment.prototype.update = function() {
  * @param {string} sprite  - the sprite of the turret's gun
  * @param {Object} gunData - the data to use for the turret's gun
  */
-extend('TailTurret', 'Sprite')
+extend('TailTurret', 'Sprite');
 function TailTurret(sprite, gunData) {
     this.super(sprite, 0, 0);
     

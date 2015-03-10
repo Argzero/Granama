@@ -6,7 +6,7 @@ function skillReflector(player) {
             this.skillDuration = 300;
             this.skillCd = 600;
         }
-    }
+    };
 
     // Damage immunity and reflection while active
     player.onDamaged = function(amount, damager) {
@@ -26,5 +26,5 @@ function skillReflector(player) {
             gameScreen.bullets.push(reflection);
             return 0;
         }
-    }
+    };
 }

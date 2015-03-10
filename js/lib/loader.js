@@ -4,7 +4,7 @@ var SCRIPT_TAGS = {
     onload     : function(e) {
         SCRIPT_TAGS[e.target.id].loaded = true;
         SCRIPT_TAGS.scriptCount--;
-        if (SCRIPT_TAGS.scriptCount == 0) {
+        if (SCRIPT_TAGS.scriptCount === 0) {
             updateLoader();
         }
     }
@@ -38,8 +38,8 @@ function updateLoader() {
     }
 
     // Done event
-    if (window['onLoaderDone']) {
-        window['onLoaderDone']();
+    if (window.onLoaderDone) {
+        window.onLoaderDone();
     }
 }
 
@@ -65,7 +65,7 @@ function applyExtensions(key) {
                 sub.prototype.childConstructors.push(base.prototype.childConstructors[j]);
             }
             sub.prototype.childConstructors.push(base);
-            for (x in base.prototype) {
+            for (var x in base.prototype) {
                 if (!sub.prototype[x]) {
                     sub.prototype[x] = base.prototype[x];
                 }
@@ -78,7 +78,7 @@ function applyExtensions(key) {
  * Super constructor function for extended classes
  */
 function superConstructor() {
-    if (this.superConstructorEnabled == false) return;
+    if (this.superConstructorEnabled === false) return;
     this.superConstructorEnabled = false;
     for (var i = 0; i < this.childConstructors.length; i++) {
         this.childConstructors[i].apply(this, arguments);
@@ -108,7 +108,7 @@ function depend(script, callback) {
     }
 
     // See if any scripts already have the source
-    else if (tag = document.querySelector('script[src="js/' + script + '.js')) {
+    else if ((tag = document.querySelector('script[src="js/' + script + '.js')) !== undefined) {
         SCRIPT_TAGS[script] = {tag: tag, loaded: true};
         if (callback) callback();
     }

@@ -60,5 +60,5 @@ function skillLaserBomb(player) {
         this.charging = this.skillDuration > 0;
         this.speed = (this.charging ? 0.5 : 1) * this.baseSpeed;
         this.chargeBall.hidden = this.skillDuration <= 1;
-    }
+    };
 }

@@ -77,5 +77,5 @@ function skillArtillery(player) {
         else if (this.charge < 100) {
             this.charge += chargeRate;
         }
-    }
+    };
 }

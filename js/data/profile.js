@@ -34,7 +34,7 @@ var STAT = {
     DRAGON       : 'dragon',
     HYDRA        : 'hydra',
     GAMES        : 'games'
-}
+};
 
 // Update profile data before exiting
 window.addEventListener('beforeunload', function() {
@@ -102,12 +102,14 @@ Profile.prototype.addStat = function(name, stat, amount) {
  */
 Profile.prototype.addList = function(name, stat, max, amount) {
 
+    var arr;
+
     // Overall stat
     if (!this.data[stat]) {
         this.data[stat] = [amount];
     }
     else {
-        var arr = this.data[stat];
+        arr = this.data[stat];
         arr.unshift(amount);
         if (arr.length > max) {
             arr.pop();
@@ -122,7 +124,7 @@ Profile.prototype.addList = function(name, stat, max, amount) {
         this.data[name][stat] = [amount];
     }
     else {
-        var arr = this.data[name][stat];
+        arr = this.data[name][stat];
         arr.unshift(amount);
         if (arr.length > max) {
             arr.pop();
@@ -146,7 +148,7 @@ Profile.prototype.setBest = function(name, stat, amount) {
     }
 
     // Robot stat
-    var current = this.getRobotStat(name, stat);
+    current = this.getRobotStat(name, stat);
     if (amount > current) {
         if (!this.data[name]) {
             this.data[name] = {};

@@ -77,4 +77,4 @@ ControlsScreen.prototype.draw = function() {
 
     // Draw the cursor
     ui.drawCursor();
-}
+};

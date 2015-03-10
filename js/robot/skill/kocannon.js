@@ -33,5 +33,5 @@ function skillKOCannon(player) {
                 gameScreen.bullets.push(laser);
             }
         }
-    }
+    };
 }

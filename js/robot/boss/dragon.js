@@ -37,7 +37,8 @@ function DragonBoss(x, y) {
 
     // Attack pattern 0 - Lasers and fire
     this.setMovement(0, movement.flying);
-    for (var i = 0; i < 2; i++) {
+    var i;
+    for (i = 0; i < 2; i++) {
         this.addWeapon(weapon.gun, {
             sprite: 'bossLaser',
             damage: 0.1 * damageScale,
@@ -82,7 +83,7 @@ function DragonBoss(x, y) {
         dy    : 100,
 		onUpdate: projEvents.fireUpdate
     }, 2);
-    for (var i = 0; i < 2; i++) {
+    for (i = 0; i < 2; i++) {
         this.addWeapon(weapon.gun, {
             sprite   : 'rocket',
             damage   : 5 * damageScale,

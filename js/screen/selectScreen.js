@@ -18,7 +18,7 @@ function PlayerSettings(id) {
     this.profile = 0;
     this.newProfile = '';
     this.error = '';
-    this.part = PARTS.DISCONNECTED
+    this.part = PARTS.DISCONNECTED;
 }
 
 // The character selection screen of the game
@@ -38,12 +38,12 @@ function SelectScreen() {
     this.profilesArray.push('New Profile');
 
     // Initialize player settings
-    for (var i = 0; i < players.length; i++) {
+    for (i = 0; i < players.length; i++) {
         this.settings.push(new PlayerSettings(i));
     }
 
     // Start off with all classes available
-    for (var i = 0; i < PLAYER_DATA.length; i++) {
+    for (i = 0; i < PLAYER_DATA.length; i++) {
         this.open.push(i);
     }
 }
@@ -118,11 +118,12 @@ SelectScreen.prototype.draw = function() {
     ui.ctx.fillText("Choose A Robot", x, y - 300);
 
     var baseX = x - (players.length - 1) * 135;
-    for (var i = 0; i < players.length; i++) {
+    var i, j, k, dx, preview, robot;
+    for (i = 0; i < players.length; i++) {
 
         x = baseX + 270 * i;
         var settings = this.settings[i];
-        var robot = PLAYER_DATA[settings.robot];
+        robot = PLAYER_DATA[settings.robot];
 
         // Draw the boxes for the options
         ui.ctx.fillStyle = '#484848';
@@ -196,15 +197,15 @@ SelectScreen.prototype.draw = function() {
                 ui.ctx.fillStyle = 'white';
                 ui.ctx.textAlign = 'center';
                 var ty = y + 50 + (min - settings.profile) * 30;
-                for (var j = min; j <= max; j++) {
+                for (j = min; j <= max; j++) {
                     var dif = j - settings.profile;
                     var abs = Math.abs(dif);
-                    if (abs == 0) ui.ctx.font = '32px Flipbash';
+                    if (abs === 0) ui.ctx.font = '32px Flipbash';
                     else ui.ctx.font = (26 - abs * 2) + 'px Flipbash';
-                    if (abs == 0) ui.ctx.globalAlpha = 1;
+                    if (abs === 0) ui.ctx.globalAlpha = 1;
                     else ui.ctx.globalAlpha = 0.6 - abs * 0.1;
                     ui.ctx.fillText(this.profilesArray[j], x, ty);
-                    if (abs == 0) ty += 40;
+                    if (abs === 0) ty += 40;
                     else ty += 36 - abs * 2;
                 }
                 ui.ctx.globalAlpha = 1;
@@ -228,7 +229,7 @@ SelectScreen.prototype.draw = function() {
                         settings.profile = this.profilesArray[num];
                         if (num < this.profilesArray.length - 2) {
                             this.profilesArray.splice(num, 1);
-                            for (var j = 0; j < this.settings.length; j++) {
+                            for (j = 0; j < this.settings.length; j++) {
                                 if (j != i && this.settings[j].part == PARTS.PROFILE && this.settings[j].profile >= num && this.settings[j].profile > 0) {
                                     this.settings[j].profile--;
                                 }
@@ -264,7 +265,7 @@ SelectScreen.prototype.draw = function() {
                 var interval = 230 / 5;
                 var rows = Math.ceil((4 + ALPHABET.length) / perRow);
                 ui.ctx.font = '24px Flipbash';
-                for (var j = 0; j < ALPHABET.length; j++) {
+                for (j = 0; j < ALPHABET.length; j++) {
                     var row = Math.floor(j / perRow);
                     var column = j % perRow;
                     ui.ctx.fillStyle = j == settings.frame ? 'white' : '#666';
@@ -318,7 +319,7 @@ SelectScreen.prototype.draw = function() {
                         settings.newProfile = settings.newProfile.substring(0, settings.newProfile.length - 1);
                     }
                     else if (settings.frame > ALPHABET.length) {
-                        if (settings.newProfile.length == 0) {
+                        if (settings.newProfile.length === 0) {
                             settings.error = 'Invalid Name';
                         }
                         else if (PROFILE_DATA[settings.newProfile]) {
@@ -362,13 +363,13 @@ SelectScreen.prototype.draw = function() {
                 while (!this.isOpen(prev));
 
                 // Previous image
-                var preview = GetImage(PLAYER_DATA[prev].preview);
+                preview = GetImage(PLAYER_DATA[prev].preview);
                 var scale = 75 / preview.height;
                 ui.ctx.drawImage(preview, preview.width / 2, 0, preview.width / 2, preview.height, x - 115, y + 20, preview.width * scale / 2, 75);
 
                 // Next image
                 preview = GetImage(PLAYER_DATA[next].preview);
-                var scale = 50 / preview.height;
+                scale = 50 / preview.height;
                 ui.ctx.drawImage(preview, 0, 0, preview.width / 2, preview.height, x + 115 - preview.width * scale / 2, y + 20, preview.width * scale / 2, 75);
 
                 ui.ctx.globalAlpha = 1;
@@ -398,7 +399,7 @@ SelectScreen.prototype.draw = function() {
                 ui.ctx.fillText(robot.weapons[1], x - 100, y + 285);
 
                 // Indicator
-                var dx = Math.cos(this.frame * Math.PI / 15);
+                dx = Math.cos(this.frame * Math.PI / 15);
                 ui.ctx.drawImage(GetImage('uiArrowLeft'), x - 130 - 5 * dx, y - 10);
                 ui.ctx.drawImage(GetImage('uiArrowRight'), x + 79 + 5 * dx, y - 10);
 
@@ -415,13 +416,13 @@ SelectScreen.prototype.draw = function() {
                 // Choose the robot
                 if (input.button(SELECT_1) == 1 || input.button(SELECT_2) == 1) {
                     settings.part++;
-                    for (var k = 0; k < this.open.length; k++) {
+                    for (k = 0; k < this.open.length; k++) {
                         if (this.open[k] == settings.robot) {
                             this.open.splice(k, 1);
                             break;
                         }
                     }
-                    for (var k = 0; k < this.settings.length; k++) {
+                    for (k = 0; k < this.settings.length; k++) {
                         if (k != i) {
                             if (this.settings[k].part <= PARTS.ROBOT) {
                                 if (!this.isOpen(this.settings[k].robot)) {
@@ -448,7 +449,7 @@ SelectScreen.prototype.draw = function() {
                 ui.ctx.fillText(settings.profile, x, y - 160);
 
                 // Preview image
-                var preview = GetImage(robot.preview);
+                preview = GetImage(robot.preview);
                 ui.ctx.drawImage(preview, x - preview.width / 2 + 10, y - preview.height / 2);
 
                 // Name
@@ -474,7 +475,7 @@ SelectScreen.prototype.draw = function() {
                 ui.ctx.fillText(robot.skills[settings.ability].name, x, y + 250);
 
                 // Indicator
-                var dx = Math.cos(this.frame * Math.PI / 15);
+                dx = Math.cos(this.frame * Math.PI / 15);
                 ui.ctx.drawImage(GetImage('uiArrowLeft'), x - 130 - 5 * dx, y + 170);
                 ui.ctx.drawImage(GetImage('uiArrowRight'), x + 79 + 5 * dx, y + 170);
 
@@ -517,7 +518,7 @@ SelectScreen.prototype.draw = function() {
             case PARTS.READY:
 
                 // Preview image
-                var preview = GetImage(robot.preview);
+                preview = GetImage(robot.preview);
                 ui.ctx.drawImage(preview, x - preview.width / 2, y - 40 - preview.height / 2);
 
                 // Name
@@ -549,7 +550,7 @@ SelectScreen.prototype.draw = function() {
     // Start the game when everyone is ready
     var allReady = true;
     var oneReady = false;
-    for (var k = 0; k < players.length; k++) {
+    for (k = 0; k < players.length; k++) {
         if (this.settings[k].part != PARTS.READY && this.settings[k].part > PARTS.CONNECTED) {
             allReady = false;
         }
@@ -559,8 +560,8 @@ SelectScreen.prototype.draw = function() {
     }
     if (allReady && oneReady) {
         cleanPlayerList();
-        for (var i = 0; i < players.length; i++) {
-            var robot = players[i];
+        for (i = 0; i < players.length; i++) {
+            robot = players[i];
         }
         gameScreen = new GameScreen(false);
     }

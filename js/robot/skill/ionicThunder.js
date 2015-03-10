@@ -82,5 +82,5 @@ function skillIonicThunder(player) {
             this.speed = this.baseSpeed;
             this.defense = 1;
         }
-    }
+    };
 }

@@ -15,7 +15,7 @@ gamepadActive  = true;
  * @param {Number} y - vertical coordinate
  */
 function getClosestPlayer(x, y) {
-    var r = undefined;
+    var r;
     var min = 9999999;
     for (var i = 0; i < this.players.length; i++) {
         var robot = this.players[i];

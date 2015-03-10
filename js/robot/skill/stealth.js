@@ -25,5 +25,5 @@ function skillStealth(player) {
             this.speed = this.baseSpeed * 1.5;
             this.chargeMultiplier = 2;
         }
-    }
+    };
 }

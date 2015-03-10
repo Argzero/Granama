@@ -35,8 +35,5 @@ Arc.prototype.collides = function(target) {
     var dSq = dif.lengthSq();
     var thickness = (this.thickness + target.width) / 2;
     
-    return dSq < sq(this.radius + thickness) 
-        && dSq > sq(this.radius - thickness) 
-        && this.endTrig.dot(dif) <= 0
-        && this.startTrig.dot(dif) <= 0;
-}
+    return dSq < sq(this.radius + thickness) && dSq > sq(this.radius - thickness) && this.endTrig.dot(dif) <= 0 && this.startTrig.dot(dif) <= 0;
+};

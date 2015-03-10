@@ -26,8 +26,9 @@ function skillOverdrive(player) {
         }
 
         // Update the alphas of copies and remove them when fully transparent
+        var copy;
         for (var i = 0; i < this.copies.length; i++) {
-            var copy = this.copies[i];
+            copy = this.copies[i];
 
             // Update the alpha
             copy.alpha -= 0.01;
@@ -41,8 +42,8 @@ function skillOverdrive(player) {
         if (this.skillDuration > 0) {
 
             // Make a new copy every 5 frames
-            if (this.skillDuration % 10 == 0) {
-                var copy = new Sprite('pSpeedBody', this.pos.x, this.pos.y);
+            if (this.skillDuration % 10 === 0) {
+                copy = new Sprite('pSpeedBody', this.pos.x, this.pos.y);
                 copy.rotation = this.rotation.clone();
                 copy.alpha = 0.9;
                 copy.postChildren = this.postChildren;

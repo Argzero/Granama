@@ -33,5 +33,5 @@ function skillAngelicAssault(player) {
             this.revSpeed = this.revBase;
             this.prismData.sprite = 'prismBeam';
         }
-    }
+    };
 }

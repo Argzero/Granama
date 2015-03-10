@@ -12,6 +12,8 @@ function MusicManager() {
  */
 MusicManager.prototype.updateMusic = function(song) {
 
+    var newVolume;
+
     // Player must be alive for the music to play
     if (song) {
 
@@ -29,7 +31,7 @@ MusicManager.prototype.updateMusic = function(song) {
         if (this.current != song) {
             if (this.music && this.music.volume) {
                 this.music.volume = Math.max(0, this.music.volume - 0.005);
-                if (this.music.volume == 0) this.music.pause();
+                if (this.music.volume === 0) this.music.pause();
             }
             else {
                 this.current = song;
@@ -40,7 +42,7 @@ MusicManager.prototype.updateMusic = function(song) {
 
         // Gradually get louder after loading
         else if (this.music.volume < 1) {
-            var newVolume = this.music.volume + 0.005;
+            newVolume = this.music.volume + 0.005;
             if (newVolume > 1) {
                 newVolume = 1;
             }
@@ -50,7 +52,7 @@ MusicManager.prototype.updateMusic = function(song) {
 
     // Fade out and then stop when the player dies
     else if (this.music) {
-        var newVolume = this.music.volume - 0.002;
+        newVolume = this.music.volume - 0.002;
         if (newVolume <= 0) {
             this.music.pause();
             this.music = false;
@@ -69,7 +71,7 @@ MusicManager.prototype.updateMusic = function(song) {
  */
 MusicManager.prototype.isMusicPlaying = function() {
     return this.music !== undefined;
-}
+};
 
 /*
 // Move to the end screen

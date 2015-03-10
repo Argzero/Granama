@@ -66,8 +66,8 @@ function TargeterParticle(target) {
     this.super('pCommandoTarget', target.pos.x, target.pos.y);
        
     this.pos = target.pos;
-    this.target = target,
-    this.lifespan = TARGET_LIFESPAN,
+    this.target = target;
+    this.lifespan = TARGET_LIFESPAN;
     this.updateSize();
 }
 
@@ -79,7 +79,7 @@ TargeterParticle.prototype.updateSize = function() {
     var h = 0.9 * this.target.height;
     var s = Math.min(w, h);
     this.setScale(s / this.width, s / this.height);
-}
+};
 
 /**
  * Updates the particle, changing size and switching targets
@@ -109,4 +109,4 @@ TargeterParticle.prototype.update = function() {
     if (this.lifespan <= 0) {
         this.expired = true;
     }
-}
+};

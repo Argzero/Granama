@@ -124,7 +124,6 @@ Robot.prototype.damage = function(amount, source) {
         this.shield = 0;
         this.damageTaken += amount;
         this.health -= amount;
-        if (isNaN(this.health)) debugger;
         this.dead = this.health <= 0;
         if (this.dead) {
             source.giveKill(this);
@@ -141,7 +140,7 @@ Robot.prototype.damage = function(amount, source) {
  */
 Robot.prototype.giveKill = function(victim) {
     this.kills++;
-}
+};
 
 /**
  * Heals the robot
@@ -201,7 +200,7 @@ Robot.prototype.buff = function(name, multiplier, duration) {
  * @returns {boolean} true if stunned, false otherwise
  */
 Robot.prototype.isStunned = function() {
-    return this.buffs['stun'] !== undefined || this.knockbackDir.lengthSq() > 0;
+    return this.buffs.stun !== undefined || this.knockbackDir.lengthSq() > 0;
 };
 
 /**
@@ -210,7 +209,7 @@ Robot.prototype.isStunned = function() {
  * @param duration duration of the stun
  */
 Robot.prototype.stun = function(duration) {
-    this.buffs['stun'] = {duration: duration};
+    this.buffs.stun = {duration: duration};
 };
 
 /**

@@ -35,5 +35,5 @@ function skillCriticalBlast(player) {
                 gameScreen.bullets.push(shell);
             }
         }
-    }
+    };
 }

@@ -16,8 +16,6 @@ extend('Sprite', 'Transform');
 function Sprite(name, x, y) {
     this.super();
     
-    if (name !== name) debugger;
-    
     this.src = name;
     this.sprite = images.get(name);
     this.parent = undefined;
@@ -37,7 +35,7 @@ function Sprite(name, x, y) {
         this.sprite.onload = function() {
             this.sprite.width = this.width;
             this.sprite.height = this.height;
-        }
+        };
     }
     
     /** 
@@ -111,7 +109,7 @@ Sprite.prototype.child = function(parent, rotate) {
     this.parent = parent;
     this.keepRotate = rotate;
     return this;
-}
+};
 
 /**
  * Draws the sprite using it's given transformation
@@ -120,7 +118,6 @@ Sprite.prototype.child = function(parent, rotate) {
  */
 Sprite.prototype.draw = function(camera) {
     if (this.hidden) return;
-    if (!this.pos) debugger;
     
     camera.ctx.globalAlpha *= this.alpha;
     camera.ctx.translate(this.pos.x, this.pos.y);

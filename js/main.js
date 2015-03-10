@@ -75,7 +75,7 @@ depend('robot/enemy/orbiter');
 depend('robot/enemy/spinner');
 
 // Background tile sprite
-var TILE = undefined;
+var TILE;
 
 // Control mapping keys
 var MOVE = 'move';
@@ -97,8 +97,8 @@ var DOWN_2 = 'down2';
 var LEFT_2 = 'left2';
 var RIGHT_2 = 'right2';
 
-var camera = undefined;
-var gameScreen = undefined;
+var camera;
+var gameScreen;
 var constants = false;
 onLoaderDone = function() {
     if (!constants) {
@@ -155,7 +155,7 @@ onLoaderDone = function() {
     }, 1000 / 60);
 
     resizeCanvas();
-}
+};
 
 /**
  * Prevents scrolling the page using the scroll wheel
@@ -165,7 +165,7 @@ onLoaderDone = function() {
 window.onmousewheel = document.onmousewheel = function(e) {
     e.preventDefault();
     e.returnValue = false;
-}
+};
 
 /**
  * Updates the resolution of the canvas to match the
@@ -173,9 +173,7 @@ window.onmousewheel = document.onmousewheel = function(e) {
  */
 function resizeCanvas() {
     camera.canvas.width = ui.canvas.width = camera.canvas.clientWidth;
-    camera.canvas.height = ui.canvas.height = "innerHeight" in window
-        ? window.innerHeight
-        : document.documentElement.offsetHeight;
+    camera.canvas.height = ui.canvas.height = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
     WINDOW_WIDTH = camera.canvas.width - SIDEBAR_WIDTH;
     WINDOW_HEIGHT = camera.canvas.height;
     if (gameScreen && gameScreen.draw) {

@@ -22,5 +22,5 @@ function skillDecimation(player) {
             this.fireData.sprite = 'fire';
             this.laserData.sprite = 'laser';
         }
-    }
+    };
 }

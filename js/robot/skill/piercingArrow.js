@@ -31,7 +31,7 @@ function skillPiercingArrow(player) {
             arrow.n1 = arrow.n3.clone().rotate(COS_60, SIN_60);
             gameScreen.bullets.push(arrow);
         }
-    }
+    };
 }
 
 // Amount of knockback to use for the arrow

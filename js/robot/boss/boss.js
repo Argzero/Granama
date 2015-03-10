@@ -31,7 +31,7 @@ function Boss(name, x, y, type, health, speed, range, exp, rank, patternMin, pat
  */
 Boss.sum = function() {
     var c = gameScreen.bossCount;
-    return ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000)
+    return ((c + 1) / 2) * (c + 2) * (1 + gameScreen.score / 1000);
 };
 
 /**

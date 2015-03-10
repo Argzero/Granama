@@ -1,0 +1,22 @@
+{
+  "name": "Granama",
+  "version": "1.0.0",
+  "description": "A top-down arcade shooter game",
+  "main": "js/server.js",
+  "scripts": {
+    "test": "jshint ./js/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Eniripsa96/Granama.git"
+  },
+  "author": "Steven Sucy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Eniripsa96/Granama/issues"
+  },
+  "homepage": "https://github.com/Eniripsa96/Granama",
+  "devDependencies": {
+    "jshint": "^2.6.3"
+  }
+}

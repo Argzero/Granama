@@ -75,15 +75,16 @@ PlayerAngel.prototype.applyUpdate = function() {
     var m = this.get('power');
 
     // Beam
-    this.prismData.damage = m * (2 + .8 * this.upgrades[PRISM_POWER_ID]);
+    this.prismData.damage = m * (2 + 0.8 * this.upgrades[PRISM_POWER_ID]);
     this.prismData.size = rand(3) / 3 + 1;
     this.gun(this.prismData);
     
     // Counts the number of allies in the aura that can receive benefits
     var affected = [];
     var radiusSq = sq(this.getAuraRadius());
-    for(var k = 0; k < players.length; k++){
-        var player = players[k];
+    var k, player;
+    for(k = 0; k < players.length; k++){
+        player = players[k];
         
         // Angel always counts, regardless of stats
         if (player == this) affected.push(player);
@@ -97,8 +98,8 @@ PlayerAngel.prototype.applyUpdate = function() {
     }
 
     // Apply auras to affected allies
-    for (var k = 0; k < affected.length; k++) {
-        var player = affected[k];
+    for (k = 0; k < affected.length; k++) {
+        player = affected[k];
 
         if (this.staticActive) {
             player.buff('shieldBuff', 1 + (3 + this.upgrades[STATIC_AURA_ID]) / affected.length, 60);
@@ -110,17 +111,17 @@ PlayerAngel.prototype.applyUpdate = function() {
 
     // Apply auras to affected enemies
     if (this.staticActive) {
-        for (var k = 0; k < gameScreen.robots.length; k++) {
+        for (k = 0; k < gameScreen.robots.length; k++) {
             var r = gameScreen.robots[k];
             
             // Make sure it's a valid enemy
-            if ((r.type & Robot.MOBILE) == 0) continue;
+            if ((r.type & Robot.MOBILE) === 0) continue;
         
             // Check to make sure they're in range
             if (r.pos.distanceSq(this.pos) < radiusSq) {
 
                 // Slow the enemy
-                enemy.buff('speed', .9 - (.05 * this.upgrades[STATIC_AURA_ID]), 30);
+                enemy.buff('speed', 0.9 - (0.05 * this.upgrades[STATIC_AURA_ID]), 30);
             }
         }
     }
@@ -148,4 +149,4 @@ PlayerAngel.prototype.onAuraDraw = function(camera) {
         camera.ctx.fill();
     }
     camera.ctx.globalAlpha /= 0.3;
-}
+};

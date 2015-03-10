@@ -30,5 +30,5 @@ function skillWaveburst(player) {
                 gameScreen.bullets.push(laser);
             }
         }
-    }
+    };
 }

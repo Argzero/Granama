@@ -50,7 +50,8 @@ function HiveQueenBoss(x, y) {
 
     // Attack pattern 1 - Backwards shooting
     this.setMovement(1, movement.backwards);
-    for (var i = 0; i < 2; i++) {
+    var i;
+    for (i = 0; i < 2; i++) {
         this.addWeapon(weapon.gun, {
             sprite: 'stinger',
             damage: damageScale * 3,
@@ -65,7 +66,7 @@ function HiveQueenBoss(x, y) {
 
     // Attack pattern 2 - X Laser
     this.setMovement(2, movement.basic);
-    for (var i = 0; i < 2; i++) {
+    for (i = 0; i < 2; i++) {
         this.addWeapon(weapon.gun, {
             sprite     : 'bossLaser',
             damage     : damageScale * 0.2,

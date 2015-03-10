@@ -20,7 +20,6 @@ function Transform() {
  * @returns {Transform} the Transform object
  */
 Transform.prototype.moveTo = function(x, y) {
-    if (!this.pos) debugger;
     this.pos.x = x;
     this.pos.y = y;
     return this;
@@ -212,7 +211,7 @@ Transform.prototype.applyRect = function(rect) {
  */
 Transform.prototype.distance = function(transform) {
     return transform.pos.distance(this.pos);
-}
+};
 
 /**
  * Finds the squared distance between two transforms
@@ -223,4 +222,4 @@ Transform.prototype.distance = function(transform) {
  */
 Transform.prototype.distance = function(transform) {
     return transform.pos.distanceSq(this.pos);
-}
+};

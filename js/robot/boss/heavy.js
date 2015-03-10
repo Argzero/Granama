@@ -56,7 +56,8 @@ function HeavyBoss(x, y) {
     // Attack pattern 1 - Minigun/Rockets
     this.setRange(1, 400);
     this.setMovement(1, movement.basic);
-    for (var i = 0; i < 2; i++) {
+    var i;
+    for (i = 0; i < 2; i++) {
         this.addWeapon(weapon.gun, {
             sprite: 'bullet',
             damage: 0.5 * damageScale,
@@ -69,7 +70,7 @@ function HeavyBoss(x, y) {
             target: Robot.PLAYER
         }, 1);
     }
-    for (var i = 0; i < 2; i++) {
+    for (i = 0; i < 2; i++) {
         this.addWeapon(weapon.gun, {
             sprite   : 'rocket',
             damage   : 4 * damageScale,
@@ -88,7 +89,7 @@ function HeavyBoss(x, y) {
     // Attack pattern 2 - Homing rockets
     this.setRange(2, 600);
     this.setMovement(2, movement.basic);
-    for (var i = 0; i < 2; i++) {
+    for (i = 0; i < 2; i++) {
         this.addWeapon(weapon.gun, {
             sprite   : 'rocket',
             damage   : 4 * damageScale,
@@ -114,12 +115,12 @@ function HeavyBoss(x, y) {
  * depending on its attack pattern.
  */
 HeavyBoss.prototype.onUpdate = function() {
-    if (this.pattern != 0 && this.coverOffset < 45) {
+    if (this.pattern !== 0 && this.coverOffset < 45) {
         this.coverOffset++;
         this.coverRight.move(-1, 0);
         this.coverLeft.move(1, 0);
     }
-    else if (this.pattern == 0 && this.coverOffset > 0) {
+    else if (this.pattern === 0 && this.coverOffset > 0) {
         this.coverOffset--;
         this.coverRight.move(1, 0);
         this.coverLeft.move(-1, 0);

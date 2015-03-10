@@ -29,7 +29,7 @@ Mine.prototype.update = function() {
     if (this.lifespan <= 0 || (closest && closest.pos.distanceSq(this.pos) < sq(this.width + closest.width))) {
         this.explode();
     }
-}
+};
 
 /**
  * A mine taking damage causes it to explode
@@ -39,7 +39,7 @@ Mine.prototype.update = function() {
  */
 Mine.prototype.damage = function(amount, source) {
     this.explode();
-}
+};
 
 /**
  * Blows up the mine, dealing damage to nearby targets
@@ -58,4 +58,4 @@ Mine.prototype.explode = function() {
         }
     }
     this.expired = true;
-}
+};

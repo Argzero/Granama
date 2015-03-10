@@ -72,14 +72,14 @@ ConvexCollider.prototype.collides = function(collider) {
                     var uNumerator = (q.x - p.x) * r.y - (q.y - p.y) * r.x;
                     var denominator = r.cross(s);
 
-                    if (uNumerator == 0 && denominator == 0) {
+                    if (uNumerator === 0 && denominator === 0) {
                         if (((q.x - p.x < 0) != (q.x - p2.x < 0) != (q2.x - p.x < 0) != (q2.x - p2.x < 0)) ||
                             ((q.y - p.y < 0) != (q.y - p2.y < 0) != (q2.y - p.y < 0) != (q2.y - p2.y < 0))) {
                             return true;
                         }
                     }
 
-                    else if (denominator != 0) {
+                    else if (denominator !== 0) {
                         var u = uNumerator / denominator;
                         var t = ((q.x - p.x) * s.y - (q.y - p.y) * s.x) / denominator;
 
@@ -94,8 +94,6 @@ ConvexCollider.prototype.collides = function(collider) {
                 }
             }
             return inside || collider.isInside(this.points[0]);
-
-            break;
 
         // Collision with a circle
         case CircleCollider.typeId:

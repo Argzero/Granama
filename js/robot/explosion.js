@@ -25,7 +25,7 @@ Explosion.prototype.draw = function() {
     if (this.frame >= 10) {
         this.expired = true;
     }
-}
+};
 
 /**
  * Represents a fancy explosion used for mine and rocket explosions
@@ -75,10 +75,11 @@ RocketExplosion.prototype.draw = function() {
     this.frame++;
 
     // Clear update flag
-    for (var i = 0; i < this.pieces.length; i++) {
+    var i;
+    for (i = 0; i < this.pieces.length; i++) {
         this.pieces[i].updated = false;
     }
-    for (var i = 0; i < this.pieces.length; i++) {
+    for (i = 0; i < this.pieces.length; i++) {
         if (!this.pieces[i].updated) {
             this.pieces[i].updated = true;
             this.pieces[i].update(this);
@@ -87,7 +88,7 @@ RocketExplosion.prototype.draw = function() {
 
     // Draw the pieces
     this.expired = true;
-    for (var i = 0; i < this.pieces.length; i++) {
+    for (i = 0; i < this.pieces.length; i++) {
         if (!this.pieces[i].expired) {
             this.pieces[i].draw(camera);
             this.expired = false;
@@ -182,7 +183,7 @@ function updateBit(explosion) {
     this.setScale(size, size);
 
     // Spawn smoke trail
-    if (this.alpha > 0.4 && this.frame % 3 == 0) {
+    if (this.alpha > 0.4 && this.frame % 3 === 0) {
         explosion.pieces.splice(8, 0, new ExplosionPiece('explodeSmoke' + (rand(4) + 1), 8, this.pos.x, this.pos.y, this.size.x * this.width, new Vector(0, 0), this.alpha, 0.02, 20, false));
     }
 }

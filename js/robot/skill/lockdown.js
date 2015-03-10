@@ -57,5 +57,5 @@ function skillLockdown(player) {
         else if (this.charge > 0) {
             this.charge -= 2 * chargeRate;
         }
-    }
+    };
 }

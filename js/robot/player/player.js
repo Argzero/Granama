@@ -87,7 +87,7 @@ Player.prototype.giveExp = function(amount) {
             this.onLevel();
         }
     }
-}
+};
 
 /**
  * Updates the player with shared functionality
@@ -134,7 +134,7 @@ Player.prototype.update = function() {
     if (this.skillDuration > 0) {
         this.skillDuration--;
     }
-    else if (this.skillCd > 0 && this.skillDuration == 0) {
+    else if (this.skillCd > 0 && this.skillDuration === 0) {
         this.skillCd--;
     }
 
@@ -170,8 +170,9 @@ Player.prototype.updateDead = function() {
 
     // See if a player is in range to rescue the player
     var inRange = false;
-    for (var i = 0; i < players.length; i++) {
-        var p = players[i];
+    var i, p;
+    for (i = 0; i < players.length; i++) {
+        p = players[i];
         if (p.dead) continue;
         if (this.pos.distanceSq(p.pos) < 10000) {
             inRange = true;
@@ -184,9 +185,9 @@ Player.prototype.updateDead = function() {
         if (this.rescue <= 0) {
             this.health = this.maxHealth * 0.5;
             this.rescue = 1;
-
-            for (var i = 0; i < players.length; i++) {
-                var p = players[i];
+   
+            for (i = 0; i < players.length; i++) {
+                p = players[i];
                 if (p.dead) continue;
                 if (this.pos.distanceSq(p.pos) < 10000) {
                     p.rescues++;
@@ -238,7 +239,7 @@ Player.prototype.isInRange = function() {
 Player.prototype.giveKill = function(victim) {
     this.kills++;
     this.killTypes[victim.type]++;
-}
+};
 
 /**
  * Submits the profile stats for the player
