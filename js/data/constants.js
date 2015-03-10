@@ -193,6 +193,8 @@ SPAWN_DATA = [
     10, 5, HeavyMedic,
     30, 2, LightGrabber,
     20, 3, HeavyGrabber,
+    30, 1, LightRocketer,
+    15, 2, HeavyRocketer,
     1, 3, Turreter,
     1, 3, Railer,
     1, 3, Paladin,

@@ -72,6 +72,7 @@ depend('robot/enemy/gunner');
 depend('robot/enemy/medic');
 depend('robot/enemy/melee');
 depend('robot/enemy/orbiter');
+depend('robot/enemy/rocketer');
 depend('robot/enemy/spinner');
 
 // Background tile sprite
