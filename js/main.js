@@ -34,6 +34,7 @@ depend('robot/explosion');
 depend('robot/movement');
 depend('robot/pad');
 depend('robot/plus');
+depend('robot/reticleParticle');
 depend('robot/robot');
 
 // Weapon scripts

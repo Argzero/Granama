@@ -15,6 +15,8 @@ depend('lib/2d/vector');
  * @param {Number}    range   - expiring range of the bullet
  * @param {boolean}   pierce  - whether or not the bullet pierces through robots
  * @param {Number}    target  - ID of the robot group this bullet hits (see Robot)
+ *
+ * @constructor
  */
 extend('Projectile', 'Sprite');
 function Projectile(name, x, y, shooter, gun, speed, angle, damage, range, pierce, target) {

@@ -154,20 +154,59 @@ var weapon = {
         }
     },
 
-    /**
-     * Spreads the bullet into multiple bullets based on the weapon data. This uses these values:
-     *  <ul>
-     *     <li>{number} [spread] - the number of bullets to spread</li>
+	/**
+	 * Gives a warning crosshair where a missile is going to be fired before
+	 * creating an explosion that deals damage in the area and applies knockback
+	 *
+	 * <ul>
+     *     <li>{number}   target           - the ID of the target group the bullet hits</li>
+     *     <li>{number}   rate             - the number of frames between shots</li>
+     *     <li>{number}   damage           - the damage dealt by the bullet</li>
+     *     <li>{number}   range            - the minimum range to start firing from</li>
+     *     <li>{string}   [sprite]         - the name of the explosion type</li>
+	 *     <li>{number}   [chargeTime]     - time in frames before the explosion happens</li>
+     *     <li>{number}   [dx]             - horizontal position offset assuming no rotation</li>
+     *     <li>{number}   [dy]             - vertical position offset assuming no rotation</li>
+     *     <li>{Robot}    [shooter]        - the actual shooter of the bullet</li>
+     *     <li>{Array}    [buffs]          - buffs to apply on hit { stat, multiplier, duration }</li>
      * </ul>
-     *
-     * @param bullet
-     * @param data
-     */
-    spread: function(bullet, data) {
-        if (data.spread) {
-            bullet.spread(data.spread, data.list);
-        }
-    },
+	 *
+	 * @param {Object} data - weapon data
+	 */
+	artillery: function(data) {
+		
+		// Release the mark
+		if (weapon.checkTime(data, this.isInRange(data.range))) {
+			this.chargeTimer = data.chargeTime || 60;
+			
+			// Get the position based on the target mode
+			var closest = gameScreen.getClosest(this.pos, data.target || Robot.PLAYER);
+			var pos = data.fromSelf ? 
+					weapon.getPosition(this, data).rotatev(this.getWorldRotation()).addv(this.getWorldPos()) : 
+					closest.pos.addv(new Vector(data.dx || 0, data.dy || 0).rotate(closest.rotation.x, closest.rotation.y));
+			
+			// Set up the data needed to set off the explosion
+			var artilleryData = {
+				pos: pos,
+				damage: data.damage,
+				radius: data.radius,
+				knockback: data.knockback,
+				group: data.target || Robot.PLAYER,
+				shooter: data.shooter || this,
+				type: data.type || 'Enemy',
+				explode: projEvents.rocketExpire,
+				applyBuffs: Projectile.prototype.applyBuffs
+			};
+			
+			// Offset the position if applicable
+			if (data.randX) artilleryData.pos.x += rand(data.randX);
+			if (data.randY) artilleryData.pos.y += rand(data.randY);
+			
+			// Create the particle
+			this.artilleryParticle = new ReticleParticle(data.sprite || 'EnemyTarget', artilleryData.pos, this.chargeTimer, artilleryData);
+			gameScreen.particles.push(this.artilleryParticle);
+		}
+	},
 
     /**
      * A simple gun weapon that fires one or more bullets
