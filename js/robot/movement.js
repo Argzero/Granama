@@ -6,7 +6,7 @@ var movement = {
      * for the given enemy
      */
     getTargetPlayer: function(enemy) {
-        var player = getClosestPlayer(enemy.pos);
+        var player = getClosestPlayer(enemy.pos.x, enemy.pos.y);
         if (player) {
             enemy.temp = false;
             return player;

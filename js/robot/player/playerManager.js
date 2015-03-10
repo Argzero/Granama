@@ -20,7 +20,7 @@ function getClosestPlayer(x, y) {
     for (var i = 0; i < this.players.length; i++) {
         var robot = this.players[i];
         if (robot.health <= 0 || robot.stealth) continue;
-        var dSq = (robot.x - x) * (robot.x - x) + (robot.y - y) * (robot.y - y);
+        var dSq = (robot.pos.x - x) * (robot.pos.x - x) + (robot.pos.y - y) * (robot.pos.y - y);
         if (dSq < min) {
             min = dSq;
             r = robot;

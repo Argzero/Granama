@@ -18,7 +18,7 @@ function skillStealth(player) {
         }
 		
         // Update buffs
-		this.stealth = this.skillDuration > 0;
+		this.stealth = this.skillDuration > 0 && !this.sword;
         this.speed = this.baseSpeed;
         this.chargeMultiplier = 1;
         if (this.skillDuration > 0) {
