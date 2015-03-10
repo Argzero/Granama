@@ -151,7 +151,7 @@ PLAYER_DATA = [
         skills : [
             {name: 'Angelic Assault', callback: skillAngelicAssault},
             {name: 'Aura Blast', callback: skillAuraBlast},
-            {name: 'Medic', callback: skillRepulse}
+            {name: 'Repulsar', callback: skillRepulse}
         ]
     },
     {

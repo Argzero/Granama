@@ -21,7 +21,6 @@ function LoadingScreen() {
         'abilityLaser',
         'abilityLaser Bomb',
         'abilityLock Down',
-        'abilityMedic',
         'abilityMissile',
         'abilityMissile Barrage',
         'abilityOverdrive',
@@ -30,6 +29,7 @@ function LoadingScreen() {
         'abilityPlus',
         'abilityReflect',
         'abilityReflector',
+        'abilityRepulsar',
         'abilityShell',
         'abilityStasis',
         'abilitySweeping Blade',
@@ -404,7 +404,7 @@ LoadingScreen.prototype.draw = function() {
     camera.ctx.font = '50px Flipbash';
     camera.ctx.fillStyle = '#FFFFFF';
     var text = Math.round(100 * this.index / this.images.length) + '%';
-    camera.ctx.fillText(text, wx - camera.ctx.measureText(text) / 2, wy);
+    camera.ctx.fillText(text, wx - camera.ctx.measureText(text).width / 2, wy);
 
     // Draw the cursor
     ui.drawCursor();
