@@ -14,13 +14,13 @@ gamepadActive  = true;
  * @param {Number} x - horizontal coordinate
  * @param {Number} y - vertical coordinate
  */
-function getClosestPlayer(x, y) {
+function getClosestPlayer(pos) {
     var r;
     var min = 9999999;
     for (var i = 0; i < this.players.length; i++) {
         var robot = this.players[i];
         if (robot.health <= 0 || robot.stealth) continue;
-        var dSq = (robot.pos.x - x) * (robot.pos.x - x) + (robot.pos.y - y) * (robot.pos.y - y);
+        var dSq = (robot.pos.x - pos.x) * (robot.pos.x - pos.x) + (robot.pos.y - pos.y) * (robot.pos.y - pos.y);
         if (dSq < min) {
             min = dSq;
             r = robot;
