@@ -20,6 +20,7 @@ depend('lib/2d/vector');
 // Screen scripts
 depend('screen/controlsScreen');
 depend('screen/creditsScreen');
+depend('screen/endScreen');
 depend('screen/gameScreen');
 depend('screen/gameUI');
 depend('screen/loadScreen');

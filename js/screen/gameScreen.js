@@ -135,6 +135,12 @@ GameScreen.prototype.update = function() {
             p.submitStats();
         }
     }
+    else {
+        this.gameOver--;
+        if (this.gameOver <= 0) {
+            gameScreen = new EndScreen();
+        }
+    }
 };
 
 /**

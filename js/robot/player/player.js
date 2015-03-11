@@ -109,7 +109,7 @@ Player.prototype.update = function() {
         this.damageAlpha = 0.3;
     }
     else {
-        this.damageAlpha -= 0.02;
+        this.damageAlpha = Math.max(0, this.damageAlpha - 0.02);
     }
     this.lastHealth = now;
     
@@ -176,6 +176,8 @@ Player.prototype.update = function() {
  * Applies updates to the player while dead
  */
 Player.prototype.updateDead = function() {
+
+    this.damageAlpha = Math.max(0, this.damageAlpha - 0.02);
 
     // See if a player is in range to rescue the player
     var inRange = false;
@@ -255,8 +257,8 @@ Player.prototype.giveKill = function(victim) {
  * Submits the profile stats for the player
  */
 Player.prototype.submitStats = function() {
-    if (submitted) return false;
-    submitted = true;
+    if (this.submitted) return false;
+    this.submitted = true;
     
     this.profile.addStat(this.name, STAT.TOTAL_KILLS, this.kills);
     this.profile.addStat(this.name, STAT.TOTAL_DEATHS, this.deaths);
