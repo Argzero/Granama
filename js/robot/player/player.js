@@ -53,6 +53,7 @@ function Player(name, x, y, type, health, speed, healthScale, damageScale, shiel
     this.lastHelath    = 0;
     this.killTypes     = {};
     this.input         = undefined;
+    var submitted      = false;
 }
 
 /**
@@ -254,6 +255,9 @@ Player.prototype.giveKill = function(victim) {
  * Submits the profile stats for the player
  */
 Player.prototype.submitStats = function() {
+    if (submitted) return false;
+    submitted = true;
+    
     this.profile.addStat(this.name, STAT.TOTAL_KILLS, this.kills);
     this.profile.addStat(this.name, STAT.TOTAL_DEATHS, this.deaths);
     this.profile.addStat(this.name, STAT.TOTAL_RESCUES, this.rescues);

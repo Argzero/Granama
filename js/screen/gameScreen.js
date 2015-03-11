@@ -128,12 +128,11 @@ GameScreen.prototype.update = function() {
         if (players[i].health > 0) return;
     }
     if (!this.gameOver) {
-        this.gameOver = true;
+        this.gameOver = 300;
 
         for (i = 0; i < players.length; i++) {
             var p = players[i];
-            p.profile.setBest(p.name, STAT.BEST_SCORE, this.score);
-            p.profile.addList(p.name, STAT.LAST_10, 10, this.score);
+            p.submitStats();
         }
     }
 };
