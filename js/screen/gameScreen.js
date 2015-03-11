@@ -54,6 +54,8 @@ function GameScreen() {
     this.particles = [];
     this.bullets = [];
     this.robots = players.slice(0);
+    
+    this.shuffleBosses();
 }
 
 /**
@@ -342,6 +344,7 @@ GameScreen.prototype.checkSpawns = function() {
             if (this.timer >= 600) {
                 ui.setupUpgradeUI();
                 this.bossStatus = ACTIVE_NONE;
+                this.timer = 0;
             }
         }
         return;
