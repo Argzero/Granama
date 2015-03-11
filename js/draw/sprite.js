@@ -237,5 +237,5 @@ Sprite.prototype.yMax = function() {
  * @param {Sprite} sprite - sprite to compare against
  */
 Sprite.prototype.collides = function(sprite) {
-    return sprite.pos.distanceSq(this.pos) < sq((sprite.sprite.width * sprite.size.x + this.sprite.width * this.size.x) / 2);
+    return !sprite.hidden && !this.hidden && sprite.pos.distanceSq(this.pos) < sq((sprite.sprite.width * sprite.size.x + this.sprite.width * this.size.x) / 2);
 };

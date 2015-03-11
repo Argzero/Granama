@@ -1,6 +1,5 @@
 /**
- * A plus particle used for regenerative effects such as
- * Guardian's statis ability
+ * A dust particle used for burrowing units
  *
  * @param {number} x        - initial horizontal coordinate
  * @param {number} y        - initial vertical coordinate
@@ -8,21 +7,23 @@
  * @param {number} velY     - vertical velocity
  * @param {number} lifespan - how long the particle lasts
  */
-extend('Plus', 'Sprite');
-function Plus(x, y, velX, velY, lifespan) {
-    this.super('abilityPlus', x, y);
+extend('Dust', 'Sprite');
+function Dust(pos, vel, lifespan, size) {
+    this.super('dust', pos.x, pos.y);
     
-    this.velX = velX;
-    this.velY = velY;
+    this.vel = vel;
     this.lifespan = lifespan;
+    this.fullLife = lifespan;
+    this.setScale(size, size);
 }
 
 /**
  * Moves the particle each frame and marks it as
  * expired after its lifespan is up
  */ 
-Plus.prototype.update = function() {
-    this.move(this.velX, this.velY);
+Dust.prototype.update = function() {
+    this.move(this.vel.x, this.vel.y);
     this.lifespan--;
     this.expired = this.lifespan <= 0;
+    this.alpha = 0.5 + 0.5 * this.lifespan / this.fullLife;
 };

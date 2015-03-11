@@ -413,7 +413,7 @@ var weapon = {
             var pos = weapon.getPosition(this, data).addv(this.pos);
             var shockwave = new Shockwave(
                 this,
-                data.color1 || '#ff9933',
+                data.color1 || '#f93',
                 data.color2 || '#f70',
                 pos.x,
                 pos.y,

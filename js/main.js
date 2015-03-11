@@ -30,6 +30,7 @@ depend('screen/titleScreen');
 depend('screen/uiBox');
 
 // Robot scripts
+depend('robot/dust');
 depend('robot/explosion');
 depend('robot/movement');
 depend('robot/pad');
@@ -68,6 +69,7 @@ depend('robot/boss/hydra');
 depend('robot/boss/scorpion');
 
 // Enemy scripts
+depend('robot/enemy/ant');
 depend('robot/enemy/artillery');
 depend('robot/enemy/bomber');
 depend('robot/enemy/enemy');

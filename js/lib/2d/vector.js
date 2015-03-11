@@ -76,7 +76,7 @@ Vector.prototype.rotateTowards = function(target, rotation) {
     if (d > 0) this.rotatev(rotation);
     else this.rotate(rotation.x, -rotation.y);
 
-    if (n.dot(this) * d <= 0) {
+    if (n.dot(this) * d <= 0 && target.dot(this) > 0) {
         this.x = target.x;
         this.y = target.y;
     }

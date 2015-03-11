@@ -13,7 +13,7 @@ var movement = {
         }
         else {
             enemy.temp = enemy.temp;
-            while (!enemy.temp || enemy.temp.distanceSq(enemy.pos) < 90000) {
+            while (!enemy.temp || enemy.temp.distanceSq(enemy.pos) < 360000) {
                 enemy.temp = new Vector(rand(GAME_WIDTH), rand(GAME_HEIGHT));
             }
             return { pos: enemy.temp };
@@ -113,6 +113,97 @@ var movement = {
         }
     },
 
+    /**
+     * Burrows towards the target before popping back up, attacking, then
+     * wandering slowly while recharging
+     *
+     * Should have these values set:
+     * - {number} restSpeed          - how fast to move away while resting 
+     * - {number} shockwaveDamage    - damage to deal with the shockwave
+     * - {number} shockwaveRange     - range of the shockwave
+     * - {number} shockwaveKnockback - the knockback to apply with the shockwave
+     * - {number} attackTime         - how long to attack for after unburrowing
+     * - {number} restTime           - how long to rest for
+     */
+    burrow: function() {
+        
+        var i, vel, size;
+        var lifespan = 20;
+        
+        // Resting
+        if (this.resting > 0) {
+            var target = movement.getTargetPlayer(this);
+            this.lookAway(target.pos, this.turnVec);
+            this.pos.addv(this.forward().multiply(this.restSpeed, this.restSpeed));
+            this.resting--;
+        }
+        
+        // Attacking
+        else if (this.attacking > 0) {
+            this.attacking--;
+            this.movementHelper = movement.moveTowards;
+            this.movementHelper(movement.getTargetPlayer(this));
+            if (this.attacking <= 0) {
+                this.resting = this.restTime;
+            }
+        }
+        
+        // Start burrowing
+        else if (!this.burrowing)
+        {
+            for (i = 0; i < 30; i++) {
+                
+                vel = new Vector(rand(4) + 1);
+                vel.rotateAngle(rand(360) * Math.PI / 180);
+                
+                size = rand(this.width * 0.4) + this.width * 0.2;
+                
+                gameScreen.particles.push(new Dust(this.pos, vel, lifespan, size));
+            }
+            
+            this.burrowing = true;
+            this.hidden = true;
+        }
+        
+        // Burrow towards player
+        else 
+        {
+            this.movementHelper = movement.moveTowards;
+            this.movementHelper(movement.getTargetPlayer(this));
+            
+            // Particles while burrowing
+            vel = new Vector(rand(4) + 1);
+            vel.rotateAngle(rand(360) * Math.PI / 180);
+            size = rand(this.width * 0.4) + this.width * 0.2;
+            gameScreen.particles.push(new Dust(this.pos, vel, lifespan, size));
+            
+            // Unburrow
+            var target = movement.getTargetPlayer(this);
+            if (target && target.pos.distanceSq(this.pos) < sq(this.range + 25)) {
+                this.burrowing = false;
+                this.hidden = false;
+                this.attacking = this.attackTime;
+                for (i = 0; i < 2; i++) {
+                    gameScreen.bullets.push(new Shockwave(
+                        /* Shooter   */ this,
+                        /* Color 1   */ '#f93',
+                        /* Color 2   */ '#f70',
+                        /* Position  */ this.pos.x, this.pos.y,
+                        /* Speed     */ 10,
+                        /* Start     */ Math.PI * i,
+                        /* End       */ Math.PI * (i + 1),
+                        /* Radius    */ 30,
+                        /* Thickness */ 15,
+                        /* Damage    */ this.shockwaveDamage,
+                        /* Range     */ this.shockwaveRange,
+                        /* Knockback */ 0,
+                        /* Target    */ Robot.PLAYER
+                    ));
+                }
+            } 
+        }
+    },
+    
     /**
      * Movement pattern that moves normally until in range, then charges and collides with players
      */

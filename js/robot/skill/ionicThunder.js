@@ -31,15 +31,15 @@ function skillIonicThunder(player) {
             // Main beam
             var elapsed = this.charge * 2 - this.skillDuration;
             var laser = new Projectile(
-                'abilityCannon',
-                0, 0,
-                this, this,
-                10,
-                0,
-                elapsed * this.get('power') * 0.01,
-                399 + 50 * this.upgrades[RAIL_ID] + elapsed / 2,
-                true,
-                Robot.ENEMY
+                /* Sprite  */ 'abilityCannon',
+                /* Offset  */ 0, 0,
+                /* Shooter */this, this,
+                /* Speed   */ 10,
+                /* Angle   */ 0,
+                /* Damage  */ elapsed * this.get('power') * 0.01,
+                /* Range   */ 399 + 50 * this.upgrades[RAIL_ID] + elapsed / 2,
+                /* Pierce  */ true,
+                /* Target  */ Robot.ENEMY
             );
             laser.size.x = laser.size.y = 0.01 * elapsed;
             gameScreen.bullets.push(laser);
@@ -50,20 +50,19 @@ function skillIonicThunder(player) {
                 this.nextWaveIncrement -= 10;
                 for (var i = 0; i < 2; i++) {
                     var shockwave = new Shockwave(
-                        this,
-                        '#0ff',
-                        '#0bb',
-                        this.pos.x,
-                        this.pos.y,
-                        10,
-                        Math.PI * i,
-                        Math.PI * (i + 1),
-                        30,
-                        20,
-                        this.get('power'),
-                        100 + elapsed * 2,
-                        0,
-                        Robot.ENEMY
+                        /* Shooter   */ this,
+                        /* Color 1   */ '#0ff',
+                        /* Color 2   */ '#0bb',
+                        /* Position  */ this.pos.x, this.pos.y,
+                        /* Speed     */ 10,
+                        /* Start     */ Math.PI * i,
+                        /* End       */ Math.PI * (i + 1),
+                        /* Radius    */ 30,
+                        /* Thickness */ 20,
+                        /* Damage    */ this.get('power'),
+                        /* Range     */ 100 + elapsed * 2,
+                        /* Knockback */ 0,
+                        /* Target    */ Robot.ENEMY
                     );
                     gameScreen.bullets.push(shockwave);
                 }
