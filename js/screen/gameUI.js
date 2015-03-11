@@ -340,6 +340,8 @@ var ui = {
                 d.normalize().rotate(0, -1);
                 this.ctx.transform(d.x, d.y, -d.y, d.x, 0, 0);
                 this.ctx.drawImage(this.pointer, -this.pointer.width / 2, -this.pointer.height);
+                this.ctx.transform(d.x, -d.y, d.y, d.x, 0, 0);
+                this.ctx.translate(-halfX - d.x, -halfY - d.y);
             }
         }
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
