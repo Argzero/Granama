@@ -121,7 +121,7 @@ PlayerAngel.prototype.applyUpdate = function() {
             if (r.pos.distanceSq(this.pos) < radiusSq) {
 
                 // Slow the enemy
-                enemy.buff('speed', 0.9 - (0.05 * this.upgrades[STATIC_AURA_ID]), 30);
+                r.buff('speed', 0.9 - (0.05 * this.upgrades[STATIC_AURA_ID]), 30);
             }
         }
     }
