@@ -91,16 +91,17 @@ function HeavyBoss(x, y) {
     this.setMovement(2, movement.basic);
     for (i = 0; i < 2; i++) {
         this.addWeapon(weapon.gun, {
-            sprite   : 'rocket',
-            damage   : 4 * damageScale,
-            range    : 650,
-            rate     : 60,
-            dx       : -60 + 120 * i,
-            dy       : -35,
-            delay    : 30 * i,
-            speed    : 8,
-            target   : Robot.PLAYER,
-            templates: [
+            sprite     : 'rocket',
+            damage     : 4 * damageScale,
+            range      : 650,
+            rate       : 60,
+            dx         : -60 + 120 * i,
+            dy         : -35,
+            delay      : 30 * i,
+            speed      : 8,
+            angleOffset: Math.PI / 4 - i * Math.PI / 2,
+            target     : Robot.PLAYER,
+            templates  : [
                 //                     args: [type,    radius, knockback]
                 { name: 'setupRocket', args: ['Enemy', 100,    150] },
                 //                     args: [target,       rotSpeed]
