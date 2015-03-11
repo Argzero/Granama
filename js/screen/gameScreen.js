@@ -342,8 +342,6 @@ GameScreen.prototype.checkSpawns = function() {
         return;
     }
 
-    var x, y;
-
     // Boss spawning
     if (this.bossStatus == ACTIVE_NONE && this.score == this.bossScore) {
         this.bossStatus = ACTIVE_BOSS;
