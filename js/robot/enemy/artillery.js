@@ -47,7 +47,7 @@ function LightArtillery(x, y) {
 extend('HeavyArtillery', 'Enemy');
 function HeavyArtillery(x, y) {
     this.super(
-        /* sprite name */ 'enemyLightArtillery',
+        /* sprite name */ 'enemyHeavyArtillery',
         /* x position  */ x,
         /* y position  */ y,
         /* enemy type  */ Robot.MOB,
@@ -64,7 +64,7 @@ function HeavyArtillery(x, y) {
         damage: 2 * Enemy.sum(),
         rate  : 35,
         range : 425,
-        spread: rand((gameScreen.bossScore + 1) / 3),
+        spread: rand((gameScreen.bossCount + 1) / 3),
         dx    : 0,
         dy    : 53,
         target: Robot.PLAYER
