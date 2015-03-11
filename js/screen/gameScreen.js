@@ -39,8 +39,8 @@ function GameScreen() {
     this.playerMaxY = 9999;
     this.scrollX = (WINDOW_WIDTH - GAME_WIDTH) * 0.5;
     this.scrollY = (WINDOW_HEIGHT - GAME_HEIGHT) * 0.5;
-    this.targetX;
-    this.targetY;
+    this.targetX = 0;
+    this.targetY = 0;
     
     // Healing pads
     this.pads = [
