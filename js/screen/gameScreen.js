@@ -360,7 +360,7 @@ GameScreen.prototype.checkSpawns = function() {
         do {
             pos.x = rand(GAME_WIDTH - 200 + 100);
             pos.y = rand(GAME_HEIGHT - 200 + 100);
-            visible = x > -this.scrollX - 100 && x < -this.scrollX + 100 + WINDOW_WIDTH && y > -this.scrollY && y < -this.scrollY + 100 + WINDOW_HEIGHT;
+            visible = pos.x > -this.scrollX - 100 && pos.x < -this.scrollX + 100 + WINDOW_WIDTH && pos.y > -this.scrollY - 100 && pos.y < -this.scrollY + 100 + WINDOW_HEIGHT;
         }
         while (visible);
 
