@@ -26,8 +26,7 @@ function ScorpionBoss(x, y) {
     // Claw data
     this.leftClaw = new Sprite('bossFireClawLeft', 100, 70).child(this, true);
     this.rightClaw = new Sprite('bossFireClawRight', -100, 70).child(this, true);
-    this.postChildren.push(this.leftClaw);
-    this.postChildren.push(this.rightClaw);
+    this.postChildren.push(this.leftClaw, this.rightClaw);
     this.sword = false;
     this.changing = false;
     this.right = true;
@@ -105,7 +104,7 @@ function ScorpionBoss(x, y) {
  * Updates the visibility and the orientation
  * of the scorpion's claws each frame.
  */
-ScorpionBoss.prototype.onUpdate = function() {
+ScorpionBoss.prototype.onPreDraw = function() {
     
     // Update the tail
     this.tail.update();
