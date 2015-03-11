@@ -192,7 +192,7 @@ Player.prototype.updateDead = function() {
 
     // Apply rescue effects
     if (inRange) {
-        this.rescue -= 1 / 300;
+        this.rescue -= this.revSpeed;
         if (this.rescue <= 0) {
             this.health = this.maxHealth * 0.5;
             this.rescue = 1;

@@ -105,6 +105,9 @@ var DOWN_2 = 'down2';
 var LEFT_2 = 'left2';
 var RIGHT_2 = 'right2';
 
+// Modifier for frame rate
+var DELTA_TIME;
+
 var camera;
 var gameScreen;
 var constants = false;
@@ -151,16 +154,28 @@ onLoaderDone = function() {
     window.onresize = resizeCanvas;
 
     // Game loop
+    var lastTime = performance.now();
+    var interval = 100 / 6;
     window.setInterval(function() {
+    
+        // Reset the canvas elements
         window.scrollTo(0, 0);
         ui.clear();
+        
+        // Update time change
+        var now = performance.now();
+        var dt = now - lastTime;
+        lastTime = now;
+        DELTA_TIME = Math.min(dt / interval, 5);
+        
+        // Update/draw the screen
         if (gameScreen && gameScreen.draw) {
             if (gameScreen.update) {
                 gameScreen.update();
             }
             gameScreen.draw();
         }
-    }, 1000 / 60);
+    }, interval);
 
     resizeCanvas();
 };
