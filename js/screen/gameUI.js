@@ -16,7 +16,8 @@ var ui = {
         'defense'   : { img: 'Def',    positive: false, threshold: 1 },
         'shieldBuff': { img: 'Shield', positive: true,  threshold: 1 },
         'speed'     : { img: 'Speed',  positive: true,  threshold: 1 },
-        'healthBuff': { img: 'Hp',     positive: true,  threshold: 0 }
+        'healthBuff': { img: 'Hp',     positive: true,  threshold: 0 },
+        'flatHBuff' : { img: 'Hp',     positive: true,  threshold: 0 } 
     },
     pointer: undefined,
     

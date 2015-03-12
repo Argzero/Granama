@@ -227,6 +227,9 @@ Robot.prototype.updateRobot = function() {
     if (this.buffs.healthBuff) {
         this.heal(this.get('healthBuff') * this.maxHealth);
     }
+    if (this.buffs.flatHBuff) {
+        this.heal(this.get('flatHBuff'));
+    }
 
     // Update buffs, removing them when expired
     for (var buff in this.buffs) {
