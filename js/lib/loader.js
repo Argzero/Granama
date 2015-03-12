@@ -108,7 +108,7 @@ function depend(script, callback) {
     }
 
     // See if any scripts already have the source
-    else if ((tag = document.querySelector('script[src="js/' + script + '.js')) !== null) {
+    else if ((tag = document.querySelector('script[src="js/' + script + '.js"]')) !== null) {
         SCRIPT_TAGS[script] = {tag: tag, loaded: true};
         if (callback) callback();
     }
