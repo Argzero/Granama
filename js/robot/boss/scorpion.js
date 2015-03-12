@@ -33,7 +33,17 @@ function ScorpionBoss(x, y) {
     this.clawRotCount = 0;
     
     // Tail
-    this.tail = new RopeTail(this, 'bossFireSegment', 'bossFireEnd', 4, 60, 90, 25, 30);
+	this.tail = new RopeTail(
+        /* Robot      */ this,
+        /* Segment    */ 'bossFireSegment',
+        /* End        */ 'bossFireEnd',
+        /* Length     */ 4,
+        /* Offset     */ 60,
+        /* Base       */ 45,
+        /* End Offset */ 25,
+        /* Constraint */ 30,
+        /* Front      */ true
+    );
     
     // Movement pattern
     this.movement = movement.basic;

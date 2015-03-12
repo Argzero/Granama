@@ -128,11 +128,6 @@ Player.prototype.update = function() {
         }
     }
     
-    // Health regeneration
-    if (this.buffs.healthBuff) {
-        this.heal(this.get('healthBuff') * this.maxHealth);
-    }
-    
     // Player's ability
     if (this.skillDuration > 0) {
         this.skillDuration--;

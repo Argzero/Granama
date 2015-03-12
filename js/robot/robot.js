@@ -222,6 +222,11 @@ Robot.prototype.knockback = function(knockback) {
 Robot.prototype.updateRobot = function() {
     
     this.alpha = this.stealth ? 0.5 : 1;
+	
+	// Health regeneration
+    if (this.buffs.healthBuff) {
+        this.heal(this.get('healthBuff') * this.maxHealth);
+    }
 
     // Update buffs, removing them when expired
     for (var buff in this.buffs) {

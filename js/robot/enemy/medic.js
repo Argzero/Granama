@@ -24,7 +24,7 @@ function LightMedic(x, y) {
     this.movement = movement.medic;
 
     // Heal amount
-    this.heal = this.health / 500;
+    this.healAmount = this.health / 500;
 }
 
 /**
@@ -53,5 +53,5 @@ function HeavyMedic(x, y) {
     this.movement = movement.medic;
 
     // Heal amount
-    this.heal = this.health / 500;
+    this.healAmount = this.health / 500;
 }

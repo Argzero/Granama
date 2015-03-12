@@ -182,7 +182,7 @@ function HiveDefender(x, y) {
     );
 
     // Movement pattern
-    this.heal = this.health / 300;
+    this.healAmount = this.health / 300;
     this.movement = movement.medic;
     
     // Set up abdomen/wings

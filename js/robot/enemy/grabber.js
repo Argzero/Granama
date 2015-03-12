@@ -136,7 +136,7 @@ function HeavyGrabber(x, y) {
         /* gSelf       */ true,
         /* leftClaw    */ 'enemyHeavyGrabberArmLeft',
         /* rightClaw   */ 'enemyHeavyGrabberArmRight',
-        /* claw dx     */ 36,
+        /* claw dx     */ 42,
         /* claw dy     */ 5
     );
 }
