@@ -434,13 +434,13 @@ GameScreen.prototype.spawnEnemy = function(data, x, y) {
 GameScreen.prototype.spawnBoss = function() {
 
     // Get the position
-    if (gameScreen.scrollX + WINDOW_WIDTH / 2 < GAME_WIDTH / 2) {
+    if (-gameScreen.scrollX + WINDOW_WIDTH / 2 < GAME_WIDTH / 2) {
         x = GAME_WIDTH - 500;
     }
     else {
         x = 500;
     }
-    if (gameScreen.scrollY + WINDOW_HEIGHT / 2 < GAME_HEIGHT / 2) {
+    if (-gameScreen.scrollY + WINDOW_HEIGHT / 2 < GAME_HEIGHT / 2) {
         y = GAME_HEIGHT - 500;
     }
     else {

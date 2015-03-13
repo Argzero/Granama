@@ -333,7 +333,7 @@ var movement = {
 
         // Heal the enemy if close enough
         else if (dSq <= sq(this.range + 10)) {
-            target.buff('healthBuff', this.healAmount || 0, 20);
+            target.buff('flatHBuff', this.healAmount || 0, 20);
         }
 
         // Move towards the target

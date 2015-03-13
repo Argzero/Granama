@@ -67,6 +67,15 @@ Transform.prototype.setRotation = function(cos, sin) {
 };
 
 /**
+ * Gets the forward vector of the transform
+ *
+ * @returns {Vector} the transform's forward vector
+ */
+Transform.prototype.forward = function() {
+    return this.rotation.clone().rotate(0, 1);
+};
+
+/**
  * Rotates relatively by an angle
  *
  * @param {number} angle - the angle to rotate the transform by
