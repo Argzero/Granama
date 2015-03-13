@@ -328,7 +328,7 @@ var ui = {
         for (var i = 0; i < gameScreen.robots.length; i++) {
             var e = gameScreen.robots[i];
             if ((e.type & Robot.MOBILE) === 0) continue;
-            if (Math.abs(midX - e.pos.x) > halfX + e.width / 2 || Math.abs(midY - e.pos.y) > halfY + e.width / 2) {
+            if (Math.abs(midX - e.pos.x) > halfX || Math.abs(midY - e.pos.y) > halfY) {
                 var d = new Vector(e.pos.x - midX, e.pos.y - midY);
                 var xs = Math.abs(halfX / d.x);
                 var ys = Math.abs(halfY / d.y);
@@ -337,10 +337,10 @@ var ui = {
                 d.y *= s;
                 this.ctx.translate(halfX + d.x, halfY + d.y);
                 
-                d.normalize().rotate(0, -1);
-                this.ctx.transform(d.x, d.y, -d.y, d.x, 0, 0);
+                var d2 = d.clone().normalize().rotate(0, -1);
+                this.ctx.transform(d2.x, d2.y, -d2.y, d2.x, 0, 0);
                 this.ctx.drawImage(this.pointer, -this.pointer.width / 2, -this.pointer.height);
-                this.ctx.transform(d.x, -d.y, d.y, d.x, 0, 0);
+                this.ctx.transform(d2.x, -d2.y, d2.y, d2.x, 0, 0);
                 this.ctx.translate(-halfX - d.x, -halfY - d.y);
             }
         }
