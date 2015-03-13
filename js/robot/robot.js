@@ -157,15 +157,6 @@ Robot.prototype.heal = function(amount) {
 };
 
 /**
- * Gets the forward vector of the robot for shooting or moving forward
- *
- * @returns {Vector} the robot's forward vector
- */
-Robot.prototype.forward = function() {
-    return this.rotation.clone().rotate(0, 1);
-};
-
-/**
  * Gets a stat of the robot while checking for applied buffs
  *
  * @param {string} name - name of the buff
