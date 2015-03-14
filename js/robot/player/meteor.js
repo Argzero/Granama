@@ -103,20 +103,24 @@ function MeteorArm(left) {
     var s = (left ? 'Left' : 'Right');
     this.super('pMeteorArm' + s, 40 * m, 20);
     
+    // Basic stance starts rotated
     this.rotate(COS_15, m * SIN_15);
     this.rotations = 15;
     
+    // Target offsets for components - will interpolate to these
     this.barOffset = 13;
     this.sideOffset = 11;
     this.fistOffset = 31;
     this.m = m;
     
+    // Pieces that make up the arm
     this.side = new Sprite('pMeteorSidebar' + s, this.sideOffset * m, 3).child(this, true);
     this.bar  = new Sprite('pMeteorBar',  0, this.barOffset).child(this, true);
     this.fist = new Sprite('pMeteorFist', 0, this.fistOffset).child(this, true);
     this.fins = new Sprite('pMeteorFins', 0, 23).child(this, true);
     this.fins.hidden = true;
     
+    // All are drawn under the arm except the top bar
     this.preChildren.push(this.side, this.fist, this.fins);
     this.postChildren.push(this.bar);
 }
