@@ -167,6 +167,20 @@ PLAYER_DATA = [
             {name: 'Stealth', callback: skillStealth},
             {name: 'Sweeping Blade', callback: skillSweepingBlade}
         ]
+    },
+    {
+        player : PlayerMeteor,
+        preview: 'pMeteor',
+        name   : 'Meteor',
+        ups    : ['AbilityStrength', 'PunchSpeed', 'PunchStun', 'ShieldRecharge', 'MovementSpeed'],
+        icons  : ['AbilityStrength', 'PunchSpeed', 'PunchStun', 'Shield', 'Speed'],
+        color  : '#099',
+        weapons: ['Punching', 'More Punching'],
+        skills : [
+            {name: 'Rocket Stance', callback: skillRocketStance},
+            {name: 'Hurricane Stance', callback: skillHurricaneStance},
+            {name: 'Wave Stance', callback: skillWaveStance}
+        ]
     }
 ],
 
@@ -252,6 +266,7 @@ CHARGE_ID = 0,
 DRONE_RANGE_ID = 0,
 STATIC_AURA_ID = 0,
 SHURIKEN_PIERCE_ID = 0,
+METEOR_ABILITY_ID = 0,
 SPREAD_ID = 1,
 SHOTGUN_ID = 1,
 EXPLOSION_ID = 1,
@@ -260,6 +275,7 @@ RAIL_ID = 1,
 DRONE_SHOTS_ID = 1,
 POWER_AURA_ID = 1,
 STEALTH_DURATION_ID = 1,
+PUNCH_SPEED_ID = 1,
 FLAME_ID = 2,
 SLOW_ID = 2,
 KNOCKBACK_ID = 2,
@@ -268,6 +284,7 @@ DUAL_ID = 2,
 LMG_DAMAGE_ID = 2,
 PRISM_POWER_ID = 2,
 CHARGE_SPEED_ID = 2,
+PUNCH_STUN_ID = 2,
 SHIELD_ID = 3,
 SPEED_ID = 4,
 DAMAGE_ID = 5,

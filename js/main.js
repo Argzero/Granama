@@ -54,6 +54,7 @@ depend('robot/player/blitz');
 depend('robot/player/commando');
 depend('robot/player/guardian');
 depend('robot/player/knight');
+depend('robot/player/meteor');
 depend('robot/player/player');
 depend('robot/player/playerManager');
 depend('robot/player/slayer');
