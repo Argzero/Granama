@@ -201,7 +201,7 @@ SPAWN_DATA = [
     1, 3, Railer,
     1, 3, Paladin,
     1, 3, Hunter,
-    1000000, 0, Solar,
+    1, 3, Solar,
     1, 3, Snatcher,
 	1, 3, Harrier,
     1, 3, Goliath,
