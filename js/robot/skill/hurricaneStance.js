@@ -16,10 +16,15 @@ function skillHurricaneStance(player) {
         if (this.isSkillCast()) {
             this.skillDuration = 360;
             this.skillCd = 480;
+            
+            var ups = this.upgrades[METEOR_ABILITY_ID];
+            if (ups) {
+                this.buff('power', 1 + ups * 0.1, this.skillDuration);
+            }
         }
         
         // Base value buffs
-        this.rm = this.skillDuration > 0 ? 0.5 : 1;
+        this.rm = this.skillDuration > 0 ? 0.75 - 0.025 * this.upgrades[METEOR_ABILITY_ID] : 1;
         this.speed = this.baseSpeed * (this.skillDuration > 0 ? 1.5 : 1);
     };
 }

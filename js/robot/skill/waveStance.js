@@ -31,6 +31,7 @@ function skillWaveStance(player) {
             
             // Shockwaves
             if (this.punchData.cd > this.prevPunchCd) {
+                var ups = this.upgrades[METEOR_ABILITY_ID];
                 for (var i = 0; i < 2; i++) {
                     var shockwave = new Shockwave(
                         /* Shooter   */ this,
@@ -42,8 +43,8 @@ function skillWaveStance(player) {
                         /* End       */ Math.PI * (i + 1),
                         /* Radius    */ 30,
                         /* Thickness */ 25,
-                        /* Damage    */ this.get('power'),
-                        /* Range     */ 200,
+                        /* Damage    */ this.get('power') * (1 + ups * 0.1),
+                        /* Range     */ 150 + 10 * ups,
                         /* Knockback */ 0,
                         /* Target    */ Robot.ENEMY
                     );

@@ -519,7 +519,6 @@ var projEvents = {
      */
     punchHit: function(target, damage) {
         this.expired = false;
-        this.returning = true;
         target.knockback(target.pos.clone().subtractv(this.shooter.pos).setMagnitude(this.knockback));
         target.stun(this.stun);
     },

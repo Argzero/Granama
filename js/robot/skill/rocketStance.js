@@ -23,7 +23,7 @@ function skillRocketStance(player) {
         extra      : {
             type      : 'Meteor',
             knockback : 25,
-            radius    : 150 
+            radius    : 100 
         }
     };
     
@@ -55,6 +55,7 @@ function skillRocketStance(player) {
         // Weapon modification
         this.activeData = this.skillDuration > 0 ? this.rocketData : this.punchData;
         this.rocketData.rate = this.punchData.rate;
-        this.rocketData.damage = this.punchData.damage;
+        this.rocketData.extra.radius = 100 + this.upgrades[METEOR_ABILITY_ID] * 15;
+        this.rocketData.damage = this.punchData.damage * (1 + 0.1 * this.upgrades[METEOR_ABILITY_ID]);
     };
 }

@@ -12,7 +12,7 @@ depend('robot/skill/waveStance');
 extend('PlayerMeteor', 'Player');
 function PlayerMeteor() {
     //         Sprite Name    X  Y  Type          HP   Speed  HP+  Damage+  Shield+  Speed+
-    this.super('pMeteorBody', 0, 0, Robot.PLAYER, 100, 4,     25,  1.5,     2,       1);
+    this.super('pMeteorBody', 0, 0, Robot.PLAYER, 100, 4,     30,  1.5,     2,       1);
 
     // Meteor's arms
     this.leftArm = new MeteorArm(true).child(this, true);
@@ -25,22 +25,24 @@ function PlayerMeteor() {
     
     // Weapon data
     this.punchData = {
-        sprite     : 'pMeteorFist',
-        cd         : 0,
-        range      : 100,
-        rate       : 60,
-        speed      : 20,
-        dx         : this.leftArm.pos.x,
-        dy         : this.leftArm.pos.y + 20,
-        angleOffset: 15,
-        target     : Robot.ENEMY,
-        onUpdate   : projEvents.grappleUpdate,
-        onHit      : projEvents.punchHit,
-        onBlocked  : projEvents.grappleExpire,
-        onExpire   : projEvents.grappleExpire,
-        extra      : {
+        sprite        : 'pMeteorPunchLeft',
+        cd            : 0,
+        range         : 100,
+        rate          : 60,
+        speed         : 20,
+        dx            : this.leftArm.pos.x,
+        dy            : this.leftArm.pos.y,
+        angleOffset   : 15,
+        target        : Robot.ENEMY,
+        onUpdate      : projEvents.grappleUpdate,
+        onHit         : projEvents.punchHit,
+        onBlocked     : projEvents.grappleExpire,
+        onExpire      : projEvents.grappleExpire,
+        onCollideCheck: projEvents.uniqueCollide,
+        extra         : {
             knockback : 25,
-            stun      : 20 
+            stun      : 20,
+            pierceNum : 99
         }
     };
     this.activeData = this.punchData;
@@ -69,9 +71,9 @@ PlayerMeteor.prototype.applyUpdate = function() {
     var m = this.get('power');
 
     // Punches
-    this.punchData.damage = m * 10;
+    this.punchData.damage = m * 20;
     this.punchData.rate = this.rm * 208 / (this.upgrades[PUNCH_SPEED_ID] + 3);
-    this.punchData.extra.stun = this.sm * (20 + this.upgrades[PUNCH_STUN_ID] * 4);
+    this.punchData.extra.stun = this.sm * (10 + this.upgrades[PUNCH_STUN_ID] * 5)\;
     
     // Use the currently active weapon (may not be punches such as during rocket stance)
     this.gun(this.activeData);
@@ -79,8 +81,14 @@ PlayerMeteor.prototype.applyUpdate = function() {
     // Switch sides when firing the fist
     if (this.grapple && this.grapple != this.lastGrapple) {
         this.lastGrapple = this.grapple;
-        if (this.punchData.dx > 0) this.left = this.grapple;
-        else this.right = this.grapple;
+        if (this.punchData.dx > 0) {
+            this.left = this.grapple;
+            this.punchData.sprite = 'pMeteorPunchRight';
+        }
+        else {
+            this.right = this.grapple;
+            this.punchData.sprite = 'pMeteorPunchLeft';
+        }
         this.punchData.dx = -this.punchData.dx;
         this.punchData.angleOffset = -this.punchData.angleOffset;
     }
@@ -88,8 +96,8 @@ PlayerMeteor.prototype.applyUpdate = function() {
     // Update visibility of fists
     if (this.left && this.left.expired) this.left = false;
     if (this.right && this.right.expired) this.right = false;
-    this.leftArm.fist.hidden = this.left;
-    this.rightArm.fist.hidden = this.right;
+    this.leftArm.hidden = this.left;
+    this.rightArm.hidden = this.right;
 };
 
 /**
