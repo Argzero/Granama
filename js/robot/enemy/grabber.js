@@ -155,6 +155,7 @@ function Snatcher(x, y) {
         /* sprite name */ 'enemySnatcher',
         /* x position  */ x,
         /* y position  */ y,
+        /* enemy type  */ Robot.MOB,
         /* health      */ 60 * Enemy.pow(0.9),
         /* speed       */ 3 + 0.3 * gameScreen.bossCount,
         /* range       */ 500,

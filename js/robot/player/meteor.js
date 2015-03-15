@@ -73,7 +73,7 @@ PlayerMeteor.prototype.applyUpdate = function() {
     // Punches
     this.punchData.damage = m * 20;
     this.punchData.rate = this.rm * 208 / (this.upgrades[PUNCH_SPEED_ID] + 3);
-    this.punchData.extra.stun = this.sm * (10 + this.upgrades[PUNCH_STUN_ID] * 5)\;
+    this.punchData.extra.stun = this.sm * (10 + this.upgrades[PUNCH_STUN_ID] * 5);
     
     // Use the currently active weapon (may not be punches such as during rocket stance)
     this.gun(this.activeData);
