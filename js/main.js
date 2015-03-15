@@ -73,6 +73,7 @@ depend('robot/boss/scorpion');
 // Enemy scripts
 depend('robot/enemy/ant');
 depend('robot/enemy/artillery');
+depend('robot/enemy/bird');
 depend('robot/enemy/bomber');
 depend('robot/enemy/enemy');
 depend('robot/enemy/grabber');

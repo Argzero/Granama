@@ -211,6 +211,7 @@ SPAWN_DATA = [
     15, 2, HeavyRocketer,
     15, 1, LightAnt,
     10, 2, HeavyAnt, 
+    10000000, 0, LightBird,
     1, 3, Turreter,
     1, 3, Railer,
     1, 3, Paladin,

@@ -71,6 +71,76 @@ var movement = {
         this.movementHelper = movement.moveTowards;
         this.movementHelper(movement.getTargetPlayer(this));
     },
+    
+    /**
+     * Movement for bird enemies where they rotate randomly and try to flock
+     */
+    bird: function() {
+        var flockSize;
+        var closest;
+        var distance = 360000;
+        for (var i = 0; i < gameScreen.robots.length; i++) {
+            var r = gameScreen.robots[i];
+            
+            // Can only follow other birds that are the same size or larger
+            // that are also within range
+            var dSq = r.pos.distanceSq(this.pos);
+            if (!r.birdSize || 
+                dSq > distance || 
+                r.birdSize < this.birdSize || 
+                r == this || 
+                r.pos.clone().subtractv(this.pos).dot(this.forward()) < 0) continue;
+                
+            // Mark as closest
+            distance = dSq;
+            closest = r;
+        }
+        
+        this.movementHelper = movement.moveTowards;
+        
+        // Follow the closest appropriate bird if any
+        if (closest) {        
+            var right = r.rotation.dot(this.pos.clone().subtractv(r.pos)) < 0;
+            var m = right ? -1 : 1;
+            
+            var space = this.width * 0.5;
+            var target = closest.rotation.clone().multiply(m * space, m * space).addv(closest.forward().multiply(-space, -space)).addv(closest.pos);
+            this.speed = Math.min(target.length(), this.speed);
+            this.movementHelper({ pos: target });
+            this.speed = this.baseSpeed;
+        }
+        
+        // Otherwise wander around aimlessly
+        else {
+            var dx = Math.abs(GAME_WIDTH / 2 - this.pos.x);
+            var dy = Math.abs(GAME_HEIGHT / 2 - this.pos.y);
+            
+            // Move to the center when getting near the edges
+            if (dx > 1000 || dy > 1000) {
+                this.movementHelper({ pos: new Vector(GAME_WIDTH / 2, GAME_HEIGHT / 2) });
+            }
+            
+            // Otherwise rotate randomly and just move wherever
+            else {
+                
+                // Change direction occasionally
+                if (!this.dirTimer) {
+                    this.dirTimer = rand(30, 180);
+                    this.dir = rand(-1, 1);
+                }
+                this.dirTimer--;
+                
+                // Rotate gradually
+                if (this.dir) {
+                    this.rotation.rotate(COS_1, this.dir * SIN_1);
+                }
+                
+                // Move forward
+                var vel = this.forward().multiply(this.speed, this.speed);
+                this.move(vel.x, vel.y);
+            }
+        }
+    },
 
     /**
      * Movement pattern that moves in a straight line, bouncing off walls or players
