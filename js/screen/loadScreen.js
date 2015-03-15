@@ -252,7 +252,6 @@ function LoadingScreen() {
         "fistLeft",
         "fistRight",
         "FullBar",
-        "granamaIcon.ico",
         "grappleHook",
         "GuardianBar",
         "GuardianBlastRadiusUI",
