@@ -215,11 +215,13 @@ Robot.prototype.updateRobot = function() {
     this.alpha = this.stealth ? 0.5 : 1;
 	
 	// Health regeneration
-    if (this.buffs.healthBuff) {
-        this.heal(this.get('healthBuff') * this.maxHealth);
-    }
-    if (this.buffs.flatHBuff) {
-        this.heal(this.get('flatHBuff'));
+    if (!this.dead) {
+        if (this.buffs.healthBuff) {
+            this.heal(this.get('healthBuff') * this.maxHealth);
+        }
+        if (this.buffs.flatHBuff) {
+            this.heal(this.get('flatHBuff'));
+        }
     }
 
     // Update buffs, removing them when expired
