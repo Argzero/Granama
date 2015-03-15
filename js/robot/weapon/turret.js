@@ -34,6 +34,7 @@ Turret.prototype.update = function() {
 
     // Update the turret's angle
     var player = getClosestPlayer(this.pos);
+    if (!player) return;
     this.lookAt(player.pos);
 
     // Fire if in range
@@ -68,5 +69,5 @@ Turret.prototype.update = function() {
  */
 Turret.prototype.isInRange = function(range) {
     var player = getClosestPlayer(this.pos);
-    return player.health > 0 && this.pos.distanceSq(player.pos) < sq(range);
+    return player && player.health > 0 && this.pos.distanceSq(player.pos) < sq(range);
 };

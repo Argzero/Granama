@@ -216,7 +216,7 @@ FortressCannon.LOOK_ROT = new Vector(Math.cos(0.08), Math.sin(0.08));
  * Applies the cannon turning and firing its laser
  */ 
 FortressCannon.prototype.update = function() {
-    var target = this.boss.cannonTarget || getClosestPlayer(this.boss.pos);
+    var target = this.boss.cannonTarget || movement.getTargetPlayer(this.boss);
     this.lookTowards(target.pos.clone().subtractv(this.boss.pos), FortressCannon.LOOK_ROT);
     
     this.rail(this.cannonData);
@@ -229,7 +229,8 @@ FortressCannon.prototype.update = function() {
  * @param {number} range - range of the weapon
  */
 FortressCannon.prototype.isInRange = function(range) {
-    return this.boss.cannonTarget || getClosestPlayer(this.boss.pos).pos.distanceSq(this.boss.pos) < sq(range);
+    var closest = getClosestPlayer(this.boss.pos);
+    return this.boss.cannonTarget || (closest && closest.pos.distanceSq(this.boss.pos) < sq(range));
 };
 
 /**

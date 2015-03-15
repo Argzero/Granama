@@ -278,6 +278,7 @@ TailTurret.prototype.update = function() {
     
     // Update the turret's angle
     var player = getClosestPlayer(this.pos);
+    if (!player) return;
     this.lookAt(player.pos);
     
     // Fire if in range

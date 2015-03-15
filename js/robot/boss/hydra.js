@@ -467,6 +467,7 @@ RoyalHydra.consume = function() {
 	var holdPos = this.pos.clone().addv(RoyalHydra.consumeOffset.clone().rotate(this.rotation.x, this.rotation.y));
     if (!this.held && this.hydra.pattern != 1 && this.heldTimer <= 0) {
 		var p = getClosestPlayer(this.pos);
+        if (!p) return;
 		var dSq = p.pos.distanceSq(holdPos);
         if (dSq < 10000) {
             this.held = p;
