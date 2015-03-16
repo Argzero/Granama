@@ -16,8 +16,9 @@ function htmlHandler(request, response) {
     else file = './index.html';
     fs.readFile(file, function(error, data) {
         if (error) {
+            console.log('Failed to load ' + request.url);
             response.writeHead(500);
-            return response.end('Error loading index.html');
+            return response.end('Error loading ' + request.url);
         }
         
         response.writeHead(200);
