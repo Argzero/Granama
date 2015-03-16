@@ -114,8 +114,6 @@ Sprite.prototype.child = function(parent, rotate) {
 Sprite.prototype.draw = function(camera) {
     if (this.hidden) return;
     
-    if (!this.src.indexOf) debugger;
-    
     camera.ctx.globalAlpha *= this.alpha;
     camera.ctx.translate(this.pos.x, this.pos.y);
     if (this.onPreDraw) this.onPreDraw(camera);

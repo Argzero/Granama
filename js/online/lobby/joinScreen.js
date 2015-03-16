@@ -371,10 +371,6 @@ SelectScreen.prototype.draw = function() {
         }
     }
     if (allReady && oneReady) {
-        cleanPlayerList();
-        for (i = 0; i < players.length; i++) {
-            robot = players[i];
-        }
-        gameScreen = new GameScreen(false);
+        gameScreen = new RoomScreen(false);
     }
 };

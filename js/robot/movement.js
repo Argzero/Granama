@@ -127,12 +127,12 @@ var movement = {
      */
     burrow: function() {
         
-        var i, vel, size;
+        var i, vel, size, target;
         var lifespan = 20;
         
         // Resting
         if (this.resting > 0) {
-            var target = movement.getTargetPlayer(this);
+            target = movement.getTargetPlayer(this);
             this.lookAway(target.pos, this.turnVec);
             this.pos.addv(this.forward().multiply(this.restSpeed, this.restSpeed));
             this.resting--;
@@ -178,7 +178,7 @@ var movement = {
             gameScreen.particles.push(new Dust(this.pos, vel, lifespan, size));
             
             // Unburrow
-            var target = movement.getTargetPlayer(this);
+            target = movement.getTargetPlayer(this);
             if (target && target.pos.distanceSq(this.pos) < sq(this.range + 25)) {
                 this.burrowing = false;
                 this.hidden = false;
