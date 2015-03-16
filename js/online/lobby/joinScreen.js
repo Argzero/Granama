@@ -20,11 +20,7 @@ function PlayerSettings(id) {
 }
 
 // The character selection screen of the game
-<<<<<<< HEAD
 function JoinScreen() {
-=======
-function SelectScreen() {
->>>>>>> 36c2a30b07a9fa96e451e261c2b7f85c175f432f
 
     this.frame = 0;
     this.settings = [];
