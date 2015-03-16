@@ -13,7 +13,7 @@ function TitleScreen() {
             setPlayerCount(5);
             gameScreen = new SelectScreen();
         })
-        .addButton('Spinner Ball', -30, function() {
+        .addButton('Online', -30, function() {
         })
         .addButton('Stats', 80, function() {
             gameScreen = new StatScreen();
