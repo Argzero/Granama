@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+
+    <meta charset="UTF-8"/>
+    <title>Granama</title>
+    <link rel="shortcut icon" href="images/granamaIcon.ico">
+
+	<script src="js/lib/loader.js"></script>
+    <script src="js/main.js"></script>
+
+    <style>
+
+        @font-face {
+            font-family: Flipbash;
+            src: url('fonts/Flipbash.ttf');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #granama, #ui {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+		}
+
+    </style>
+
+    <!--
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-55843957-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+    -->
+
+</head>
+<body>
+<div id="game">
+    <canvas id="granama" style="cursor: none"></canvas>
+	<canvas id="ui" style="cursor: none"></canvas>
+</div>
+</body>
+</html>
