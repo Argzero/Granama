@@ -83,12 +83,9 @@ depend('robot/enemy/orbiter');
 depend('robot/enemy/rocketer');
 depend('robot/enemy/spinner');
 
-<<<<<<< HEAD
 // Online scripts
 depend('online/lobby/joinScreen');
 
-=======
->>>>>>> 36c2a30b07a9fa96e451e261c2b7f85c175f432f
 // Background tile sprite
 var TILE;
 
