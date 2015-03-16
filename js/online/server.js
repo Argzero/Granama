@@ -11,7 +11,10 @@ var rooms = {};
 
 // Handles sending the web page to connecting clients
 function htmlHandler(request, response) {
-    fs.readFile('./index.html', function(error, data) {
+    var file;
+    if (request.url.length > 2) file = '.' + request.url.replace('%20', ' ');
+    else file = './index.html';
+    fs.readFile(file, function(error, data) {
         if (error) {
             response.writeHead(500);
             return response.end('Error loading index.html');

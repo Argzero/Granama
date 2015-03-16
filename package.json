@@ -4,7 +4,7 @@
   "description": "A top-down arcade shooter game",
   "main": "js/server.js",
   "scripts": {
-    "start": "./js/online/server.js",
+    "start": "node ./js/online/server.js",
     "test": "jshint ./js/"
   },
   "repository": {

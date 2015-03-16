@@ -108,7 +108,7 @@ function depend(script, callback) {
     }
 
     // See if any scripts already have the source
-    else if ((tag = document.querySelector('script[src="js/' + script + '.js"]')) !== null) {
+    else if ((tag = document.querySelector('script[src="./js/' + script + '.js"]')) !== null) {
         SCRIPT_TAGS[script] = {tag: tag, loaded: true};
         if (callback) callback();
     }
@@ -121,7 +121,7 @@ function depend(script, callback) {
         if (callback) scriptTag.addEventListener('load', callback);
         scriptTag.addEventListener('load', SCRIPT_TAGS.onload);
         SCRIPT_TAGS[script] = {tag: scriptTag, loaded: false};
-        scriptTag.src = 'js/' + script + '.js';
+        scriptTag.src = './js/' + script + '.js';
         document.querySelector('head').appendChild(scriptTag);
         SCRIPT_TAGS.scriptCount++;
     }
