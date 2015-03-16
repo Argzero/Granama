@@ -14,7 +14,10 @@ function TitleScreen() {
             gameScreen = new SelectScreen();
         })
         .addButton('Online', -30, function() {
+<<<<<<< HEAD
             gameScreen = new JoinScreen();
+=======
+>>>>>>> 36c2a30b07a9fa96e451e261c2b7f85c175f432f
         })
         .addButton('Stats', 80, function() {
             gameScreen = new StatScreen();
