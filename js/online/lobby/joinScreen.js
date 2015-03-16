@@ -20,7 +20,7 @@ function PlayerSettings(id) {
 }
 
 // The character selection screen of the game
-function SelectScreen() {
+function JoinScreen() {
 
     this.frame = 0;
     this.settings = [];
