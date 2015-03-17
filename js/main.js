@@ -89,6 +89,7 @@ depend('online/client');
 // Multiplayer lobby menus
 depend('online/lobby/joinScreen');
 depend('online/lobby/roomScreen');
+depend('online/lobby/lobbyScreen');
 
 // Background tile sprite
 var TILE;

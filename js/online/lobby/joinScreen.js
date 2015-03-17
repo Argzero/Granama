@@ -374,8 +374,8 @@ JoinScreen.prototype.draw = function() {
             players[k].settings = this.settings[k];
         }
     }
-    cleanPlayerList();
     if (allReady && oneReady) {
+        cleanPlayerList();
         gameScreen = new RoomScreen(false);
     }
 };

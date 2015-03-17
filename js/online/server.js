@@ -7,7 +7,7 @@ var owner = false;
 var users = {};
 
 // users, name, mode, max
-var rooms = {};
+var roomList = {};
 
 // Handles sending the web page to connecting clients
 function htmlHandler(request, response) {
@@ -46,55 +46,65 @@ io.on('connection', function(socket) {
     // Fetch rooms for a user
     socket.on('fetchRooms', function(data) {
         
+        console.log('Action: Fetch rooms');
+        
         var rooms = [];
         var x;
         
         // Spectator games - need to be in progress
         if (data.players === 0) {
-            for (x in rooms) {
-                if (rooms[x].inProgress) {
-                    rooms.push(rooms[x]);
+            for (x in roomList) {
+                if (roomList[x].inProgress) {
+                    rooms.push(roomList[x]);
                 }
             }
         }    
         
         // Non-spectator games - need to have room for the players
         else {
-            for (x in rooms) {
-                if (rooms[x].maxPlayers - rooms[x].numPlayers >= data.players) {
-                    rooms.push(rooms[x]);
+            for (x in roomList) {
+                if (roomList[x].maxPlayers - roomList[x].numPlayers >= data.players) {
+                    rooms.push(roomList[x]);
                 }
             }
         }
+        
+        console.log('Result: ' + rooms.length + ' rooms');
         
         socket.emit('updateRooms', { rooms: rooms });
     });
     
     // Create a new room
     socket.on('createRoom', function(data) {
-        if (!rooms[data.room.name]) {
+        console.log('Action: Create Room [' + data.room.name + ']');
+        if (!roomList[data.room.name]) {
             data.room.selections = data.users;
-            rooms[data.room.name] = data.room;
+            roomList[data.room.name] = data.room;
+            socket.room = data.room.name;
             socket.join(data.room.name);
             socket.emit('joinRoom', { 
                 room: data.room, 
                 selections: data.users, 
                 index: 0 
             });
+            console.log('Result: Room created - ' + Object.keys(roomList).length + ' rooms now');
+            console.log('Users in ' + data.room.name + ' = ' + Object.keys(io.sockets.adapter.rooms[data.room.name]).length);
         }
         else {
             socket.emit('general', {
                 success: true,
                 error: 'Name is already taken'
             });
+            console.log('Result: Name taken');
         }
     });
     
     // See if a user can join a room
-    socket.onRequestJoin('joinRoom', function(data) {
-        if (rooms[data.room]) {
-            var room = rooms[data.room];
-            if (room.maxPlayers - room[x].numPlayers >= data.users.length) {
+    socket.on('requestJoin', function(data) {
+        console.log('Action: Join Request [' + data.room + ']');
+        if (roomList[data.room]) {
+            var room = roomList[data.room];
+            if (room.maxPlayers - room.numPlayers >= data.users.length) {
                 
                 // Add them to the room
                 for (var i = 0; i < data.users.length; i++) {
@@ -102,26 +112,31 @@ io.on('connection', function(socket) {
                 }
                 socket.join(data.room);
                 socket.room = data.room;
-                room[x].numPlayers += data.users.length;
+                room.numPlayers += data.users.length;
                 
                 // Tell the users they joined
                 socket.emit('joinRoom', {
                     room: room,
                     selections: room.selections,
-                    index: room[x].numPlayers - data.users.length
+                    index: room.numPlayers - data.users.length
                 });
                 
                 // Tell other players who joined
                 socket.broadcast.to(data.room).emit('addPlayers', {
                     selections: data.users,
-                    index: room[x].numPlayers - data.users.length
+                    index: room.numPlayers - data.users.length
                 });
+                
+                console.log('Result: Joined');
+                console.log('Users in ' + data.room + ' = ' + Object.keys(io.sockets.adapter.rooms[data.room]).length);
             }
             else {
                 socket.emit('general', {
                     success: false,
                     error: 'Too many players'
                 });
+                
+                console.log('Result: Room full');
             }
         }
         else {
@@ -129,12 +144,25 @@ io.on('connection', function(socket) {
                 success: false,
                 error: 'Room does not exist'
             });
+            
+            console.log('Result: Does not exist');
         }
     });
     
     // Updates a player's lobby selection
-    socket.onUpdateSelection('updateSelection', function(data) {
+    socket.on('updateSelection', function(data) {
+        console.log('Action: Update selection [room= ' + socket.room + ']');
         socket.broadcast.to(socket.room).emit('updateSelection', data);
+    });
+    
+    // Removes a player from a room
+    socket.on('removePlayer', function(data) {
+        console.log('Action: remove player');
+        socket.broadcast.to(data.room).emit('removePlayer', data);
+        roomList[data.room].playerNum -= data.amount;
+        roomList[data.room].splice(data.index, data.amount);
+        socket.leave(data.room);
+        delete socket.room;
     });
     
     // Handles socket disconnects
@@ -142,9 +170,6 @@ io.on('connection', function(socket) {
     
         // Leave a room if in one
         if (socket.room) {
-            
-            // TODO remove from game
-            
             socket.leave(socket.room);
             delete socket.room;
         }

@@ -4,7 +4,7 @@
  * not supported on the current browser and return values will 
  * all be undefined.
  */
-io = {
+storage = {
 
     // Whether or not the storage is enabled
     enabled: typeof(Storage) !== 'undefined',

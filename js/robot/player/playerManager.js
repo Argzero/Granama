@@ -65,11 +65,13 @@ function cleanPlayerList() {
         if (!players[i].health && !players[i].settings) {
             this.players.splice(i, 1);
             i--;
+            continue;
         }
         else if (players[i].input.id === undefined) {
             this.keyboardActive = true;
         }
         else this.gamepadActive = true;
+        players[i].settings.part = 1;
     }
 }
 

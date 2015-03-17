@@ -48,10 +48,10 @@ function RoomScreen() {
                 
                 connection.createRoom('Room' + rand(1000000));
             })
-            .addButton('Refresh', 400, function() {
+            .addButton('Refresh', 375, function() {
                 connection.fetchRooms();
             })
-            .addButton('Return', 300, function() {
+            .addButton('Return', 325, function() {
                 connection.disconnect();
                 gameScreen = new TitleScreen();
             })
@@ -92,7 +92,7 @@ RoomScreen.prototype.updateRooms = function(data) {
         b = (i & 1);      //     i % 2
         
         cell = this.ui.elements[a].elements[b];
-        var room = data[i];
+        var room = data.rooms[i];
         
         cell.text = room.name;
         cell.on = room.numPlayers;

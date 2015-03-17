@@ -22,12 +22,13 @@ function PlayerSettings(id) {
 function LobbyScreen() {
 
     this.frame = 0;
-    this.settings = [];
     this.open = [];
 
     // Initialize player settings
     for (i = 0; i < players.length; i++) {
-        this.settings.push(players[i].settings);
+        if (!players[i].settings) {
+            players[i].settings = new PlayerSettings(i);
+        }
     }
 
     // Start off with all classes available
@@ -38,12 +39,26 @@ function LobbyScreen() {
 
 // Checks if a robot ID is still open
 LobbyScreen.prototype.isOpen = function(id) {
-    for (var i = 0; i < this.open.length; i++) {
-        if (id == this.open[i]) {
-            return true;
+    return this.open.indexOf(id) >= 0;
+};
+
+/**
+ * Reinitializes the open list to match network changes
+ */ 
+LobbyScreen.prototype.updateOpenList = function() {
+    this.open = [];
+    for (var i = 0; i < PLAYER_DATA.length; i++) {
+        var open = true;
+        for (var j = 0; j < players.length; j++) {
+            if (players[j].settings.robot == i && players[j].settings.part > LobbyScreen.PARTS.ROBOT) {
+                open = false;
+                break;
+            }
+        }
+        if (open) {
+            this.open.push(i);
         }
     }
-    return false;
 };
 
 LobbyScreen.prototype.prevPart = function(settings) {
@@ -55,9 +70,15 @@ LobbyScreen.prototype.prevPart = function(settings) {
         // Make a robot available again when a player no longer selects it
         case LobbyScreen.PARTS.ROBOT:
 
-            if (!(players[settings.id] instanceof PlayerWrapper)) players[settings.id] = new PlayerWrapper(settings.id);
             this.open.push(settings.robot);
 
+            break;
+         
+        // Quit the room 
+        case LobbyScreen.PARTS.DISCONNECTED:
+        
+            connection.quitGame();
+            
             break;
     }
 };
@@ -89,16 +110,11 @@ LobbyScreen.prototype.draw = function() {
     ui.ctx.fillText("Choose A Robot", x, y - 300);
 
     var baseX = x - (players.length - 1) * 135;
-    var i, j, k, dx, preview, robot;
+    var i, j, k, dx, preview, robot, input;
     for (i = 0; i < players.length; i++) {
 
-        // Initialize data for empty spots
-        if (!players[i].settings) {
-            players[i].settings = new PlayerSettings(i);
-        }
-    
         x = baseX + 270 * i;
-        var settings = this.settings[i];
+        var settings = players[i].settings;
         robot = PLAYER_DATA[settings.robot];
 
         // Draw the boxes for the options
@@ -108,7 +124,7 @@ LobbyScreen.prototype.draw = function() {
         ui.ctx.fillRect(x - 115, y - 160, 230, 480);
 
         // Input
-        var input;
+        input = undefined;
         if (players[i].input) {
             input = players[i].input;
             input.update();
@@ -208,27 +224,30 @@ LobbyScreen.prototype.draw = function() {
                 // Switch to next robot
                 if (input.button(LEFT_1) == 1 || input.button(LEFT_2) == 1) {
                     settings.robot = prev;
+                    connection.updateSelection(i);
                 }
 
                 // Switch to previous robot
                 if (input.button(RIGHT_1) == 1 || input.button(RIGHT_2) == 1) {
                     settings.robot = next;
+                    connection.updateSelection(i);
                 }
 
                 // Choose the robot
                 if (input.button(SELECT_1) == 1 || input.button(SELECT_2) == 1) {
                     settings.part++;
+                    connection.updateSelection(i);
                     for (k = 0; k < this.open.length; k++) {
                         if (this.open[k] == settings.robot) {
                             this.open.splice(k, 1);
                             break;
                         }
                     }
-                    for (k = 0; k < this.settings.length; k++) {
+                    for (k = 0; k < players.length; k++) {
                         if (k != i) {
-                            if (this.settings[k].part <= LobbyScreen.PARTS.ROBOT) {
-                                if (!this.isOpen(this.settings[k].robot)) {
-                                    this.settings[k].robot = this.open[0];
+                            if (players[k].settings.part <= LobbyScreen.PARTS.ROBOT) {
+                                if (!this.isOpen(players[k].settings.robot)) {
+                                    players[k].settings.robot = this.open[0];
                                 }
                             }
                         }
@@ -287,34 +306,28 @@ LobbyScreen.prototype.draw = function() {
                 // Next Ability
                 if (input.button(LEFT_1) == 1 || input.button(LEFT_2) == 1) {
                     settings.ability = (settings.ability + 2) % 3;
+                    connection.updateSelection(i);
                 }
 
                 // Previous ability
                 if (input.button(RIGHT_1) == 1 || input.button(RIGHT_2) == 1) {
                     settings.ability = (settings.ability + 1) % 3;
+                    connection.updateSelection(i);
                 }
 
                 // Choose the ability
                 if (input.button(SELECT_1) == 1 || input.button(SELECT_2) == 1) {
 
                     // Apply the options to get ready for playing
-                    var player = new robot.player();
-                    player.profile = new Profile(settings.profile);
-                    player.color = robot.color;
-                    player.name = robot.name;
-                    var skill = robot.skills[settings.ability];
-                    player.ability = skill.name;
-                    player.input = input;
-                    player.ups = robot.ups;
-                    player.icons = robot.icons;
-                    skill.callback(player);
-                    players[i] = player;
                     settings.part++;
+                    
+                    connection.updateSelection(i);
                 }
 
                 // Return to robot selection
                 else if (input.button(CANCEL_1) == 1 || input.button(CANCEL_2) == 1) {
                     this.prevPart(settings);
+                    connection.updateSelection(i);
                 }
 
                 break;
@@ -341,6 +354,7 @@ LobbyScreen.prototype.draw = function() {
                 // Return to profile select
                 if (input.button(CANCEL_1) == 1 || input.button(CANCEL_2) == 1) {
                     settings.part--;
+                    connection.updateSelection(i);
                 }
 
                 break;
@@ -359,21 +373,21 @@ LobbyScreen.prototype.draw = function() {
     var allReady = true;
     var oneReady = false;
     for (k = 0; k < players.length; k++) {
-        if (this.settings[k].part != LobbyScreen.PARTS.READY && this.settings[k].part > LobbyScreen.PARTS.CONNECTED) {
+        if (players[k].settings.part != LobbyScreen.PARTS.READY && players[k].settings.part > 0) {
             allReady = false;
         }
-        else if (this.settings[k].part == LobbyScreen.PARTS.READY) {
+        else if (players[k].settings.part == LobbyScreen.PARTS.READY) {
             oneReady = true;
         }
     }
-    console.log('Start!');
-    /*
     if (allReady && oneReady) {
+        console.log('Start!');
+        /*
         cleanPlayerList();
         for (i = 0; i < players.length; i++) {
             robot = players[i];
         }
         gameScreen = new GameScreen(false);
+        */
     }
-    */
 };

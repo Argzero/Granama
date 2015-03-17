@@ -11,6 +11,10 @@ function Connection() {
     this.socket = undefined;
     this.connected = false;
     this.callback = undefined;
+    this.gameIndex = 0;
+    this.localPlayers = 0;
+    this.inRoom = false;
+    this.room = undefined;
 }
 
 /**
@@ -24,11 +28,11 @@ Connection.prototype.connect = function() {
     this.socket = io.connect();
     
     // Set up message handlers
-    this.socket.on('general', this.onGeneral);
-    this.socket.on('updateRooms', this.onUpdateRooms);
-    this.socket.on('addPlayers', this.onAddPlayers);
-    this.socket.on('joinRoom', this.onJoinRoom);
-    this.socket.on('updateSelection', this.onUpdateSelection);
+    this.socket.on('general', this.onGeneral.bind(this));
+    this.socket.on('updateRooms', this.onUpdateRooms.bind(this));
+    this.socket.on('addPlayers', this.onAddPlayers.bind(this));
+    this.socket.on('joinRoom', this.onJoinRoom.bind(this));
+    this.socket.on('updateSelection', this.onUpdateSelection.bind(this));
     
     this.connected = true;
 };
@@ -72,6 +76,7 @@ Connection.prototype.login = function(username, password, callback) {
  * it will be assumed that it is for spectating.
  */
 Connection.prototype.fetchRooms = function() {
+    if (this.inRoom) return;
     this.socket.emit('fetchRooms', { players: players.length });
 };
 
@@ -81,6 +86,7 @@ Connection.prototype.fetchRooms = function() {
  * @param {string} name - name of the room
  */
 Connection.prototype.createRoom = function(name) {
+    if (this.inRoom) return;
     var users = [];
     for (var i = 0; i < players.length; i++) {
         users.push(players[i].settings);
@@ -102,6 +108,7 @@ Connection.prototype.createRoom = function(name) {
  * are no players, this will assume that it is for spectating.
  */
 Connection.prototype.joinRoom = function(name) {
+    if (this.inRoom) return;
     var users = [];
     for (var i = 0; i < players.length; i++) {
         users.push(players[i].settings);
@@ -114,11 +121,29 @@ Connection.prototype.joinRoom = function(name) {
  * lobby screen so other players can see it.
  */
 Connection.prototype.updateSelection = function(playerIndex) {
+    if (!this.inRoom) return;
     this.socket.emit('updateSelection', { 
         selection: players[playerIndex].settings, 
         index: playerIndex, 
         time: new Date().getTime() 
     });
+};
+
+/**
+ * Removes all local players from the current game for some
+ * reason, whether it's quitting from the lobby, closing the
+ * window, or losing connection.
+ */ 
+Connection.prototype.quitGame = function() {
+    if (!this.inRoom) return;
+    this.socket.emit('removePlayer', {
+        room: this.room.name,
+        index: this.gameIndex,
+        amount: this.localPlayers,
+        time: new Date().getTime()
+    });
+    this.inRoom = false;
+    players = players.slice(this.gameIndex, this.localPlayers);
 };
 
 // ------------------------------------------------------------------------------ //
@@ -156,6 +181,13 @@ Connection.prototype.onUpdateRooms = function(data) {
  * @param {Object} data - the response from the server
  */
 Connection.prototype.onJoinRoom = function(data) {
+    if (this.inRoom) return;
+    
+    this.inRoom = true;
+    this.localPlayers = players.length;
+    this.gameIndex = data.index;
+    this.room = data.room;
+    
     for (var i = 0; i < data.index; i++) {
         players.unshift({ settings: data.selections[i] });
     }
@@ -173,6 +205,7 @@ Connection.prototype.onJoinRoom = function(data) {
  * @param {Object} data - the data for the joining players
  */
 Connection.prototype.onAddPlayers = function(data) {
+    if (!this.inRoom) return;
     for (var i = 0; i < data.selections.length; i++) {
         players[i + data.index].settings = data.selections[i]; 
     }
@@ -184,6 +217,7 @@ Connection.prototype.onAddPlayers = function(data) {
  * @param {Object} data - the selection update data
  */ 
 Connection.prototype.onUpdateSelection = function(data) {
+    if (!this.inRoom) return;
     
     // Ignore old updates
     if (players[data.index].lastUpdate && players.lastUpdate > data.time) return;
@@ -191,4 +225,7 @@ Connection.prototype.onUpdateSelection = function(data) {
     // Apply the update
     players[data.index].settings = data.selection;
     players[data.index].lastUpdate = data.time;
+    if (gameScreen.updateOpenList) {
+        gameScreen.updateOpenList();
+    }
 };
