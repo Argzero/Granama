@@ -62,7 +62,7 @@ io.on('connection', function(socket) {
     
     // Destroys a room, removing its reference and all players in the room
     socket.on('destroyRoom', function(data) {
-        console.log('Action: Destroy room');
+        console.log('Action: Destroy room [' + socket.room + ']');
         if (!socket.room) return;
         room = socket.room;
         delete roomList[room];

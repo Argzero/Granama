@@ -29,9 +29,6 @@ function LobbyScreen() {
         if (!players[i].settings) {
             players[i].settings = new PlayerSettings(i);
         }
-        else {
-            players[i].settings.part = 1;
-        }
     }
 
     // Start off with all classes available

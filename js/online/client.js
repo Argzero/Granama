@@ -208,11 +208,15 @@ Connection.prototype.onJoinRoom = function(data) {
     this.gameIndex = data.index;
     this.room = data.room;
     
-    for (var i = 0; i < data.index; i++) {
+	var i;
+	for (i = 0; i < players.length; i++) {
+		players[i].settings.part = 1;
+	}
+    for (i = 0; i < data.index; i++) {
         players.unshift({ settings: data.selections[i] });
     }
-    for (var j = players.length; j < data.selections.length; j++) {
-        players.push({ settings: data.selections[j] });
+    for (i = players.length; i < data.selections.length; i++) {
+        players.push({ settings: data.selections[i] });
     }
     appendPlayers(5);
     gameScreen = new LobbyScreen();
