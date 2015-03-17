@@ -21,8 +21,8 @@ function TitleButton(text, yOffset, minWidth, maxWidth, height, callback) {
         draw     : function() {
 
             // Images
-            var top = GetImage('buttonClampTop');
-            var bottom = GetImage('buttonClampBottom');
+            var top = images.get('buttonClampTop');
+            var bottom = images.get('buttonClampBottom');
 
             // Calculations
             var midX = element.width / 2;

@@ -91,6 +91,7 @@ Connection.prototype.createRoom = function(name) {
     if (this.inRoom) return;
     var users = [];
     for (var i = 0; i < players.length; i++) {
+        players[i].settings.part = 1;
         users.push(players[i].settings);
     }
     this.socket.emit('createRoom', { 
@@ -113,6 +114,7 @@ Connection.prototype.joinRoom = function(name) {
     if (this.inRoom) return;
     var users = [];
     for (var i = 0; i < players.length; i++) {
+        players[i].settings.part = 1;
         users.push(players[i].settings);
     }
     this.socket.emit('requestJoin', { users: users, room: name });
@@ -209,9 +211,6 @@ Connection.prototype.onJoinRoom = function(data) {
     this.room = data.room;
     
 	var i;
-	for (i = 0; i < players.length; i++) {
-		players[i].settings.part = 1;
-	}
     for (i = 0; i < data.index; i++) {
         players.unshift({ settings: data.selections[i] });
     }

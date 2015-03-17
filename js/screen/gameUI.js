@@ -186,7 +186,7 @@ var ui = {
                 ui.ctx.arc(player.pos.x, player.pos.y, circleFrame * 5, 0, Math.PI * 2);
                 ui.ctx.fill();
 
-                var img = GetImage('LevelUpWords');
+                var img = images.get('LevelUpWords');
                 ui.ctx.translate(player.pos.x, player.pos.y);
                 angle = 0;
                 if (player.levelFrame < 30) angle = Math.PI * ((30 - player.levelFrame) / 30);
@@ -207,7 +207,7 @@ var ui = {
             // Damage effect
             if (player.damageAlpha > 0) {
                 ui.ctx.globalAlpha = player.damageAlpha;
-                ui.ctx.drawImage(GetImage('damage'), player.pos.x - 75, player.pos.y - 75, 150, 150);
+                ui.ctx.drawImage(images.get('damage'), player.pos.x - 75, player.pos.y - 75, 150, 150);
                 ui.ctx.globalAlpha = 1;
             }
             
@@ -228,14 +228,14 @@ var ui = {
                 ui.ctx.arc(player.pos.x, player.pos.y, 75, Math.PI / 10, Math.PI / 10 + shieldPercent * Math.PI * 8 / 10);
                 ui.ctx.strokeStyle = '#00f';
                 ui.ctx.stroke();
-                ui.ctx.drawImage(GetImage('healthBarSymbol'), player.pos.x + 50, player.pos.y - 20);
+                ui.ctx.drawImage(images.get('healthBarSymbol'), player.pos.x + 50, player.pos.y - 20);
 
                 // Draw skill icon
                 if (player.ability) {
                     if (player.skillCd > 0) {
                         ui.ctx.globalAlpha = 0.5;
                     }
-                    ui.ctx.drawImage(GetImage('ability' + player.ability), player.pos.x - 95, player.pos.y - 20, 40, 40);
+                    ui.ctx.drawImage(images.get('ability' + player.ability), player.pos.x - 95, player.pos.y - 20, 40, 40);
                     ui.ctx.globalAlpha = 1;
 
                     // Skill cooldown/duration
@@ -417,7 +417,7 @@ var ui = {
                 // Draw icons on left
                 this.ctx.fillStyle = '#f0f';
                 for (var j = 0; j < 5; j++) {
-                    var upImg = GetImage('upgrade' + player.icons[j]);
+                    var upImg = images.get('upgrade' + player.icons[j]);
                     var current = player.upgrades[j];
 
                     this.ctx.drawImage(upImg, 5, y + 60 + iconSize * j, iconSize, iconSize);
@@ -510,9 +510,9 @@ var ui = {
                 for (var k = 0; k < 10; k++) {
                     var upped = player.upgrades[j] > k;
                     var newUpped = upped && this.start[i][j] <= k;
-                    this.ctx.drawImage(GetImage((newUpped ? 'Full' : (upped ? player.name : 'Empty')) + 'Bar'), x + 17 * k - 57, y - 150 + j * 90);
+                    this.ctx.drawImage(images.get((newUpped ? 'Full' : (upped ? player.name : 'Empty')) + 'Bar'), x + 17 * k - 57, y - 150 + j * 90);
                 }
-                var img = GetImage(player.name + player.ups[j] + 'UI' + (this.hovered[i] == j ? 'Selected' : ''));
+                var img = images.get(player.name + player.ups[j] + 'UI' + (this.hovered[i] == j ? 'Selected' : ''));
                 this.ctx.drawImage(img, x - 115, y - 175 + j * 90);
             }
 
