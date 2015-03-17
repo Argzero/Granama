@@ -2,6 +2,8 @@
  * Sets up the Artillery skill which extends a crosshair
  * and then drops down explosives on the target location,
  * growing in power each successive hit.
+ *
+ * @param {Player} player - player to set up for
  */ 
 function skillArtillery(player) {
 

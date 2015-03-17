@@ -1,6 +1,8 @@
 /**
  * Ability that causes the robot to stealth and gain
  * increased speed and damage
+ *
+ * @param {Player} player - player to set up for
  */
 function skillStealth(player) {
     

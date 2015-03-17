@@ -4,6 +4,8 @@
  * @param {Number} x    - the horizontal coordinate of the explosion's center
  * @param {Number} y    - the vertical coordinate of the explosion's center
  * @param {Number} size - the size of the explosion as a multiplier of base size
+ *
+ * @constructor
  */
 function Explosion(x, y, size) {
     this.frame = 0;

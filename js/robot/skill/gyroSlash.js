@@ -1,6 +1,8 @@
 /**
  * Applies the Gyro Slash skill to the player which
  * swings a large sword around while speeding up
+ *
+ * @param {Player} player - player to set up for
  */
 function skillGyroSlash(player) {
 

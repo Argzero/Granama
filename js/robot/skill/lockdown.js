@@ -1,6 +1,8 @@
 /** 
  * Sets up the Lockdown ability that immobilizes the player
  * while giving them damage reduction and a stronger basic attack
+ *
+ * @param {Player} player - player to set up for
  */
 function skillLockdown(player) {
 

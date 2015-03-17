@@ -6,6 +6,8 @@ depend('robot/skill/overdrive');
 /** 
  * The blitz player that uses a shotgun and a static gun
  * as its main attacks
+ *
+ * @constructor
  */
 extend('PlayerBlitz', 'Player');
 function PlayerBlitz() {

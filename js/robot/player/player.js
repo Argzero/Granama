@@ -11,6 +11,8 @@
  * @param {Number} [damageScale] - multiplier for damage gain
  * @param {Number} [shieldScale] - multiplier for shield recharge rate
  * @param {Number} [speedScale]  - multiplier for speed bonuses
+ *
+ * @constructor
  */
 extend('Player', 'Robot');
 function Player(name, x, y, type, health, speed, healthScale, damageScale, shieldScale, speedScale) {
@@ -226,13 +228,17 @@ Player.prototype.updatePause = function() {
     }
 };
 
-// Checks whether or not a skill is being cast
+/**
+ * Checks the player's input to see if they are using their skill
+ */
 Player.prototype.isSkillCast = function() {
     if (this.skillCd > 0 || this.skillDuration > 0) return false;
     return this.input.button(SKILL) == 1;
 };
 
-// Function for telling weapons when they can fire
+/**
+ * Checks the player's input to see if they are shooting their main weapons
+ */
 Player.prototype.isInRange = function() {
     return this.input.button(SHOOT);
 };
