@@ -42,20 +42,36 @@ function setPlayerCount(amount) {
 }
 
 /**
+ * Adds players up until the max amount without removing
+ * the current players. This is for networking lobbies where
+ * the players will not have normal input and don't follow the
+ * restrictions of the current computer.
+ *
+ * @param {number} amount - the amount of players there can be
+ */
+function appendPlayers(amount) {
+    while (this.players.length < amount) {
+        this.players.push({});
+    }
+}
+
+/**
  * Cleans the list of players, removing players that did not join
  */
 function cleanPlayerList() {
     this.keyboardActive = false;
     this.gamepadActive = false;
     for (var i = 0; i < this.players.length; i++) {
-        if (!players[i].health) {
+        if (!players[i].health && !players[i].settings) {
             this.players.splice(i, 1);
             i--;
+            continue;
         }
         else if (players[i].input.id === undefined) {
             this.keyboardActive = true;
         }
         else this.gamepadActive = true;
+        players[i].settings.part = 1;
     }
 }
 

@@ -4,7 +4,7 @@ var PROFILE_DATA_KEY = 'profiles';
 // The serializable object representation of profile data
 var PROFILE_DATA = {};
 
-depend('data/io', function() { PROFILE_DATA = io.getObject(PROFILE_DATA_KEY) || {}; });
+depend('data/io', function() { PROFILE_DATA = storage.getObject(PROFILE_DATA_KEY) || {}; });
 
 // Available stats
 var STAT = {
@@ -43,7 +43,7 @@ window.addEventListener('beforeunload', function() {
             players[i].submitStats();
         }
     }
-    io.setObject(PROFILE_DATA_KEY, PROFILE_DATA);
+    storage.setObject(PROFILE_DATA_KEY, PROFILE_DATA);
 });
 
 /**

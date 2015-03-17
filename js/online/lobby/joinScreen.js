@@ -1,6 +1,6 @@
 var ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-var PARTS = {
+JoinScreen.PARTS = {
     DISCONNECTED: 0,
     CONNECTED   : 1,
     PROFILE     : 2,
@@ -16,10 +16,13 @@ function PlayerSettings(id) {
     this.profile = 0;
     this.newProfile = '';
     this.error = '';
-    this.part = PARTS.DISCONNECTED;
+    this.part = JoinScreen.PARTS.DISCONNECTED;
 }
 
-// The character selection screen of the game
+/**
+ * The screen where local players join in before 
+ * joining/creating a game lobby on the network.
+ */
 function JoinScreen() {
 
     this.frame = 0;
@@ -47,7 +50,7 @@ function JoinScreen() {
 }
 
 // Checks if a robot ID is still open
-SelectScreen.prototype.isOpen = function(id) {
+JoinScreen.prototype.isOpen = function(id) {
     for (var i = 0; i < this.open.length; i++) {
         if (id == this.open[i]) {
             return true;
@@ -56,14 +59,14 @@ SelectScreen.prototype.isOpen = function(id) {
     return false;
 };
 
-SelectScreen.prototype.prevPart = function(settings) {
+JoinScreen.prototype.prevPart = function(settings) {
 
     settings.part--;
 
     switch (settings.part) {
 
         // Make a profile available again when a player no longer selects it
-        case PARTS.PROFILE:
+        case JoinScreen.PARTS.PROFILE:
 
             if (settings.profile != 'Guest') {
                 this.profilesArray.push(settings.profile);
@@ -82,7 +85,7 @@ SelectScreen.prototype.prevPart = function(settings) {
 };
 
 // Draws the selection gameScreen
-SelectScreen.prototype.draw = function() {
+JoinScreen.prototype.draw = function() {
 
     // Prevent IE bugs
     ui.ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -118,20 +121,20 @@ SelectScreen.prototype.draw = function() {
         // Draw the boxes for the options
         ui.ctx.fillStyle = '#484848';
         ui.ctx.fillRect(x - 125, y - 170, 250, 500);
-        ui.ctx.fillStyle = settings.part == PARTS.READY ? '#333' : '#000';
+        ui.ctx.fillStyle = settings.part == JoinScreen.PARTS.READY ? '#333' : '#000';
         ui.ctx.fillRect(x - 115, y - 160, 230, 480);
 
         // Input
         var input = players[i].input;
         input.update();
 
-        // Valid/invalid input switches parts
-        if (input.valid && settings.part == PARTS.DISCONNECTED) {
-            settings.part = PARTS.CONNECTED;
+        // Valid/invalid input switches JoinScreen.PARTS
+        if (input.valid && settings.part == JoinScreen.PARTS.DISCONNECTED) {
+            settings.part = JoinScreen.PARTS.CONNECTED;
             settings.frame = 0;
         }
         else if (!input.valid) {
-            settings.part = PARTS.DISCONNECTED;
+            settings.part = JoinScreen.PARTS.DISCONNECTED;
             settings.frame = 0;
         }
 
@@ -139,7 +142,7 @@ SelectScreen.prototype.draw = function() {
         switch (settings.part) {
         
             // Controller is disconnected and awaiting connection
-            case PARTS.DISCONNECTED:
+            case JoinScreen.PARTS.DISCONNECTED:
 
                 // Prompt to connect a controller
                 ui.ctx.fillStyle = 'white';
@@ -151,7 +154,7 @@ SelectScreen.prototype.draw = function() {
                 break;
 
             // Controller is connected and awaiting the player to join
-            case PARTS.CONNECTED:
+            case JoinScreen.PARTS.CONNECTED:
 
                 // Prompt to press a button to join
                 ui.ctx.fillStyle = 'white';
@@ -179,7 +182,7 @@ SelectScreen.prototype.draw = function() {
                 break;
 
             // Player is choosing a profile
-            case PARTS.PROFILE:
+            case JoinScreen.PARTS.PROFILE:
 
                 // Profile options
                 var min = Math.max(0, settings.profile - 5);
@@ -220,7 +223,7 @@ SelectScreen.prototype.draw = function() {
                         if (num < this.profilesArray.length - 2) {
                             this.profilesArray.splice(num, 1);
                             for (j = 0; j < this.settings.length; j++) {
-                                if (j != i && this.settings[j].part == PARTS.PROFILE && this.settings[j].profile >= num && this.settings[j].profile > 0) {
+                                if (j != i && this.settings[j].part == JoinScreen.PARTS.PROFILE && this.settings[j].profile >= num && this.settings[j].profile > 0) {
                                     this.settings[j].profile--;
                                 }
                             }
@@ -241,7 +244,7 @@ SelectScreen.prototype.draw = function() {
                 break;
 
             // Player is creating a new profile
-            case PARTS.NEW_PROFILE:
+            case JoinScreen.PARTS.NEW_PROFILE:
 
                 // Current name display
                 ui.ctx.fillStyle = '#ccc';
@@ -331,7 +334,7 @@ SelectScreen.prototype.draw = function() {
                 break;
 
             // Player is ready to play
-            case PARTS.READY:
+            case JoinScreen.PARTS.READY:
 
                 // Name
                 ui.ctx.font = '32px Flipbash';
@@ -363,14 +366,16 @@ SelectScreen.prototype.draw = function() {
     var allReady = true;
     var oneReady = false;
     for (k = 0; k < players.length; k++) {
-        if (this.settings[k].part != PARTS.READY && this.settings[k].part > PARTS.CONNECTED) {
+        if (this.settings[k].part != JoinScreen.PARTS.READY && this.settings[k].part > JoinScreen.PARTS.CONNECTED) {
             allReady = false;
         }
-        else if (this.settings[k].part == PARTS.READY) {
+        else if (this.settings[k].part == JoinScreen.PARTS.READY) {
             oneReady = true;
+            players[k].settings = this.settings[k];
         }
     }
     if (allReady && oneReady) {
+        cleanPlayerList();
         gameScreen = new RoomScreen(false);
     }
 };

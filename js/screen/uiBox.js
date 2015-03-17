@@ -49,9 +49,16 @@ function UIRow(yOffset, width, height) {
         usedWidth: 0,
         elements : [],
         widths   : [],
+        
+        add: function(element) {
+            this.elements.push(element);
+            this.usedWidth += element.width;
+            this.widths.push(element.width);
+            return this;
+        },
 
         addButton: function(text, width, callback) {
-            this.elements.push(UIButton(text, this.yOffset, width, width, this.height, callback));
+            this.elements.push(UIButton(text, this.yOffset, width * 0.75, width, this.height, callback));
             this.usedWidth += width;
             this.widths.push(width);
             return this;
@@ -80,7 +87,7 @@ function UIRow(yOffset, width, height) {
             for (var i = 0; i < this.elements.length; i++) {
                 this.elements[i].x = x + this.widths[i] / 2;
                 if (this.elements[i].box) {
-                    this.elements[i].box.x = x;
+                    this.elements[i].box.x = x + this.widths[i] / 2;
                 }
                 this.elements[i].draw();
                 x += spacing + this.widths[i];
@@ -106,6 +113,7 @@ function UIBox(center, yOffset, minWidth, maxWidth, height) {
         maxWidth   : maxWidth,
         height     : height,
         active     : false,
+        alpha      : 0.75,
 
         // Draws the button
         draw       : function() {
@@ -130,7 +138,7 @@ function UIBox(center, yOffset, minWidth, maxWidth, height) {
             color = Math.floor(this.MAX_COLOR * ratio);
 
             // Draw the box
-            ui.ctx.globalAlpha = 0.75;
+            ui.ctx.globalAlpha = this.alpha;
             ui.ctx.fillStyle = 'rgb(' + color + ',' + color + ',' + color + ')';
             ui.ctx.fillRect(x, y, this.width, this.height);
             ui.ctx.globalAlpha = 1;
