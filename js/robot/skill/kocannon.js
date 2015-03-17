@@ -1,6 +1,8 @@
 /**
  * Sets up the KO Cannon ability that fires a
  * powerful laser beam forward
+ *
+ * @param {Player} player - player to set up for
  */
 function skillKOCannon(player) {
 

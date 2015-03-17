@@ -3,6 +3,8 @@
  *
  * @param {number} x - horizontal starting position
  * @param {number} y - vertical starting position
+ *
+ * @constructor
  */
 extend('FortressBoss', 'Boss');
 function FortressBoss(x, y) {

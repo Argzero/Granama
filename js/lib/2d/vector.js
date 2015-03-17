@@ -1,10 +1,10 @@
 /**
  * A 2D vector with helper methods
  *
- * @constructor
- *
  * @param {number} x - the horizontal component
  * @param {number} y - the vertical component
+ *
+ * @constructor
  */
 function Vector(x, y) {
     this.x = x || 0;

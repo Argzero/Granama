@@ -4,9 +4,9 @@ depend('lib/math');
 /**
  * A convex shape collider
  *
- * @constructor
- *
  * @param {Vector[]} points - the points making up the shape
+ *
+ * @constructor
  */
 function ConvexCollider(points) {
     this.points = points;
@@ -127,9 +127,9 @@ ConvexCollider.prototype.isInside = function(point) {
 /**
  * A circular collider
  *
- * @constructor
- *
  * @param {number} r - the radius of the circle
+ *
+ * @constructor
  */
 function CircleCollider(r) {
     this.pos = new Vector(0, 0);

@@ -1,6 +1,8 @@
 /** 
  * Sets up the Stasis skill that freezes the player in place while they
  * regenerate health quickly over time
+ *
+ * @param {Player} player - player to set up for
  */
 function skillStasis(player) {
 

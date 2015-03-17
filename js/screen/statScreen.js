@@ -195,7 +195,7 @@ StatScreen.prototype.drawSection = function(data, list, xo, yo) {
         var stat = list[j].img;
         var key = list[j].stat;
 
-        var img = GetImage('stat' + stat);
+        var img = images.get('stat' + stat);
         var row = Math.floor(i / columns);
         var col = i % columns;
         var x = xo + col * width;

@@ -1,6 +1,8 @@
 /**
  * Sets up the Critical Blast skill for the player which
  * fires a powerful shotgun blast
+ *
+ * @param {Player} player - player to set up for
  */
 function skillCriticalBlast(player) {
     

@@ -4,6 +4,8 @@
  *
  * @param {number} x - horizontal starting position
  * @param {number} y - vertical starting position
+ *
+ * @constructor
  */
 extend('ScorpionBoss', 'Boss');
 function ScorpionBoss(x, y) {

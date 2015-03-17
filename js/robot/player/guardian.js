@@ -6,6 +6,8 @@ depend('robot/skill/stasis');
 /**
  * The Guardian player which uses rockets and
  * a machine gun as its main attacks
+ *
+ * @constructor
  */
 extend('PlayerGuardian', 'Player');
 function PlayerGuardian() {

@@ -159,10 +159,10 @@ function UITitle(content, yOffset, width, height) {
         draw   : function() {
 
             // Images
-            var tl = GetImage('buttonClampTop');
-            var bl = GetImage('buttonClampBottom');
-            var tr = GetImage('buttonClampTR');
-            var br = GetImage('buttonClampBR');
+            var tl = images.get('buttonClampTop');
+            var bl = images.get('buttonClampBottom');
+            var tr = images.get('buttonClampTR');
+            var br = images.get('buttonClampBR');
 
             // Calculations
             var midX = ui.canvas.width / 2;
@@ -219,8 +219,8 @@ function UIButton(text, yOffset, minWidth, maxWidth, height, callback) {
         draw     : function() {
 
             // Images
-            var top = GetImage('buttonClampTop');
-            var bottom = GetImage('buttonClampBottom');
+            var top = images.get('buttonClampTop');
+            var bottom = images.get('buttonClampBottom');
 
             // Calculations
             var midX = ui.canvas.width / 2;

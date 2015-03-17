@@ -2,6 +2,8 @@
  * Sets up the Ionic Thunder skill for the player which
  * fires a laser and shockwaves while the player is immobilized
  * and pushed backwards
+ *
+ * @param {Player} player - player to set up for
  */
 function skillIonicThunder(player) {
 

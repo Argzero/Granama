@@ -3,6 +3,8 @@
  *
  * @param {number} x - horizontal starting position
  * @param {number} y - vertical starting position
+ *
+ * @constructor
  */
 extend('BrawlerBoss', 'Boss');
 function BrawlerBoss(x, y) {

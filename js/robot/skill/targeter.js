@@ -2,6 +2,8 @@
  * Sets up the Targeter skill for a player which shoots a target
  * to apply a mark on them, causing drones to get increased range
  * and focus that target while it takes double damage
+ *
+ * @param {Player} player - player to set up for
  */
 function skillTargeter(player) {
 

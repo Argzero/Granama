@@ -2,7 +2,7 @@
  * Represents the controls screen
  */
 function ControlsScreen() {
-    this.controls = GetImage('controlsScreen');
+    this.controls = images.get('controlsScreen');
     this.clicking = false;
 }
 

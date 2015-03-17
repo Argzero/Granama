@@ -1,5 +1,4 @@
 // Data scripts
-depend('data/images');
 depend('data/io');
 depend('data/music');
 depend('data/profile');

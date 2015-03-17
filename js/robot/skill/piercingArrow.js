@@ -1,6 +1,8 @@
 /**
  * Sets up the Piercing Arrow ability which damages and
  * drags enemies along with it 
+ *
+ * @param {Player} player - player to set up for
  */
 function skillPiercingArrow(player) {
 

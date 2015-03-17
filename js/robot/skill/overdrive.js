@@ -2,6 +2,8 @@
  * Sets up the Overdrive skill for the player which
  * gives them a speed and attack rate buff while
  * leaving behind ghost images of themselves
+ *
+ * @param {Player} player - player to set up for
  */
 function skillOverdrive(player) {
 

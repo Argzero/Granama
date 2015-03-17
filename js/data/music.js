@@ -72,9 +72,3 @@ MusicManager.prototype.updateMusic = function(song) {
 MusicManager.prototype.isMusicPlaying = function() {
     return this.music !== undefined;
 };
-
-/*
-// Move to the end screen
-endScreen.setup(gameScreen);
-gameScreen = endScreen;
-*/

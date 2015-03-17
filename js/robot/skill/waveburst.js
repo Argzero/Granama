@@ -1,3 +1,9 @@
+/**
+ * Sets up the Waveburst skill which unleashes a wave of
+ * bullets in a circular spiral pattern around the player.
+ *
+ * @param {Player} player - player to set up for
+ */
 function skillWaveburst(player) {
     
     /**
