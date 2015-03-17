@@ -83,8 +83,12 @@ depend('robot/enemy/orbiter');
 depend('robot/enemy/rocketer');
 depend('robot/enemy/spinner');
 
-// Online scripts
+// Shared online code
+depend('online/client');
+
+// Multiplayer lobby menus
 depend('online/lobby/joinScreen');
+depend('online/lobby/roomScreen');
 
 // Background tile sprite
 var TILE;
