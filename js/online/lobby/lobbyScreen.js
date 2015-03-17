@@ -29,6 +29,9 @@ function LobbyScreen() {
         if (!players[i].settings) {
             players[i].settings = new PlayerSettings(i);
         }
+        else {
+            players[i].settings.part = 1;
+        }
     }
 
     // Start off with all classes available
@@ -112,6 +115,11 @@ LobbyScreen.prototype.draw = function() {
     var baseX = x - (players.length - 1) * 135;
     var i, j, k, dx, preview, robot, input;
     for (i = 0; i < players.length; i++) {
+        
+        // Re-initialize settings if lost for some reason (players leaving)
+        if (!players[i].settings) {
+            players[i].settings = new PlayerSettings(i);
+        }
 
         x = baseX + 270 * i;
         var settings = players[i].settings;

@@ -71,7 +71,6 @@ function cleanPlayerList() {
             this.keyboardActive = true;
         }
         else this.gamepadActive = true;
-        players[i].settings.part = 1;
     }
 }
 

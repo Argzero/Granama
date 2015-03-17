@@ -35,12 +35,58 @@ var io = require('socket.io')(app);
 io.on('connection', function(socket) {
     //socket.join('room1');
     
-    // Check logins
-    socket.on('login', function(data) {
-        
-        // TODO do login validation
-        
-        socket.emit('general', { success: true, error: '' });
+    // Create a new room
+    socket.on('createRoom', function(data) {
+        console.log('Action: Create Room [' + data.room.name + ']');
+        if (!roomList[data.room.name]) {
+            data.room.selections = data.users;
+            roomList[data.room.name] = data.room;
+            socket.room = data.room.name;
+            socket.join(data.room.name);
+            socket.emit('joinRoom', { 
+                room: data.room, 
+                selections: data.users, 
+                index: 0 
+            });
+            console.log('Result: Room created - ' + Object.keys(roomList).length + ' rooms now');
+            console.log('Users in ' + data.room.name + ' = ' + Object.keys(io.sockets.adapter.rooms[data.room.name]).length);
+        }
+        else {
+            socket.emit('general', {
+                success: true,
+                error: 'Name is already taken'
+            });
+            console.log('Result: Name taken');
+        }
+    });
+    
+    // Destroys a room, removing its reference and all players in the room
+    socket.on('destroyRoom', function(data) {
+        console.log('Action: Destroy room');
+        if (!socket.room) return;
+        room = socket.room;
+        delete roomList[room];
+        socket.leave(room);
+        var clients = io.sockets.adapter.rooms[room];
+        if (clients) {
+            var keys = Object.keys(clients);
+            for (var i = 0; i < keys.length; i++) {
+                clients[keys[i]].leave(room);
+                clients[keys[i]].emit('kick', { reason: data.reason });
+                delete clients[keys[i]].room;
+            }
+        }
+        delete socket.room;
+    });
+    
+    // Handles socket disconnects
+    socket.on('disconnect', function() { 
+    
+        // Leave a room if in one
+        if (socket.room) {
+            socket.leave(socket.room);
+            delete socket.room;
+        }
     });
     
     // Fetch rooms for a user
@@ -74,29 +120,22 @@ io.on('connection', function(socket) {
         socket.emit('updateRooms', { rooms: rooms });
     });
     
-    // Create a new room
-    socket.on('createRoom', function(data) {
-        console.log('Action: Create Room [' + data.room.name + ']');
-        if (!roomList[data.room.name]) {
-            data.room.selections = data.users;
-            roomList[data.room.name] = data.room;
-            socket.room = data.room.name;
-            socket.join(data.room.name);
-            socket.emit('joinRoom', { 
-                room: data.room, 
-                selections: data.users, 
-                index: 0 
-            });
-            console.log('Result: Room created - ' + Object.keys(roomList).length + ' rooms now');
-            console.log('Users in ' + data.room.name + ' = ' + Object.keys(io.sockets.adapter.rooms[data.room.name]).length);
-        }
-        else {
-            socket.emit('general', {
-                success: true,
-                error: 'Name is already taken'
-            });
-            console.log('Result: Name taken');
-        }
+    // Check logins
+    socket.on('login', function(data) {
+        
+        // TODO do login validation
+        
+        socket.emit('general', { success: true, error: '' });
+    });
+    
+    // Removes a player from a room
+    socket.on('removePlayer', function(data) {
+        console.log('Action: remove player');
+        socket.broadcast.to(socket.room).emit('removePlayer', data);
+        roomList[socket.room].numPlayers -= data.amount;
+        roomList[socket.room].selections.splice(data.index, data.amount);
+        socket.leave(socket.room);
+        delete socket.room;
     });
     
     // See if a user can join a room
@@ -106,6 +145,8 @@ io.on('connection', function(socket) {
             var room = roomList[data.room];
             if (room.maxPlayers - room.numPlayers >= data.users.length) {
                 
+                console.log(data.users.length + ' players joined room ' + data.room);
+                
                 // Add them to the room
                 for (var i = 0; i < data.users.length; i++) {
                     room.selections.push(data.users[i]);
@@ -113,6 +154,8 @@ io.on('connection', function(socket) {
                 socket.join(data.room);
                 socket.room = data.room;
                 room.numPlayers += data.users.length;
+                
+                console.log('Now there are ' + room.numPlayers + ' players [' + room.selections.length + ' selections]');
                 
                 // Tell the users they joined
                 socket.emit('joinRoom', {
@@ -153,25 +196,5 @@ io.on('connection', function(socket) {
     socket.on('updateSelection', function(data) {
         console.log('Action: Update selection [room= ' + socket.room + ']');
         socket.broadcast.to(socket.room).emit('updateSelection', data);
-    });
-    
-    // Removes a player from a room
-    socket.on('removePlayer', function(data) {
-        console.log('Action: remove player');
-        socket.broadcast.to(data.room).emit('removePlayer', data);
-        roomList[data.room].playerNum -= data.amount;
-        roomList[data.room].splice(data.index, data.amount);
-        socket.leave(data.room);
-        delete socket.room;
-    });
-    
-    // Handles socket disconnects
-    socket.on('disconnect', function() { 
-    
-        // Leave a room if in one
-        if (socket.room) {
-            socket.leave(socket.room);
-            delete socket.room;
-        }
     });
 });
