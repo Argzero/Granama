@@ -3,6 +3,8 @@
  *
  * @param {number} x - horizontal starting position
  * @param {number} y - vertical starting position
+ *
+ * @constructor
  */
 extend('HydraBoss', 'Boss');
 function HydraBoss(x, y) {
@@ -131,6 +133,8 @@ HydraBoss.prototype.onPreDraw = function() {
  *
  * @param {number} x - horizontal starting position
  * @param {number} y - vertical starting position
+ *
+ * @constructor
  */
 extend('RoyalHydra', 'Boss');
 function RoyalHydra(x, y) {
@@ -391,6 +395,15 @@ RoyalHydra.prototype.onDraw = function() {
 	camera.ctx.fillRect(this.head.pos.x - this.pos.x - 5, this.head.pos.y - this.pos.y - 5, 10, 10);
 };
 
+/** 
+ * One of the secondary heads of the royal hydra
+ *
+ * @param {RoyalHydra} hydra  - the hydra with the heads
+ * @param {RopeTail}   rope   - the rope tail to use
+ * @param {number}     damage - the damage scale to use for fireballs and consuming
+ *
+ * @constructor
+ */
 function RoyalHydraSideHead(hydra, rope, damage) {
 
 	this.hydra = hydra;
@@ -420,6 +433,7 @@ function RoyalHydraSideHead(hydra, rope, damage) {
 	};
 }
 
+// Set required functions to use weapons
 RoyalHydraSideHead.prototype.isInRange = function() { return true; };
 RoyalHydraSideHead.prototype.getWorldRotation = function() { return this.rotation; };
 RoyalHydraSideHead.prototype.getWorldPos = function() { return this.pos; };
@@ -463,7 +477,7 @@ RoyalHydra.consumeOffset = new Vector(0, 150);
  */
 RoyalHydra.consume = function() {
 
-    // Consume attack
+	// Look for a player to grab
 	var holdPos = this.pos.clone().addv(RoyalHydra.consumeOffset.clone().rotate(this.rotation.x, this.rotation.y));
     if (!this.held && this.hydra.pattern != 1 && this.heldTimer <= 0) {
 		var p = getClosestPlayer(this.pos);
@@ -475,6 +489,8 @@ RoyalHydra.consume = function() {
             p.damage(this.hydra.consumeDamage, this.hydra);
         }
     }
+	
+	// Carry a grabbed player with the head
     else if (this.held) {
         this.held.moveTo(holdPos.x, holdPos.y);
         this.heldTimer--;
@@ -484,6 +500,8 @@ RoyalHydra.consume = function() {
             this.held = undefined;
         }
     }
+	
+	// Cannot grab another player right after letting one go
     else if (this.heldTimer > 0) {
         this.heldTimer--;
     }

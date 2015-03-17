@@ -3,12 +3,12 @@ depend('lib/math');
 /**
  * Represents a color with a few helper functions
  *
- * @constructor
- *
  * @param {number} r - Red component
  * @param {number} g - Green component
  * @param {number} b - Blue component
  * @param {number} a - Alpha component
+ *
+ * @constructor
  */
 function Color(r, g, b, a) {
     this.r = clamp(r, 0, 255);

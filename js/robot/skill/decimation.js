@@ -1,6 +1,8 @@
 /**
  * Sets up the decimation skill for the slayer that
  * doubles the damage of slayer's normal attacks for a duration
+ *
+ * @param {Player} player - player to set up for
  */
 function skillDecimation(player) {
 

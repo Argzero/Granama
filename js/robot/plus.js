@@ -7,6 +7,8 @@
  * @param {number} velX     - horizontal velocity
  * @param {number} velY     - vertical velocity
  * @param {number} lifespan - how long the particle lasts
+ *
+ * @constructor
  */
 extend('Plus', 'Sprite');
 function Plus(x, y, velX, velY, lifespan) {

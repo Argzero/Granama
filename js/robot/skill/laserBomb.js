@@ -6,6 +6,8 @@ var LASER_BOMB_SIZE_SCALE = 10;
  * Sets up the Laser Bomb skill for a player which charges up
  * a laser orb and fires it out, blowing up like a rocket for
  * a lot of damage that scales with the number of drones.
+ *
+ * @param {Player} player - player to set up for
  */
 function skillLaserBomb(player) {
 

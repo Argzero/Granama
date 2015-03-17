@@ -3,6 +3,8 @@
  *
  * @param {number} x - horizontal starting position
  * @param {number} y - vertical starting position
+ *
+ * @constructor
  */
 extend('HeavyBoss', 'Boss');
 function HeavyBoss(x, y) {

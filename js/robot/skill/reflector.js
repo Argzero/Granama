@@ -1,6 +1,14 @@
+/**
+ * Sets up the Reflector skill which reflects damage back
+ * to enemies with a multiplier as homing projectiles.
+ *
+ * @param {Player} player - player to set up for
+ */
 function skillReflector(player) {
 
-    // Activating the ability
+	/**
+	 * Handles activating the ability
+	 */
     player.onUpdate = function() {
         if (this.isSkillCast()) {
             this.skillDuration = 300;
@@ -8,7 +16,10 @@ function skillReflector(player) {
         }
     };
 
-    // Damage immunity and reflection while active
+    /**
+	 * Provide damage immunity and damage reflection
+	 * while the skill is active
+	 */
     player.onDamaged = function(amount, damager) {
         if (this.skillDuration > 0) {
             var reflection = new Projectile(

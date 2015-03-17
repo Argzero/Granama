@@ -1,5 +1,7 @@
 /**
  * Sets up the Perfect Shield ability for a player
+ *
+ * @param {Player} player - player to set up for
  */
 function skillPerfectShield(player) {
 

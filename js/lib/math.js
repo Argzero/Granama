@@ -46,6 +46,8 @@ function sq(num) {
  * @param {number} b - quadratic coefficient
  * @param {number} c - linear coefficient
  * @param {number} d - constant
+ *
+ * @returns {Array} the solutions to the equation
  */
 function solveEq(a, b, c, d) {
     var solutions = [];

@@ -139,22 +139,22 @@ function Solar(x, y) {
         /* distance    */ 300,
         /* back        */ 'enemySolarBack',
         /* spin        */ Math.PI / 30,
-        /* fire        */ true
+        /* fire        */ true,
+		/* fire damage */ 0.5 * Enemy.sum()
     );
 
     this.pierceDamage = 0.5;
-    this.back.fire = true;
-    this.back.damage = 0.5 * Enemy.sum();
 }
 
 /**
  * A back piece to a spinner
  *
- * @param sprite
- * @param source
- * @param angle
- * @param fire
- * @param damage
+ * @param sprite - the name of the sprite of the back piece
+ * @param source - the enemy owning the back piece
+ * @param angle  - the angle to rotate each frame
+ * @param fire   - whether or not to spew fire 
+ * @param damage - the damage of the fire
+ *
  * @constructor
  */
 extend('SpinnerBack', 'Sprite');

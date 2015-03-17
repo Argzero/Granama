@@ -103,6 +103,8 @@ RopeTail.prototype.update = function() {
 
 /**
  * Updates a turret on the tail if it exists
+ *
+ * @param {number} index - the index of the turret to update
  */
 RopeTail.prototype.updateTurret = function(index) 
 {
@@ -196,6 +198,8 @@ RopeTail.prototype.turnTowards = function(dir, speed, mode) {
  * @param {string}               sprite     - name of the sprite of the segment
  * @param {number}               offset     - distance between segments
  * @param {number}               constraint - maximum angle segments can bend
+ *
+ * @constructor
  */
 extend('TailSegment', 'Sprite');
 function TailSegment(parent, sprite, offset, constraint) {

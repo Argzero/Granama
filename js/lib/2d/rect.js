@@ -3,12 +3,12 @@ depend('lib/2d/vector');
 /**
  * A rectangle made of 4 vertices
  *
- * @constructor
- *
  * @param {number} x - the top left horizontal coordinate of the rectangle
  * @param {number} y - the top left vertical coordinate of the rectangle
  * @param {number} w - the width of the rectangle
  * @param {number} h - the height of the rectangle
+ *
+ * @constructor
  */
 function Rect(x, y, w, h) {
     this.width = w;

@@ -81,17 +81,7 @@ function HeavyRocketer(x, y) {
  *
  * @param {number} x - horizontal position
  * @param {number} y - vertical position
- *<li>{number}   target           - the ID of the target group the bullet hits</li>
-     *     <li>{number}   rate             - the number of frames between shots</li>
-     *     <li>{number}   damage           - the damage dealt by the bullet</li>
-     *     <li>{number}   range            - the minimum range to start firing from</li>
-     *     <li>{string}   [sprite]         - the name of the explosion type</li>
-	 *     <li>{string}   [fromSelf]       - whether or not to originate from yourself instead of the target</li>
-	 *     <li>{number}   [chargeTime]     - time in frames before the explosion happens</li>
-     *     <li>{number}   [dx]             - horizontal position offset assuming no rotation</li>
-     *     <li>{number}   [dy]             - vertical position offset assuming no rotation</li>
-     *     <li>{Robot}    [shooter]        - the actual shooter of the bullet</li>
-     *     <li>{Array}    [buffs]          - buffs to apply on hit { stat, multiplier, duration }</li>
+ *
  * @constructor
  */
 extend('Harrier', 'Enemy');

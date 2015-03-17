@@ -1,8 +1,7 @@
 depend('lib/math');
 depend('lib/2d/vector');
 
-//var IS_FIREFOX = typeof InstallTrigger !== 'undefined';
-
+// Manages controls from keyboard and gamepads
 var controls = {
 
     GAMEPADS_SUPPORTED: navigator.getGamepads !== undefined,
