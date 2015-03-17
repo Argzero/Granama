@@ -244,7 +244,7 @@ var movement = {
             this.subMovement();
 
             // Charge when in range
-            if (this.forward().dot(getClosestPlayer(this.pos).pos.clone().subtractv(this.pos).normalize()) > 0.995) {
+            if (this.forward().dot(movement.getTargetPlayer(this).pos.clone().subtractv(this.pos).normalize()) > 0.995) {
                 this.charging = this.chargeDuration;
             }
         }

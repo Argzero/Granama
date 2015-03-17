@@ -231,7 +231,7 @@ Projectile.prototype.setupFist = function(delay, side) {
 Projectile.prototype.setupGrapple = function(stun, self) {
     this.onUpdate = projEvents.grappleUpdate;
     this.onHit = projEvents.grappleHit;
-    this.onBlocked = projEvents.grappleBlocked;
+    this.onBlocked = projEvents.grappleExpire;
     this.onExpire = projEvents.grappleExpire;
     this.onCollideCheck = projEvents.grappleCollide;
     
@@ -401,10 +401,12 @@ var projEvents = {
     grappleUpdate: function() {
         this.shooter.grapple = this;
         if (this.returning) {
-            this.vel = this.shooter.pos.clone().subtractv(this.pos).setMagnitude(this.speed);
+            var rot = this.gun.getWorldRotation();
+            var returnPoint = this.offset.clone().rotate(rot.x, rot.y).addv(this.gun.getWorldPos());
+            this.vel = returnPoint.clone().subtractv(this.pos).setMagnitude(this.speed);
             if (this.target && this.target.pos.distanceSq(this.shooter.pos) >= 10000) {
-                this.target.stun(this.stun || 2);
-                if (this.self) {
+                if (this.target.type != Robot.BOSS) this.target.stun(this.stun || 2);
+                if (this.self || this.target.type == Robot.BOSS) {
                     this.shooter.move(-this.vel.x, -this.vel.y);
                     this.shooter.stun(2);
                     this.vel.x = 0;
@@ -414,7 +416,7 @@ var projEvents = {
                     this.target.moveTo(this.pos.x + this.offset.x, this.pos.y + this.offset.y);
                 }
             }
-            if (this.pos.distanceSq(this.shooter.pos) <= 400) {
+            if (this.pos.distanceSq(returnPoint) <= 400) {
                 this.expired = true;
                 this.shooter.grapple = false;
             }
@@ -453,14 +455,6 @@ var projEvents = {
      * Instead of expiring, grappling hooks return to the shooter
      */
     grappleExpire: function() {
-        this.expired = false;
-        this.returning = true;
-    },
-    
-    /**
-     * When blocked, returns to the user rather than disappearing
-     */
-    grappleBlocked: function() {
         this.expired = false;
         this.returning = true;
     },
@@ -515,6 +509,18 @@ var projEvents = {
         }
         else this.damage = Math.abs(this.damage);
         return true;
+    },
+    
+    /**
+     * Applies punch effects when hitting a target (Meteor's punches)
+     *
+     * @param {Robot}  target - the target being hit
+     * @param {number} damage - the amount of damage that was dealt
+     */
+    punchHit: function(target, damage) {
+        this.expired = false;
+        target.knockback(target.pos.clone().subtractv(this.shooter.pos).setMagnitude(this.knockback));
+        target.stun(this.stun);
     },
     
     /**

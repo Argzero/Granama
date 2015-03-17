@@ -17,7 +17,8 @@ var ui = {
         'shieldBuff': { img: 'Shield', positive: true,  threshold: 1 },
         'speed'     : { img: 'Speed',  positive: true,  threshold: 1 },
         'healthBuff': { img: 'Hp',     positive: true,  threshold: 0 },
-        'flatHBuff' : { img: 'Hp',     positive: true,  threshold: 0 } 
+        'flatHBuff' : { img: 'Hp',     positive: true,  threshold: 0 },
+        'temp'      : { img: 'Speed',  positive: true,  threshold: 1 } 
     },
     pointer: undefined,
     
@@ -88,6 +89,7 @@ var ui = {
             
             // Count how many buffs are applied
             var count = 0;
+            if (r.baseSpeed != r.speed) r.buff('temp', r.speed / r.baseSpeed, 1);
             for (x in this.buffs)
             {
                 if (r.buffs[x] !== undefined)

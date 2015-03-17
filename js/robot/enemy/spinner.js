@@ -178,25 +178,23 @@ SpinnerBack.prototype.update = function() {
         this.rotate(this.cos, this.sin);
 
         if (this.fire && this.power && this.fireCd <= 0) {
-            var fireDir = this.rotation.clone();
-            var fireVel = this.forward().multiply(10, 10);
-            fireDir.rotate(HALF_RT_2, HALF_RT_2);
-            fireVel.rotate(HALF_RT_2, HALF_RT_2);
-            var firePos = this.source.pos.clone().addv(fireVel.clone().multiply(this.sprite.width / 20, this.sprite.width / 20));
+            var offset = new Vector(0, this.width / 2);
+            offset.rotate(HALF_RT_2, HALF_RT_2);
             for (var i = 0; i < 4; i++) {
-                var fire = new Fire(
-                    'bossFlame',
-                    this.source,
-                    firePos.clone(),
-                    fireVel.clone(),
-                    fireDir.clone(),
-                    this.power,
-                    100
+                var fire = new Projectile(
+                    /* Sprite */ 'bossFlame',
+                    /* Offset */ offset.x, offset.y,
+                    /* Source */ this.source, this,
+                    /* Speed  */ 5,
+                    /* Angle  */ i * Math.PI / 2 + Math.PI / 4,
+                    /* Damage */ this.power,
+                    /* Range  */ 50,
+                    /* Pierce */ true,
+                    /* Target */ Robot.PLAYER
                 );
+                fire.onUpdate = projEvents.fireUpdate;
                 gameScreen.bullets.push(fire);
-                fireDir.rotate(0, 1);
-                fireVel.rotate(0, 1);
-                firePos.rotateAround(this.source.pos.x, this.source.pos.y, 0, 1);
+                offset.rotate(0, 1);
             }
             this.fireCd = 2;
         }

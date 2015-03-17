@@ -8,7 +8,7 @@ function GameScreen() {
     // Boss data
     var multiplier = (0.6 + 0.4 * players.length);
     this.bossStatus = ACTIVE_NONE;
-    this.bossScore = Math.floor(50 * multiplier);
+    this.bossScore = Math.floor(10 * multiplier) * 5;
     this.bossIncrement = this.bossScore;
     this.bossScale = Math.floor(5 * multiplier) * 5;
     this.bossCount = 0;
@@ -319,8 +319,8 @@ GameScreen.prototype.applyScrolling = function() {
  */
 GameScreen.prototype.startNextRound = function() {
     this.paused = false;
-    this.bossScore += this.bossIncrement;
     this.bossIncrement += this.bossScale;
+    this.bossScore += this.bossIncrement;
 };
 
 /**

@@ -104,7 +104,7 @@ HydraBoss.prototype.onUpdate = function() {
 	
 	// Turn into royal hydra
 	if (this.canTransform && this.health < this.maxHealth * 0.2) {
-		gameScreen.particles.push(new RocketExplosion('Enemy', this.x, this.y, 3000));
+		gameScreen.particles.push(new RocketExplosion('Enemy', this.pos, 3000));
 		gameScreen.robots.splice(gameScreen.robots.length - 1, 1);
 		gameScreen.robots.push(new RoyalHydra(-GAME_WIDTH / 2, -GAME_HEIGHT / 2));
 		gameScreen.bossTimer = 0;
@@ -481,6 +481,7 @@ RoyalHydra.consume = function() {
 	var holdPos = this.pos.clone().addv(RoyalHydra.consumeOffset.clone().rotate(this.rotation.x, this.rotation.y));
     if (!this.held && this.hydra.pattern != 1 && this.heldTimer <= 0) {
 		var p = getClosestPlayer(this.pos);
+        if (!p) return;
 		var dSq = p.pos.distanceSq(holdPos);
         if (dSq < 10000) {
             this.held = p;

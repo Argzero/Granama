@@ -114,7 +114,7 @@ function HeavyBomber(x, y) {
 extend('Turreter', 'Bomber');
 function Turreter(x, y) {
     this.super(
-        /* sprite name */ 'enemyHeavyBomber',
+        /* sprite name */ 'enemyTurret',
         /* x position  */ x,
         /* y position  */ y,
         /* enemy type  */ Robot.MOB,
