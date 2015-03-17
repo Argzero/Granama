@@ -190,6 +190,14 @@ onLoaderDone = function() {
 };
 
 /**
+ * Cleans up server connections before quitting
+ */ 
+window.onbeforeunload = function() {
+    connection.quitGame();
+    connection.disconnect();
+};
+
+/**
  * Prevents scrolling the page using the scroll wheel
  *
  * @param {Event} e - event details

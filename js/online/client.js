@@ -28,10 +28,12 @@ Connection.prototype.connect = function() {
     this.socket = io.connect();
     
     // Set up message handlers
+    this.socket.on('kick', this.onKick.bind(this));
     this.socket.on('general', this.onGeneral.bind(this));
-    this.socket.on('updateRooms', this.onUpdateRooms.bind(this));
-    this.socket.on('addPlayers', this.onAddPlayers.bind(this));
     this.socket.on('joinRoom', this.onJoinRoom.bind(this));
+    this.socket.on('addPlayers', this.onAddPlayers.bind(this));
+    this.socket.on('updateRooms', this.onUpdateRooms.bind(this));
+    this.socket.on('removePlayer', this.onRemovePlayer.bind(this));
     this.socket.on('updateSelection', this.onUpdateSelection.bind(this));
     
     this.connected = true;
@@ -133,22 +135,50 @@ Connection.prototype.updateSelection = function(playerIndex) {
  * Removes all local players from the current game for some
  * reason, whether it's quitting from the lobby, closing the
  * window, or losing connection.
+ *
+ * @param {string} reason - the reason for quitting the game (e.g. closed browser)
  */ 
-Connection.prototype.quitGame = function() {
+Connection.prototype.quitGame = function(reason) {
     if (!this.inRoom) return;
-    this.socket.emit('removePlayer', {
-        room: this.room.name,
-        index: this.gameIndex,
-        amount: this.localPlayers,
-        time: new Date().getTime()
-    });
+    
+    // Host leaving takes the room down with them 
+    if (this.gameIndex === 0) {
+        this.socket.emit('destroyRoom', {
+            reason: reason
+        });
+    }
+    
+    // Normal players just remove themselves
+    else {
+        this.socket.emit('removePlayer', {
+            room: this.room.name,
+            index: this.gameIndex,
+            amount: this.localPlayers,
+            time: new Date().getTime()
+        });
+    }
+    
     this.inRoom = false;
-    players = players.slice(this.gameIndex, this.localPlayers);
+    players = players.slice(this.gameIndex, this.gameIndex + this.localPlayers);
+    gameScreen = new RoomScreen();
 };
 
 // ------------------------------------------------------------------------------ //
 //                                  Server -> Client                              //
 // ------------------------------------------------------------------------------ //
+
+/**
+ * Message from the server about players joining the game 
+ * from another computer.
+ *
+ * @param {Object} data - the data for the joining players
+ */
+Connection.prototype.onAddPlayers = function(data) {
+    if (!this.inRoom) return;
+    for (var i = 0; i < data.selections.length; i++) {
+        players[i + data.index].settings = data.selections[i]; 
+    }
+};
 
 /**
  * Receives a general response from the server containing whether
@@ -161,16 +191,6 @@ Connection.prototype.onGeneral = function(data) {
     if (this.callback) {
         this.callback(data);
         delete this.callback;
-    }
-};
-
-/**
- * Retrieves the list of active rooms from the server and 
- * passes it along to the RoomScreen if still on that screen.
- */
-Connection.prototype.onUpdateRooms = function(data) {
-    if (gameScreen.updateRooms) {
-        gameScreen.updateRooms(data);
     }
 };
 
@@ -199,15 +219,36 @@ Connection.prototype.onJoinRoom = function(data) {
 };
 
 /**
- * Message from the server about players joining the game 
- * from another computer.
+ * Message from the server for when the user is kicked
+ * from their current game.
  *
- * @param {Object} data - the data for the joining players
+ * @param {Object} data - message from the server
  */
-Connection.prototype.onAddPlayers = function(data) {
+Connection.prototype.onKick = function(data) {
     if (!this.inRoom) return;
-    for (var i = 0; i < data.selections.length; i++) {
-        players[i + data.index].settings = data.selections[i]; 
+    
+    this.inRoom = false;
+    players = players.slice(this.gameIndex, this.gameIndex + this.localPlayers);
+    gameScreen = new RoomScreen();
+};
+
+/**
+ * Message for when players leave the current game
+ *
+ * @param {Object} data - information about the players who left
+ */
+Connection.prototype.onRemovePlayer = function(data) {
+    players.splice(data.index, data.amount);
+    appendPlayers(5);
+};
+
+/**
+ * Retrieves the list of active rooms from the server and 
+ * passes it along to the RoomScreen if still on that screen.
+ */
+Connection.prototype.onUpdateRooms = function(data) {
+    if (gameScreen.updateRooms) {
+        gameScreen.updateRooms(data);
     }
 };
 
