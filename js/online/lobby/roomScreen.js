@@ -7,9 +7,9 @@
 function RoomScreen() {
     
     // Setup UI
-    this.ui = UIGrid(1000, 75)//text, yOffset, maxWidth, height, callback
+    this.ui = new UIGrid(1000, 75)//text, yOffset, maxWidth, height, callback
         .addTitle('Multiplayer Games', -300, 100)
-        .add(UIRow(-160, 1000, 50)
+        .add(new UIRow(-160, 1000, 50)
             .add(new RoomButton('', -160, 500, 75, function() {
                 gameScreen.applyClick(this.text);
             }))
@@ -17,7 +17,7 @@ function RoomScreen() {
                 gameScreen.applyClick(this.text);
             }))
         )
-        .add(UIRow(-50, 1000, 50)
+        .add(new UIRow(-50, 1000, 50)
             .add(new RoomButton('', -50, 500, 75, function() {
                 gameScreen.applyClick(this.text);
             }))
@@ -25,7 +25,7 @@ function RoomScreen() {
                 gameScreen.applyClick(this.text);
             }))
         )
-        .add(UIRow(60, 1000, 50)
+        .add(new UIRow(60, 1000, 50)
             .add(new RoomButton('', 60, 500, 75, function() {
                 gameScreen.applyClick(this.text);
             }))
@@ -33,7 +33,7 @@ function RoomScreen() {
                 gameScreen.applyClick(this.text);
             }))
         )
-        .add(UIRow(170, 1000, 50)
+        .add(new UIRow(170, 1000, 50)
             .add(new RoomButton('', 170, 500, 75, function() {
                 gameScreen.applyClick(this.text);
             }))
@@ -41,7 +41,7 @@ function RoomScreen() {
                 gameScreen.applyClick(this.text);
             }))
         )
-        .add(UIRow(280, 1000, 50)  
+        .add(new UIRow(280, 1000, 50)  
             .addButton('Host', 300, function() {
                 
                 // TODO allow player to choose room name
@@ -131,7 +131,7 @@ RoomScreen.prototype.applyClick = function(text) {
 function RoomButton(text, yOffset, width, height, callback) {
 
     // Fields
-    this.box = UIBox(true, yOffset, width - 1, width, height);
+    this.box = new UIBox(true, yOffset, width - 1, width, height);
     this.box.EXPAND_RATE = 0.02;
     this.box.alpha = 0.85;
     this.text = text;

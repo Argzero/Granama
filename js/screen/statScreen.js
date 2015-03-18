@@ -302,12 +302,12 @@ StatScreen.prototype.setup = function() {
 
     // Initialize UI boxes
     this.profiles.push('Overall');
-    this.boxes[0] = UIBox(false, 0, 250, 300, 60);
+    this.boxes[0] = new UIBox(false, 0, 250, 300, 60);
     var i = 1;
     for (var profile in PROFILE_DATA) {
         if (profile != 'Overall') {
             this.profiles.push(profile);
-            this.boxes[i] = UIBox(false, i * 65, 250, 300, 60);
+            this.boxes[i] = new UIBox(false, i * 65, 250, 300, 60);
             i++;
         }
     }

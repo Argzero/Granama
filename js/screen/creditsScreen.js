@@ -4,18 +4,18 @@
 function CreditsScreen() {
 
     // Setup UI
-    this.ui = UIGrid(1000, 75)
+    this.ui = new UIGrid(1000, 75)
         .addTitle('Credits', -300, 100)
-        .add(UIRow(-175, 1000, 75)
+        .add(new UIRow(-175, 1000, 75)
             .addTitle('Steven Sucy', 500)
             .addTitle('Clifton Rice', 500))
-        .add(UIRow(-75, 1000, 50)
+        .add(new UIRow(-75, 1000, 50)
             .addTitle('Code', 500)
             .addTitle('Art', 500))
-        .add(UIRow(10, 1000, 50)
+        .add(new UIRow(10, 1000, 50)
             .addTitle('Sound', 500)
             .addTitle('Player Design', 500))
-        .add(UIRow(95, 1000, 50)
+        .add(new UIRow(95, 1000, 50)
             .addTitle('UI Design', 500)
             .addTitle('Enemy Design', 500))
         .addTitle('Special Thanks: James Castle and Aaron Fingar', 190, 45)
