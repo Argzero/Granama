@@ -56,6 +56,6 @@ function skillRocketStance(player) {
         this.activeData = this.skillDuration > 0 ? this.rocketData : this.punchData;
         this.rocketData.rate = this.punchData.rate;
         this.rocketData.extra.radius = 100 + this.upgrades[METEOR_ABILITY_ID] * 15;
-        this.rocketData.damage = this.punchData.damage * (1 + 0.1 * this.upgrades[METEOR_ABILITY_ID]);
+        this.rocketData.damage = this.punchData.damage * (0.5 + 0.05 * this.upgrades[METEOR_ABILITY_ID]);
     };
 }

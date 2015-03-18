@@ -105,7 +105,7 @@ PlayerAngel.prototype.applyUpdate = function() {
             player.buff('shieldBuff', 1 + (3 + this.upgrades[STATIC_AURA_ID]) / affected.length, 60);
         }
         else {
-            player.buff('healthBuff', (0.001 + 0.0003 * this.upgrades[POWER_AURA_ID]) / affected.length, 60);
+            player.buff('flatHBuff', this.maxHealth * (0.001 + 0.0003 * this.upgrades[POWER_AURA_ID]) / affected.length, 60);
         }
     }
 
