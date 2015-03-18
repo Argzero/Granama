@@ -300,9 +300,19 @@ GamepadInput.prototype.update = function() {
 
     // Gamepad buttons
     for (x in controls.enabled.button) {
-        if (this.valid.buttons) {
+        var button = this.valid.buttons[x];
+        var axis = this.valid.axes[(x - 100) >> 1];
+        if (button && button.value == 1) {
             if (this.data[x]) this.data[x]++;
             else this.data[x] = 1;
+        }
+        else if (axis) {
+            var p = (x % 2) === 0;
+            if ((axis > 0.6 && p) || (axis < -0.6 && !p)) {
+                if (this.data[x]) this.data[x]++;
+                else this.data[x] = 1;
+            }
+            else this.data[x] = 0;
         }
         else this.data[x] = 0;
     }
@@ -319,11 +329,7 @@ GamepadInput.prototype.button = function(key) {
     if (!this.valid) return 0;
     var mapping = controls.mapping.button[key];
     if (mapping === undefined) return 0;
-    else if (mapping >= 100) {
-        var p = mapping % 2 === 0;
-        return (this.data[Math.floor(mapping.key - 100) / 2] > 0) == p;
-    }
-    else if (this.data[mapping.key]) return this.data[mapping.key];
+    else if (this.data[mapping.button]) return this.data[mapping.button];
     else return 0;
 };
 
@@ -338,7 +344,7 @@ GamepadInput.prototype.axis = function(key) {
     if (!this.valid) return 0;
     var mapping = controls.mapping.axis[key];
     if (!mapping) return 0;
-    else return this.valid.axis[mapping.axisId];
+    else return this.valid.axes[mapping.axisId];
 };
 
 /**
@@ -352,7 +358,11 @@ GamepadInput.prototype.direction = function(key) {
     if (!this.valid) return 0;
     var mapping = controls.mapping.axis[key];
     if (!mapping) return new Vector(0, 0);
-    else return new Vector(this.valid.axis[mapping.axis1], this.valid.axis[mapping.axis2]).normalize();
+    else {
+        var dir = new Vector(this.valid.axes[mapping.axis1], this.valid.axes[mapping.axis2]);
+        if (dir.lengthSq() < 0.25) return new Vector(0, 0);
+        return dir.normalize();
+    }
 };
 
 // Mouse down event

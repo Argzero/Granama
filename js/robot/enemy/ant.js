@@ -198,7 +198,7 @@ function Goliath(x, y) {
         /* x position  */ x,
         /* y position  */ y,
         /* enemy type  */ Robot.MOB,
-        /* health      */ 120 * Enemy.pow(1.1),
+        /* health      */ 375 * Enemy.pow(1.1),
         /* speed       */ 5.5 + 0.1 * gameScreen.bossCount,
         /* range       */ 150,
         /* exp         */ Enemy.MINIBOSS_EXP,

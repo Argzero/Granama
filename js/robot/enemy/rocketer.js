@@ -93,7 +93,7 @@ function Harrier(x, y) {
         /* enemy type  */ Robot.MOB,
         /* health      */ 100 * Enemy.pow(1.1),
         /* speed       */ 3 + 0.25 * gameScreen.bossCount,
-        /* range       */ 500,
+        /* range       */ 625,
         /* exp         */ Enemy.MINIBOSS_EXP,
         /* rank        */ Enemy.MINIBOSS_ENEMY
     );
@@ -103,7 +103,7 @@ function Harrier(x, y) {
 		this.addWeapon(weapon.artillery, {
 			damage    : 10 * Enemy.sum(),
 			rate      : 240,
-			range     : 525,
+			range     : 650,
 			radius    : 200,
             knockback : 200,
 			chargeTime: 120,
