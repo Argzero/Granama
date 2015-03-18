@@ -25,7 +25,6 @@ depend('screen/gameUI');
 depend('screen/loadScreen');
 depend('screen/selectScreen');
 depend('screen/statScreen');
-depend('screen/titleButton');
 depend('screen/titleScreen');
 depend('screen/uiBox');
 
