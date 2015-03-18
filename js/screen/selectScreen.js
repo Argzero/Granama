@@ -363,19 +363,19 @@ SelectScreen.prototype.draw = function() {
                 while (!this.isOpen(prev));
 
                 // Previous image
-                preview = GetImage(PLAYER_DATA[prev].preview);
+                preview = images.get(PLAYER_DATA[prev].preview);
                 var scale = 75 / preview.height;
                 ui.ctx.drawImage(preview, preview.width / 2, 0, preview.width / 2, preview.height, x - 115, y + 20, preview.width * scale / 2, 75);
 
                 // Next image
-                preview = GetImage(PLAYER_DATA[next].preview);
+                preview = images.get(PLAYER_DATA[next].preview);
                 scale = 50 / preview.height;
                 ui.ctx.drawImage(preview, 0, 0, preview.width / 2, preview.height, x + 115 - preview.width * scale / 2, y + 20, preview.width * scale / 2, 75);
 
                 ui.ctx.globalAlpha = 1;
 
                 // Preview image
-                preview = GetImage(robot.preview);
+                preview = images.get(robot.preview);
                 ui.ctx.drawImage(preview, x - preview.width / 2 + 10, y - preview.height / 2);
 
                 // Name
@@ -400,8 +400,8 @@ SelectScreen.prototype.draw = function() {
 
                 // Indicator
                 dx = Math.cos(this.frame * Math.PI / 15);
-                ui.ctx.drawImage(GetImage('uiArrowLeft'), x - 130 - 5 * dx, y - 10);
-                ui.ctx.drawImage(GetImage('uiArrowRight'), x + 79 + 5 * dx, y - 10);
+                ui.ctx.drawImage(images.get('uiArrowLeft'), x - 130 - 5 * dx, y - 10);
+                ui.ctx.drawImage(images.get('uiArrowRight'), x + 79 + 5 * dx, y - 10);
 
                 // Switch to next robot
                 if (input.button(LEFT_1) == 1 || input.button(LEFT_2) == 1) {
@@ -449,7 +449,7 @@ SelectScreen.prototype.draw = function() {
                 ui.ctx.fillText(settings.profile, x, y - 160);
 
                 // Preview image
-                preview = GetImage(robot.preview);
+                preview = images.get(robot.preview);
                 ui.ctx.drawImage(preview, x - preview.width / 2 + 10, y - preview.height / 2);
 
                 // Name
@@ -460,12 +460,12 @@ SelectScreen.prototype.draw = function() {
                 ui.ctx.fillText(robot.name, x, y + 80);
 
                 // Hovered ability
-                ui.ctx.drawImage(GetImage('ability' + robot.skills[settings.ability].name), x - 45, y + 160, 90, 90);
+                ui.ctx.drawImage(images.get('ability' + robot.skills[settings.ability].name), x - 45, y + 160, 90, 90);
 
                 // Other abilities
                 ui.ctx.globalAlpha = 0.5;
-                ui.ctx.drawImage(GetImage('ability' + robot.skills[(settings.ability + 2) % 3].name), x - 105, y + 205, 45, 45);
-                ui.ctx.drawImage(GetImage('ability' + robot.skills[(settings.ability + 1) % 3].name), x + 60, y + 205, 45, 45);
+                ui.ctx.drawImage(images.get('ability' + robot.skills[(settings.ability + 2) % 3].name), x - 105, y + 205, 45, 45);
+                ui.ctx.drawImage(images.get('ability' + robot.skills[(settings.ability + 1) % 3].name), x + 60, y + 205, 45, 45);
                 ui.ctx.globalAlpha = 1;
 
                 // Skill name
@@ -476,8 +476,8 @@ SelectScreen.prototype.draw = function() {
 
                 // Indicator
                 dx = Math.cos(this.frame * Math.PI / 15);
-                ui.ctx.drawImage(GetImage('uiArrowLeft'), x - 130 - 5 * dx, y + 170);
-                ui.ctx.drawImage(GetImage('uiArrowRight'), x + 79 + 5 * dx, y + 170);
+                ui.ctx.drawImage(images.get('uiArrowLeft'), x - 130 - 5 * dx, y + 170);
+                ui.ctx.drawImage(images.get('uiArrowRight'), x + 79 + 5 * dx, y + 170);
 
                 // Next Ability
                 if (input.button(LEFT_1) == 1 || input.button(LEFT_2) == 1) {
@@ -518,7 +518,7 @@ SelectScreen.prototype.draw = function() {
             case PARTS.READY:
 
                 // Preview image
-                preview = GetImage(robot.preview);
+                preview = images.get(robot.preview);
                 ui.ctx.drawImage(preview, x - preview.width / 2, y - 40 - preview.height / 2);
 
                 // Name
