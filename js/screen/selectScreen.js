@@ -167,7 +167,7 @@ SelectScreen.prototype.draw = function() {
                 ui.ctx.fillStyle = 'white';
                 ui.ctx.font = '24px Flipbash';
                 ui.ctx.textAlign = 'center';
-                if (input.id === undefined) {
+                if (input.index === undefined) {
                     ui.ctx.fillText('Press "Space"', x, y);
                 }
                 else {
