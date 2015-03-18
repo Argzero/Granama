@@ -110,7 +110,7 @@ UIRow.prototype.add = function(element) {
  * @param {function} callback - the function to call when the button is clicked
  */  
 UIRow.prototype.addButton = function(text, width, callback) {
-    this.elements.push(new UIButton(text, this.yOffset, width, width, this.height, callback));
+    this.elements.push(new UIButton(text, this.yOffset, width * 0.75, width, this.height, callback));
     this.usedWidth += width;
     this.widths.push(width);
     return this;
@@ -148,7 +148,7 @@ UIRow.prototype.draw = function() {
     for (var i = 0; i < this.elements.length; i++) {
         this.elements[i].x = x + this.widths[i] / 2;
         if (this.elements[i].box) {
-            this.elements[i].box.x = x;
+            this.elements[i].box.x = x + this.widths[i] / 2;
         }
         this.elements[i].draw();
         x += spacing + this.widths[i];

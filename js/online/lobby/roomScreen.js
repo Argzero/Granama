@@ -131,7 +131,7 @@ RoomScreen.prototype.applyClick = function(text) {
 function RoomButton(text, yOffset, width, height, callback) {
 
     // Fields
-    this.box = UIBox(true, yOffset, width - 1, width, height);
+    this.box = new UIBox(true, yOffset, width - 1, width, height);
     this.box.EXPAND_RATE = 0.02;
     this.box.alpha = 0.85;
     this.text = text;
