@@ -7,7 +7,7 @@ function TitleScreen() {
     delete PROFILE_DATA.Guest;
 
     // Set up UI
-    this.ui = UIGrid(600, 75)
+    this.ui = new UIGrid(600, 75)
         .addTitle('Granama', -300, 100)
         .addButton('Play', -140, function() {
             setPlayerCount(5);
