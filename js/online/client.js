@@ -171,7 +171,10 @@ Connection.prototype.quitGame = function(reason) {
 
 /**
  * Message from the server about players joining the game 
- * from another computer.
+ * from another computer. The data should include the values:
+ *
+ *   selections = [ { playerName, robot, ability, team, ready } ]
+ *   index = the starting index to place the players
  *
  * @param {Object} data - the data for the joining players
  */
@@ -185,7 +188,11 @@ Connection.prototype.onAddPlayers = function(data) {
 /**
  * Receives a general response from the server containing whether
  * or not an action worked or not. If a callback was provided, this
- * will pass the result on to the callback.
+ * will pass the result on to the callback. The data should include
+ * the values:
+ *
+ *   success = true or false, depending on if it succeeded or not
+ *   error = the error message if it did not succeed
  *
  * @param {Object} data - response data from the server
  */
@@ -198,7 +205,11 @@ Connection.prototype.onGeneral = function(data) {
 
 /**
  * Receives a response from the server when the players are able to
- * join a room that was requested.
+ * join a room that was requested. The data should include the values:
+ *
+ *   room = { roomName, numPlayers, maxPlayers, gameType, inProgress }
+ *   selections = [ { playerName, robot, ability, team, ready } ]
+ *   index = the starting index for the local players
  *
  * @param {Object} data - the response from the server
  */
@@ -223,7 +234,9 @@ Connection.prototype.onJoinRoom = function(data) {
 
 /**
  * Message from the server for when the user is kicked
- * from their current game.
+ * from their current game. The data should include the values:
+ *
+ *   reason = the message stating the reason why the user was kicked
  *
  * @param {Object} data - message from the server
  */
@@ -236,7 +249,12 @@ Connection.prototype.onKick = function(data) {
 };
 
 /**
- * Message for when players leave the current game
+ * Message for when players leave the current game. The
+ * data should include the values:
+ *
+ *   index = the starting index of the client who left
+ *   amount = the amount of players playing on the client's machine
+ *   time = the time the client disconnected
  *
  * @param {Object} data - information about the players who left
  */
@@ -248,6 +266,11 @@ Connection.prototype.onRemovePlayer = function(data) {
 /**
  * Retrieves the list of active rooms from the server and 
  * passes it along to the RoomScreen if still on that screen.
+ * The data should contain the values:
+ *
+ *   rooms [ { name, numPlayers, maxPlayers, gameType, inProgress } ]
+ *
+ * @param {Object} data - the room data retrieved from the server
  */
 Connection.prototype.onUpdateRooms = function(data) {
     if (gameScreen.updateRooms) {
@@ -256,7 +279,12 @@ Connection.prototype.onUpdateRooms = function(data) {
 };
 
 /**
- * Receives a player selection update from the server
+ * Receives a player selection update from the server.
+ * The data should include the values:
+ *
+ *   selection = { playerName, robot, ability, team, ready }
+ *   index = the index of the player who sent the update
+ *   time = the time that the update was sent
  *
  * @param {Object} data - the selection update data
  */ 
