@@ -192,6 +192,7 @@ Player.prototype.updateDead = function() {
         this.rescue -= this.revSpeed;
         if (this.rescue <= 0) {
             this.health = this.maxHealth * 0.5;
+            this.dead = false;
             this.rescue = 1;
    
             for (i = 0; i < players.length; i++) {
