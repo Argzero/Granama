@@ -51,7 +51,7 @@ function PlayerGuardian() {
  */
 PlayerGuardian.prototype.applyUpdate = function() {
 
-    // Damage multiplier
+	// Get the damage multiplier including any damage buffs
     var m = this.get('power');
 
     // Minigun

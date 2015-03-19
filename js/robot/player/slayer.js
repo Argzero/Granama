@@ -49,6 +49,7 @@ function PlayerSlayer() {
  */
 PlayerSlayer.prototype.applyUpdate = function() {
     
+	// Get the damage multiplier including any damage buffs
     var m = this.get('power');
 
     // Flamethrower

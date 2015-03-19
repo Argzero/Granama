@@ -67,7 +67,7 @@ PlayerMeteor.prototype.applyUpdate = function() {
     this.leftArm.update();
     this.rightArm.update();
     
-    // Damage multiplier
+	// Get the damage multiplier including any damage buffs
     var m = this.get('power');
 
     // Punches

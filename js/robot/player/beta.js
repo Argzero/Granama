@@ -73,7 +73,7 @@ PlayerBeta.prototype.applyUpdate = function() {
     }
     else this.charge = 1;
     
-    // Damage multiplier
+	// Get the damage multiplier including any damage buffs
     var m = this.get('power');
 
     // Shurikens

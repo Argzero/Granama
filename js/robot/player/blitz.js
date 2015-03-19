@@ -65,7 +65,7 @@ PlayerBlitz.prototype.applyUpdate = function() {
     // Cooldown reduction
     this.cdm = 1 - 0.05 * this.upgrades[COOLDOWN_ID];
 
-    // Damage multiplier
+	// Get the damage multiplier including any damage buffs
     var m = this.get('power');
 
     // Shotgun

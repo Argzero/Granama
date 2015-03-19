@@ -67,7 +67,7 @@ PlayerCommando.prototype.applyUpdate = function() {
 
     if (this.drones.length === 0) this.addDrone();
 
-    // Get damage multiplier
+	// Get the damage multiplier including any damage buffs
     var m = this.get('power');
 
     // LMG

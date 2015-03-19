@@ -70,7 +70,7 @@ function PlayerValkyrie() {
  */ 
 PlayerValkyrie.prototype.applyUpdate = function() {
 
-    // Damage multiplier
+	// Get the damage multiplier including any damage buffs
     var m = this.get('power');
 
     // Double shot

@@ -71,7 +71,7 @@ PlayerAngel.prototype.getAuraRadius = function() {
  */
 PlayerAngel.prototype.applyUpdate = function() {
     
-    // Get damage multiplier
+	// Get the damage multiplier including any damage buffs
     var m = this.get('power');
 
     // Beam
