@@ -24,7 +24,7 @@ function skillIonicThunder(player) {
         
         // Charge over time while not using ability
         if (this.skillDuration <= 0 && this.charge < 100) {
-            this.charge += 1 + 0.05 + 0.02 * this.upgrades[CHARGE_ID];
+            this.charge += 0.1 + 0.05 + 0.02 * this.upgrades[CHARGE_ID];
         }
         
         // Active skill effects
