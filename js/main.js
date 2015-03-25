@@ -83,6 +83,7 @@ depend('robot/enemy/spinner');
 
 // Shared online code
 depend('online/client');
+depend('online/networkInput');
 
 // Multiplayer lobby menus
 depend('online/lobby/joinScreen');

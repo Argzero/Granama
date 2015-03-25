@@ -493,6 +493,7 @@ SelectScreen.prototype.draw = function() {
                 if (input.button(SELECT_1) == 1 || input.button(SELECT_2) == 1) {
 
                     // Apply the options to get ready for playing
+                    //robot = PLAYER_DATA[settings.robot];
                     var player = new robot.player();
                     player.profile = new Profile(settings.profile);
                     player.color = robot.color;
@@ -563,6 +564,6 @@ SelectScreen.prototype.draw = function() {
         for (i = 0; i < players.length; i++) {
             robot = players[i];
         }
-        gameScreen = new GameScreen(false);
+        gameScreen = new GameScreen();
     }
 };

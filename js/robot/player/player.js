@@ -121,12 +121,14 @@ Player.prototype.update = function() {
     this.updateRobot();
     
     // Shield regeneration
-    this.shieldCd -= this.get('shieldBuff');
-    if (this.shieldCd <= 0) {
-        this.shieldCd += 60 / (this.shieldScale * (this.upgrades[SHIELD_ID] + 1) * 1 / 10);
-        this.shield += this.maxHealth * SHIELD_GAIN;
-        if (this.shield > this.maxHealth * SHIELD_MAX) {
-            this.shield = this.maxHealth * SHIELD_MAX;
+    if (!(this.input instanceof NetworkInput)) {
+        this.shieldCd -= this.get('shieldBuff');
+        if (this.shieldCd <= 0) {
+            this.shieldCd += 60 / (this.shieldScale * (this.upgrades[SHIELD_ID] + 1) * 1 / 10);
+            this.shield += this.maxHealth * SHIELD_GAIN;
+            if (this.shield > this.maxHealth * SHIELD_MAX) {
+                this.shield = this.maxHealth * SHIELD_MAX;
+            }
         }
     }
     
@@ -154,6 +156,10 @@ Player.prototype.update = function() {
                 this.setRotation(lookDir.x, lookDir.y);
             }
             this.move(speed * moveDir.x, speed * moveDir.y);
+            
+            if (!(this.input instanceof NetworkInput)) {
+                connection.updatePlayer(this.playerIndex);
+            }
         }
         
         // Robot specific updates
@@ -176,14 +182,17 @@ Player.prototype.updateDead = function() {
 
     this.damageAlpha = Math.max(0, this.damageAlpha - 0.02);
 
-    // See if a player is in range to rescue the player
-    var inRange = false;
     var i, p;
-    for (i = 0; i < players.length; i++) {
-        p = players[i];
-        if (p.dead) continue;
-        if (this.pos.distanceSq(p.pos) < 10000) {
-            inRange = true;
+    var inRange = false;
+
+    // See if a player is in range to rescue the player
+    if (connection.isHost) {
+        for (i = 0; i < players.length; i++) {
+            p = players[i];
+            if (p.dead) continue;
+            if (this.pos.distanceSq(p.pos) < 10000) {
+                inRange = true;
+            }
         }
     }
 

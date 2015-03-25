@@ -385,14 +385,8 @@ LobbyScreen.prototype.draw = function() {
             oneReady = true;
         }
     }
-    if (allReady && oneReady) {
+    if (allReady && oneReady && connection.isHost) {
         console.log('Start!');
-        /*
-        cleanPlayerList();
-        for (i = 0; i < players.length; i++) {
-            robot = players[i];
-        }
-        gameScreen = new GameScreen(false);
-        */
+        connection.requestStart();
     }
 };

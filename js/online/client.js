@@ -15,6 +15,7 @@ function Connection() {
     this.localPlayers = 0;
     this.inRoom = false;
     this.room = undefined;
+    this.isHost = true;
 }
 
 /**
@@ -34,6 +35,8 @@ Connection.prototype.connect = function() {
     this.socket.on('addPlayers', this.onAddPlayers.bind(this));
     this.socket.on('updateRooms', this.onUpdateRooms.bind(this));
     this.socket.on('removePlayer', this.onRemovePlayer.bind(this));
+    this.socket.on('updatePlayer', this.onUpdatePlayer.bind(this));
+    this.socket.on('startGame', this.onStartGame.bind(this));
     this.socket.on('updateSelection', this.onUpdateSelection.bind(this));
     
     this.connected = true;
@@ -134,6 +137,31 @@ Connection.prototype.updateSelection = function(playerIndex) {
 };
 
 /**
+ * Sends an update for the player's current position
+ * as well as orientation
+ */
+Connection.prototype.updatePlayer = function(playerIndex) {
+    if (!this.inRoom) return;
+    this.socket.emit('updatePlayer', { 
+        rot: players[playerIndex].rotation, 
+        robot: playerIndex,
+        dir: players[playerIndex].input.direction(MOVE, players[playerIndex]),
+        pos: players[playerIndex].pos,
+        time: new Date().getTime()
+    });
+};
+
+/**
+ * Sends a request to tart the game
+ */
+Connection.prototype.requestStart = function(playerIndex) {
+    if (!this.inRoom) return;
+    this.socket.emit('requestStart', { 
+        room: this.room
+    });
+};
+
+/**
  * Removes all local players from the current game for some
  * reason, whether it's quitting from the lobby, closing the
  * window, or losing connection.
@@ -220,6 +248,7 @@ Connection.prototype.onJoinRoom = function(data) {
     this.localPlayers = players.length;
     this.gameIndex = data.index;
     this.room = data.room;
+    this.isHost = data.index == 0;
     
 	var i;
     for (i = 0; i < data.index; i++) {
@@ -276,6 +305,71 @@ Connection.prototype.onUpdateRooms = function(data) {
     if (gameScreen.updateRooms) {
         gameScreen.updateRooms(data);
     }
+};
+
+/**
+ * Sends an update for the player's current position
+ * as well as orientation
+ * 
+ *   robot = player index
+ *   pos = position of the player
+ *   rot = orientation of the player
+ *   dir = movement direction of the player
+ *   time = timestamp of when the message was sent
+ * 
+ * @param {Object} data - the data that was sent
+ */
+Connection.prototype.onUpdatePlayer = function(data) {
+    var robot = data.robot;
+    var player = players[robot];
+    if(player.lastUpdate < data.time)
+    {
+        player.input.look.x = data.rot.x;
+        player.input.look.y = data.rot.y;
+        
+        var time = new Date().getTime() - data.time;
+        time *= 6 / 100;
+        var x = data.pos.x - player.pos.x + data.dir.x * time;
+        var y = data.pos.y - player.pos.y + data.dir.y * time;
+        
+        player.targetPos.x = x;
+        player.targetPos.y = y;
+        
+        player.input.dir.x = data.dir.x;
+        player.input.dir.y = data.dir.y;
+    }
+};
+
+/**
+ * Starts the game
+ * 
+ *   selection = selection data
+ * 
+ * @param {Object} data - selection data that was sent
+ */
+Connection.prototype.onStartGame = function(data) {
+    var selections = data.selections;
+    
+    players = players.slice(0, selections.length);
+    
+    for (i = 0; i < selections.length; i++) 
+    {
+        var selection = selections[i];
+        var robot = PLAYER_DATA[selection.robot];
+        var player = new robot.player();
+        player.color = robot.color;
+        player.name = robot.name;
+        var skill = robot.skills[selection.ability];
+        player.ability = skill.name;
+        player.input = players[i].input || new NetworkInput();
+        player.ups = robot.ups;
+        player.icons = robot.icons;
+        player.playerIndex = i;
+        skill.callback(player);
+        players[i] = player;
+    }
+    
+    gameScreen = new GameScreen(false);
 };
 
 /**

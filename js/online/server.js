@@ -276,6 +276,58 @@ io.on('connection', function(socket) {
     });
     
     /**
+     * Handles a request to start a game for a room. The data
+     * should contain these values:
+     * 
+     *   room: { name, numPlayers, maxPlayers, gameType, inProgress }
+     * 
+     * @param {Object} data - the request data
+     */
+    socket.on('requestStart', function(data) {
+        console.log("Action: Request start");
+        var room = roomList[data.room.name];
+        
+        if (room.inProgress) return;
+        
+        // Make sure the game can still be started
+        var allReady = true;
+        var oneReady = false;
+        for (var i = 0; i < room.selections.length; i++) {
+            if (room.selections[i].part != 3 && room.selections[i].part > 0) {
+                allReady = false;
+            }
+            else if (room.selections[i].part == 3) {
+                oneReady = true;
+            }
+        }
+        
+        // Can start the room so send out the message
+        if (allReady && oneReady) {
+            io.sockets.in(data.room.name).emit('startGame', { selections: room.selections });
+            room.inProgress = true;
+            console.log("Started the game");
+        }
+        else console.log("You cannot start that! What are you crazy? " + allReady + ", " + oneReady);
+    });
+    
+    /**
+     * Relays a player update to the other clients within a room.
+     * The data should contain these values:
+     * 
+     *   robot = player index
+     *   pos = position of the player
+     *   rot = orientation of the player
+     *   dir = movement direction of the player
+     *   time = timestamp of when the message was sent
+     * 
+     * @param {Object} data - the update to send to the other players
+     */
+    socket.on('updatePlayer', function(data) {
+        console.log('Action: Update player');
+        socket.broadcast.to(socket.room).emit('updatePlayer', data);
+    });
+    
+    /**
      * Relays a selection update in the lobby screen to other users in
      * the same room. The data should contain these values:
      *
@@ -287,6 +339,7 @@ io.on('connection', function(socket) {
      */
     socket.on('updateSelection', function(data) {
         console.log('Action: Update selection [room= ' + socket.room + ']');
+        roomList[socket.room].selections[data.index] = data.selection;
         socket.broadcast.to(socket.room).emit('updateSelection', data);
     });
 });

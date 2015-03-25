@@ -48,9 +48,13 @@ function Robot(name, x, y, type, health, speed) {
     this.dead = false;
     this.expired = false;
     this.stealth = false;
-
+    
     this.knockbackDir = new Vector(0, 0);
     this.buffs = {};
+    
+    // Networking values
+    this.lastUpdate    = 0;
+    this.targetPos     = new Vector(0, 0);
     
     ////////////
     // Events //
@@ -240,6 +244,15 @@ Robot.prototype.updateRobot = function() {
         var dy = this.knockbackDir.y * this.knockbackSpeed / l;
         this.knockbackDir.add(-dx, -dy);
         this.move(dx, dy);
+    }
+    
+    // Fix position over time
+    if (this.targetPos.lengthSq() > 0.0001) {
+        var l = this.targetPos.length();
+        var a = Math.min(l, 1);
+        var dif = this.targetPos.clone().multiply(a / l, a / l);
+        this.pos.addv(dif);
+        this.targetPos.subtractv(dif);
     }
 
     // Update event

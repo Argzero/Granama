@@ -87,10 +87,13 @@ GameScreen.prototype.update = function() {
         // Update bullets
         for (i = 0; i < this.bullets.length; i++) {
             this.bullets[i].update();
-            for (var j = 0; j < this.robots.length; j++) {
-                var r = this.robots[j];
-                if (this.bullets[i].isHitting(r)) {
-                    this.bullets[i].hit(r);
+            if (connection.isHost)
+            {
+                for (var j = 0; j < this.robots.length; j++) {
+                    var r = this.robots[j];
+                    if (this.bullets[i].isHitting(r)) {
+                        this.bullets[i].hit(r);
+                    }
                 }
             }
             if (this.bullets[i].expired) {
@@ -100,8 +103,11 @@ GameScreen.prototype.update = function() {
         }
     
         // Update healing pads
-        for (i = 0; i < this.pads.length; i++) {
-            this.pads[i].update();
+        if (connection.isHost)
+        {
+            for (i = 0; i < this.pads.length; i++) {
+                this.pads[i].update();
+            }
         }
         
         // Particles
@@ -115,7 +121,7 @@ GameScreen.prototype.update = function() {
         this.applyScrolling();
         
         // Spawn enemies when not paused
-        this.checkSpawns();
+        //if (connection.isHost) this.checkSpawns();
     }
     
     // Update paused players
@@ -126,21 +132,23 @@ GameScreen.prototype.update = function() {
     }
     
     // Check for losing
-    for (i = 0; i < players.length; i++) {
-        if (players[i].health > 0) return;
-    }
-    if (!this.gameOver) {
-        this.gameOver = 300;
-
+    if (connection.isHost) {
         for (i = 0; i < players.length; i++) {
-            var p = players[i];
-            p.submitStats();
+            if (players[i].health > 0) return;
         }
-    }
-    else {
-        this.gameOver--;
-        if (this.gameOver <= 0) {
-            gameScreen = new EndScreen();
+        if (!this.gameOver) {
+            this.gameOver = 300;
+    
+            for (i = 0; i < players.length; i++) {
+                var p = players[i];
+                p.submitStats();
+            }
+        }
+        else {
+            this.gameOver--;
+            if (this.gameOver <= 0) {
+                gameScreen = new EndScreen();
+            }
         }
     }
 };
