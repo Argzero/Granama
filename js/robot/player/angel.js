@@ -46,7 +46,10 @@ function PlayerAngel() {
         onCollideCheck: projEvents.mixedCollide,
         //                                        args: [rotSpeed]
         templates     : [{ name: 'setupSpinning', args: [10] }],
-        target        : Robot.ENEMY | Robot.PLAYER
+        target        : Robot.ENEMY | Robot.PLAYER,
+        extra         : {
+            heal: 0
+        }
     };
     this.gun = weapon.gun;
 
@@ -76,6 +79,7 @@ PlayerAngel.prototype.applyUpdate = function() {
 
     // Beam
     this.prismData.damage = m * (2 + 0.8 * this.upgrades[PRISM_POWER_ID]);
+    this.prismData.extra.heal = this.maxHealth * (0.003 + 0.001 * this.upgrades[PRISM_POWER_ID]); 
     this.prismData.size = rand(3) / 3 + 1;
     this.gun(this.prismData);
     

@@ -505,9 +505,8 @@ var projEvents = {
     mixedCollide: function(target) {
         if (target.type & this.shooter.type) {
             if (target.health >= target.maxHealth) return false;
-            this.damage = -Math.abs(this.damage);
+            this.damage = -this.heal;
         }
-        else this.damage = Math.abs(this.damage);
         return true;
     },
     
