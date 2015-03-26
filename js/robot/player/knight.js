@@ -53,6 +53,7 @@ function PlayerKnight() {
     };
     this.gun = weapon.gun;
     this.sword = false;
+    this.knockbackFactor = 0.2;
 }
     
 /** 
