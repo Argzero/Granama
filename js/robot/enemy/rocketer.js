@@ -23,7 +23,7 @@ function LightRocketer(x, y) {
     // Weapon data
     this.addWeapon(weapon.gun, {
         sprite: 'rocket',
-        damage: Enemy.sum() * 4,
+        damage: Enemy.sum() * 3,
         rate  : 60,
         range : 325,
         dx    : 0,
@@ -62,7 +62,7 @@ function HeavyRocketer(x, y) {
     // Weapon data
     this.addWeapon(weapon.gun, {
         sprite: 'rocket',
-        damage: Enemy.sum() * 7,
+        damage: Enemy.sum() * 5,
         rate  : 70,
         range : 425,
         dx    : 0,
