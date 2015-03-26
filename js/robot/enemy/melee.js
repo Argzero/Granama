@@ -27,6 +27,7 @@ function Melee(name, x, y, type, health, speed, range, exp, rank, patternMin, pa
     this.distance = distance;
     this.chargeDuration = duration;
     this.movement = movement.charge;
+    this.ignoreClamp = true;
 }
 
 /**
