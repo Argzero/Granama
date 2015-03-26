@@ -174,6 +174,19 @@ io.on('connection', function(socket) {
     });
     
     /**
+     * Handles time sync requests. The data should contain these
+     * values:
+     * 
+     *   localTime - the timestamp of the client
+     *
+     * @param {Object} data - the local timestamp of the client
+     */
+    socket.on('getTime', function(data) {
+        data.serverTime = new Date().getTime();
+        socket.emit('getTime', data);
+    });
+    
+    /**
      * Handles login attempts from the client. The data should
      * include these values:
      *

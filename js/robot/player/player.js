@@ -23,8 +23,8 @@ function Player(name, x, y, type, health, speed, healthScale, damageScale, shiel
      */
     this.onLevel = this.onLevel || undefined;
     
-    this.pos.x = GAME_WIDTH / 2;
-    this.pos.y = GAME_HEIGHT / 2;
+    this.pos.x = this.targetPos.x = GAME_WIDTH / 2;
+    this.pos.y = this.targetPos.y = GAME_HEIGHT / 2;
     
     this.skillCd       = 0;
     this.skillDuration = 0;
@@ -146,6 +146,11 @@ Player.prototype.update = function() {
         // Get speed
         var speed = this.get('speed') * (1 + this.speedScale * this.upgrades[SPEED_ID]);
         if (speed > 0.000001) {
+            
+            // Move to the target position
+            if (this.input instanceof NetworkInput) {
+                this.pos = this.targetPos;
+            }
 
             // Movement
             var moveDir = this.input.direction(MOVE, this);
@@ -157,6 +162,7 @@ Player.prototype.update = function() {
             }
             this.move(speed * moveDir.x, speed * moveDir.y);
             
+            // Send movement update
             if (!(this.input instanceof NetworkInput)) {
                 connection.updatePlayer(this.playerIndex);
             }

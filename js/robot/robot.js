@@ -247,6 +247,7 @@ Robot.prototype.updateRobot = function() {
     }
     
     // Fix position over time
+    /*
     if (this.targetPos.lengthSq() > 0.0001) {
         var l = this.targetPos.length();
         var a = Math.min(l, 1);
@@ -254,6 +255,7 @@ Robot.prototype.updateRobot = function() {
         this.pos.addv(dif);
         this.targetPos.subtractv(dif);
     }
+    */
 
     // Update event
     if (this.onUpdate) this.onUpdate();
