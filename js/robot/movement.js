@@ -300,6 +300,41 @@ var movement = {
     },
     
     /**
+     * Moves to and then infect a healing pad
+     */
+    infectPad: function() {
+        
+        // Get the target pad to infect
+        if (!this.targetPad) {
+            var max = 0;
+            this.targetPad = gameScreen.pads[0];
+            for (var i = 0; i < gameScreen.pads.length; i++) {
+                var pad = gameScreen.pads[i];
+                var dSq = 0;
+                for (var j = 0; j < players.length; j++) {
+                    var d = pad.pos.distanceSq(players[j].pos);
+                    if (d > dSq) {
+                        dSq = d;
+                    }
+                }
+                if (dSq > max) {
+                    this.targetPad = pad;
+                    max = dSq;
+                }
+            }
+        }
+        
+        // Move to the pad
+        this.movementHelper = movement.moveTowards;
+        this.movementHelper(this.targetPad);
+        
+        // Infect it if in range
+        if (this.pos.distanceSq(this.targetPad.pos) < sq(this.range + 50)) {
+            this.targetPad.infect(this.healAmount);
+        }
+    },
+    
+    /**
      * Movement pattern for moving towards other enemies and healing them
      */
     medic: function() {

@@ -216,6 +216,7 @@ SPAWN_DATA = [
     1, 3, Paladin,
     1, 3, Hunter,
     1, 3, Solar,
+    1, 5, MegaMedic,
     1, 3, Snatcher,
 	1, 3, Harrier,
     1, 3, Goliath,
@@ -224,6 +225,7 @@ SPAWN_DATA = [
     2, 6, Paladin,
     2, 6, Hunter,
     2, 6, Solar,
+    2, 8, MegaMedic,
     2, 6, Snatcher,
 	2, 6, Harrier,
     2, 6, Goliath
