@@ -16,6 +16,7 @@ function Connection() {
     this.inRoom = false;
     this.room = undefined;
     this.isHost = true;
+    this.timeOffset = 0;
 }
 
 /**
@@ -38,6 +39,9 @@ Connection.prototype.connect = function() {
     this.socket.on('updatePlayer', this.onUpdatePlayer.bind(this));
     this.socket.on('startGame', this.onStartGame.bind(this));
     this.socket.on('updateSelection', this.onUpdateSelection.bind(this));
+    this.socket.on('getTime', this.onGetTime.bind(this));
+    
+    this.socket.emit('getTime', { localTime: performance.now() });
     
     this.connected = true;
 };
@@ -54,6 +58,23 @@ Connection.prototype.disconnect = function() {
     this.socket.disconnect();
     this.connected = false;
 };
+
+/**
+ * Gets the current time in relation to the server's time
+ */
+Connection.prototype.getServerTime = function() {
+    return this.timeOffset + performance.now();
+};
+
+/**
+ * Converts a time back to local time from the server time
+ * 
+ * @param {number} time - the server time stamp
+ */
+Connection.prototype.fromServerTime = function(time) {
+    return time - this.timeOffset;
+};
+
 
 // ------------------------------------------------------------------------------ //
 //                                  Client -> Server                              //
@@ -132,7 +153,7 @@ Connection.prototype.updateSelection = function(playerIndex) {
     this.socket.emit('updateSelection', { 
         selection: players[playerIndex].settings, 
         index: playerIndex, 
-        time: new Date().getTime() 
+        time: this.getServerTime() 
     });
 };
 
@@ -147,7 +168,7 @@ Connection.prototype.updatePlayer = function(playerIndex) {
         robot: playerIndex,
         dir: players[playerIndex].input.direction(MOVE, players[playerIndex]),
         pos: players[playerIndex].pos,
-        time: new Date().getTime()
+        time: this.getServerTime()
     });
 };
 
@@ -184,7 +205,7 @@ Connection.prototype.quitGame = function(reason) {
             room: this.room.name,
             index: this.gameIndex,
             amount: this.localPlayers,
-            time: new Date().getTime()
+            time: this.getServerTime()
         });
     }
     
@@ -211,6 +232,24 @@ Connection.prototype.onAddPlayers = function(data) {
     for (var i = 0; i < data.selections.length; i++) {
         players[i + data.index].settings = data.selections[i]; 
     }
+};
+
+/**
+ *  It gets the time difference between the server and the client
+ * 
+ *   localTime = time packet was sent
+ *   serverTime = time the packet was recieved by server
+ *
+ * @param {Object} data - the time data
+ */
+Connection.prototype.onGetTime = function(data) {
+    var firstLocalTime = data.localTime;
+    var secondLocalTime = performance.now();
+    var serverTime = data.serverTime;
+    
+    var localDif = secondLocalTime - firstLocalTime;
+    
+    this.timeOffset = serverTime - (firstLocalTime + (localDif/2));
 };
 
 /**
@@ -327,10 +366,10 @@ Connection.prototype.onUpdatePlayer = function(data) {
         player.input.look.x = data.rot.x;
         player.input.look.y = data.rot.y;
         
-        var time = new Date().getTime() - data.time;
+        var time = performance.now() - this.fromServerTime(data.time);
         time *= 6 / 100;
-        var x = data.pos.x - player.pos.x + data.dir.x * time;
-        var y = data.pos.y - player.pos.y + data.dir.y * time;
+        var x = data.pos.x + data.dir.x * time;
+        var y = data.pos.y + data.dir.y * time;
         
         player.targetPos.x = x;
         player.targetPos.y = y;

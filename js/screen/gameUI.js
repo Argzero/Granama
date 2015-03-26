@@ -393,7 +393,7 @@ var ui = {
             this.ctx.font = '32px Flipbash';
             this.ctx.fillStyle = player.color;
             this.ctx.textAlign = 'left';
-            this.ctx.fillText(player.profile.name, 10, y);
+            this.ctx.fillText(player.name, 10, y);
 
             // Level
             this.ctx.fillStyle = 'white';
