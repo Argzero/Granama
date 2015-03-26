@@ -138,3 +138,7 @@ function DragonBoss(x, y) {
 DragonBoss.prototype.onPreDraw = function() {
     this.tail.update();
 };
+
+// Dragons ignore knockback/stuns
+DragonBoss.prototype.knockback = function() { };
+DragonBoss.prototype.stun = function() { };

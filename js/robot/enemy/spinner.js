@@ -146,6 +146,11 @@ function Solar(x, y) {
     this.pierceDamage = 0.5;
 }
 
+// Solars don't care about anything
+Solar.prototype.subUpdate = function() { };
+Solar.prototype.stun = function() { };
+Solar.prototype.knockback = function() { };
+
 /**
  * A back piece to a spinner
  *

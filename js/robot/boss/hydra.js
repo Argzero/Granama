@@ -97,6 +97,10 @@ function HydraBoss(x, y) {
     );
 }
 
+// Hydras ignore knockback/stuns
+HydraBoss.prototype.knockback = function() { };
+HydraBoss.prototype.stun = function() { };
+
 /**
  * Checks for transforming into the royal hydra
  */
@@ -302,6 +306,10 @@ function RoyalHydra(x, y) {
     this.consumeDamage = damageScale * 5;
     this.head.consume = RoyalHydra.consume;
 }
+
+// Royal hydra ignores knockback/stuns
+RoyalHydra.prototype.knockback = function() { };
+RoyalHydra.prototype.stun = function() { };
 
 /**
  * Manages special mechanics of the Royal
