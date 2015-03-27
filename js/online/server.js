@@ -228,7 +228,7 @@ io.on('connection', function(socket) {
      * @param {Object} data - the data from the server
      */
     socket.on('giveExp', function(data) {
-        console.log('Action: Give Exp');
+        console.log('Action: Give Exp [' + data.exp + ' to ' + data.player + ']');
         socket.broadcast.to(socket.room).emit('giveExp', data);
     });
     

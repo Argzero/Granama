@@ -515,7 +515,7 @@ GameScreen.prototype.spawnExp = function(robot, exp) {
     for (var i = 0; i < players.length; i++) {
         var player = players[i];
         var num = exp;
-        if (player.dead || player.input instanceof NetworkInput) continue;
+        if (player.dead || (player.input instanceof NetworkInput)) continue;
         for (var e = 0; e < Enemy.EXP_DATA.length; e++) {
             var data = Enemy.EXP_DATA[e];
             while (num > 0) {
