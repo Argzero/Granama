@@ -81,32 +81,6 @@ Connection.prototype.fromServerTime = function(time) {
 // ------------------------------------------------------------------------------ //
 
 /**
- * Attempts to log the user in, responding to the callback
- * with the result. If another login attempt is already being
- * processed or there is no connection, this will do nothing instead.
- *
- * @param {string}   username - the player's username
- * @param {string}   password - the player's password
- * @param {function} callback - the method to use when a response is received
- */ 
-Connection.prototype.login = function(username, password, callback) {
-    if (!connected || this.callback) return;
-    
-    this.callback = callback;
-    this.socket.emit('login', { username: username, password: password });
-};
-
-/**
- * Attempts to fetch the live rooms from the server that have 
- * room for the given number of players. When there's 0 players,
- * it will be assumed that it is for spectating.
- */
-Connection.prototype.fetchRooms = function() {
-    if (this.inRoom) return;
-    this.socket.emit('fetchRooms', { players: players.length });
-};
-
-/**
  * Attempts to create a room on the server
  *
  * @param {string} name - name of the room
@@ -131,6 +105,16 @@ Connection.prototype.createRoom = function(name) {
 };
 
 /**
+ * Attempts to fetch the live rooms from the server that have 
+ * room for the given number of players. When there's 0 players,
+ * it will be assumed that it is for spectating.
+ */
+Connection.prototype.fetchRooms = function() {
+    if (this.inRoom) return;
+    this.socket.emit('fetchRooms', { players: players.length });
+};
+
+/**
  * Requests to join a game room using the given room name. If there
  * are no players, this will assume that it is for spectating.
  */
@@ -145,41 +129,19 @@ Connection.prototype.joinRoom = function(name) {
 };
 
 /**
- * Sends an update for the player's current selection in the 
- * lobby screen so other players can see it.
- */
-Connection.prototype.updateSelection = function(playerIndex) {
-    if (!this.inRoom) return;
-    this.socket.emit('updateSelection', { 
-        selection: players[playerIndex].settings, 
-        index: playerIndex, 
-        time: this.getServerTime() 
-    });
-};
-
-/**
- * Sends an update for the player's current position
- * as well as orientation
- */
-Connection.prototype.updatePlayer = function(playerIndex) {
-    if (!this.inRoom) return;
-    this.socket.emit('updatePlayer', { 
-        rot: players[playerIndex].rotation, 
-        robot: playerIndex,
-        dir: players[playerIndex].input.direction(MOVE, players[playerIndex]),
-        pos: players[playerIndex].pos,
-        time: this.getServerTime()
-    });
-};
-
-/**
- * Sends a request to tart the game
- */
-Connection.prototype.requestStart = function(playerIndex) {
-    if (!this.inRoom) return;
-    this.socket.emit('requestStart', { 
-        room: this.room
-    });
+ * Attempts to log the user in, responding to the callback
+ * with the result. If another login attempt is already being
+ * processed or there is no connection, this will do nothing instead.
+ *
+ * @param {string}   username - the player's username
+ * @param {string}   password - the player's password
+ * @param {function} callback - the method to use when a response is received
+ */ 
+Connection.prototype.login = function(username, password, callback) {
+    if (!connected || this.callback) return;
+    
+    this.callback = callback;
+    this.socket.emit('login', { username: username, password: password });
 };
 
 /**
@@ -214,6 +176,44 @@ Connection.prototype.quitGame = function(reason) {
     gameScreen = new RoomScreen();
 };
 
+/**
+ * Sends a request to tart the game
+ */
+Connection.prototype.requestStart = function(playerIndex) {
+    if (!this.inRoom) return;
+    this.socket.emit('requestStart', { 
+        room: this.room
+    });
+};
+
+/**
+ * Sends an update for the player's current selection in the 
+ * lobby screen so other players can see it.
+ */
+Connection.prototype.updateSelection = function(playerIndex) {
+    if (!this.inRoom) return;
+    this.socket.emit('updateSelection', { 
+        selection: players[playerIndex].settings, 
+        index: playerIndex, 
+        time: this.getServerTime() 
+    });
+};
+
+/**
+ * Sends an update for the player's current position
+ * as well as orientation
+ */
+Connection.prototype.updatePlayer = function(playerIndex) {
+    if (!this.inRoom) return;
+    this.socket.emit('updatePlayer', { 
+        rot: players[playerIndex].rotation, 
+        robot: playerIndex,
+        dir: players[playerIndex].input.direction(MOVE, players[playerIndex]),
+        pos: players[playerIndex].pos,
+        time: this.getServerTime()
+    });
+};
+
 // ------------------------------------------------------------------------------ //
 //                                  Server -> Client                              //
 // ------------------------------------------------------------------------------ //
@@ -235,24 +235,6 @@ Connection.prototype.onAddPlayers = function(data) {
 };
 
 /**
- *  It gets the time difference between the server and the client
- * 
- *   localTime = time packet was sent
- *   serverTime = time the packet was recieved by server
- *
- * @param {Object} data - the time data
- */
-Connection.prototype.onGetTime = function(data) {
-    var firstLocalTime = data.localTime;
-    var secondLocalTime = performance.now();
-    var serverTime = data.serverTime;
-    
-    var localDif = secondLocalTime - firstLocalTime;
-    
-    this.timeOffset = serverTime - (firstLocalTime + (localDif/2));
-};
-
-/**
  * Receives a general response from the server containing whether
  * or not an action worked or not. If a callback was provided, this
  * will pass the result on to the callback. The data should include
@@ -268,6 +250,24 @@ Connection.prototype.onGeneral = function(data) {
         this.callback(data);
         delete this.callback;
     }
+};
+
+/**
+ *  It gets the time difference between the server and the client
+ * 
+ *   localTime = time packet was sent
+ *   serverTime = time the packet was recieved by server
+ *
+ * @param {Object} data - the time data
+ */
+Connection.prototype.onGetTime = function(data) {
+    var firstLocalTime = data.localTime;
+    var secondLocalTime = performance.now();
+    var serverTime = data.serverTime;
+    
+    var localDif = secondLocalTime - firstLocalTime;
+    
+    this.timeOffset = serverTime - (firstLocalTime + (localDif/2));
 };
 
 /**
@@ -332,18 +332,35 @@ Connection.prototype.onRemovePlayer = function(data) {
 };
 
 /**
- * Retrieves the list of active rooms from the server and 
- * passes it along to the RoomScreen if still on that screen.
- * The data should contain the values:
- *
- *   rooms [ { name, numPlayers, maxPlayers, gameType, inProgress } ]
- *
- * @param {Object} data - the room data retrieved from the server
+ * Starts the game
+ * 
+ *   selection = selection data
+ * 
+ * @param {Object} data - selection data that was sent
  */
-Connection.prototype.onUpdateRooms = function(data) {
-    if (gameScreen.updateRooms) {
-        gameScreen.updateRooms(data);
+Connection.prototype.onStartGame = function(data) {
+    var selections = data.selections;
+    
+    players = players.slice(0, selections.length);
+    
+    for (i = 0; i < selections.length; i++) 
+    {
+        var selection = selections[i];
+        var robot = PLAYER_DATA[selection.robot];
+        var player = new robot.player();
+        player.color = robot.color;
+        player.name = robot.name;
+        var skill = robot.skills[selection.ability];
+        player.ability = skill.name;
+        player.input = players[i].input || new NetworkInput();
+        player.ups = robot.ups;
+        player.icons = robot.icons;
+        player.playerIndex = i;
+        skill.callback(player);
+        players[i] = player;
     }
+    
+    gameScreen = new GameScreen(false);
 };
 
 /**
@@ -380,35 +397,18 @@ Connection.prototype.onUpdatePlayer = function(data) {
 };
 
 /**
- * Starts the game
- * 
- *   selection = selection data
- * 
- * @param {Object} data - selection data that was sent
+ * Retrieves the list of active rooms from the server and 
+ * passes it along to the RoomScreen if still on that screen.
+ * The data should contain the values:
+ *
+ *   rooms [ { name, numPlayers, maxPlayers, gameType, inProgress } ]
+ *
+ * @param {Object} data - the room data retrieved from the server
  */
-Connection.prototype.onStartGame = function(data) {
-    var selections = data.selections;
-    
-    players = players.slice(0, selections.length);
-    
-    for (i = 0; i < selections.length; i++) 
-    {
-        var selection = selections[i];
-        var robot = PLAYER_DATA[selection.robot];
-        var player = new robot.player();
-        player.color = robot.color;
-        player.name = robot.name;
-        var skill = robot.skills[selection.ability];
-        player.ability = skill.name;
-        player.input = players[i].input || new NetworkInput();
-        player.ups = robot.ups;
-        player.icons = robot.icons;
-        player.playerIndex = i;
-        skill.callback(player);
-        players[i] = player;
+Connection.prototype.onUpdateRooms = function(data) {
+    if (gameScreen.updateRooms) {
+        gameScreen.updateRooms(data);
     }
-    
-    gameScreen = new GameScreen(false);
 };
 
 /**
