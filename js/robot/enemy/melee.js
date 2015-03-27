@@ -85,3 +85,68 @@ function HeavyMelee(x, y) {
         /* duration    */ 180
     );
 }
+
+/**
+ * A melee miniboss that carries players with him while 
+ * charging until they kill it
+ *
+ * @param {number} x - horizontal position
+ * @param {number} y - vertical position
+ *
+ * @constructor
+ */
+extend('Brute', 'Melee');
+function Brute(x, y) {
+    this.super(
+        /* sprite name */ 'enemyBrute',
+        /* x position  */ x,
+        /* y position  */ y,
+        /* enemy type  */ Robot.MOB,
+        /* health      */ 250 * Enemy.pow(1.1),
+        /* speed       */ 2.5 + 0.3 * gameScreen.bossCount,
+        /* range       */ 400,
+        /* exp         */ Enemy.MINIBOSS_EXP,
+        /* rank        */ Enemy.MINIBOSS_ENEMY,
+        /* pattern min */ 0,
+        /* pattern max */ 0,
+        /* damage      */ 10,
+        /* distance    */ 250,
+        /* duration    */ 180
+    );
+    this.movement = this.ram;
+}
+
+// Brutes can't be stunned or knocked back
+Brute.prototype.stun = function() { };
+Brute.prototype.knockback = function() { };
+
+/**
+ * Unique movement that pins players against a wall
+ */
+Brute.prototype.ram = function() {
+    this.charge = movement.charge;
+    if (!this.player) {
+        this.charge();
+        var target = movement.getTargetPlayer(this);
+        if (target.health > 0 && this.collides(target)) {
+            this.player = target;
+        }
+    }
+    if (this.player) {
+        this.charging = 5;
+        this.ignoreClamp = false;
+        var r = (this.width + this.player.width) * 0.5;
+        var forward = this.forward();
+        this.pos.add(forward.x * this.speed * 2, forward.y * this.speed * 2);
+        forward.multiply(r, r);
+        this.player.pos.x = this.pos.x + forward.x;
+        this.player.pos.y = this.pos.y + forward.y;
+        this.player.clamp();
+        if (this.player.pos.distanceSq(this.pos) < r * r - 1 && !this.wallDamage) {
+            this.wallDamage = true;
+            this.player.damage(this.power * 2, this);
+        }
+        this.pos.x = this.player.pos.x - forward.x;
+        this.pos.y = this.player.pos.y - forward.y;
+    }
+};

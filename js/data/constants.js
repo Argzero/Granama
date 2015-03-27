@@ -191,6 +191,7 @@ ACTIVE_BOSS = 1,
 SPAWN_RATE = 180,
 SPAWN_SCALE = 0.3,
 SPAWN_DATA = [
+    1000000, 0, Brute,
     90, 0, LightGunner,
     45, 1, HeavyGunner,
     60, 0, LightArtillery,

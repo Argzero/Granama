@@ -164,9 +164,16 @@ Player.prototype.update = function() {
     
     // Clamping to the game region
     if (!this.ignoreClamp) {
-        this.pos.x = Math.max(Math.min(this.pos.x, GAME_WIDTH - this.width / 2), this.width / 2);
-        this.pos.y = Math.max(Math.min(this.pos.y, GAME_HEIGHT - this.height / 2), this.height / 2);
+        this.clamp();
     }
+};
+
+/**
+ * Clamps the player to the arena
+ */
+Player.prototype.clamp = function() {
+    this.pos.x = Math.max(Math.min(this.pos.x, GAME_WIDTH - this.width / 2), this.width / 2);
+    this.pos.y = Math.max(Math.min(this.pos.y, GAME_HEIGHT - this.height / 2), this.height / 2);
 };
 
 /**
