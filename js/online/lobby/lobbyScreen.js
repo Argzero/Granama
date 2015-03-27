@@ -35,6 +35,8 @@ function LobbyScreen() {
     for (i = 0; i < PLAYER_DATA.length; i++) {
         this.open.push(i);
     }
+    
+    this.updateOpenList();
 }
 
 // Checks if a robot ID is still open
@@ -47,7 +49,8 @@ LobbyScreen.prototype.isOpen = function(id) {
  */ 
 LobbyScreen.prototype.updateOpenList = function() {
     this.open = [];
-    for (var i = 0; i < PLAYER_DATA.length; i++) {
+    var i;
+    for (i = 0; i < PLAYER_DATA.length; i++) {
         var open = true;
         for (var j = 0; j < players.length; j++) {
             if (players[j].settings.robot == i && players[j].settings.part > LobbyScreen.PARTS.ROBOT) {
@@ -57,6 +60,13 @@ LobbyScreen.prototype.updateOpenList = function() {
         }
         if (open) {
             this.open.push(i);
+        }
+    }
+    
+    for (i = 0; i < players.length; i++) {
+        if (players[i].settings.part >= LobbyScreen.PARTS.ABILITY) continue;
+        while (!this.isOpen(players[i].settings.robot)) {
+            players[i].settings.robot = (players[i].settings.robot + 1) % PLAYER_DATA.length;
         }
     }
 };
