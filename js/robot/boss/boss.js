@@ -85,6 +85,10 @@ Boss.prototype.subUpdate = function() {
             d.setMagnitude((this.width + p.width) / 2);
             d.addv(this.pos);
             p.moveTo(d.x, d.y);
+            
+            if (p.grapple) {
+                p.grapple.expired = true;
+            }
         }
     }
 };
