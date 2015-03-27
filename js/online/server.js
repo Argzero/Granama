@@ -88,6 +88,38 @@ io.on('connection', function(socket) {
     });
     
     /**
+     * Relays damage events across the network The data should
+     * include the values:
+     *
+     *   robot = the unique ID of the damaged robot
+     *   damager = the unique ID of the robot dealing damage
+     *   amount = the amount of damage dealt
+     *   healthLeft = the amount of health the robot has left
+     *   shieldLeft = the amount of shield the robot has left
+     *   time = the timestamp for when the damage occurred
+     *
+     * @param {Object} the data
+     */
+    socket.on('damage', function(data) {
+        console.log('Action: Damage');
+        socket.broadcast.to(socket.room).emit('damage', data);
+    });
+    
+    /**
+     * Relays the event to destroy an enemy robot.
+     * The data should include the values:
+     *
+     *   robot = the unique ID of the destroyed enemy
+     *   exp = the amount of exp to drop per player
+     *   time = the time stamp for when the enemy died
+     *
+     * @param {Object} data - response data from the server
+     */
+    socket.on('destroy', function(data) {
+        socket.broadcast.to(socket.room).emit('destroy', data);
+    });
+    
+    /**
      * Destroys an active room, removing all players and clearing all
      * related data on the server. The data should contain these values:
      *
@@ -184,6 +216,20 @@ io.on('connection', function(socket) {
     socket.on('getTime', function(data) {
         data.serverTime = new Date().getTime();
         socket.emit('getTime', data);
+    });
+    
+    /**
+     * Gives experience to a player. The data should include the values:
+     *
+     *   player = the index of the player receiving exp
+     *   exp = the amount of received experience
+     *   time = the time stamp for when the experience was received
+     *
+     * @param {Object} data - the data from the server
+     */
+    socket.on('giveExp', function(data) {
+        console.log('Action: Give Exp');
+        socket.broadcast.to(socket.room).emit('giveExp', data);
     });
     
     /**

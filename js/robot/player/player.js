@@ -65,6 +65,10 @@ function Player(name, x, y, type, health, speed, healthScale, damageScale, shiel
  */ 
 Player.prototype.giveExp = function(amount) {
 
+    if (!(this.input instanceof NetworkInput)) {
+        connection.giveExp(this.playerIndex, amount);
+    }
+
     this.exp += amount;
     this.totalExp += amount;
 

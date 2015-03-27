@@ -31,8 +31,11 @@ Connection.prototype.connect = function() {
     
     // Set up message handlers
     this.socket.on('addPlayers', this.onAddPlayers.bind(this));
+    this.socket.on('damage', this.onDamage.bind(this));
+    this.socket.on('destroy', this.onDestroy.bind(this));
     this.socket.on('general', this.onGeneral.bind(this));
     this.socket.on('getTime', this.onGetTime.bind(this));
+    this.socket.on('giveExp', this.onGiveExp.bind(this));
     this.socket.on('joinRoom', this.onJoinRoom.bind(this));
     this.socket.on('kick', this.onKick.bind(this));
     this.socket.on('removePlayer', this.onRemovePlayer.bind(this));
@@ -107,6 +110,42 @@ Connection.prototype.createRoom = function(name) {
 };
 
 /**
+ * Sends a damage event over the network
+ *
+ * @param {number} id         - the unique ID of the damaged robot
+ * @param {number} damager    - the unique ID of the robot dealing the damage
+ * @param {number} amount     - the amount of damage that was dealt
+ * @param {number} healthLeft - the remaining health of the robot
+ * @param {number} shieldLeft - the remaining shield of the robot
+ */
+Connection.prototype.damage = function(id, damager, amount, healthLeft, shieldLeft) {
+    if (!this.connected || !this.inRoom) return;
+    this.socket.emit('damage', {
+        robot: id,
+        damager: damager,
+        amount: amount,
+        healthLeft: healthLeft,
+        shieldLeft: shieldLeft,
+        time: this.getServerTime()
+    });
+};
+
+/**
+ * Destroys the robot with the given ID, yielding the given exp
+ *
+ * @param {number} id  - the unique ID of the robot
+ * @param {number} exp - the amount of exp to give to each player
+ */
+Connection.prototype.destroy = function(id, exp) {
+    if (!this.connected || !this.inRoom) return;
+    this.socket.emit('destroy', {
+        robot: id,
+        exp: exp,
+        time: this.getServerTime()
+    });
+};
+
+/**
  * Attempts to fetch the live rooms from the server that have 
  * room for the given number of players. When there's 0 players,
  * it will be assumed that it is for spectating.
@@ -114,6 +153,21 @@ Connection.prototype.createRoom = function(name) {
 Connection.prototype.fetchRooms = function() {
     if (!this.connected || this.inRoom) return;
     this.socket.emit('fetchRooms', { players: players.length });
+};
+
+/**
+ * Tells other clients of the experience acquired by a player.
+ * 
+ * @param {number} index  - the index of the player receiving the exp
+ * @param {number} amount - the amount of experience received
+ */
+Connection.prototype.giveExp = function(index, amount) {
+    if (!this.connected || !this.inRoom) return;
+    this.socket.emit('giveExp', {
+        player: index,
+        exp: amount,
+        time: this.getServerTime()
+    });
 };
 
 /**
@@ -256,6 +310,65 @@ Connection.prototype.onAddPlayers = function(data) {
 };
 
 /**
+ * Applies damage dealt to a robot. The data should include
+ * the values:
+ *
+ *   robot = the unique ID of the damaged robot
+ *   damager = the unique ID of the robot dealing damage
+ *   amount = the amount of damage dealt
+ *   healthLeft = the amount of health the robot has left
+ *   shieldLeft = the amount of shield the robot has left
+ *   time = the timestamp for when the damage occurred
+ *
+ * @param {Object} the data
+ */
+Connection.prototype.onDamage = function(data) {
+    var target = gameScreen.getRobotById(data.robot);
+    var damager = gameScreen.getRobotById(data.damager);
+    
+    if (!target || !damager) return;
+    
+    // Grab values before applying damage
+    var dead = target.dead;
+    var prevHp = target.health;
+    var prevSp = target.shield;
+    
+    // Apply damage to register stats
+    target.damage(data.amount, damager);
+    target.dead = dead;
+    
+    // Update remaining health/shield based on time stamps
+    if (target.lastDamage > data.time) {
+        target.health = prevHp;
+        target.mana = prevSp;
+    }
+    else {
+        target.health = data.healthLeft;
+        target.shield = data.shieldLeft;
+    }
+    
+    // Update the time stamp
+    target.lastDamage = data.time;
+};
+
+/**
+ * Destroys a robot and drops experience for local players.
+ * The data should include the values:
+ *
+ *   robot = the unique ID of the destroyed enemy
+ *   exp = the amount of exp to drop per player
+ *   time = the time stamp for when the enemy died
+ *
+ * @param {Object} data - response data from the server
+ */
+Connection.prototype.onDestroy = function(data) {
+    var r = gameScreen.getRobotById(data.robot);
+    if (r) {
+        r.destroy();
+    }
+};
+
+/**
  * Receives a general response from the server containing whether
  * or not an action worked or not. If a callback was provided, this
  * will pass the result on to the callback. The data should include
@@ -289,6 +402,19 @@ Connection.prototype.onGetTime = function(data) {
     var localDif = secondLocalTime - firstLocalTime;
     
     this.timeOffset = serverTime - (firstLocalTime + (localDif/2));
+};
+
+/**
+ * Gives experience to a player. The data should include the values:
+ *
+ *   player = the index of the player receiving exp
+ *   exp = the amount of received experience
+ *   time = the time stamp for when the experience was received
+ *
+ * @param {Object} data - the data from the server
+ */
+Connection.prototype.onGiveExp = function(data) {
+    players[data.player].giveExp(data.exp);
 };
 
 /**
@@ -402,6 +528,7 @@ Connection.prototype.onStartGame = function(data) {
         player.ups = robot.ups;
         player.icons = robot.icons;
         player.playerIndex = i;
+        player.id = -i;
         skill.callback(player);
         players[i] = player;
     }

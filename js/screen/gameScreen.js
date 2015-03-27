@@ -54,6 +54,7 @@ function GameScreen() {
     // Game objects
     this.particles = [];
     this.bullets = [];
+    this.exp = [];
     this.robots = players.slice(0);
     
     this.shuffleBosses();
@@ -65,7 +66,7 @@ function GameScreen() {
 GameScreen.prototype.update = function() {
 
     // Update when not paused
-    var i;
+    var i, j;
     if (!this.paused) {
     
         // Update robots
@@ -90,7 +91,7 @@ GameScreen.prototype.update = function() {
             this.bullets[i].update();
             if (connection.isHost)
             {
-                for (var j = 0; j < this.robots.length; j++) {
+                for (j = 0; j < this.robots.length; j++) {
                     var r = this.robots[j];
                     if (this.bullets[i].isHitting(r)) {
                         this.bullets[i].hit(r);
@@ -99,6 +100,21 @@ GameScreen.prototype.update = function() {
             }
             if (this.bullets[i].expired) {
                 this.bullets.splice(i, 1);
+                i--;
+            }
+        }
+        
+        // Update exp
+        for (i = 0; i < this.exp.length; i++) {
+            this.exp[i].update();
+            for (j = 0; j < players.length; j++) {
+                var r = players[j];
+                if (this.exp[i].isHitting(r)) {
+                    this.exp[i].hit(r);
+                }
+            }
+            if (this.exp[i].expired) {
+                this.exp.splice(i, 1);
                 i--;
             }
         }
@@ -204,6 +220,11 @@ GameScreen.prototype.draw = function() {
     // Bullets
     for (i = 0; i < this.bullets.length; i++) {
         this.bullets[i].draw(camera);
+    }
+    
+    // Exp
+    for (i = 0; i < this.exp.length; i++) {
+        this.exp[i].draw(camera);
     }
     
     // Buffs
@@ -476,11 +497,47 @@ GameScreen.prototype.spawnBoss = function() {
 		this.shuffleBosses();
 	}
     
+    boss.id = this.spawnId;
     this.robots.push(this.boss);
     this.bossTimer = 300;
     
     // Tell others to spawn the enemy
     connection.spawn(data[i + 2].name, enemy.pos, this.spawnId++, true);
+};
+
+/**
+ * Spawns experience for players
+ *
+ * @param {Robot}  robot that dropped the exp
+ * @param {number} amount of exp to spawn
+ */
+GameScreen.prototype.spawnExp = function(robot, exp) {
+    for (var i = 0; i < players.length; i++) {
+        var player = players[i];
+        var num = exp;
+        if (player.dead || player.input instanceof NetworkInput) continue;
+        for (var e = 0; e < Enemy.EXP_DATA.length; e++) {
+            var data = Enemy.EXP_DATA[e];
+            while (num > 0) {
+                num -= data.value;
+                var orb = new Projectile(
+                    data.sprite,
+                    0, 0,
+                    robot, robot,
+                    10,
+                    rand(360) * Math.PI / 180,
+                    0,
+                    999999,
+                    false,
+                    Robot.PLAYER
+                );
+                orb.setupHoming(player, rand(10) / 100 + 0.04);
+                orb.onHit = projEvents.expHit;
+                orb.exp = data.value;
+                this.exp.push(orb);
+            }
+        }
+    }
 };
 
 /** 
@@ -521,4 +578,24 @@ GameScreen.prototype.getClosest = function(pos, type) {
         }
     }
     return closest;
+};
+
+/**
+ * Retrieves a robot by their spawn ID
+ *
+ * @param {number} id - the robot's spawn ID
+ *
+ * @returns {Robot} the robot with the given ID or undefined if no robot has that ID
+ */
+GameScreen.prototype.getRobotById = function(id) {
+    if (id <= 0) {
+        return players[-id];
+    }
+    
+    var r = this.robots;
+    for (var i = 0; i < r.length; i++) {
+        if (r[i].id == id) {
+            return r[i];
+        }
+    }
 };

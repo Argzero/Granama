@@ -88,8 +88,8 @@ function Robot(name, x, y, type, health, speed) {
 /**
  * Damages the robot, launching an event before applying damage
  *
- * @param {number} amount - the amount of damage to deal
- * @param {Robot}  source - the source of the damage
+ * @param {number}  amount    - the amount of damage to deal
+ * @param {Robot}   source    - the source of the damage
  */
 Robot.prototype.damage = function(amount, source) {
     
@@ -97,8 +97,9 @@ Robot.prototype.damage = function(amount, source) {
     if (this.dead || amount <= 0) return;
 
     // Defense application
+    var original = amount;
     amount *= this.get('defense');
-
+    
     // Event for taking damage
     if (this.onDamaged) {
         var result = this.onDamaged(amount, source);
@@ -129,6 +130,12 @@ Robot.prototype.damage = function(amount, source) {
             this.deaths++;
             this.health = 0;
         }
+    }
+    
+    // Send the damage over the network if it didn't originate
+    // from a network message
+    if (connection.isHost) {
+        connection.damage(this.id, source.id, original, this.health, this.shield);
     }
 };
 

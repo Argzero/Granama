@@ -151,10 +151,7 @@ Enemy.prototype.update = function() {
     
     // Blow up and give exp/points upon dying
     if (this.isDead || this.health <= 0) {
-        gameScreen.particles.push(new Explosion(this.pos.x, this.pos.y, this.width / 150));
-        this.expired = true;
-        gameScreen.score += this.points;
-        this.spawnExp();
+        this.destroy();
     }
     
     // Don't act when stunned
@@ -239,38 +236,18 @@ Enemy.prototype.onDamaged = function(amount, source) {
 };
 
 /**
- * Spawns the experience for the enemy
+ * Destroys the enemy, granting points and dropping exp
  */
-Enemy.prototype.spawnExp = function() {
+Enemy.prototype.destroy = function() {
+    gameScreen.particles.push(new Explosion(this.pos.x, this.pos.y, this.width / 150));
+    this.expired = true;
     if (this.points) {
+        gameScreen.score += this.points;
         var num = Math.round(this.exp * Enemy.EXP_M[players.length - 1]);
-        for (var e = 0; e < Enemy.EXP_DATA.length; e++) {
-            var data = Enemy.EXP_DATA[e];
-            var allDead = false;
-            while (!allDead && data.value * players.length <= num) {
-                allDead = true;
-                for (var p = 0; p < players.length; p++) {
-                    var player = players[p];
-                    num -= data.value;
-                    if (player.health <= 0) continue;
-                    allDead = false;
-                    var exp = new Projectile(
-                        data.sprite,
-                        0, 0,
-                        this, this,
-                        10,
-                        rand(360) * Math.PI / 180,
-                        0,
-                        999999,
-                        false,
-                        Robot.PLAYER
-                    );
-                    exp.setupHoming(player, rand(10) / 100 + 0.04);
-                    exp.onHit = projEvents.expHit;
-                    exp.exp = data.value;
-                    gameScreen.bullets.push(exp);
-                }
-            }
+        num = Math.floor(num / players.length);
+        gameScreen.spawnExp(this, num);
+        if (connection.isHost) {
+            connection.destroy(this.id, num);
         }
     }
 };
