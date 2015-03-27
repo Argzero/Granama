@@ -100,7 +100,7 @@ UIRow.prototype.add = function(element) {
     this.usedWidth += element.width;
     this.widths.push(element.width);
     return this;
-}
+};
 
 /**
  * Adds a button to the row
@@ -153,7 +153,7 @@ UIRow.prototype.draw = function() {
         this.elements[i].draw();
         x += spacing + this.widths[i];
     }
-}
+};
 
 /**
  * An expanding background box for UI elements

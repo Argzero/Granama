@@ -24,22 +24,24 @@ function Connection() {
  * will set up the handlers for receiving messages.
  */
 Connection.prototype.connect = function() {
-    if (this.connected) return;
+    if (this.connected || !io || !io.connect) return;
 
     // Join the server
     this.socket = io.connect();
     
     // Set up message handlers
-    this.socket.on('kick', this.onKick.bind(this));
-    this.socket.on('general', this.onGeneral.bind(this));
-    this.socket.on('joinRoom', this.onJoinRoom.bind(this));
     this.socket.on('addPlayers', this.onAddPlayers.bind(this));
-    this.socket.on('updateRooms', this.onUpdateRooms.bind(this));
-    this.socket.on('removePlayer', this.onRemovePlayer.bind(this));
-    this.socket.on('updatePlayer', this.onUpdatePlayer.bind(this));
-    this.socket.on('startGame', this.onStartGame.bind(this));
-    this.socket.on('updateSelection', this.onUpdateSelection.bind(this));
+    this.socket.on('general', this.onGeneral.bind(this));
     this.socket.on('getTime', this.onGetTime.bind(this));
+    this.socket.on('joinRoom', this.onJoinRoom.bind(this));
+    this.socket.on('kick', this.onKick.bind(this));
+    this.socket.on('removePlayer', this.onRemovePlayer.bind(this));
+    this.socket.on('spawn', this.onSpawn.bind(this));
+    this.socket.on('startGame', this.onStartGame.bind(this));
+    this.socket.on('updatePlayer', this.onUpdatePlayer.bind(this));
+    this.socket.on('updateRooms', this.onUpdateRooms.bind(this));
+    this.socket.on('updateSelection', this.onUpdateSelection.bind(this));
+    
     
     this.socket.emit('getTime', { localTime: performance.now() });
     
@@ -86,7 +88,7 @@ Connection.prototype.fromServerTime = function(time) {
  * @param {string} name - name of the room
  */
 Connection.prototype.createRoom = function(name) {
-    if (this.inRoom) return;
+    if (!this.connected || this.inRoom) return;
     var users = [];
     for (var i = 0; i < players.length; i++) {
         players[i].settings.part = 1;
@@ -110,7 +112,7 @@ Connection.prototype.createRoom = function(name) {
  * it will be assumed that it is for spectating.
  */
 Connection.prototype.fetchRooms = function() {
-    if (this.inRoom) return;
+    if (!this.connected || this.inRoom) return;
     this.socket.emit('fetchRooms', { players: players.length });
 };
 
@@ -119,7 +121,7 @@ Connection.prototype.fetchRooms = function() {
  * are no players, this will assume that it is for spectating.
  */
 Connection.prototype.joinRoom = function(name) {
-    if (this.inRoom) return;
+    if (!this.connected || this.inRoom) return;
     var users = [];
     for (var i = 0; i < players.length; i++) {
         players[i].settings.part = 1;
@@ -152,7 +154,7 @@ Connection.prototype.login = function(username, password, callback) {
  * @param {string} reason - the reason for quitting the game (e.g. closed browser)
  */ 
 Connection.prototype.quitGame = function(reason) {
-    if (!this.inRoom) return;
+    if (!this.connected || !this.inRoom) return;
     
     // Host leaving takes the room down with them 
     if (this.gameIndex === 0) {
@@ -180,9 +182,28 @@ Connection.prototype.quitGame = function(reason) {
  * Sends a request to tart the game
  */
 Connection.prototype.requestStart = function(playerIndex) {
-    if (!this.inRoom) return;
+    if (!this.connected || !this.inRoom) return;
     this.socket.emit('requestStart', { 
         room: this.room
+    });
+};
+
+/**
+ * Tells other players in the game to spawn an enemy at the given coordinates
+ * 
+ * @param {number}  construct - the name of the constructor function
+ * @param {Vector}  pos       - the spawn location
+ * @param {number}  id        - the unique ID of the robot to spawn
+ * @param {boolean} bossSpawn - whether or not it is a boss being spawned
+ */
+Connection.prototype.spawn = function(construct, pos, id, bossSpawn) {
+    if (!this.connected || !this.inRoom) return;
+    this.socket.emit('spawn', {
+        construct: construct,
+        pos: pos,
+        id: id,
+        bossSpawn: bossSpawn,
+        time: this.getServerTime()
     });
 };
 
@@ -191,7 +212,7 @@ Connection.prototype.requestStart = function(playerIndex) {
  * lobby screen so other players can see it.
  */
 Connection.prototype.updateSelection = function(playerIndex) {
-    if (!this.inRoom) return;
+    if (!this.connected || !this.inRoom) return;
     this.socket.emit('updateSelection', { 
         selection: players[playerIndex].settings, 
         index: playerIndex, 
@@ -204,7 +225,7 @@ Connection.prototype.updateSelection = function(playerIndex) {
  * as well as orientation
  */
 Connection.prototype.updatePlayer = function(playerIndex) {
-    if (!this.inRoom) return;
+    if (!this.connected || !this.inRoom) return;
     this.socket.emit('updatePlayer', { 
         rot: players[playerIndex].rotation, 
         robot: playerIndex,
@@ -287,7 +308,7 @@ Connection.prototype.onJoinRoom = function(data) {
     this.localPlayers = players.length;
     this.gameIndex = data.index;
     this.room = data.room;
-    this.isHost = data.index == 0;
+    this.isHost = data.index === 0;
     
 	var i;
     for (i = 0; i < data.index; i++) {
@@ -332,7 +353,28 @@ Connection.prototype.onRemovePlayer = function(data) {
 };
 
 /**
- * Starts the game
+ * Handles spawning a new robot. The data should include the values:
+ *
+ *   construct - the name of the function to create the enemy
+ *   pos       - the position to create the enemy
+ *   id        - the unique ID of the spawned robot
+ *   bossSpawn - whether or not the spawn is for a boss spawn
+ *   time      - the time the enemy was created
+ *
+ * @param {Object} data - the spawn data to relay
+ */
+Connection.prototype.onSpawn = function(data) {
+    var enemy = new window[data.construct](0, 0);
+    enemy.pos.x = data.pos.x;
+    enemy.pos.y = data.pos.y;
+    enemy.id = data.id;
+    
+    gameScreen.robots.unshift(enemy);
+    gameScreen.enemyCount++;
+};
+
+/**
+ * Starts the game. The data should include the values:
  * 
  *   selection = selection data
  * 

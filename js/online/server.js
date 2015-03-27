@@ -324,6 +324,23 @@ io.on('connection', function(socket) {
     });
     
     /**
+     * Relays messages to spawn an enemy. The data should
+     * contain these values:
+     *
+     *   construct - the name of the function to create the enemy
+     *   pos       - the position to create the enemy
+     *   id        - the unique ID of the spawned robot
+     *   bossSpawn - whether or not the spawn is for a boss spawn
+     *   time      - the time the enemy was created
+     *
+     * @param {Object} data - the spawn data to relay
+     */
+    socket.on('spawn', function(data) {
+        console.log('Action: Spawn');
+        socket.broadcast.to(socket.room).emit('spawn', data);
+    });
+    
+    /**
      * Relays a player update to the other clients within a room.
      * The data should contain these values:
      * 

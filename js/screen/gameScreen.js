@@ -21,6 +21,7 @@ function GameScreen() {
     this.score = 0;
     this.spawnCd = 0;
     this.enemyCount = 0;
+    this.spawnId = 1;
     this.timer = 0;
     this.gameOver = false;
     this.paused = undefined;
@@ -121,7 +122,7 @@ GameScreen.prototype.update = function() {
         this.applyScrolling();
         
         // Spawn enemies when not paused
-        //if (connection.isHost) this.checkSpawns();
+        if (connection.isHost) this.checkSpawns();
     }
     
     // Update paused players
@@ -432,6 +433,9 @@ GameScreen.prototype.spawnEnemy = function(data, x, y) {
     // Spawn the enemy
     this.robots.unshift(enemy);
     this.enemyCount++;
+    
+    // Tell others to spawn the enemy
+    connection.spawn(data[i + 2].name, enemy.pos);
     
     return enemy;
 };

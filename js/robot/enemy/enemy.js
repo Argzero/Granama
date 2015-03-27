@@ -173,7 +173,7 @@ Enemy.prototype.update = function() {
     // Apply weapons
     var i;
     for (i = 0; i < this.patterns[this.pattern].length; i++) {
-        this.patterns[this.pattern][i].method(this.patterns[this.pattern][i]);
+        //this.patterns[this.pattern][i].method(this.patterns[this.pattern][i]);
     }
 
     // Apply movement
