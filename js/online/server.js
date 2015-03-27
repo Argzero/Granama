@@ -318,9 +318,7 @@ io.on('connection', function(socket) {
         if (allReady && oneReady) {
             io.sockets.in(data.room.name).emit('startGame', { selections: room.selections });
             room.inProgress = true;
-            console.log("Started the game");
         }
-        else console.log("You cannot start that! What are you crazy? " + allReady + ", " + oneReady);
     });
     
     /**
@@ -353,7 +351,6 @@ io.on('connection', function(socket) {
      * @param {Object} data - the update to send to the other players
      */
     socket.on('updatePlayer', function(data) {
-        console.log('Action: Update player');
         socket.broadcast.to(socket.room).emit('updatePlayer', data);
     });
     

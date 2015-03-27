@@ -431,11 +431,12 @@ GameScreen.prototype.spawnEnemy = function(data, x, y) {
     }
 
     // Spawn the enemy
+    enemy.id = this.spawnId;
     this.robots.unshift(enemy);
     this.enemyCount++;
     
     // Tell others to spawn the enemy
-    connection.spawn(data[i + 2].name, enemy.pos);
+    connection.spawn(data[i + 2].name, enemy.pos, this.spawnId++, false);
     
     return enemy;
 };
@@ -477,6 +478,9 @@ GameScreen.prototype.spawnBoss = function() {
     
     this.robots.push(this.boss);
     this.bossTimer = 300;
+    
+    // Tell others to spawn the enemy
+    connection.spawn(data[i + 2].name, enemy.pos, this.spawnId++, true);
 };
 
 /** 

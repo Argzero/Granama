@@ -371,6 +371,10 @@ Connection.prototype.onSpawn = function(data) {
     
     gameScreen.robots.unshift(enemy);
     gameScreen.enemyCount++;
+    
+    if (data.bossSpawn) {
+        gameScreen.bossTimer = 300 - (this.getServerTime() - data.time) * 3 / 50;
+    }
 };
 
 /**
