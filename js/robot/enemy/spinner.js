@@ -30,6 +30,7 @@ function Spinner(name, x, y, type, health, speed, range, exp, rank, patternMin, 
 
     var angle = rand(0, 360) * Math.PI / 180;
     this.direction = new Vector(Math.cos(angle), Math.sin(angle));
+    this.extra = { direction: this.direction };
 
     this.back = new SpinnerBack(back, this, spin, fire, this.power / 16).child(this, false);
     this.preChildren.push(this.back);

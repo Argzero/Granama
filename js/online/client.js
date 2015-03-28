@@ -250,14 +250,16 @@ Connection.prototype.requestStart = function(playerIndex) {
  * @param {Vector}  pos       - the spawn location
  * @param {number}  id        - the unique ID of the robot to spawn
  * @param {boolean} bossSpawn - whether or not it is a boss being spawned
+ * @param {Object}  [extra]   - any extra data to include
  */
-Connection.prototype.spawn = function(construct, pos, id, bossSpawn) {
+Connection.prototype.spawn = function(construct, pos, id, bossSpawn, extra) {
     if (!this.connected || !this.inRoom) return;
     this.socket.emit('spawn', {
         construct: construct,
         pos: pos,
         id: id,
         bossSpawn: bossSpawn,
+        extra: extra,
         time: this.getServerTime()
     });
 };
@@ -497,6 +499,7 @@ Connection.prototype.onRemovePlayer = function(data) {
  *   pos       - the position to create the enemy
  *   id        - the unique ID of the spawned robot
  *   bossSpawn - whether or not the spawn is for a boss spawn
+ *   extra     - extra data to apply to the enemy
  *   time      - the time the enemy was created
  *
  * @param {Object} data - the spawn data to relay
@@ -509,6 +512,21 @@ Connection.prototype.onSpawn = function(data) {
     
     gameScreen.robots.unshift(enemy);
     gameScreen.enemyCount++;
+    
+    if (data.extra) {
+        var keys = Object.keys(data.extra);
+        var key;
+        for (var i = 0; i < keys.length; i++) {
+            key = keys[i];
+            if (enemy[key] instanceof Vector) {
+                enemy[key].x = data.extra[key].x;
+                enemy[key].y = data.extra[key].y;
+            }
+            else {
+                enemy[key] = data.extra[key];
+            }
+        }
+    }
     
     if (data.bossSpawn) {
         enemy.exp = 0;

@@ -480,7 +480,7 @@ GameScreen.prototype.spawnEnemy = function(data, x, y) {
     this.enemyCount++;
     
     // Tell others to spawn the enemy
-    connection.spawn(data[i + 2].name, enemy.pos, this.spawnId++, false);
+    connection.spawn(data[i + 2].name, enemy.pos, this.spawnId++, false, enemy.extra);
     
     return enemy;
 };
@@ -525,7 +525,7 @@ GameScreen.prototype.spawnBoss = function() {
     this.bossTimer = 300;
     
     // Tell others to spawn the enemy
-    connection.spawn(data[i + 2].name, enemy.pos, this.spawnId++, true);
+    connection.spawn(data[i + 2].name, enemy.pos, this.spawnId++, true, boss.extra);
 };
 
 /**
