@@ -16,7 +16,7 @@ function GameScreen() {
 	this.bossId = 0;
 	this.superBossId = 0;
     this.boss = undefined;
-
+    
     // Various data
     this.score = 0;
     this.spawnCd = 0;
@@ -28,6 +28,9 @@ function GameScreen() {
     this.maxEnemies = 30 * (0.85 + 0.15 * players.length);
     this.isPlaying = true;
     this.julian = false;
+    this.eUpdateInterval = 60;
+    this.eUpdateTimer = this.eUpdateInterval;
+    
     
     // Set the game dimensions
     GAME_WIDTH = 3000;
@@ -66,7 +69,7 @@ function GameScreen() {
 GameScreen.prototype.update = function() {
 
     // Update when not paused
-    var i, j;
+    var i, j, r;
     if (!this.paused) {
     
         // Update robots
@@ -92,7 +95,7 @@ GameScreen.prototype.update = function() {
             if (connection.isHost)
             {
                 for (j = 0; j < this.robots.length; j++) {
-                    var r = this.robots[j];
+                    r = this.robots[j];
                     if (this.bullets[i].isHitting(r)) {
                         this.bullets[i].hit(r);
                     }
@@ -108,7 +111,7 @@ GameScreen.prototype.update = function() {
         for (i = 0; i < this.exp.length; i++) {
             this.exp[i].update();
             for (j = 0; j < players.length; j++) {
-                var r = players[j];
+                r = players[j];
                 if (this.exp[i].isHitting(r)) {
                     this.exp[i].hit(r);
                 }
@@ -148,8 +151,28 @@ GameScreen.prototype.update = function() {
         }
     }
     
-    // Check for losing
+    // Host actions post-update
     if (connection.isHost) {
+        
+        // Update enemy data
+        this.eUpdateTimer--;
+            if (this.eUpdateTimer <= 0) {
+            var data = {};
+            var shouldSend = false;
+            for (i = 0; i < this.robots.length; i++) {
+                r = this.robots[i];
+                if (r.type != Robot.PLAYER) {
+                    data[r.id] = { pos: r.pos, rot: r.rotation };
+                    shouldSend = true;
+                }
+            }
+            if (shouldSend) {
+                connection.updateRobots(data);
+            }
+            this.eUpdateTimer = this.eUpdateInterval;
+        }
+        
+        // Check for losing
         for (i = 0; i < players.length; i++) {
             if (players[i].health > 0) return;
         }

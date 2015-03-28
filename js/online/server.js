@@ -401,6 +401,20 @@ io.on('connection', function(socket) {
     });
     
     /**
+     * Relays updates for non-player robots to other clients. The data
+     * should include the values:
+     *
+     *   <id> = the position and rotation data for the robot with the ID (one for each robot)
+     *   time = the time stamp from when the data was sent
+     *
+     * @param {Object} data - robot data
+     */
+    socket.on('updateRobots', function(data) {
+        console.log('Action: Update Robots');
+        socket.broadcast.to(socket.room).emit('updateRobots', data);
+    });
+    
+    /**
      * Relays a selection update in the lobby screen to other users in
      * the same room. The data should contain these values:
      *

@@ -42,6 +42,7 @@ Connection.prototype.connect = function() {
     this.socket.on('spawn', this.onSpawn.bind(this));
     this.socket.on('startGame', this.onStartGame.bind(this));
     this.socket.on('updatePlayer', this.onUpdatePlayer.bind(this));
+    this.socket.on('updateRobots', this.onUpdateRobots.bind(this));
     this.socket.on('updateRooms', this.onUpdateRooms.bind(this));
     this.socket.on('updateSelection', this.onUpdateSelection.bind(this));
     
@@ -259,6 +260,17 @@ Connection.prototype.spawn = function(construct, pos, id, bossSpawn) {
         bossSpawn: bossSpawn,
         time: this.getServerTime()
     });
+};
+
+/**
+ * Sends out the update for non-player robots
+ *
+ * @param {Object} data - the robot data
+ */
+Connection.prototype.updateRobots = function(data) {
+    if (!this.connected || !this.inRoom) return;
+    data.time = this.getServerTime();
+    this.socket.emit('updateRobots', data);
 };
 
 /**
@@ -566,6 +578,28 @@ Connection.prototype.onUpdatePlayer = function(data) {
         
         player.input.dir.x = data.dir.x;
         player.input.dir.y = data.dir.y;
+    }
+};
+
+/**
+ * Updates non-player robots in the game. The data should
+ * include these values:
+ *
+ *   <id> = the position and rotation data for the robot with the ID (one for each robot)
+ *   time = the time stamp from when the data was sent
+ *
+ * @param {Object} data - robot data
+ */
+Connection.prototype.onUpdateRobots = function(data) {
+    for (var i = 0; i < gameScreen.robots.length; i++) {
+        var r = gameScreen.robots[i];
+        var d = data[r.id];
+        if (d) {
+            r.pos.x = d.pos.x;
+            r.pos.y = d.pos.y;
+            r.rotation.x = d.rot.x;
+            r.rotation.y = d.rot.y;
+        }
     }
 };
 
