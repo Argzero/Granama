@@ -410,7 +410,6 @@ io.on('connection', function(socket) {
      * @param {Object} data - robot data
      */
     socket.on('updateRobots', function(data) {
-        console.log('Action: Update Robots');
         socket.broadcast.to(socket.room).emit('updateRobots', data);
     });
     
