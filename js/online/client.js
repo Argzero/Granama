@@ -511,6 +511,11 @@ Connection.prototype.onSpawn = function(data) {
     gameScreen.enemyCount++;
     
     if (data.bossSpawn) {
+        enemy.exp = 0;
+        enemy.points = 0;
+    }
+    
+    if (enemy.type == Robot.BOSS) {
         gameScreen.bossTimer = 300 - (this.getServerTime() - data.time) * 3 / 50;
     }
 };
