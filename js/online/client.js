@@ -33,6 +33,7 @@ Connection.prototype.connect = function() {
     this.socket.on('addPlayers', this.onAddPlayers.bind(this));
     this.socket.on('damage', this.onDamage.bind(this));
     this.socket.on('destroy', this.onDestroy.bind(this));
+    this.socket.on('doneUpgrades', this.onDoneUpgrades.bind(this));
     this.socket.on('downgrade', this.onDowngrade.bind(this));
     this.socket.on('general', this.onGeneral.bind(this));
     this.socket.on('getTime', this.onGetTime.bind(this));
@@ -48,7 +49,6 @@ Connection.prototype.connect = function() {
     this.socket.on('updateSelection', this.onUpdateSelection.bind(this));
     this.socket.on('upgrade', this.onUpgrade.bind(this));
     this.socket.on('upgradeSelection', this.onUpgradeSelection.bind(this));
-    
     
     this.socket.emit('getTime', { localTime: performance.now() });
     
@@ -146,6 +146,16 @@ Connection.prototype.destroy = function(id, exp) {
         robot: id,
         exp: exp,
         score: gameScreen.score,
+        time: this.getServerTime()
+    });
+};
+
+/**
+ * Tells other players that all players are ready to start the next round
+ */
+Connection.prototype.doneUpgrades = function() {
+    if (!this.connected || !this.inRoom) return;
+    this.socket.emit('doneUpgrades', {
         time: this.getServerTime()
     });
 };
@@ -433,6 +443,18 @@ Connection.prototype.onDestroy = function(data) {
         r.destroy();
     }
     gameScreen.score = data.score;
+};
+
+/**
+ * Starts the next round of the game. The data should
+ * include the values:
+ *
+ *   time = the time when the round started
+ *
+ * @param {Object} data - the data from the server
+ */ 
+Connection.prototype.onDoneUpgrades = function(data) {
+    gameScreen.startNextRound();
 };
 
 /**

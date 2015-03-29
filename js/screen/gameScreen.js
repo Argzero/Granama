@@ -375,6 +375,7 @@ GameScreen.prototype.startNextRound = function() {
     this.bossIncrement += this.bossScale;
     this.bossScore += this.bossIncrement;
     this.spawnCd = 300;
+    if (connection.isHost) connection.doneUpgrades();
 };
 
 /**

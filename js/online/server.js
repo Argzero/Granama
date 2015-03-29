@@ -167,6 +167,19 @@ io.on('connection', function(socket) {
     });
     
     /**
+     * Informs other clients of the start of the next round. The
+     * data should include the values:
+     *
+     *   time = the time when the round started
+     *
+     * @param {Object} data - the data from the server
+     */ 
+    socket.on('doneUpgrades', function(data) {
+        console.log('Action: Done Upgrades');
+        socket.broadcast.to(socket.room).emit('doneUpgrades', data);
+    });
+    
+    /**
      * Relays a downgrade for a player. The data should include the values:
      *
      *   player = the index of the player downgrading a stat
