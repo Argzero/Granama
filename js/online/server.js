@@ -111,6 +111,7 @@ io.on('connection', function(socket) {
      *
      *   robot = the unique ID of the destroyed enemy
      *   exp = the amount of exp to drop per player
+     *   score = the new score of the game
      *   time = the time stamp for when the enemy died
      *
      * @param {Object} data - response data from the server

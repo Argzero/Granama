@@ -142,6 +142,7 @@ Connection.prototype.destroy = function(id, exp) {
     this.socket.emit('destroy', {
         robot: id,
         exp: exp,
+        score: gameScreen.score,
         time: this.getServerTime()
     });
 };
@@ -371,6 +372,7 @@ Connection.prototype.onDamage = function(data) {
  *
  *   robot = the unique ID of the destroyed enemy
  *   exp = the amount of exp to drop per player
+ *   score = the new score for the game
  *   time = the time stamp for when the enemy died
  *
  * @param {Object} data - response data from the server
@@ -380,6 +382,7 @@ Connection.prototype.onDestroy = function(data) {
     if (r) {
         r.destroy();
     }
+    gameScreen.score = data.score;
 };
 
 /**
@@ -535,6 +538,7 @@ Connection.prototype.onSpawn = function(data) {
     
     if (enemy.type == Robot.BOSS) {
         gameScreen.boss = enemy;
+        gameScreen.bossStatus = ACTIVE_BOSS;
         gameScreen.bossTimer = 300 - (this.getServerTime() - data.time) * 3 / 50;
     }
 };

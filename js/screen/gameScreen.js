@@ -31,7 +31,6 @@ function GameScreen() {
     this.eUpdateInterval = 60;
     this.eUpdateTimer = this.eUpdateInterval;
     
-    
     // Set the game dimensions
     GAME_WIDTH = 3000;
     GAME_HEIGHT = 3000;
@@ -141,6 +140,7 @@ GameScreen.prototype.update = function() {
         this.applyScrolling();
         
         // Spawn enemies when not paused
+        this.checkUpgradeTransition();
         if (connection.isHost) this.checkSpawns();
     }
     
@@ -156,7 +156,7 @@ GameScreen.prototype.update = function() {
         
         // Update enemy data
         this.eUpdateTimer--;
-            if (this.eUpdateTimer <= 0) {
+        if (this.eUpdateTimer <= 0) {
             var data = {};
             var shouldSend = false;
             for (i = 0; i < this.robots.length; i++) {
@@ -286,7 +286,7 @@ GameScreen.prototype.draw = function() {
     }
     
     // Yeah...
-    if (this.julian) ui.julian();
+    //if (this.julian) ui.julian();
 
     ui.drawStatBar();
 
@@ -374,17 +374,20 @@ GameScreen.prototype.startNextRound = function() {
     this.paused = false;
     this.bossIncrement += this.bossScale;
     this.bossScore += this.bossIncrement;
+    this.spawnCd = 300;
 };
 
 /**
- * Checks whether or not a new enemy should spawn
+ * Checks for when the game should transition to the upgrade screen
  */
-GameScreen.prototype.checkSpawns = function() {
-
-    // Transition to upgrade screen
+GameScreen.prototype.checkUpgradeTransition = function() {
+    
+    // Must have just killed the boss
     if (this.bossStatus == ACTIVE_BOSS) {
         if (this.boss.dead) {
             this.timer++;
+            
+            // Kill off all non-player robots just before opening the menu
             if (this.timer == 1) {
                 for (var i = 0; i < this.robots.length; i++) {
                     var r = this.robots[i];
@@ -394,6 +397,8 @@ GameScreen.prototype.checkSpawns = function() {
                     }
                 }
             }
+            
+            // Run the countdown
             if (this.timer >= 600) {
                 ui.setupUpgradeUI();
                 this.bossStatus = ACTIVE_NONE;
@@ -402,6 +407,12 @@ GameScreen.prototype.checkSpawns = function() {
         }
         return;
     }
+};
+
+/**
+ * Checks whether or not a new enemy should spawn
+ */
+GameScreen.prototype.checkSpawns = function() {
 
     // Boss spawning
     if (this.bossStatus == ACTIVE_NONE && this.score == this.bossScore) {
