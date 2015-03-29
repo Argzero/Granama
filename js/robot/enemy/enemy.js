@@ -241,12 +241,13 @@ Enemy.prototype.onDamaged = function(amount, source) {
 Enemy.prototype.destroy = function() {
     gameScreen.particles.push(new Explosion(this.pos.x, this.pos.y, this.width / 150));
     this.expired = true;
+    this.dead = true;
     if (this.points) {
-        gameScreen.score += this.points;
         var num = Math.round(this.exp * Enemy.EXP_M[players.length - 1]);
         num = Math.floor(num / players.length);
         gameScreen.spawnExp(this, num);
         if (connection.isHost) {
+            gameScreen.score += this.points;
             connection.destroy(this.id, num);
         }
     }
