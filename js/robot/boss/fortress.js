@@ -200,7 +200,7 @@ function FortressCannon(boss) {
     // Weapon data
     this.cannonData = {
         sprite   : 'bossCannon',
-        damage   : 0.5 * Boss.sum(),
+        damage   : 0.4 * Boss.sum(),
         rate     : 150,
         range    : 750,
         discharge: 0.1,
