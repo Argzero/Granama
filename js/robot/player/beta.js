@@ -68,8 +68,8 @@ PlayerBeta.prototype.applyUpdate = function() {
     
     // Charging up the sword
     if (!this.sword) {
-        this.charge += Math.min(4, this.chargeMultiplier * (0.002 + 0.001 * this.upgrades[CHARGE_SPEED_ID]));
-        this.swordCharge.alpha = this.charge - 1;
+        this.charge += Math.min(5, this.chargeMultiplier * (0.002 + 0.001 * this.upgrades[CHARGE_SPEED_ID]));
+        this.swordCharge.alpha = (this.charge - 1) / 4;
     }
     else this.charge = 1;
     
@@ -84,7 +84,7 @@ PlayerBeta.prototype.applyUpdate = function() {
     // Sword - only swing when close to enemies
     var closest = gameScreen.getClosest(this.pos, Robot.ENEMY);
     if (closest && closest.pos.distanceSq(this.pos) < 90000) {
-        this.swordData.damage = 3 * m * this.charge;
+        this.swordData.damage = 4 * m * this.charge;
         this.gun(this.swordData);
         
         // Make the charge follow the sword
