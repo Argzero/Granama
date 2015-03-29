@@ -68,7 +68,7 @@ PlayerBeta.prototype.applyUpdate = function() {
     
     // Charging up the sword
     if (!this.sword) {
-        this.charge += Math.min(2, this.chargeMultiplier * (0.001 + 0.0005 * this.upgrades[CHARGE_SPEED_ID]));
+        this.charge += Math.min(4, this.chargeMultiplier * (0.002 + 0.001 * this.upgrades[CHARGE_SPEED_ID]));
         this.swordCharge.alpha = this.charge - 1;
     }
     else this.charge = 1;
