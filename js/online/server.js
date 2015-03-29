@@ -167,6 +167,20 @@ io.on('connection', function(socket) {
     });
     
     /**
+     * Relays a downgrade for a player. The data should include the values:
+     *
+     *   player = the index of the player downgrading a stat
+     *   upgrade = the index of the downgraded stat
+     *   time = when the downgrade took place 
+     *
+     * @param {Object} data - the data for the downgrade
+     */ 
+    socket.on('downgrade', function(data) {
+        console.log('Action: Downgrade');
+        socket.broadcast.to(socket.room).emit('downgrade', data);
+    });
+    
+    /**
      * Fetches the list of available rooms for the user. This will
      * check room size limits and what the user is joining for when
      * determining what rooms they can join. The data should include
@@ -428,5 +442,35 @@ io.on('connection', function(socket) {
         console.log('Action: Update selection [room= ' + socket.room + ']');
         roomList[socket.room].selections[data.index] = data.selection;
         socket.broadcast.to(socket.room).emit('updateSelection', data);
+    });
+    
+    /**
+     * Relays an upgrade for a player. The data should include the values:
+     *
+     *   player = the index of the player upgrading a stat
+     *   upgrade = the index of the upgraded stat
+     *   time = when the upgrade took place 
+     *
+     * @param {Object} data - the data for the upgrade
+     */ 
+    socket.on('upgrade', function(data) {
+        console.log('Action: Upgrade');
+        socket.broadcast.to(socket.room).emit('upgrade', data);
+    });
+
+    /**
+     * Relays a selection update for the upgrade screen. The data
+     * should include the values:
+     *
+     *   player = the index of the player to update for
+     *   id = the index of the stat the player is now hovered over
+     *   ready = whether or not the player is ready
+     *   time = when the change took place
+     *
+     * @param {Object} data - the new selection data
+     */
+    socket.on('upgradeSelection', function(data) {
+        console.log('Action: Upgrade Selection');
+        socket.broadcast.to(socket.room).emit('upgradeSelection', data);
     });
 });

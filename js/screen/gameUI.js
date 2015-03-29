@@ -528,9 +528,11 @@ var ui = {
             // Up/down controls
             if ((input.button(UP_1) == 1 || input.button(UP_2) == 1) && this.hovered[i] > 0 && !this.ready[i]) {
                 this.hovered[i]--;
+                connection.upgradeSelection(i, this.hovered[i], false);
             }
             if ((input.button(DOWN_1) == 1 || input.button(DOWN_2) == 1) && this.hovered[i] < 5 && !this.ready[i]) {
                 this.hovered[i]++;
+                connection.upgradeSelection(i, this.hovered[i], false);
             }
 
             // Select controls
@@ -541,20 +543,15 @@ var ui = {
                     if (player.points > 0 && player.upgrades[this.hovered[i]] < 10) {
                         player.upgrades[this.hovered[i]]++;
                         player.points--;
+                        connection.upgrade(i, this.hovered[i]);
                     }
                 }
                 
                 // Readying up
                 else if (input.button(SELECT_1) == 1 || input.button(SELECT_2) == 1) {
+                    connection.upgradeSelection(i, this.hovered[i], true);
                     this.ready[i] = true;
-
-                    var allReady = true;
-                    for (j = 0; j < this.ready.length; j++) {
-                        if (!this.ready[j]) allReady = false;
-                    }
-                    if (allReady) {
-                        gameScreen.startNextRound();
-                    }
+                    checkAllReady();
                 }
             }
             
@@ -566,16 +563,34 @@ var ui = {
                     if (player.upgrades[this.hovered[i]] > this.start[i][this.hovered[i]]) {
                         player.upgrades[this.hovered[i]]--;
                         player.points++;
+                        connection.downgrade(i, this.hovered[i]);
                     }
                 }
                 
                 // Cancel being ready
-                else if (input.button(CANCEL_1) == 1 || input.button(CANCEL_2) == 1) this.ready[i] = false;
+                else if (input.button(CANCEL_1) == 1 || input.button(CANCEL_2) == 1) {
+                    this.ready[i] = false;
+                    connection.upgradeSelection(i, this.hovered[i], false);
+                }
             }
         }
 
         // Reset the alpha
         this.ctx.globalAlpha = 1;
+    },
+    
+    /**
+     * Checks whether or not all players are ready in the upgrade screen
+     */ 
+    checkAllReady: function() {
+        if (!connection.isHost) return;
+        var allReady = true;
+        for (j = 0; j < this.ready.length; j++) {
+            if (!this.ready[j]) allReady = false;
+        }
+        if (allReady) {
+            gameScreen.startNextRound();
+        }
     },
     
     /**

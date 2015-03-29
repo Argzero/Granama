@@ -33,6 +33,7 @@ Connection.prototype.connect = function() {
     this.socket.on('addPlayers', this.onAddPlayers.bind(this));
     this.socket.on('damage', this.onDamage.bind(this));
     this.socket.on('destroy', this.onDestroy.bind(this));
+    this.socket.on('downgrade', this.onDowngrade.bind(this));
     this.socket.on('general', this.onGeneral.bind(this));
     this.socket.on('getTime', this.onGetTime.bind(this));
     this.socket.on('giveExp', this.onGiveExp.bind(this));
@@ -45,6 +46,8 @@ Connection.prototype.connect = function() {
     this.socket.on('updateRobots', this.onUpdateRobots.bind(this));
     this.socket.on('updateRooms', this.onUpdateRooms.bind(this));
     this.socket.on('updateSelection', this.onUpdateSelection.bind(this));
+    this.socket.on('upgrade', this.onUpgrade.bind(this));
+    this.socket.on('upgradeSelection', this.onUpgradeSelection.bind(this));
     
     
     this.socket.emit('getTime', { localTime: performance.now() });
@@ -143,6 +146,21 @@ Connection.prototype.destroy = function(id, exp) {
         robot: id,
         exp: exp,
         score: gameScreen.score,
+        time: this.getServerTime()
+    });
+};
+
+/**
+ * Sends a downgrade event across the network
+ *
+ * @param {number} player  - index of the player to apply the downgrade for
+ * @param {number} upgrade - the index of the upgrade to...well...downgrade
+ */
+Connection.prototype.downgrade = function(player, upgrade) {
+    if (!this.connected || !this.inRoom) return;
+    this.socket.emit('downgrade', {
+        player: player,
+        upgrade: upgrade,
         time: this.getServerTime()
     });
 };
@@ -304,6 +322,38 @@ Connection.prototype.updatePlayer = function(playerIndex) {
     });
 };
 
+/**
+ * Sends an upgrade event across the network
+ *
+ * @param {number} player  - index of the player to apply the upgrade for
+ * @param {number} upgrade - the index of the upgrade to...well...upgrade
+ */
+Connection.prototype.upgrade = function(player, upgrade) {
+    if (!this.connected || !this.inRoom) return;
+    this.socket.emit('upgrade', {
+        player: player,
+        upgrade: upgrade,
+        time: this.getServerTime()
+    });
+};
+
+/**
+ * Sends an upgrade screen selection across the network
+ *
+ * @param {number}  player - the index of the player changing their selection
+ * @param {number}  id     - the new ID of their selection
+ * @param {boolean} ready  - whether or not the player is ready
+ */
+Connection.prototype.upgradeSelection = function(player, id, ready) {
+    if (!this.connected || !this.inRoom) return;
+    this.socket.emit('upgradeSelection', {
+        player: player,
+        id: id,
+        ready: ready,
+        time: this.getServerTime()
+    });
+};
+
 // ------------------------------------------------------------------------------ //
 //                                  Server -> Client                              //
 // ------------------------------------------------------------------------------ //
@@ -383,6 +433,21 @@ Connection.prototype.onDestroy = function(data) {
         r.destroy();
     }
     gameScreen.score = data.score;
+};
+
+/**
+ * Applies a downgrade for a player. The data should include the values:
+ *
+ *   player = the index of the player downgrading a stat
+ *   upgrade = the index of the downgraded stat
+ *   time = when the upgrade took place 
+ *
+ * @param {Object} data - the data for the downgrade
+ */ 
+Connection.prototype.onDowngrade = function(data) {
+    ui.hovered[data.player] = data.upgrade;
+    players[data.player].upgrades[data.upgrade]--;
+    players[data.player].points++;
 };
 
 /**
@@ -668,4 +733,36 @@ Connection.prototype.onUpdateSelection = function(data) {
     if (gameScreen.updateOpenList) {
         gameScreen.updateOpenList();
     }
+};
+
+/**
+ * Applies an upgrade for a player. The data should include the values:
+ *
+ *   player = the index of the player upgrading a stat
+ *   upgrade = the index of the upgraded stat
+ *   time = when the upgrade took place 
+ *
+ * @param {Object} data - the data for the upgrade
+ */ 
+Connection.prototype.onUpgrade = function(data) {
+    ui.hovered[data.player] = data.upgrade;
+    players[data.player].upgrades[data.upgrade]++;
+    players[data.player].points--;
+};
+
+/**
+ * Updates a selection for the upgrade screen. The data
+ * should include the values:
+ *
+ *   player = the index of the player to update for
+ *   id = the index of the stat the player is now hovered over
+ *   ready = whether or not the player is ready
+ *   time = when the change took place
+ *
+ * @param {Object} data - the new selection data
+ */
+Connection.prototype.onUpgradeSelection = function(data) {
+    ui.ready[data.player] = data.ready;
+    ui.hovered[data.player] = data.id;
+    if (data.ready) ui.checkAllReady();
 };
