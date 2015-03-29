@@ -136,11 +136,21 @@ Enemy.prototype.setMovement = function(pattern, movement) {
  * Switches to a random attack pattern
  */
 Enemy.prototype.switchPattern = function() {
-    if (this.patterns.length <= 1) return;
-    this.pattern = rand(this.patterns.length);
+    if (this.patterns.length <= 1 || !connection.isHost) return;
+    this.setPattern(rand(this.patterns.length));
+    this.patternTimer = rand(this.patternMin, this.patternMax);
+    connection.changePattern(this.id, this.pattern);
+};
+
+/**
+ * Sets the pattern of the enemy to a specific one
+ * 
+ * @param {number} pattern - the pattern to switch to
+ */
+Enemy.prototype.setPattern = function(pattern) {
+    this.pattern = pattern;
     this.range = this.ranges[this.pattern] || this.range;
     this.movement = this.movements[this.pattern] || this.movement;
-    this.patternTimer = rand(this.patternMin, this.patternMax);
 };
 
 /**

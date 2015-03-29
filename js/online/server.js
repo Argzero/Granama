@@ -46,6 +46,21 @@ var io = require('socket.io')(app);
 io.on('connection', function(socket) {
     
     /**
+     * Relays a pattern change for a robot. The data should
+     * include the values:
+     *
+     *   robot = the ID of the robot changing patterns
+     *   pattern = the new pattern of the robot
+     *   time = the time when the robot changed patterns
+     *
+     * @param {Object} data - the pattern change data
+     */
+    socket.on('changePattern', function(data) {
+        console.log('Action: Change Pattern');
+        socket.broadcast.to(socket.room).emit('changePattern', data);
+    });
+    
+    /**
      * Creates a new hosted room for a user with the provided data.
      * The data should contain the following values:
      *

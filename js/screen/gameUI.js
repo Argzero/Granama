@@ -551,7 +551,7 @@ var ui = {
                 else if (input.button(SELECT_1) == 1 || input.button(SELECT_2) == 1) {
                     connection.upgradeSelection(i, this.hovered[i], true);
                     this.ready[i] = true;
-                    checkAllReady();
+                    this.checkAllReady();
                 }
             }
             

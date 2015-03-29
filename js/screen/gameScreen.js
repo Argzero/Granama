@@ -8,7 +8,7 @@ function GameScreen() {
     // Boss data
     var multiplier = (0.6 + 0.4 * players.length);
     this.bossStatus = ACTIVE_NONE;
-    this.bossScore = Math.floor(10 * multiplier) * 5;
+    this.bossScore = Math.floor(1 * multiplier) * 5;
     this.bossIncrement = this.bossScore;
     this.bossScale = Math.floor(5 * multiplier) * 5;
     this.bossCount = 0;

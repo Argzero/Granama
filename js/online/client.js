@@ -31,6 +31,7 @@ Connection.prototype.connect = function() {
     
     // Set up message handlers
     this.socket.on('addPlayers', this.onAddPlayers.bind(this));
+    this.socket.on('changePattern', this.onChangePattern.bind(this));
     this.socket.on('damage', this.onDamage.bind(this));
     this.socket.on('destroy', this.onDestroy.bind(this));
     this.socket.on('doneUpgrades', this.onDoneUpgrades.bind(this));
@@ -88,6 +89,21 @@ Connection.prototype.fromServerTime = function(time) {
 // ------------------------------------------------------------------------------ //
 //                                  Client -> Server                              //
 // ------------------------------------------------------------------------------ //
+
+/**
+ * Sends a pattern change for a robot across the network
+ *
+ * @param {number} robot   - the ID of the robot changing patterns
+ * @param {number} pattern - the new pattern of the robot 
+ */
+Connection.prototype.changePattern = function(robot, pattern) {
+    if (!this.connected || !this.inRoom) return;
+    this.socket.emit('changePattern', {
+        robot: robot,
+        pattern: pattern,
+        time: this.getServerTime()
+    });
+};
 
 /**
  * Attempts to create a room on the server
@@ -381,6 +397,22 @@ Connection.prototype.onAddPlayers = function(data) {
     if (!this.inRoom) return;
     for (var i = 0; i < data.selections.length; i++) {
         players[i + data.index].settings = data.selections[i]; 
+    }
+};
+
+/**
+ * Handles updating the attack pattern of a robot
+ *
+ *   robot = the ID of the robot changing patterns
+ *   pattern = the new pattern of the robot
+ *   time = the time when the robot changed patterns
+ *
+ * @param {Object} data - the pattern change data
+ */
+Connection.prototype.onChangePattern = function(data) {
+    var r = gameScreen.getRobotById(data.robot);
+    if (r) {
+        r.setPattern(data.pattern);
     }
 };
 
