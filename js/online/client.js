@@ -534,6 +534,7 @@ Connection.prototype.onSpawn = function(data) {
     }
     
     if (enemy.type == Robot.BOSS) {
+        gameScreen.boss = enemy;
         gameScreen.bossTimer = 300 - (this.getServerTime() - data.time) * 3 / 50;
     }
 };

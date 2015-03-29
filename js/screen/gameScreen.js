@@ -505,27 +505,32 @@ GameScreen.prototype.spawnBoss = function() {
     }
 
     // Spawn the boss
+    var construct;
 	if (this.bossId < 5) {
-		this.boss = new BOSS_SPAWNS[this.bossId % BOSS_SPAWNS.length](x, y);
+		construct = BOSS_SPAWNS[this.bossId % BOSS_SPAWNS.length];
+        this.boss = new construct(x, y);
+        
 		this.bossId++;
 	}
 	else {
 		if (this.superBossId === 0) {
+            construct = DragonBoss;
 			this.boss = new DragonBoss(x, y);
 		}
 		else {
+            construct = HydraBoss;
 			this.boss = new HydraBoss(x, y);
 		}
 		this.superBossId++;
 		this.shuffleBosses();
 	}
     
-    boss.id = this.spawnId;
+    this.boss.id = this.spawnId;
     this.robots.push(this.boss);
     this.bossTimer = 300;
     
     // Tell others to spawn the enemy
-    connection.spawn(data[i + 2].name, enemy.pos, this.spawnId++, true, boss.extra);
+    connection.spawn(construct.name, this.boss.pos, this.spawnId++, true, this.boss.extra);
 };
 
 /**
