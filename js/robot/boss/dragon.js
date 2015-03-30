@@ -122,12 +122,13 @@ function DragonBoss(x, y) {
         /* DX     */ 0,
         /* DY     */ 0,
         /* Weapon */ {
-            damage: damageScale,
-            range : 1000,
-            rate  : 60,
-            dx    : 0,
-            dy    : 48,
-            target: Robot.PLAYER
+            shooter: this,
+            damage : damageScale,
+            range  : 1000,
+            rate   : 60,
+            dx     : 0,
+            dy     : 48,
+            target : Robot.PLAYER
         }
     );
 }
