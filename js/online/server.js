@@ -46,6 +46,22 @@ var io = require('socket.io')(app);
 io.on('connection', function(socket) {
     
     /**
+     * Relays a buff for a robot. The data should include the values:
+     *
+     *   robot = the ID of the robot to buff
+     *   stat = the name of the stat to buff
+     *   multiplier = the buff multiplier to apply
+     *   duration = how long to apply the buff for
+     *   time = when the buff was applied
+     * 
+     * @param {Object} object - the server data
+     */
+    socket.on('buff', function(data) {
+        console.log('Action: Buff');
+        socket.broadcast.to(socket.room).emit('buff', data);
+    });
+    
+    /**
      * Relays a pattern change for a robot. The data should
      * include the values:
      *
@@ -273,6 +289,20 @@ io.on('connection', function(socket) {
     socket.on('giveExp', function(data) {
         console.log('Action: Give Exp [' + data.exp + ' to ' + data.player + ']');
         socket.broadcast.to(socket.room).emit('giveExp', data);
+    });
+    
+    /**
+     * Relays knockback to a robot. The data should include the values:
+     *
+     *   robot = the ID of the robot being knocked back
+     *   knockback = the knockback to apply
+     *   time = the time when the knockback was applied
+     *
+     * @param {Object} data - the data received from the server
+     */
+    socket.on('knockback', function(data) {
+        console.log('Action: Knockback');
+        socket.broadcast.to(socket.room).emit('knockback', data);
     });
     
     /**

@@ -31,6 +31,7 @@ Connection.prototype.connect = function() {
     
     // Set up message handlers
     this.socket.on('addPlayers', this.onAddPlayers.bind(this));
+    this.socket.on('buff', this.onBuff.bind(this));
     this.socket.on('changePattern', this.onChangePattern.bind(this));
     this.socket.on('damage', this.onDamage.bind(this));
     this.socket.on('destroy', this.onDestroy.bind(this));
@@ -41,6 +42,7 @@ Connection.prototype.connect = function() {
     this.socket.on('giveExp', this.onGiveExp.bind(this));
     this.socket.on('joinRoom', this.onJoinRoom.bind(this));
     this.socket.on('kick', this.onKick.bind(this));
+    this.socket.on('knockback', this.onKnockback.bind(this));
     this.socket.on('removePlayer', this.onRemovePlayer.bind(this));
     this.socket.on('setPaused', this.onSetPaused.bind(this));
     this.socket.on('spawn', this.onSpawn.bind(this));
@@ -90,6 +92,25 @@ Connection.prototype.fromServerTime = function(time) {
 // ------------------------------------------------------------------------------ //
 //                                  Client -> Server                              //
 // ------------------------------------------------------------------------------ //
+
+/**
+ * Buffs a robot
+ *
+ * @param {number} robot      - the ID of the robot being buffed
+ * @param {string} stat       - the stat being buffed
+ * @param {number} multiplier - the buff multiplier
+ * @param {number} duration   - the duration of the buff
+ */
+Connection.prototype.buff = function(robot, stat, multiplier, duration) {
+    if (!this.connected || !this.inRoom) return;
+    this.socket.emit('buff', {
+        robot: robot,
+        stat: stat,
+        multiplier: multiplier,
+        duration: duration,
+        time: this.getServerTime()
+    });
+};
 
 /**
  * Sends a pattern change for a robot across the network
@@ -229,6 +250,21 @@ Connection.prototype.joinRoom = function(name) {
         users.push(players[i].settings);
     }
     this.socket.emit('requestJoin', { users: users, room: name });
+};
+
+/**
+ * Applies knockback to the robot
+ *
+ * @param {number} robot     - the ID of the robot to knock back
+ * @param {Vector} knockback - the unmitigated knockback applied
+ */
+Connection.prototype.knockback = function(robot, knockback) {
+    if (!this.connected || !this.inRoom) return;
+    this.socket.emit('knockback', {
+        robot: robot,
+        knockback: knockback,
+        time: this.getServerTime()
+    });
 };
 
 /**
@@ -411,6 +447,24 @@ Connection.prototype.onAddPlayers = function(data) {
     if (!this.inRoom) return;
     for (var i = 0; i < data.selections.length; i++) {
         players[i + data.index].settings = data.selections[i]; 
+    }
+};
+
+/**
+ * Buffs a robot. The data should include the values:
+ *
+ *   robot = the ID of the robot to buff
+ *   stat = the name of the stat to buff
+ *   multiplier = the buff multiplier to apply
+ *   duration = how long to apply the buff for
+ *   time = when the buff was applied
+ * 
+ * @param {Object} object - the server data
+ */ 
+Connection.prototype.onBuff = function(data) {  
+    var r = gameScreen.getRobotById(data.robot);
+    if (r) {
+        r.buff(data.stat, data.multiplier, data.duration);
     }
 };
 
@@ -611,6 +665,22 @@ Connection.prototype.onKick = function(data) {
     this.inRoom = false;
     players = players.slice(this.gameIndex, this.gameIndex + this.localPlayers);
     gameScreen = new RoomScreen();
+};
+
+/**
+ * Applies knockback to a robot. The data should include the values:
+ *
+ *   robot = the ID of the robot being knocked back
+ *   knockback = the knockback to apply
+ *   time = the time when the knockback was applied
+ *
+ * @param {Object} data - the data received from the server
+ */
+Connection.prototype.onKnockback = function(data) {
+    var r = gameScreen.getRobotById(data.robot);
+    if (r) {
+        r.knockback(new Vector(data.knockback.x, data.knockback.y));
+    }
 };
 
 /**
