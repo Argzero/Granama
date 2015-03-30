@@ -42,6 +42,7 @@ Connection.prototype.connect = function() {
     this.socket.on('joinRoom', this.onJoinRoom.bind(this));
     this.socket.on('kick', this.onKick.bind(this));
     this.socket.on('removePlayer', this.onRemovePlayer.bind(this));
+    this.socket.on('setPaused', this.onSetPaused.bind(this));
     this.socket.on('spawn', this.onSpawn.bind(this));
     this.socket.on('startGame', this.onStartGame.bind(this));
     this.socket.on('updatePlayer', this.onUpdatePlayer.bind(this));
@@ -285,6 +286,19 @@ Connection.prototype.requestStart = function(playerIndex) {
     if (!this.connected || !this.inRoom) return;
     this.socket.emit('requestStart', { 
         room: this.room
+    });
+};
+
+/**
+ * Sets the paused state of the game
+ *
+ * @param {number} id - the index of the player who paused the game or -1 if not paused
+ */
+Connection.prototype.setPaused = function(id) {
+    if (!this.connected || !this.inRoom) return;
+    this.socket.emit('setPaused', {
+        player: id,
+        time: this.getServerTime()
     });
 };
 
@@ -612,6 +626,19 @@ Connection.prototype.onKick = function(data) {
 Connection.prototype.onRemovePlayer = function(data) {
     players.splice(data.index, data.amount);
     appendPlayers(5);
+};
+
+/**
+ * Sets the paused state of the game. The data should include the values:
+ *
+ *   player = the index of the player who paused the game or -1 if not paused
+ *   time = the time in which the game was paused/unpaused
+ * 
+ * @param {Object} data - the pause data
+ */
+Connection.prototype.onSetPaused = function(data) {
+    if (data.player == -1) gameScreen.paused = false;
+    else gameScreen.paused = players[data.player];
 };
 
 /**

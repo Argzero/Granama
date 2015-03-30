@@ -202,10 +202,12 @@ GameScreen.prototype.pause = function(player) {
     if (this.paused) {
         if (this.paused == player) {
             this.paused = undefined;
+            connection.setPaused(-1);
         }
     }
     else {
         this.paused = player;
+        connection.setPaused(player.playerIndex);
     }
 };
 

@@ -189,6 +189,9 @@ Robot.prototype.get = function(name) {
  */
 Robot.prototype.buff = function(name, multiplier, duration) {
     this.buffs[name] = {multiplier: multiplier, duration: duration};
+    
+    // TODO - implement buffs
+    //if (connection.isHost) connection.buff(this.id, name, multiplier, duration);
 };
 
 /**
@@ -206,7 +209,7 @@ Robot.prototype.isStunned = function() {
  * @param duration duration of the stun
  */
 Robot.prototype.stun = function(duration) {
-    this.buffs.stun = {duration: duration};
+    this.buff('stun', 1, duration);
 };
 
 /**
@@ -216,6 +219,9 @@ Robot.prototype.stun = function(duration) {
  */
 Robot.prototype.knockback = function(knockback) {
     this.knockbackDir = knockback.multiply(this.knockbackFactor, this.knockbackFactor);
+    
+    // TODO - implement knockback
+    //if (connection.isHost) connection.knockback(this.id, knockback);
 };
 
 /**

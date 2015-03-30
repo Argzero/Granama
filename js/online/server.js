@@ -411,6 +411,19 @@ io.on('connection', function(socket) {
     });
     
     /**
+     * Relays the paused state of the game. The data should include the values:
+     *
+     *   player = the index of the player who paused the game or -1 if not paused
+     *   time = the time in which the game was paused/unpaused
+     * 
+     * @param {Object} data - the pause data
+     */
+    socket.on('setPaused', function(data) {
+        console.log('Action: Set Paused');
+        socket.broadcast.to(socket.room).emit('setPaused', data);
+    });
+    
+    /**
      * Relays messages to spawn an enemy. The data should
      * contain these values:
      *
