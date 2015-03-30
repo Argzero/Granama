@@ -61,7 +61,7 @@ function skillIonicThunder(player) {
                         /* End       */ Math.PI * (i + 1),
                         /* Radius    */ 30,
                         /* Thickness */ 20,
-                        /* Damage    */ this.get('power'),
+                        /* Damage    */ 2 * this.get('power'),
                         /* Range     */ 100 + elapsed * 2,
                         /* Knockback */ 0,
                         /* Target    */ Robot.ENEMY

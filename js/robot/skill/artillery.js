@@ -61,7 +61,7 @@ function skillArtillery(player) {
                     this, this,
                     0,
                     0,
-                    25 * this.get('power') * (used / 25) * (1 + this.bonus),
+                    30 * this.get('power') * (used / 25) * (1 + this.bonus),
                     0,
                     true,
                     Robot.ENEMY
