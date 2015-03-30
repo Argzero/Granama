@@ -19,8 +19,8 @@ function skillPerfectShield(player) {
 
         // Cast the skill
         if (this.isSkillCast()) {
-            this.skillDuration = 600;
-            this.skillCd = 300;
+            this.skillDuration = 420;
+            this.skillCd = 600;
             this.shieldCos = this.sin;
             this.shieldSin = -this.cos;
         }
@@ -47,6 +47,7 @@ function skillPerfectShield(player) {
                 var collides = arc.collides(bullet);
                 if (type && collides) {
                     bullet.block();
+                    this.heal(bullet.damage * 0.5);
                 }
             }
         }
