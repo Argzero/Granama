@@ -244,4 +244,6 @@ function Goliath(x, y) {
         onUpdate : projEvents.fireUpdate,
         target   : Robot.PLAYER
     });
+    
+    this.pierceDamage = 0.5;
 }

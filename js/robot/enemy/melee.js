@@ -114,6 +114,7 @@ function Brute(x, y) {
         /* duration    */ 180
     );
     this.movement = this.ram;
+    this.pierceDamage = 0.4;
 }
 
 // Brutes can't be stunned or knocked back

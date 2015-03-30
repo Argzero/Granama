@@ -171,6 +171,8 @@ function Hunter(x, y) {
         /* End Offset */ 0,
         /* Constraint */ 30
     );
+    
+    this.pierceDamage = 0.3;
 }
 
 /**

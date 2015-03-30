@@ -119,4 +119,5 @@ function Harrier(x, y) {
 
     // Knockback reduction
     this.knockbackFactor = 0.4;
+    this.pierceDamage = 0.5;
 }
