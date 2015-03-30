@@ -149,8 +149,7 @@ var movement = {
         }
         
         // Start burrowing
-        else if (!this.burrowing)
-        {
+        else if (!this.burrowing) {
             for (i = 0; i < 30; i++) {
                 
                 vel = new Vector(rand(4) + 1);
@@ -163,23 +162,16 @@ var movement = {
             
             this.burrowing = true;
             this.hidden = true;
+            
+            this.tOffset = new Vector(this.width + 100, 0);
+            this.tOffset.rotateAngle(rand(360) * Math.PI / 180);
         }
         
-        // Burrow towards player
-        else 
-        {
-            this.movementHelper = movement.moveTowards;
-            this.movementHelper(movement.getTargetPlayer(this));
-            
-            // Particles while burrowing
-            vel = new Vector(rand(4) + 1);
-            vel.rotateAngle(rand(360) * Math.PI / 180);
-            size = rand(this.width * 0.4) + this.width * 0.2;
-            gameScreen.particles.push(new Dust(this.pos, vel, lifespan, size));
-            
-            // Unburrow
-            target = movement.getTargetPlayer(this);
-            if (target && target.pos.distanceSq(this.pos) < sq(this.range + 25)) {
+        // Pop out of the ground after a delay
+        else if (this.unburrowing) {
+            this.unburrowing--;
+            if (this.unburrowing == 0) {
+                this.unburrowing = false;
                 this.burrowing = false;
                 this.hidden = false;
                 this.attacking = this.attackTime;
@@ -200,6 +192,28 @@ var movement = {
                         /* Target    */ Robot.PLAYER
                     ));
                 }
+            }
+        }
+        
+        // Burrow towards the player
+        else {
+            this.movementHelper = movement.moveTowards;
+            target = movement.getTargetPlayer(this);
+            var tempRange = this.range;
+            this.range = 0;
+            var modified = { pos: target.pos.clone().addv(this.tOffset) };
+            this.movementHelper(modified);
+            this.range = tempRange;
+            
+            // Particles while burrowing
+            vel = new Vector(rand(4) + 1);
+            vel.rotateAngle(rand(360) * Math.PI / 180);
+            size = rand(this.width * 0.4) + this.width * 0.2;
+            gameScreen.particles.push(new Dust(this.pos, vel, lifespan, size));
+            
+            // Unburrow
+            if (target && modified.pos.distanceSq(this.pos) < sq(25)) {
+                this.unburrowing = 60;
             } 
         }
     },

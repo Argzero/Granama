@@ -103,7 +103,7 @@ function LightAnt(x, y) {
     
     // Weapon
     this.addWeapon(weapon.rail, {
-        damage   : Enemy.sum() * 0.25,
+        damage   : Enemy.sum() * 0.4,
         rate     : 65,
         range    : 250,
         discharge: 0,
@@ -168,7 +168,7 @@ function HeavyAnt(x, y) {
     
     // Weapon
     this.addWeapon(weapon.rail, {
-        damage   : Enemy.sum() * 0.5,
+        damage   : Enemy.sum() * 0.8,
         rate     : 65,
         range    : 250,
         discharge: 0,
@@ -234,7 +234,7 @@ function Goliath(x, y) {
     // Weapon
     this.addWeapon(weapon.gun, {
         sprite   : 'bossFlame',
-        damage   : Enemy.sum() * 0.1,
+        damage   : Enemy.sum() * 0.15,
         rate     : 3,
         range    : 200,
         speed    : 10,
