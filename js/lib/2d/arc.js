@@ -30,7 +30,7 @@ function Arc(pos, radius, thickness, start, end) {
  * @returns {boolean} true if collides, false otherwise
  */
 Arc.prototype.collides = function(target) {
-    if (target.startTrig) return false;
+    if (target.startTrig || !target.pos) return false;
     var dif = this.pos.clone().subtractv(target.pos);
     var dSq = dif.lengthSq();
     var thickness = (this.thickness + target.width) / 2;
