@@ -50,6 +50,7 @@ function PlayerMeteor() {
     this.left = false;
     this.right = false;
     this.grapple = false;
+    this.knockbackFactor = 0.6;
     
     // Attack rate multiplier (lower = faster attack)
     this.rm = 1;
