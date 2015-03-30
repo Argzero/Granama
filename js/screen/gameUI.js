@@ -113,7 +113,7 @@ var ui = {
             for (x in this.buffs)
             {
                 if (!r.buffs[x]) continue;
-                var value = r.get(x);
+                var value = r.buffs[x];
                 var buff = this.buffs[x];
                 var positive = (value > buff.threshold) == buff.positive;
                 var img = images.get('buff' + buff.img + (positive ? 'Up' : 'Down'));
