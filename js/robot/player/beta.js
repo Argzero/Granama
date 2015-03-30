@@ -77,7 +77,7 @@ PlayerBeta.prototype.applyUpdate = function() {
     var m = this.get('power');
 
     // Shurikens
-    this.shurikenData.extra.pierceNum = this.upgrades[SHURIKEN_PIERCE_ID];
+    this.shurikenData.extra.pierceNum = this.upgrades[SHURIKEN_PIERCE_ID] + 1;
     this.shurikenData.damage = m * 20;
     this.gun(this.shurikenData);
 
