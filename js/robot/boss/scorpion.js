@@ -18,8 +18,8 @@ function ScorpionBoss(x, y) {
         /* Move Range  */ 200,
         /* Experience  */ Enemy.BOSS_EXP,
         /* Stat Rank   */ Enemy.BOSS_ENEMY,
-        /* Pattern Min */ 300,
-        /* Pattern Max */ 400,
+        /* Pattern Min */ 600,
+        /* Pattern Max */ 800,
         /* Title       */ 'Scorpion'
     );
     
@@ -87,7 +87,7 @@ function ScorpionBoss(x, y) {
 
     // Weapon pattern 1 - claw melee
     this.setRange(1, 150);
-	this.setMovement(0, movement.burrow);
+	this.setMovement(1, movement.burrow);
     this.addWeapon(weapon.gun, {
         sprite: 'bossFireClawRight',
         range : 175,
