@@ -462,6 +462,7 @@ var movement = {
             }
             if (!occupied) {
                 var turret = new Turret(
+                    this,
                     'padTurretTop',
                     'padTurretBase',
                     this.pad.x,
