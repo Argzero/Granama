@@ -56,6 +56,7 @@ function ScorpionBoss(x, y) {
     // Weapon pattern 0 - rockets and fire
     this.setRange(0, 200);
     var i;
+	this.setMovement(0, movement.basic);
     for (i = 0; i < 2; i++) {
         this.addWeapon(weapon.gun, {
             sprite  : 'bossFlame',
@@ -86,6 +87,7 @@ function ScorpionBoss(x, y) {
 
     // Weapon pattern 1 - claw melee
     this.setRange(1, 150);
+	this.setMovement(0, movement.burrow);
     this.addWeapon(weapon.gun, {
         sprite: 'bossFireClawRight',
         range : 175,
@@ -99,8 +101,16 @@ function ScorpionBoss(x, y) {
         //                                 args: [radius, arc,             knockback, lifesteal]
         templates : [{ name: 'setupSword', args: [175,    Math.PI * 3 / 4, 100,       0] }]
     }, 1);
+	this.shockwaveDamage = damageScale;
+    this.shockwaveRange = 200;
+    this.shockwaveKnockback = 0;
+    this.attackTime = 60;
+    this.restSpeed = this.speed / 2;
+    this.restTime = 15;
 
-    // Weapon pattern 2 - Spawning grabbers
+    // Weapon pattern 2 - Spawning burrowers
+	this.setRange(2, 400);
+	this.setMovement(2, movement.orbit);
     this.addWeapon(weapon.spawn, {
         enemies: FIRE_SPAWNS,
         max    : 3,

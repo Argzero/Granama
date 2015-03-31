@@ -253,8 +253,8 @@ PUNCH_SPAWNS = [
     1, 0, Paladin
 ],
 FIRE_SPAWNS = [
-    10, 0, HeavyGrabber,
-    1, 0, Snatcher
+    1, 0, HeavyAnt,
+	1, 6, Goliath
 ],
 QUEEN_SPAWNS = [
     4, 0, HiveDrone,
