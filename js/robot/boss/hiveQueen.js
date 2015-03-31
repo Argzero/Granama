@@ -26,7 +26,7 @@ function HiveQueenBoss(x, y) {
     this.pierceDamage = 0.2;
     
     // Starting movement of the queen
-    this.movement = movement.basic;
+    this.movement = movement.charge;
     
     var damageScale = Boss.sum();
 
