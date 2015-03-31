@@ -165,7 +165,7 @@ function RoyalHydra(x, y) {
     this.turrets = 0;
 	
     // Specific values
-    this.fireball = new Sprite('Fireball', 0, 550).child(this, true);
+    this.fireball = new Sprite('FireBall', 0, 550).child(this, true);
     this.preChildren.push(
         this.fireball,
         new Sprite('hydraRoyalWingLeft', -460, -180).child(this, true),

@@ -463,8 +463,8 @@ var movement = {
             if (!occupied) {
                 var turret = new Turret(
                     this,
-                    'padTurretTop',
-                    'padTurretBase',
+                    'PadTurretTop',
+                    'PadTurretBase',
                     this.pad.x,
                     this.pad.y,
                     Boss.sum(),
