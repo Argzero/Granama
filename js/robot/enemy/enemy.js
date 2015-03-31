@@ -136,7 +136,7 @@ Enemy.prototype.setMovement = function(pattern, movement) {
  * Switches to a random attack pattern
  */
 Enemy.prototype.switchPattern = function() {
-    if (this.patterns.length <= 1 || this.burrowing) return;
+    if (this.patterns.length <= 1 || this.hidden) return;
     this.pattern = rand(this.patterns.length);
     this.range = this.ranges[this.pattern] || this.range;
     this.movement = this.movements[this.pattern] || this.movement;
@@ -169,7 +169,7 @@ Enemy.prototype.update = function() {
         }
 
         // Apply weapons
-		if (!this.burrowed) {
+		if (!this.hidden) {
 			var i;
 			for (i = 0; i < this.patterns[this.pattern].length; i++) {
 				this.patterns[this.pattern][i].method(this.patterns[this.pattern][i]);
