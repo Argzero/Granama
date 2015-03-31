@@ -23,6 +23,7 @@ function RopeTail(source, segment, end, length, offset, base, endOffset, constra
     this.rel = new Vector(1, 0);
     this.dir = new Vector(0, 1);
     this.offset = this.pos.y;
+	this.hideDist = 0;
     
     constraint *= Math.PI / 180;
     
@@ -73,6 +74,9 @@ RopeTail.prototype.setBaseDir = function(dir) {
  * constraints and bending according to the source's movement
  */
 RopeTail.prototype.update = function() {
+	
+	var prevPos = this.pos.clone();
+	
     this.dir = this.source.rotation.clone().rotate(0, 1).rotate(this.rel.x, this.rel.y);
     this.pos.x = 0;
     this.pos.y = this.offset;
@@ -99,6 +103,23 @@ RopeTail.prototype.update = function() {
         this.draw(camera);
     }
     camera.ctx.translate(this.source.pos.x, this.source.pos.y);
+	
+	// Hide the tail gradually (burrowing into the same spot)
+	if ((this.source.hidden != this.hidden) || this.hideDist) {
+		this.hideDist += prevPos.distance(this.pos);
+		if (this.hideDist >= Math.abs(this.offset)) {
+			this.hidden = !this.hidden;
+			this.hideDist = 0;
+		}
+	}
+	
+	// Particles when burrowing
+	if (this.hidden) {
+		vel = new Vector(rand(8) + 2);
+		vel.rotateAngle(rand(360) * Math.PI / 180);
+		size = rand(this.width * 0.4) + this.width * 0.2;
+		gameScreen.particles.push(new Dust(this.pos, vel, 10, size));
+	}
 };
 
 /**
@@ -210,12 +231,14 @@ function TailSegment(parent, sprite, offset, constraint) {
     this.offset = offset;
     this.lim = new Vector(Math.cos(constraint), Math.sin(constraint));
     this.dir = new Vector(0, 1);
+	this.hideDist = 0;
 }
 
 /**
  * Updates the tail segment, applying rotations and clamping to the constraintsd
  */
 TailSegment.prototype.update = function() {
+	var prevPos = this.pos.clone();
     var dir = this.parent.dir;
     var limMax = dir.clone().rotate(this.lim.x, this.lim.y).rotate(0, -1);
     var limMin = dir.clone().rotate(this.lim.x, -this.lim.y).rotate(0, 1);
@@ -251,6 +274,23 @@ TailSegment.prototype.update = function() {
         this.setRotation(this.dir.x, this.dir.y);
         this.rotation.rotate(0, -1);
     }
+	
+	// Hide the tail gradually (burrowing into the same spot)
+	if ((this.parent.hidden != this.hidden) || this.hideDist) {
+		this.hideDist += prevPos.distance(this.pos);
+		if (this.hideDist >= Math.abs(this.offset)) {
+			this.hidden = !this.hidden;
+			this.hideDist = 0;
+		}
+	}
+	
+	// Particles when burrowing
+	if (this.hidden) {
+		vel = new Vector(rand(8) + 2);
+		vel.rotateAngle(rand(360) * Math.PI / 180);
+		size = rand(this.width * 0.4) + this.width * 0.2;
+		gameScreen.particles.push(new Dust(this.pos, vel, 10, size));
+	}
 };
 
 /**

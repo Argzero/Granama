@@ -152,10 +152,10 @@ var movement = {
         else if (!this.burrowing) {
             for (i = 0; i < 30; i++) {
                 
-                vel = new Vector(rand(4) + 1);
+                vel = new Vector(rand(8) + 2);
                 vel.rotateAngle(rand(360) * Math.PI / 180);
                 
-                size = rand(this.width * 0.4) + this.width * 0.2;
+                size = rand(this.width * 0.6) + this.width * 0.4;
                 
                 gameScreen.particles.push(new Dust(this.pos, vel, lifespan, size));
             }
