@@ -49,7 +49,8 @@ function DragonBoss(x, y) {
             dx    : -142 + 284 * i,
             dy    : 17,
             speed : 15,
-            pierce: true
+            pierce: true,
+            target: Robot.PLAYER
         });
     }
     this.addWeapon(weapon.gun, {
@@ -59,6 +60,7 @@ function DragonBoss(x, y) {
         rate    : 3,
         dx      : 0,
         dy      : 100,
+        target  : Robot.PLAYER,
         onUpdate: projEvents.fireUpdate
     });
 
@@ -83,6 +85,7 @@ function DragonBoss(x, y) {
         rate  : 3,
         dx    : 0,
         dy    : 100,
+        target: Robot.PLAYER,
 		onUpdate: projEvents.fireUpdate
     }, 2);
     for (i = 0; i < 2; i++) {
@@ -96,6 +99,7 @@ function DragonBoss(x, y) {
             dx       : -215 + 430 * i,
             dy       : -10,
             speed    : 8,
+            target   : Robot.PLAYER,
 			templates: [
 				//                     args: [type,    radius, knockback]
 				{ name: 'setupRocket', args: ['Enemy', 100,    150] },
@@ -123,7 +127,7 @@ function DragonBoss(x, y) {
         /* DY     */ 0,
         /* Weapon */ {
             shooter: this,
-            damage : damageScale,
+            damage : 2 * damageScale,
             range  : 1000,
             rate   : 60,
             dx     : 0,

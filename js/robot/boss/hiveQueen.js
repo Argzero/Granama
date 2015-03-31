@@ -60,7 +60,8 @@ function HiveQueenBoss(x, y) {
             spread: 2,
             dx    : -50 + 100 * i,
             dy    : -155,
-            speed : -12
+            speed : -12,
+            target: Robot.PLAYER
         }, 1);
     }
 
@@ -75,7 +76,8 @@ function HiveQueenBoss(x, y) {
             rate       : 1,
             dx         : -85 + 170 * i,
             dy         : 90,
-            angleOffset: -10 + 20 * i
+            angleOffset: -10 + 20 * i,
+            target     : Robot.PLAYER
         }, 2);
     }
 
