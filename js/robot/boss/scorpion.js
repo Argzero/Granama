@@ -26,8 +26,8 @@ function ScorpionBoss(x, y) {
     this.pierceDamage = 0.2;
     
     // Claw data
-    this.leftClaw = new Sprite('bossFireClawLeft', 100, 70).child(this, true);
-    this.rightClaw = new Sprite('bossFireClawRight', -100, 70).child(this, true);
+    this.leftClaw = new Sprite('bossFireClawLeft', 200, 70).child(this, true);
+    this.rightClaw = new Sprite('bossFireClawRight', -200, 70).child(this, true);
     this.postChildren.push(this.leftClaw, this.rightClaw);
     this.sword = false;
     this.changing = false;
@@ -35,14 +35,21 @@ function ScorpionBoss(x, y) {
     this.clawRotCount = 0;
     
     // Tail
-	this.tail = new RopeTail(
-        /* Robot      */ this,
+    this.dir = new Vector(0, 1);
+	this.shoulders = new TailSegment(
+        /* Parent     */ this,
+        /* Sprite     */ 'bossFireShoulders',
+        /* Offset     */ 50,
+        /* Constraint */ 30 * Math.PI / 180
+    );
+    this.tail = new RopeTail(
+        /* Robot      */ this.shoulders,
         /* Segment    */ 'bossFireSegment',
         /* End        */ 'bossFireEnd',
         /* Length     */ 4,
-        /* Offset     */ 60,
-        /* Base       */ 45,
-        /* End Offset */ 25,
+        /* Offset     */ 80,
+        /* Base       */ 40,
+        /* End Offset */ 100,
         /* Constraint */ 30,
         /* Front      */ true
     );
@@ -87,7 +94,7 @@ function ScorpionBoss(x, y) {
 
     // Weapon pattern 1 - claw melee
     this.setRange(1, 150);
-	this.setMovement(1, movement.burrow);
+	this.setMovement(1, movement.basic);
     this.addWeapon(weapon.gun, {
         sprite: 'bossFireClawRight',
         range : 175,
@@ -130,6 +137,11 @@ ScorpionBoss.prototype.onPreDraw = function() {
     
     // Update the tail
     this.tail.update();
+    this.dir = this.rotation.clone().rotate(0, 1)
+    this.shoulders.update();
+    camera.ctx.translate(-this.pos.x, -this.pos.y);
+    this.shoulders.draw(camera);
+    camera.ctx.translate(this.pos.x, this.pos.y);
     
     // Rotate for fire attack
     if (this.pattern === 0 && this.clawRotCount < 30) {
