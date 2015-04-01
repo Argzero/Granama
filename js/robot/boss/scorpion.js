@@ -72,7 +72,7 @@ function ScorpionBoss(x, y) {
             rate       : 3,
             angleOffset: -30 + 60 * i,
             dx         : -180 + 360 * i,
-            dy         : 30,
+            dy         : 40,
             target     : Robot.PLAYER,
             pierce     : true,
             onUpdate   : projEvents.fireUpdate
