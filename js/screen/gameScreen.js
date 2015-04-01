@@ -24,7 +24,7 @@ function GameScreen() {
     this.timer = 0;
     this.gameOver = false;
     this.paused = undefined;
-    this.maxEnemies = 1 * (0.85 + 0.15 * players.length);
+    this.maxEnemies = 30 * (0.85 + 0.15 * players.length);
     this.isPlaying = true;
     this.julian = false;
     
