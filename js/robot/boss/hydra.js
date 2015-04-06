@@ -110,8 +110,11 @@ HydraBoss.prototype.onUpdate = function() {
 	if (this.canTransform && this.health < this.maxHealth * 0.2) {
 		gameScreen.particles.push(new RocketExplosion('Enemy', this.pos, 3000));
 		gameScreen.robots.splice(gameScreen.robots.length - 1, 1);
-		gameScreen.robots.push(new RoyalHydra(-GAME_WIDTH / 2, -GAME_HEIGHT / 2));
-		gameScreen.bossTimer = 0;
+        
+        var royalHydra = new RoyalHydra(-GAME_WIDTH / 2, -GAME_HEIGHT / 2);
+		gameScreen.robots.push(royalHydra);
+        gameScreen.boss = royalHydra;
+		gameScreen.bossTimer = 300;
 	}
 };
 
