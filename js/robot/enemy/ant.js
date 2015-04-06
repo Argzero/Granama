@@ -32,6 +32,7 @@ function Ant(name, x, y, type, health, speed, range, exp, rank, patternMin, patt
     this.attackTime = attackTime;
     this.restSpeed = restSpeed;
     this.restTime = restTime;
+    this.burrowOffset = 100;
 }
 
 /**

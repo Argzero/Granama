@@ -139,7 +139,7 @@ Player.prototype.update = function() {
     }
 
     // Updates when not stunned
-    if (!this.isStunned()) {
+    if (!this.isStunned() && !this.hidden) {
 
         // Get speed
         var speed = this.get('speed') * (1 + this.speedScale * this.upgrades[SPEED_ID]);

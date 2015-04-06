@@ -129,6 +129,7 @@ var movement = {
         
         var i, vel, size, target;
         var lifespan = 20;
+        this.ignoreClamp = true;
         
         // Resting
         if (this.resting > 0) {
@@ -163,7 +164,8 @@ var movement = {
             this.burrowing = true;
             this.hidden = true;
             
-            this.tOffset = new Vector(this.width + 100, 0);
+            this.tOffset = new Vector(this.width, 0);
+            if (this.burrowOffset) this.tOffset.add(this.burrowOffset, 0);
             this.tOffset.rotateAngle(rand(360) * Math.PI / 180);
         }
         
