@@ -209,6 +209,9 @@ GameScreen.prototype.draw = function() {
         }
     }
     
+    // Reset scrolling for UI elements
+    camera.moveTo(0, 0);
+    
     ui.drawEnemyHealth();
     ui.drawPlayerHUDs();
     
@@ -224,9 +227,6 @@ GameScreen.prototype.draw = function() {
         ui.drawBossTitle();
     }
     
-    // Reset scrolling for UI elements
-    camera.moveTo(0, 0);
-
     // Pause overlay
     if (this.paused && this.paused !== true) {
         ui.drawPauseOverlay(this.paused);

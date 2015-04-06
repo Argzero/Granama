@@ -77,7 +77,7 @@ var ui = {
      * Draws the buffs for all robots on the screen
      */
     drawBuffs: function() {
-        this.ctx.translate(SIDEBAR_WIDTH + gameScreen.scrollX, gameScreen.scrollY);
+        //this.ctx.translate(SIDEBAR_WIDTH + gameScreen.scrollX, gameScreen.scrollY);
         for (var i = 0; i < gameScreen.robots.length; i++)
         {
             // If something doesn't have buff support, ignore it
@@ -134,7 +134,7 @@ var ui = {
                 r.buffDir.rotate(this.buffRot.x, this.buffRot.y);
             }
         }
-        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        //this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     },
     
     /**
