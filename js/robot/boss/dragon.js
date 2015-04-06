@@ -10,7 +10,7 @@ extend('DragonBoss', 'Boss');
 function DragonBoss(x, y) {
     this.super(
         /* Sprite      */ 'bossDragonHead', 
-        /* Position    */ x * 4 - 1.5 * GAME_WIDTH, y * 4 -  1.5 * GAME_HEIGHT, 
+        /* Position    */ x * 3 - GAME_WIDTH, y * 3 - GAME_HEIGHT, 
         /* Type        */ Robot.BOSS, 
         /* Health      */ 750 * Enemy.pow(1.4) * players.length,
         /* Speed       */ 4 + 0.3 * gameScreen.bossCount,
