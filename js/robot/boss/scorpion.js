@@ -55,7 +55,9 @@ function ScorpionBoss(x, y) {
     );
     
     // Movement pattern
-    this.movement = movement.basic;
+    this.movement = movement.orbit;
+    this.pattern = 2;
+    this.patternTimer = this.patternMax;
 
     // Damage scaling
     var damageScale = Boss.sum();
