@@ -70,9 +70,9 @@ PlayerKnight.prototype.applyUpdate = function() {
     this.gun(this.grappleData);
 
     // Sword
-    this.swordData.damage = 8 * m;
+    this.swordData.damage = 10 * m;
     this.swordData.templates[0].args[1] = Math.PI / 3 + this.upgrades[SLASH_ID] * Math.PI / 18;
-    this.swordData.templates[0].args[3] = 0.1 + this.upgrades[LIFESTEAL_ID] * 0.04;
+    this.swordData.templates[0].args[3] = 0.1 + this.upgrades[LIFESTEAL_ID] * 0.03;
     this.gun(this.swordData);
     
     // Hide held sword when swinging
