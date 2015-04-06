@@ -114,7 +114,7 @@ RopeTail.prototype.update = function() {
 	}
 	
 	// Particles when burrowing
-	if (this.hidden) {
+	if (this.hidden && !gameScreen.paused) {
 		vel = new Vector(rand(8) + 2);
 		vel.rotateAngle(rand(360) * Math.PI / 180);
 		size = rand(this.width * 0.4) + this.width * 0.2;
@@ -285,7 +285,7 @@ TailSegment.prototype.update = function() {
 	}
 	
 	// Particles when burrowing
-	if (this.hidden) {
+	if (this.hidden && !gameScreen.paused) {
 		vel = new Vector(rand(8) + 2);
 		vel.rotateAngle(rand(360) * Math.PI / 180);
 		size = rand(this.width * 0.4) + this.width * 0.2;
