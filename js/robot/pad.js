@@ -2,7 +2,7 @@ var HEALING_CAPACITY = 100;
 var RECHARGE_RATE = 0.01;
 var HEAL_RATE = 0.25;
 var INFECT_CAPACITY = 10000;
-var INFECT_RATE = 1.75;
+var INFECT_RATE = 1;
 var UNINFECT_RATE = 0.75;
 var INFECT_RADIUS = 4000;
 
@@ -20,6 +20,7 @@ function HealingPad(x, y) {
     
     this.charge = HEALING_CAPACITY;
     this.heal = 0;
+    this.uninfectRate; = UNINFECT_RATE;
 }
 
 /**
@@ -28,7 +29,8 @@ function HealingPad(x, y) {
  */
 HealingPad.prototype.infect = function(heal) {
     this.heal = Math.max(this.heal, heal);
-    this.charge -= INFECT_RATE;
+    this.charge = Math.max(this.charge - INFECT_RATE, -INFECT_CAPACITY);
+    this.uninfectRate = 0;
 }
 
 /**
@@ -64,7 +66,8 @@ HealingPad.prototype.update = function() {
     
     // Infected pads heal enemies in a large radius
     else {
-        this.charge += UNINFECT_RATE;
+        this.charge += this.uninfectRate;
+        this.uninfectRate = UNINFECT_RATE;
         
         var radius = -INFECT_RADIUS * this.charge / INFECT_CAPACITY;
         radius *= radius;
