@@ -202,9 +202,12 @@ var movement = {
             this.movementHelper = movement.moveTowards;
             target = movement.getTargetPlayer(this);
             var tempRange = this.range;
+            var tempSpeed = this.speed;
             this.range = 0;
+            this.speed = 3 * this.speed;
             var modified = { pos: target.pos.clone().addv(this.tOffset) };
             this.movementHelper(modified);
+            this.speed = tempSpeed;
             this.range = tempRange;
             
             // Particles while burrowing
