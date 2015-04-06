@@ -20,7 +20,7 @@ function HealingPad(x, y) {
     
     this.charge = HEALING_CAPACITY;
     this.heal = 0;
-    this.uninfectRate; = UNINFECT_RATE;
+    this.uninfectRate = UNINFECT_RATE;
 }
 
 /**
