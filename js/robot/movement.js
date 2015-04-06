@@ -462,6 +462,10 @@ var movement = {
             
             var occupied = false;
             for (var i = 0; i < this.pads.length; i++) {
+                if (this.pads[i].expired) {
+                    this.pads.splice(i, 1);
+                    i--;
+                }
                 var t = this.pads[i];
                 occupied = occupied || (t.pos.x == this.pad.x && t.pos.y == this.pad.y);
             }
@@ -476,6 +480,7 @@ var movement = {
                     125 * Enemy.pow(1.2) * players.length
                 );
                 turret.gunData.dy = 50;
+                this.pads.push(turret);
                 gameScreen.robots.push(turret);
             }
         
