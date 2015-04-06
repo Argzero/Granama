@@ -109,7 +109,7 @@ function Brute(x, y) {
         /* rank        */ Enemy.MINIBOSS_ENEMY,
         /* pattern min */ 0,
         /* pattern max */ 0,
-        /* damage      */ 10,
+        /* damage      */ 1,
         /* distance    */ 250,
         /* duration    */ 180
     );
@@ -129,11 +129,18 @@ Brute.prototype.ram = function() {
     if (!this.player) {
         this.charge();
         var target = movement.getTargetPlayer(this);
-        if (target.health > 0 && this.collides(target)) {
+        if (target.health > 0 && this.collides(target) && !target.bullied) {
+            target.damage(this.power * 10, this);
             this.player = target;
+            this.player.bullied = true;
         }
     }
-    if (this.player) {
+    if (this.player && this.player.dead) {
+        this.player.bullied = false;
+        this.player = false;
+    }
+    else if (this.player) {
+        
         this.charging = 5;
         this.ignoreClamp = false;
         var r = (this.width + this.player.width) * 0.5;
@@ -149,5 +156,14 @@ Brute.prototype.ram = function() {
         }
         this.pos.x = this.player.pos.x - forward.x;
         this.pos.y = this.player.pos.y - forward.y;
+        if (this.player.grapple) {
+            this.player.grapple.expired = true;
+        }
+    }
+};
+
+Brute.prototype.onDeath = function() {
+    if (this.player) {
+        this.player.bullied = false;
     }
 };

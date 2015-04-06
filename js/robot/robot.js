@@ -79,6 +79,11 @@ function Robot(name, x, y, type, health, speed) {
      * @returns {Number} modified healing amount or undefined if no changes
      */
     this.onHealed = this.onHealed || undefined;
+    
+    /**
+     * Called when the robot is killed
+     */
+    this.onDeath = this.onDeath || undefined;
 }
 
 /**
@@ -124,6 +129,9 @@ Robot.prototype.damage = function(amount, source) {
             source.giveKill(this);
             this.deaths++;
             this.health = 0;
+            if (this.onDeath) {
+                this.onDeath();
+            }
         }
     }
 };

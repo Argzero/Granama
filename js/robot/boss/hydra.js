@@ -503,6 +503,9 @@ RoyalHydra.consume = function() {
     else if (this.held) {
         this.held.moveTo(holdPos.x, holdPos.y);
         this.heldTimer--;
+        if (this.held.grapple) {
+            this.held.grapple.expired = true;
+        }
         if (this.heldTimer <= 0 || this.hydra.pattern == 1) {
             this.heldTimer = 300;
             this.held.ignoreClamp = false;
