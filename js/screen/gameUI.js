@@ -219,16 +219,23 @@ var ui = {
                 var healthPercent = player.health / player.maxHealth;
                 var shieldPercent = player.shield / (player.maxHealth * SHIELD_MAX);
                 ui.ctx.beginPath();
-                ui.ctx.arc(player.pos.x, player.pos.y, 75, ((1 - healthPercent) * Math.PI * 8 / 10) - Math.PI * 9 / 10, -Math.PI / 10, false);
+                
+                ui.ctx.arc(player.pos.x, player.pos.y, 75, ((1 - healthPercent) * Math.PI * 19 / 30) - Math.PI * 9 / 10, -13 * Math.PI / 30, false);
                 if (healthPercent > 0.66) ui.ctx.strokeStyle = '#0f0';
                 else if (healthPercent > 0.33) ui.ctx.strokeStyle = '#ff0';
                 else ui.ctx.strokeStyle = '#f00';
                 ui.ctx.stroke();
                 ui.ctx.beginPath();
-                ui.ctx.arc(player.pos.x, player.pos.y, 75, Math.PI / 10, Math.PI / 10 + shieldPercent * Math.PI * 8 / 10);
+                ui.ctx.arc(player.pos.x, player.pos.y, 75, -Math.PI * 7 / 30, shieldPercent * Math.PI * 7 / 15 - Math.PI * 7 / 30);
                 ui.ctx.strokeStyle = '#00f';
                 ui.ctx.stroke();
-                ui.ctx.drawImage(images.get('healthBarSymbol'), player.pos.x + 50, player.pos.y - 20);
+                ui.ctx.beginPath();
+                var prog = (1 - player.expProgress());
+                ui.ctx.arc(player.pos.x, player.pos.y, 75, Math.PI * 13 / 30 + prog * Math.PI * 7 / 15, Math.PI * 9 / 10);
+                ui.ctx.strokeStyle = '#f0f';
+                ui.ctx.stroke();
+                ui.ctx.drawImage(images.get('healthBarSymbol'), player.pos.x + 20, player.pos.y - 85);
+                ui.ctx.drawImage(images.get('expBarSymbol'), player.pos.x + 20, player.pos.y + 45);
 
                 // Draw skill icon
                 if (player.ability) {

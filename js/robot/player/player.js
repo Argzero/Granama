@@ -59,6 +59,24 @@ function Player(name, x, y, type, health, speed, healthScale, damageScale, shiel
 }
 
 /**
+ * Retrieves the experience required for the player to reach the next level
+ *
+ * @returns {number} the required experience for the next level
+ */
+Player.prototype.expReq = function() {
+    return this.level * 200;
+};
+
+/**
+ * Retrieves the player's progress to the next level as a decimal in the rance [0, 1)
+ *
+ * @returns {number} the player's exp progress
+ */
+Player.prototype.expProgress = function() {
+    return this.exp / this.expReq();
+};
+
+/**
  * Gives the player experience and checks for leveling up
  *
  * @param {Number} amount - amount of experience to give
@@ -69,7 +87,7 @@ Player.prototype.giveExp = function(amount) {
     this.totalExp += amount;
 
     // Level up as many times as needed
-    while (this.exp >= this.level * 200) {
+    while (this.exp >= this.expReq()) {
     
         // Point rewards
         if (this.level <= 25) {
@@ -77,7 +95,7 @@ Player.prototype.giveExp = function(amount) {
         }
 
         // Apply the level
-        this.exp -= this.level * 200;
+        this.exp -= this.expReq();
         this.level++;
         
         // Stat increases
