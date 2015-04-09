@@ -1,4 +1,5 @@
 var connection = new Connection();
+var io = io || undefined;
 
 /**
  * Reprsents the socket.io connection to the server. Use
