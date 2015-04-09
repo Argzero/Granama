@@ -10,7 +10,7 @@ extend('DragonBoss', 'Boss');
 function DragonBoss(x, y) {
     this.super(
         /* Sprite      */ 'bossDragonHead', 
-        /* Position    */ x * 4 - 1.5 * GAME_WIDTH, y * 4 -  1.5 * GAME_HEIGHT, 
+        /* Position    */ x * 3 - GAME_WIDTH, y * 3 - GAME_HEIGHT, 
         /* Type        */ Robot.BOSS, 
         /* Health      */ 750 * Enemy.pow(1.4) * players.length,
         /* Speed       */ 4 + 0.3 * gameScreen.bossCount,
@@ -49,7 +49,8 @@ function DragonBoss(x, y) {
             dx    : -142 + 284 * i,
             dy    : 17,
             speed : 15,
-            pierce: true
+            pierce: true,
+            target: Robot.PLAYER
         });
     }
     this.addWeapon(weapon.gun, {
@@ -59,6 +60,7 @@ function DragonBoss(x, y) {
         rate    : 3,
         dx      : 0,
         dy      : 100,
+        target  : Robot.PLAYER,
         onUpdate: projEvents.fireUpdate
     });
 
@@ -83,6 +85,7 @@ function DragonBoss(x, y) {
         rate  : 3,
         dx    : 0,
         dy    : 100,
+        target: Robot.PLAYER,
 		onUpdate: projEvents.fireUpdate
     }, 2);
     for (i = 0; i < 2; i++) {
@@ -96,6 +99,7 @@ function DragonBoss(x, y) {
             dx       : -215 + 430 * i,
             dy       : -10,
             speed    : 8,
+            target   : Robot.PLAYER,
 			templates: [
 				//                     args: [type,    radius, knockback]
 				{ name: 'setupRocket', args: ['Enemy', 100,    150] },
@@ -122,12 +126,13 @@ function DragonBoss(x, y) {
         /* DX     */ 0,
         /* DY     */ 0,
         /* Weapon */ {
-            damage: damageScale,
-            range : 1000,
-            rate  : 60,
-            dx    : 0,
-            dy    : 48,
-            target: Robot.PLAYER
+            shooter: this,
+            damage : 2 * damageScale,
+            range  : 1000,
+            rate   : 60,
+            dx     : 0,
+            dy     : 48,
+            target : Robot.PLAYER
         }
     );
 }
@@ -138,3 +143,7 @@ function DragonBoss(x, y) {
 DragonBoss.prototype.onPreDraw = function() {
     this.tail.update();
 };
+
+// Dragons ignore knockback/stuns
+DragonBoss.prototype.knockback = function() { };
+DragonBoss.prototype.stun = function() { };

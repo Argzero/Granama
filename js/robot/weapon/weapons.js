@@ -485,7 +485,7 @@ var weapon = {
     turret: function(data) {
         if (weapon.checkTime(data, this.isInRange(data.range))) {
             var pos = weapon.getPosition(this, data).addv(this.pos);
-            gameScreen.robots.push(new Turret('turretGun', 'turretBase', pos.x, pos.y, data.damage, data.health));
+            gameScreen.robots.push(new Turret(this, 'turretGun', 'turretBase', pos.x, pos.y, data.damage, data.health));
         }
     }
 };

@@ -129,8 +129,8 @@ onLoaderDone = function() {
     camera = new Camera('granama');
     
     TILE = new Sprite('tile', 0, 0);
-    ui.canvas = document.getElementById('ui');
-    ui.ctx = ui.canvas.getContext('2d');
+    ui.canvas = camera.canvas;
+    ui.ctx = camera.ctx;
     
     controls.mapButton(SHOOT, controls.MOUSE_LEFT, controls.BUTTON_RT);
     controls.mapButton(SKILL, controls.KEY_SPACE, controls.BUTTON_LT);

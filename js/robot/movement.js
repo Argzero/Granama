@@ -129,6 +129,7 @@ var movement = {
         
         var i, vel, size, target;
         var lifespan = 20;
+        this.ignoreClamp = true;
         
         // Resting
         if (this.resting > 0) {
@@ -149,37 +150,30 @@ var movement = {
         }
         
         // Start burrowing
-        else if (!this.burrowing)
-        {
+        else if (!this.burrowing) {
             for (i = 0; i < 30; i++) {
                 
-                vel = new Vector(rand(4) + 1);
+                vel = new Vector(rand(8) + 2);
                 vel.rotateAngle(rand(360) * Math.PI / 180);
                 
-                size = rand(this.width * 0.4) + this.width * 0.2;
+                size = rand(this.width * 0.6) + this.width * 0.4;
                 
                 gameScreen.particles.push(new Dust(this.pos, vel, lifespan, size));
             }
             
             this.burrowing = true;
             this.hidden = true;
+            
+            this.tOffset = new Vector(this.width, 0);
+            if (this.burrowOffset) this.tOffset.add(this.burrowOffset, 0);
+            this.tOffset.rotateAngle(rand(360) * Math.PI / 180);
         }
         
-        // Burrow towards player
-        else 
-        {
-            this.movementHelper = movement.moveTowards;
-            this.movementHelper(movement.getTargetPlayer(this));
-            
-            // Particles while burrowing
-            vel = new Vector(rand(4) + 1);
-            vel.rotateAngle(rand(360) * Math.PI / 180);
-            size = rand(this.width * 0.4) + this.width * 0.2;
-            gameScreen.particles.push(new Dust(this.pos, vel, lifespan, size));
-            
-            // Unburrow
-            target = movement.getTargetPlayer(this);
-            if (target && target.pos.distanceSq(this.pos) < sq(this.range + 25)) {
+        // Pop out of the ground after a delay
+        else if (this.unburrowing) {
+            this.unburrowing--;
+            if (this.unburrowing == 0) {
+                this.unburrowing = false;
                 this.burrowing = false;
                 this.hidden = false;
                 this.attacking = this.attackTime;
@@ -200,6 +194,31 @@ var movement = {
                         /* Target    */ Robot.PLAYER
                     ));
                 }
+            }
+        }
+        
+        // Burrow towards the player
+        else {
+            this.movementHelper = movement.moveTowards;
+            target = movement.getTargetPlayer(this);
+            var tempRange = this.range;
+            var tempSpeed = this.speed;
+            this.range = 0;
+            this.speed = 3 * this.speed;
+            var modified = { pos: target.pos.clone().addv(this.tOffset) };
+            this.movementHelper(modified);
+            this.speed = tempSpeed;
+            this.range = tempRange;
+            
+            // Particles while burrowing
+            vel = new Vector(rand(4) + 1);
+            vel.rotateAngle(rand(360) * Math.PI / 180);
+            size = rand(this.width * 0.4) + this.width * 0.2;
+            gameScreen.particles.push(new Dust(this.pos, vel, lifespan, size));
+            
+            // Unburrow
+            if (target && modified.pos.distanceSq(this.pos) < sq(25)) {
+                this.unburrowing = 60;
             } 
         }
     },
@@ -297,6 +316,41 @@ var movement = {
 
         // Move forward
         this.move(this.forward().x * this.speed, this.forward().y * this.speed);
+    },
+    
+    /**
+     * Moves to and then infect a healing pad
+     */
+    infectPad: function() {
+        
+        // Get the target pad to infect
+        if (!this.targetPad) {
+            var max = 0;
+            this.targetPad = gameScreen.pads[0];
+            for (var i = 0; i < gameScreen.pads.length; i++) {
+                var pad = gameScreen.pads[i];
+                var dSq = 0;
+                for (var j = 0; j < players.length; j++) {
+                    var d = pad.pos.distanceSq(players[j].pos);
+                    if (d > dSq) {
+                        dSq = d;
+                    }
+                }
+                if (dSq > max) {
+                    this.targetPad = pad;
+                    max = dSq;
+                }
+            }
+        }
+        
+        // Move to the pad
+        this.movementHelper = movement.moveTowards;
+        this.movementHelper(this.targetPad);
+        
+        // Infect it if in range
+        if (this.pos.distanceSq(this.targetPad.pos) < sq(this.range + 50)) {
+            this.targetPad.infect(this.healAmount);
+        }
     },
     
     /**
@@ -408,19 +462,25 @@ var movement = {
             
             var occupied = false;
             for (var i = 0; i < this.pads.length; i++) {
+                if (this.pads[i].expired) {
+                    this.pads.splice(i, 1);
+                    i--;
+                }
                 var t = this.pads[i];
                 occupied = occupied || (t.pos.x == this.pad.x && t.pos.y == this.pad.y);
             }
             if (!occupied) {
                 var turret = new Turret(
-                    'padTurretTop',
-                    'padTurretBase',
+                    this,
+                    'PadTurretTop',
+                    'PadTurretBase',
                     this.pad.x,
                     this.pad.y,
                     Boss.sum(),
                     125 * Enemy.pow(1.2) * players.length
                 );
                 turret.gunData.dy = 50;
+                this.pads.push(turret);
                 gameScreen.robots.push(turret);
             }
         

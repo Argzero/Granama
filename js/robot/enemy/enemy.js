@@ -161,36 +161,40 @@ Enemy.prototype.update = function() {
     
     // Blow up and give exp/points upon dying
     if (this.isDead || this.health <= 0) {
-        this.destroy();
+        gameScreen.particles.push(new Explosion(this.pos.x, this.pos.y, this.width / 150));
+        this.expired = true;
+        gameScreen.score += this.points;
+        this.spawnExp();
     }
     
     // Don't act when stunned
-    if (this.isStunned()) {
-        return;
-    }
+    if (!this.isStunned()) {
 
-    // Pattern switching
-    if (this.patterns.length > 1) {
-        this.patternTimer--;
-        if (this.patternTimer <= 0) {
-            this.switchPattern();
+        // Pattern switching
+        if (this.patterns.length > 1) {
+            this.patternTimer--;
+            if (this.patternTimer <= 0) {
+                this.switchPattern();
+            }
         }
+
+        // Apply weapons
+		if (!this.hidden) {
+			var i;
+			for (i = 0; i < this.patterns[this.pattern].length; i++) {
+				this.patterns[this.pattern][i].method(this.patterns[this.pattern][i]);
+			}
+		}
+
+        // Apply movement
+        if (this.movement) {
+            this.movement();
+        }
+
+        // Updates specific to enemies vs bosses
+        this.subUpdate();
     }
-
-    // Apply weapons
-    var i;
-    for (i = 0; i < this.patterns[this.pattern].length; i++) {
-        //this.patterns[this.pattern][i].method(this.patterns[this.pattern][i]);
-    }
-
-    // Apply movement
-    if (this.movement) {
-        this.movement();
-    }
-
-    // Updates specific to enemies vs bosses
-    this.subUpdate();
-
+        
     // Clamp unless marked otherwise
     if (!this.ignoreClamp) {
         this.clamp();
@@ -246,19 +250,38 @@ Enemy.prototype.onDamaged = function(amount, source) {
 };
 
 /**
- * Destroys the enemy, granting points and dropping exp
+ * Spawns the experience for the enemy
  */
-Enemy.prototype.destroy = function() {
-    gameScreen.particles.push(new Explosion(this.pos.x, this.pos.y, this.width / 150));
-    this.expired = true;
-    this.dead = true;
+Enemy.prototype.spawnExp = function() {
     if (this.points) {
         var num = Math.round(this.exp * Enemy.EXP_M[players.length - 1]);
-        num = Math.floor(num / players.length);
-        gameScreen.spawnExp(this, num);
-        if (connection.isHost) {
-            gameScreen.score += this.points;
-            connection.destroy(this.id, num);
+        for (var e = 0; e < Enemy.EXP_DATA.length; e++) {
+            var data = Enemy.EXP_DATA[e];
+            var allDead = false;
+            while (!allDead && data.value * players.length <= num) {
+                allDead = true;
+                for (var p = 0; p < players.length; p++) {
+                    var player = players[p];
+                    num -= data.value;
+                    if (player.health <= 0) continue;
+                    allDead = false;
+                    var exp = new Projectile(
+                        data.sprite,
+                        0, 0,
+                        this, this,
+                        10,
+                        rand(360) * Math.PI / 180,
+                        0,
+                        999999,
+                        false,
+                        Robot.PLAYER
+                    );
+                    exp.setupHoming(player, rand(10) / 100 + 0.04);
+                    exp.onHit = projEvents.expHit;
+                    exp.exp = data.value;
+                    gameScreen.bullets.push(exp);
+                }
+            }
         }
     }
 };

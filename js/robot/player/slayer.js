@@ -12,7 +12,7 @@ depend('robot/skill/waveburst');
 extend('PlayerSlayer', 'Player');
 function PlayerSlayer() {
     //         Sprite Name   X  Y  Type          HP   Speed  HP+  Damage+  Shield+  Speed+
-    this.super('pPowerBody', 0, 0, Robot.PLAYER, 100, 3,     6,   2.5,     1,       1);
+    this.super('pPowerBody', 0, 0, Robot.PLAYER, 100, 3,     8,   2.5,     1,       1);
     
     // Sprites drawn on top of the robot's body
     this.postChildren.push(

@@ -68,8 +68,8 @@ PlayerBeta.prototype.applyUpdate = function() {
     
     // Charging up the sword
     if (!this.sword) {
-        this.charge += Math.min(2, this.chargeMultiplier * (0.001 + 0.0005 * this.upgrades[CHARGE_SPEED_ID]));
-        this.swordCharge.alpha = this.charge - 1;
+        this.charge += Math.min(5, this.chargeMultiplier * (0.002 + 0.001 * this.upgrades[CHARGE_SPEED_ID]));
+        this.swordCharge.alpha = (this.charge - 1) / 4;
     }
     else this.charge = 1;
     
@@ -77,14 +77,14 @@ PlayerBeta.prototype.applyUpdate = function() {
     var m = this.get('power');
 
     // Shurikens
-    this.shurikenData.extra.pierceNum = this.upgrades[SHURIKEN_PIERCE_ID];
+    this.shurikenData.extra.pierceNum = this.upgrades[SHURIKEN_PIERCE_ID] + 1;
     this.shurikenData.damage = m * 20;
     this.gun(this.shurikenData);
 
     // Sword - only swing when close to enemies
     var closest = gameScreen.getClosest(this.pos, Robot.ENEMY);
     if (closest && closest.pos.distanceSq(this.pos) < 90000) {
-        this.swordData.damage = 3 * m * this.charge;
+        this.swordData.damage = 4 * m * this.charge;
         this.gun(this.swordData);
         
         // Make the charge follow the sword

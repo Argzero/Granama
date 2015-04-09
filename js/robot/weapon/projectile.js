@@ -352,6 +352,7 @@ var projEvents = {
     fistUpdate: function() {
         this.expired = this.expired || (this.returning && this.delay <= 0 && this.shooter.dead);
         this.shooter[this.side + 'Fist'] = this.expired;
+        this.actualDamage = this.actualDamage || this.damage;
         
         // Updates after the fist reached it's range limit
         if (this.returning) {
@@ -505,9 +506,8 @@ var projEvents = {
     mixedCollide: function(target) {
         if (target.type & this.shooter.type) {
             if (target.health >= target.maxHealth) return false;
-            this.damage = -Math.abs(this.damage);
+            this.damage = -this.heal;
         }
-        else this.damage = Math.abs(this.damage);
         return true;
     },
     

@@ -10,7 +10,7 @@ function GameScreen() {
     this.bossStatus = ACTIVE_NONE;
     this.bossScore = Math.floor(10 * multiplier) * 5;
     this.bossIncrement = this.bossScore;
-    this.bossScale = Math.floor(5 * multiplier) * 5;
+    this.bossScale = 25;
     this.bossCount = 0;
     this.bossTimer = 0;
 	this.bossId = 0;
@@ -264,6 +264,9 @@ GameScreen.prototype.draw = function() {
         }
     }
     
+    // Reset scrolling for UI elements
+    camera.moveTo(0, 0);
+    
     ui.drawEnemyHealth();
     ui.drawPlayerHUDs();
     
@@ -279,9 +282,6 @@ GameScreen.prototype.draw = function() {
         ui.drawBossTitle();
     }
     
-    // Reset scrolling for UI elements
-    camera.moveTo(0, 0);
-
     // Pause overlay
     if (this.paused && this.paused !== true) {
         ui.drawPauseOverlay(this.paused);

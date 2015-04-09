@@ -73,11 +73,6 @@ PlayerCommando.prototype.applyUpdate = function() {
     // LMG
     this.lmgData.damage = m * (5 + 2 * this.upgrades[LMG_DAMAGE_ID]);
     this.gun(this.lmgData);
-    
-    // Update drones
-    for (var i = 0; i < this.drones.length; i++) {
-        this.drones[i].update();
-    }
 };
 
 /**
@@ -145,6 +140,8 @@ CommandoDrone.prototype.setAngle = function(angle) {
 
 // Updates the drone
 CommandoDrone.prototype.update = function() {
+
+    if (this.player.dead) return;
 
     // Move outward after spawning to the desired radius
     if (this.radius < this.targetRadius) {

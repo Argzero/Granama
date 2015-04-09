@@ -24,7 +24,7 @@ function skillPiercingArrow(player) {
                 this.get('power') * 20,
                 1249,
                 true,
-                Robot.MOBILE
+                Robot.ENEMY
             );
             arrow.buffs.push({ name: 'speed', multiplier: 0.5, duration: 300 });
             arrow.onUpdate = piercingArrowUpdate;
@@ -45,7 +45,7 @@ var PA_KNOCKBACK = 200;
 function piercingArrowUpdate() {
     for (var i = 0; i < gameScreen.robots.length; i++) {
         var target = gameScreen.robots[i];
-        if ((target.type & this.group) && target.pos.distanceSq(this.pos) < 90000) {
+        if ((target.type & Robot.MOBILE) && target.pos.distanceSq(this.pos) < 90000) {
             var rel = this.vel.clone().multiply(5, 5).addv(target.pos).subtractv(this.pos);
             if (rel.dot(this.n1) > 0 && rel.dot(this.n2) > 0) {
                 if (rel.dot(this.n3) > 0) {

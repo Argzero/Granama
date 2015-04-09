@@ -200,7 +200,8 @@ function FortressCannon(boss) {
     // Weapon data
     this.cannonData = {
         sprite   : 'bossCannon',
-        damage   : 0.5 * Boss.sum(),
+        shooter  : boss,
+        damage   : 0.4 * Boss.sum(),
         rate     : 150,
         range    : 750,
         discharge: 0.1,
@@ -296,7 +297,7 @@ FortressHook.prototype.update = function() {
         }
 
         // Collision
-        this.cannonTarget = undefined;
+        this.boss.cannonTarget = undefined;
         for (var i = 0; i < players.length; i++) {
             var player = players[i];
             if (player.dead) continue;
@@ -304,7 +305,11 @@ FortressHook.prototype.update = function() {
             if (player.pos.segmentDistanceSq(this.boss.pos, this.pos) < r * r) {
                 player.buff('speed', 0.2, 60);
                 player.damage(this.boss.hookDmg, this.boss);
-                this.boss.cannonTarget = player;
+                
+                if (!this.boss.cannonTarget || this.boss.pos.distanceSq(player.pos) < this.boss.pos.distanceSq(this.boss.cannonTarget).pos)
+                {
+                    this.boss.cannonTarget = player;
+                }
             }
         }
     }

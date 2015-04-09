@@ -112,19 +112,25 @@ Sprite.prototype.child = function(parent, rotate) {
  * @param {Camera} camera - the camera to draw to
  */
 Sprite.prototype.draw = function(camera) {
-    if (this.hidden) return;
-    
-    camera.ctx.globalAlpha *= this.alpha;
+	
+	// Launch the pre-draw event
     camera.ctx.translate(this.pos.x, this.pos.y);
     if (this.onPreDraw) this.onPreDraw(camera);
-    this.applyRotation(camera, false);
-    this.drawList(camera, this.preChildren);
-    camera.ctx.drawImage(this.sprite, (-this.sprite.width / 2 - this.pivot.x) * this.size.x, (-this.sprite.height / 2 - this.pivot.y) * this.size.y, this.sprite.width * this.size.x, this.sprite.height * this.size.y);
-    this.drawList(camera, this.postChildren);
-    this.applyRotation(camera, true);
+    
+	// Draw if not hidden
+	if (!this.hidden) {	
+		this.applyRotation(camera, false);
+		camera.ctx.globalAlpha *= this.alpha;
+		this.drawList(camera, this.preChildren);
+		camera.ctx.drawImage(this.sprite, (-this.sprite.width / 2 - this.pivot.x) * this.size.x, (-this.sprite.height / 2 - this.pivot.y) * this.size.y, this.sprite.width * this.size.x, this.sprite.height * this.size.y);
+		this.drawList(camera, this.postChildren);
+		camera.ctx.globalAlpha /= this.alpha;
+		this.applyRotation(camera, true);
+	}
+	
+	// Launch the post-draw event
     if (this.onDraw) this.onDraw(camera);
     camera.ctx.translate(-this.pos.x, -this.pos.y);
-    camera.ctx.globalAlpha /= this.alpha;
 };
 
 /**

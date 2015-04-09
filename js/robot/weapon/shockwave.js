@@ -48,12 +48,12 @@ Shockwave.prototype.update = function() {
  * Draws the shockwave to the screen
  */
 Shockwave.prototype.draw = function() {
-    camera.ctx.lineWidth = this.thickness;
+    camera.ctx.lineWidth = this.arc.thickness;
     camera.ctx.strokeStyle = this.color1;
     camera.ctx.beginPath();
     camera.ctx.arc(this.arc.pos.x, this.arc.pos.y, this.arc.radius, this.arc.start, this.arc.end);
     camera.ctx.stroke();
-    camera.ctx.lineWidth = this.thickness / 2;
+    camera.ctx.lineWidth = this.arc.thickness / 2;
     camera.ctx.strokeStyle = this.color2;
     camera.ctx.beginPath();
     camera.ctx.arc(this.arc.pos.x, this.arc.pos.y, this.arc.radius + this.arc.thickness / 4, this.arc.start, this.arc.end);

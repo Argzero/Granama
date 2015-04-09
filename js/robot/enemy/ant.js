@@ -32,6 +32,7 @@ function Ant(name, x, y, type, health, speed, range, exp, rank, patternMin, patt
     this.attackTime = attackTime;
     this.restSpeed = restSpeed;
     this.restTime = restTime;
+    this.burrowOffset = 100;
 }
 
 /**
@@ -69,7 +70,7 @@ function LightAnt(x, y) {
         /* y position  */ y,
         /* enemy type  */ Robot.MOB,
         /* health      */ 50 * Enemy.pow(0.9),
-        /* speed       */ 5 + 0.1 * gameScreen.bossCount,
+        /* speed       */ 2 + 0.1 * gameScreen.bossCount,
         /* range       */ 150,
         /* exp         */ Enemy.LIGHT_EXP,
         /* rank        */ Enemy.LIGHT_ENEMY,
@@ -103,7 +104,7 @@ function LightAnt(x, y) {
     
     // Weapon
     this.addWeapon(weapon.rail, {
-        damage   : Enemy.sum() * 0.25,
+        damage   : Enemy.sum() * 0.4,
         rate     : 65,
         range    : 250,
         discharge: 0,
@@ -134,7 +135,7 @@ function HeavyAnt(x, y) {
         /* y position  */ y,
         /* enemy type  */ Robot.MOB,
         /* health      */ 80 * Enemy.pow(0.9),
-        /* speed       */ 5.5 + 0.1 * gameScreen.bossCount,
+        /* speed       */ 2 + 0.1 * gameScreen.bossCount,
         /* range       */ 200,
         /* exp         */ Enemy.HEAVY_EXP,
         /* rank        */ Enemy.HEAVY_ENEMY,
@@ -168,7 +169,7 @@ function HeavyAnt(x, y) {
     
     // Weapon
     this.addWeapon(weapon.rail, {
-        damage   : Enemy.sum() * 0.5,
+        damage   : Enemy.sum() * 0.8,
         rate     : 65,
         range    : 250,
         discharge: 0,
@@ -199,7 +200,7 @@ function Goliath(x, y) {
         /* y position  */ y,
         /* enemy type  */ Robot.MOB,
         /* health      */ 375 * Enemy.pow(1.1),
-        /* speed       */ 5.5 + 0.1 * gameScreen.bossCount,
+        /* speed       */ 2 + 0.1 * gameScreen.bossCount,
         /* range       */ 150,
         /* exp         */ Enemy.MINIBOSS_EXP,
         /* rank        */ Enemy.MINIBOSS_ENEMY,
@@ -234,7 +235,7 @@ function Goliath(x, y) {
     // Weapon
     this.addWeapon(weapon.gun, {
         sprite   : 'bossFlame',
-        damage   : Enemy.sum() * 0.1,
+        damage   : Enemy.sum() * 0.15,
         rate     : 3,
         range    : 200,
         speed    : 10,
@@ -244,4 +245,6 @@ function Goliath(x, y) {
         onUpdate : projEvents.fireUpdate,
         target   : Robot.PLAYER
     });
+    
+    this.pierceDamage = 0.5;
 }

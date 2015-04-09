@@ -191,6 +191,7 @@ ACTIVE_BOSS = 1,
 SPAWN_RATE = 180,
 SPAWN_SCALE = 0.3,
 SPAWN_DATA = [
+    //10000000, 0, ScorpionBoss,
     90, 0, LightGunner,
     45, 1, HeavyGunner,
     60, 0, LightArtillery,
@@ -211,19 +212,23 @@ SPAWN_DATA = [
     15, 2, HeavyRocketer,
     15, 1, LightAnt,
     10, 2, HeavyAnt, 
-    1, 3, Turreter,
-    1, 3, Railer,
     1, 3, Paladin,
+    1, 3, Railer,
+    1, 4, Brute,
+    1, 3, Turreter,
     1, 3, Hunter,
     1, 3, Solar,
+    1, 5, MegaMedic,
     1, 3, Snatcher,
 	1, 3, Harrier,
     1, 3, Goliath,
-    2, 6, Turreter,
-    2, 6, Railer,
     2, 6, Paladin,
+    2, 6, Railer,
+    2, 7, Brute,
+    2, 6, Turreter,
     2, 6, Hunter,
     2, 6, Solar,
+    2, 8, MegaMedic,
     2, 6, Snatcher,
 	2, 6, Harrier,
     2, 6, Goliath
@@ -249,8 +254,8 @@ PUNCH_SPAWNS = [
     1, 0, Paladin
 ],
 FIRE_SPAWNS = [
-    10, 0, HeavyGrabber,
-    1, 0, Snatcher
+    1, 0, HeavyAnt,
+	1, 6, Goliath
 ],
 QUEEN_SPAWNS = [
     4, 0, HiveDrone,

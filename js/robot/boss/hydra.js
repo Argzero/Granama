@@ -97,6 +97,10 @@ function HydraBoss(x, y) {
     );
 }
 
+// Hydras ignore knockback/stuns
+HydraBoss.prototype.knockback = function() { };
+HydraBoss.prototype.stun = function() { };
+
 /**
  * Checks for transforming into the royal hydra
  */
@@ -106,8 +110,11 @@ HydraBoss.prototype.onUpdate = function() {
 	if (this.canTransform && this.health < this.maxHealth * 0.2) {
 		gameScreen.particles.push(new RocketExplosion('Enemy', this.pos, 3000));
 		gameScreen.robots.splice(gameScreen.robots.length - 1, 1);
-		gameScreen.robots.push(new RoyalHydra(-GAME_WIDTH / 2, -GAME_HEIGHT / 2));
-		gameScreen.bossTimer = 0;
+        
+        var royalHydra = new RoyalHydra(-GAME_WIDTH / 2, -GAME_HEIGHT / 2);
+		gameScreen.robots.push(royalHydra);
+        gameScreen.boss = royalHydra;
+		gameScreen.bossTimer = 300;
 	}
 };
 
@@ -161,7 +168,7 @@ function RoyalHydra(x, y) {
     this.turrets = 0;
 	
     // Specific values
-    this.fireball = new Sprite('Fireball', 0, 550).child(this, true);
+    this.fireball = new Sprite('FireBall', 0, 550).child(this, true);
     this.preChildren.push(
         this.fireball,
         new Sprite('hydraRoyalWingLeft', -460, -180).child(this, true),
@@ -302,6 +309,10 @@ function RoyalHydra(x, y) {
     this.consumeDamage = damageScale * 5;
     this.head.consume = RoyalHydra.consume;
 }
+
+// Royal hydra ignores knockback/stuns
+RoyalHydra.prototype.knockback = function() { };
+RoyalHydra.prototype.stun = function() { };
 
 /**
  * Manages special mechanics of the Royal
@@ -495,6 +506,9 @@ RoyalHydra.consume = function() {
     else if (this.held) {
         this.held.moveTo(holdPos.x, holdPos.y);
         this.heldTimer--;
+        if (this.held.grapple) {
+            this.held.grapple.expired = true;
+        }
         if (this.heldTimer <= 0 || this.hydra.pattern == 1) {
             this.heldTimer = 300;
             this.held.ignoreClamp = false;

@@ -59,6 +59,24 @@ function Player(name, x, y, type, health, speed, healthScale, damageScale, shiel
 }
 
 /**
+ * Retrieves the experience required for the player to reach the next level
+ *
+ * @returns {number} the required experience for the next level
+ */
+Player.prototype.expReq = function() {
+    return this.level * 200;
+};
+
+/**
+ * Retrieves the player's progress to the next level as a decimal in the rance [0, 1)
+ *
+ * @returns {number} the player's exp progress
+ */
+Player.prototype.expProgress = function() {
+    return this.exp / this.expReq();
+};
+
+/**
  * Gives the player experience and checks for leveling up
  *
  * @param {Number} amount - amount of experience to give
@@ -73,7 +91,7 @@ Player.prototype.giveExp = function(amount) {
     this.totalExp += amount;
 
     // Level up as many times as needed
-    while (this.exp >= this.level * 200) {
+    while (this.exp >= this.expReq()) {
     
         // Point rewards
         if (this.level <= 25) {
@@ -81,7 +99,7 @@ Player.prototype.giveExp = function(amount) {
         }
 
         // Apply the level
-        this.exp -= this.level * 200;
+        this.exp -= this.expReq();
         this.level++;
         
         // Stat increases
@@ -145,7 +163,7 @@ Player.prototype.update = function() {
     }
 
     // Updates when not stunned
-    if (!this.isStunned()) {
+    if (!this.isStunned() && !this.hidden) {
 
         // Get speed
         var speed = this.get('speed') * (1 + this.speedScale * this.upgrades[SPEED_ID]);
@@ -180,9 +198,16 @@ Player.prototype.update = function() {
     
     // Clamping to the game region
     if (!this.ignoreClamp) {
-        this.pos.x = Math.max(Math.min(this.pos.x, GAME_WIDTH - this.width / 2), this.width / 2);
-        this.pos.y = Math.max(Math.min(this.pos.y, GAME_HEIGHT - this.height / 2), this.height / 2);
+        this.clamp();
     }
+};
+
+/**
+ * Clamps the player to the arena
+ */
+Player.prototype.clamp = function() {
+    this.pos.x = Math.max(Math.min(this.pos.x, GAME_WIDTH - this.width / 2), this.width / 2);
+    this.pos.y = Math.max(Math.min(this.pos.y, GAME_HEIGHT - this.height / 2), this.height / 2);
 };
 
 /**
