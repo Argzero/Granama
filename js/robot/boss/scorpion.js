@@ -202,7 +202,7 @@ ScorpionBoss.prototype.onPreDraw = function() {
     
     // Update the tail
     this.tail.update();
-    this.dir = this.rotation.clone().rotate(0, 1)
+    this.dir = this.rotation.clone().rotate(0, 1);
     this.shoulders.update();
     camera.ctx.translate(-this.pos.x, -this.pos.y);
     this.shoulders.draw(camera);

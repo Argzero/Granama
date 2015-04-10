@@ -31,7 +31,7 @@ HealingPad.prototype.infect = function(heal) {
     this.heal = Math.max(this.heal, heal);
     this.charge = Math.max(this.charge - INFECT_RATE, -INFECT_CAPACITY);
     this.uninfectRate = 0;
-}
+};
 
 /**
  * Updates the healing pad, healing players standing on the pad
@@ -39,12 +39,12 @@ HealingPad.prototype.infect = function(heal) {
 HealingPad.prototype.update = function() {
 
     // Uninfected pads use charge to heal players
+    var i;
     if (this.charge > 0) {
         this.charge = Math.min(this.charge + RECHARGE_RATE, HEALING_CAPACITY);
 
         // Get the list of players on the pad
         var list = [];
-        var i;
         for (i = 0; i < players.length; i++) {
             var robot = players[i];
             if (robot.health > 0 && robot.health < robot.maxHealth && this.charge > 0 && robot.pos.distanceSq(this.pos) < sq(this.sprite.width / 2)) {

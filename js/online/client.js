@@ -294,7 +294,7 @@ Connection.prototype.login = function(username, password, callback) {
  * @param {function} callback - the method to use when a response is received
  */ 
 Connection.prototype.signup = function(username, password, callback) {
-    if (!connected || this.callback) return;
+    if (!this.connected || this.callback) return;
     
     this.callback = callback;
     this.socket.emit('signup', { username: username, password: password });

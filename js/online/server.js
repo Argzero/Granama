@@ -319,6 +319,8 @@ io.on('connection', function(socket) {
      */
     socket.on('login', function(data) {
         
+        console.log('Action: login');
+        
         dbModel.authenticate(data.username, data.password, function(err, account) {
             if (err) {
                 socket.emit('general', { success: false, error: 'The login service is not available' });
@@ -477,6 +479,8 @@ io.on('connection', function(socket) {
      */
     socket.on('signup', function(data) {
         
+        console.log('Action: signup');
+        
         dbModel.findByUsername(data.username, function(err, account) {
             if (err) {
                 socket.emit('general', { success: false, error: 'The login service is not available' });
@@ -489,8 +493,7 @@ io.on('connection', function(socket) {
                     var credentials = {
                         username: data.username,
                         salt: salt,
-                        password: hash,
-                        profile: ''
+                        password: hash
                     };
                     
                     var newAccount = new dbModel(credentials);
@@ -603,7 +606,12 @@ io.on('connection', function(socket) {
 
 // ------------------------- Database setup -------------------------------- //
 
+var iterations = 10000;
+var saltLength = 64;
+var keyLength = 64;
+
 var dbURL = process.env.MONGOLAB_URI || "mongodb://localhost/Granama";
+
 var db = mongoose.connect(dbURL, function(err) {
     if (err) {
         console.log("Could not connect to database");
@@ -632,7 +640,8 @@ var schema = new mongoose.Schema({
     
     profile: {
         type: String,
-        required: true
+        required: true,
+        default: '{}'
     },
     
     createDate: {
@@ -665,7 +674,7 @@ schema.statics.findByUsername = function(name, callback) {
         username: name
     };
 
-    return AccountModel.findOne(search, callback);
+    return dbModel.findOne(search, callback);
 };
 
 schema.statics.generateHash = function(password, callback) {
@@ -698,3 +707,5 @@ schema.statics.authenticate = function(username, password, callback) {
         
 	});
 };
+
+dbModel = mongoose.model('Granama', schema);
