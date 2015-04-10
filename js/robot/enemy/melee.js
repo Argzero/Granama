@@ -102,7 +102,7 @@ function Brute(x, y) {
         /* x position  */ x,
         /* y position  */ y,
         /* enemy type  */ Robot.MOB,
-        /* health      */ 250 * Enemy.pow(1.1),
+        /* health      */ 100 * Enemy.pow(1.1),
         /* speed       */ 2.5 + 0.3 * gameScreen.bossCount,
         /* range       */ 400,
         /* exp         */ Enemy.MINIBOSS_EXP,
