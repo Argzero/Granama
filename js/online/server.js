@@ -1,6 +1,9 @@
 // Dependencies
 var http = require('http');
 var fs = require('fs');
+var mongoose = require('mongoose');
+var crypto = require('crypto');
+
 var owner = false;
 
 // name, room, socket, selection
@@ -316,7 +319,17 @@ io.on('connection', function(socket) {
      */
     socket.on('login', function(data) {
         
-        // TODO do login validation
+        dbModel.authenticate(data.username, data.password, function(err, account) {
+            if (err) {
+                socket.emit('general', { success: false, error: 'The login service is not available' });
+            }
+            else if (!account) {
+                socket.emit('general', { success: false, error: 'Invalid Username or Password' });
+            }
+            else {
+                socket.emit('general', { success: true });
+            }
+        });
         
         socket.emit('general', { success: true, error: '' });
     });
@@ -454,6 +467,48 @@ io.on('connection', function(socket) {
     });
     
     /**
+     * Handles sign-up attempts from the client. The data should
+     * include these values:
+     *
+     *   username = the client's requested username
+     *   password = the client's requested password
+     *
+     * @param {Object} data - the login credentials provided by the client
+     */
+    socket.on('signup', function(data) {
+        
+        dbModel.findByUsername(data.username, function(err, account) {
+            if (err) {
+                socket.emit('general', { success: false, error: 'The login service is not available' });
+            }
+            else if (account) {
+                socket.emit('general', { success: false, error: 'The username is already taken' });
+            }
+            else {
+                dbModel.generateHash(data.password, function(salt, hash) {
+                    var credentials = {
+                        username: data.username,
+                        salt: salt,
+                        password: hash,
+                        profile: ''
+                    }
+                    
+                    var newAccount = new dbModel(credentials);
+                    newAccount.save(function (err) {
+                        if (err) {
+                            console.log(err);
+                            socket.emit('general', { success: false, error: 'The login service is not available' });
+                        }
+                        else {
+                            socket.emit('general', { success: true });
+                        }
+                    });
+                });
+            }
+        });
+    });
+    
+    /**
      * Relays messages to spawn an enemy. The data should
      * contain these values:
      *
@@ -545,3 +600,101 @@ io.on('connection', function(socket) {
         socket.broadcast.to(socket.room).emit('upgradeSelection', data);
     });
 });
+
+// ------------------------- Database setup -------------------------------- //
+
+var dbURL = process.env.MONGOLAB_URI || "mongodb://localhost/Granama";
+var db = mongoose.connect(dbURL, function(err) {
+    if (err) {
+        console.log("Could not connect to database");
+        throw err;
+    }
+});
+
+var schema = new mongoose.Schema({
+    username: {
+        type: String,
+        required: true,
+        trim: true,
+        unique: true,
+        match: /^[A-Za-z0-9_\-\.]{1,16}$/
+    },
+    
+    salt {
+        type: Buffer,
+        required: true
+    },
+    
+    password: {
+        type: String,
+        required: true
+    },
+    
+    profile: {
+        type: String,
+        required: true
+    },
+    
+    createDate: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+schema.methods.toAPI = function() {
+    return {
+        username: this.username,
+        profile: JSON.parse(this.profile);
+    };
+};
+
+schema.methods.validatePassword = function(password, callback) {
+	var pass = this.password;
+	
+	crypto.pbkdf2(password, this.salt, iterations, keyLength, function(err, hash) {
+		if(hash.toString('hex') !== pass) {
+			return callback(false);
+		}
+		return callback(true);
+	});
+};
+
+schema.statics.findByUsername = function(name, callback) {
+
+    var search = {
+        username: name
+    };
+
+    return AccountModel.findOne(search, callback);
+};
+
+schema.statics.generateHash = function(password, callback) {
+	var salt = crypto.randomBytes(saltLength);
+	
+	crypto.pbkdf2(password, salt, iterations, keyLength, function(err, hash){
+		return callback(salt, hash.toString('hex'));
+	});
+};
+
+schema.statics.authenticate = function(username, password, callback) {
+	return AccountModel.findByUsername(username, function(err, doc) {
+
+		if(err)
+		{
+			return callback(err);
+		}
+
+        if(!doc) {
+            return callback();
+        }
+
+        doc.validatePassword(password, function(result) {
+            if(result === true) {
+                return callback(null, doc);
+            }
+            
+            return callback();
+        });
+        
+	});
+};
