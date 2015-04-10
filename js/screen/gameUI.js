@@ -220,7 +220,7 @@ var ui = {
                 var shieldPercent = player.shield / (player.maxHealth * SHIELD_MAX);
                 ui.ctx.beginPath();
                 
-                ui.ctx.arc(player.pos.x, player.pos.y, 75, ((1 - healthPercent) * Math.PI * 19 / 30) - Math.PI * 9 / 10, -13 * Math.PI / 30, false);
+                ui.ctx.arc(player.pos.x, player.pos.y, 75, -healthPercent * Math.PI * 7 / 15 - Math.PI * 13 / 30, -13 * Math.PI / 30, false);
                 if (healthPercent > 0.66) ui.ctx.strokeStyle = '#0f0';
                 else if (healthPercent > 0.33) ui.ctx.strokeStyle = '#ff0';
                 else ui.ctx.strokeStyle = '#f00';
