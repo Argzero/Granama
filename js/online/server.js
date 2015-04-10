@@ -491,7 +491,7 @@ io.on('connection', function(socket) {
                         salt: salt,
                         password: hash,
                         profile: ''
-                    }
+                    };
                     
                     var newAccount = new dbModel(credentials);
                     newAccount.save(function (err) {
@@ -620,7 +620,7 @@ var schema = new mongoose.Schema({
         match: /^[A-Za-z0-9_\-\.]{1,16}$/
     },
     
-    salt {
+    salt: {
         type: Buffer,
         required: true
     },
@@ -644,7 +644,7 @@ var schema = new mongoose.Schema({
 schema.methods.toAPI = function() {
     return {
         username: this.username,
-        profile: JSON.parse(this.profile);
+        profile: JSON.parse(this.profile)
     };
 };
 

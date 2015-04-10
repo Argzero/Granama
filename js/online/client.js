@@ -285,6 +285,22 @@ Connection.prototype.login = function(username, password, callback) {
 };
 
 /**
+ * Attempts to sign the user up with a new account, responding to the 
+ * callback with the result. If another login attempt is already being
+ * processed or there is no connection, this will do nothing instead.
+ *
+ * @param {string}   username - the player's username
+ * @param {string}   password - the player's password
+ * @param {function} callback - the method to use when a response is received
+ */ 
+Connection.prototype.signup = function(username, password, callback) {
+    if (!connected || this.callback) return;
+    
+    this.callback = callback;
+    this.socket.emit('signup', { username: username, password: password });
+};
+
+/**
  * Removes all local players from the current game for some
  * reason, whether it's quitting from the lobby, closing the
  * window, or losing connection.
