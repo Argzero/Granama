@@ -1,4 +1,3 @@
-var connection = new Connection();
 var io = io || undefined;
 
 /**
@@ -280,7 +279,7 @@ Connection.prototype.knockback = function(robot, knockback) {
  * @param {function} callback - the method to use when a response is received
  */ 
 Connection.prototype.login = function(username, password, callback) {
-    if (!connected || this.callback) return;
+    if (!this.connected || this.callback) return;
     
     this.callback = callback;
     this.socket.emit('login', { username: username, password: password });
@@ -936,3 +935,5 @@ Connection.prototype.onUpgradeSelection = function(data) {
     ui.hovered[data.player] = data.id;
     if (data.ready) ui.checkAllReady();
 };
+
+var connection = new Connection();

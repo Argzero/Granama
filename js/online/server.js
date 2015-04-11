@@ -323,17 +323,15 @@ io.on('connection', function(socket) {
         
         dbModel.authenticate(data.username, data.password, function(err, account) {
             if (err) {
-                socket.emit('general', { success: false, error: 'The login service is not available' });
+                socket.emit('general', { success: false, error: 'Login Unavailable' });
             }
             else if (!account) {
-                socket.emit('general', { success: false, error: 'Invalid Username or Password' });
+                socket.emit('general', { success: false, error: 'Bad Credentials' });
             }
             else {
                 socket.emit('general', { success: true });
             }
         });
-        
-        socket.emit('general', { success: true, error: '' });
     });
     
     /**
@@ -483,10 +481,12 @@ io.on('connection', function(socket) {
         
         dbModel.findByUsername(data.username, function(err, account) {
             if (err) {
+                console.log('Error while looking for username');
                 socket.emit('general', { success: false, error: 'The login service is not available' });
             }
             else if (account) {
-                socket.emit('general', { success: false, error: 'The username is already taken' });
+                console.log('Username taken');
+                socket.emit('general', { success: false, error: 'Username taken' });
             }
             else {
                 dbModel.generateHash(data.password, function(salt, hash) {
@@ -500,7 +500,7 @@ io.on('connection', function(socket) {
                     newAccount.save(function (err) {
                         if (err) {
                             console.log(err);
-                            socket.emit('general', { success: false, error: 'The login service is not available' });
+                            socket.emit('general', { success: false, error: 'Login Unavailable' });
                         }
                         else {
                             socket.emit('general', { success: true });
@@ -686,7 +686,7 @@ schema.statics.generateHash = function(password, callback) {
 };
 
 schema.statics.authenticate = function(username, password, callback) {
-	return AccountModel.findByUsername(username, function(err, doc) {
+	return dbModel.findByUsername(username, function(err, doc) {
 
 		if(err)
 		{
