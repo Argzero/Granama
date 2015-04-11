@@ -1,4 +1,4 @@
-var ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+var ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
 
 JoinScreen.PARTS = {
     DISCONNECTED: 0,
@@ -14,7 +14,9 @@ function PlayerSettings(id) {
     this.ability = 0;
     this.frame = 0;
     this.profile = 0;
-    this.newProfile = '';
+    this.user = '';
+    this.pass = '';
+    this.onUser = true;
     this.error = '';
     this.part = JoinScreen.PARTS.DISCONNECTED;
 }
@@ -28,15 +30,8 @@ function JoinScreen() {
     this.frame = 0;
     this.settings = [];
     this.open = [];
-    this.profilesArray = [];
-
+    this.authID = -1;
     var i = 0;
-    for (var profile in PROFILE_DATA) {
-        this.profilesArray[i++] = profile;
-    }
-    this.profilesArray.sort();
-    this.profilesArray.push('Guest');
-    this.profilesArray.push('New Profile');
 
     // Initialize player settings
     for (i = 0; i < players.length; i++) {
@@ -183,29 +178,24 @@ JoinScreen.prototype.draw = function() {
 
             // Player is choosing a profile
             case JoinScreen.PARTS.PROFILE:
-
+            
                 // Profile options
-                var min = Math.max(0, settings.profile - 5);
-                var max = Math.min(this.profilesArray.length - 1, settings.profile + 5);
-                ui.ctx.fillStyle = 'white';
+                var options = ['Login', 'Sign Up', 'Guest'];
+                ui.ctx.font = '32px Flipbash';
                 ui.ctx.textAlign = 'center';
-                var ty = y + 50 + (min - settings.profile) * 30;
-                for (j = min; j <= max; j++) {
-                    var dif = j - settings.profile;
-                    var abs = Math.abs(dif);
-                    if (abs === 0) ui.ctx.font = '32px Flipbash';
-                    else ui.ctx.font = (26 - abs * 2) + 'px Flipbash';
-                    if (abs === 0) ui.ctx.globalAlpha = 1;
-                    else ui.ctx.globalAlpha = 0.6 - abs * 0.1;
-                    ui.ctx.fillText(this.profilesArray[j], x, ty);
-                    if (abs === 0) ty += 40;
-                    else ty += 36 - abs * 2;
+                ui.ctx.textBaseline = 'middle';
+                for (j = 0; j < options.length; j++) {
+                    if (j == settings.profile) {
+                        ui.ctx.fillStyle = '#666';
+                        ui.ctx.fillRect(x - 115, y + 160 * (j - 1), 230, 160);
+                    }
+                    ui.ctx.fillStyle = '#fff';
+                    ui.ctx.fillText(options[j], x, y - 80 + 160 * j);
                 }
-                ui.ctx.globalAlpha = 1;
 
                 // Next option
                 if ((input.button(DOWN_1) == 1) || (input.button(DOWN_2) == 1)) {
-                    settings.profile = Math.min(settings.profile + 1, this.profilesArray.length - 1);
+                    settings.profile = Math.min(settings.profile + 1, 2);
                 }
 
                 // Previous option
@@ -216,23 +206,16 @@ JoinScreen.prototype.draw = function() {
                 // Next screen
                 if (input.button(SELECT_1) == 1 || input.button(SELECT_2) == 1) {
 
-                    if (settings.profile < this.profilesArray.length - 1) {
+                    if (settings.profile == 2) {
                         settings.part++;
-                        var num = settings.profile;
-                        settings.profile = this.profilesArray[num];
-                        if (num < this.profilesArray.length - 2) {
-                            this.profilesArray.splice(num, 1);
-                            for (j = 0; j < this.settings.length; j++) {
-                                if (j != i && this.settings[j].part == JoinScreen.PARTS.PROFILE && this.settings[j].profile >= num && this.settings[j].profile > 0) {
-                                    this.settings[j].profile--;
-                                }
-                            }
-                        }
+                        settings.profile = 'Guest';
                     }
 
                     else {
                         settings.part += 0.5;
-                        settings.newProfile = '';
+                        settings.user = '';
+                        settings.pass = '';
+                        settings.onUser = true;
                     }
                 }
 
@@ -247,17 +230,19 @@ JoinScreen.prototype.draw = function() {
             case JoinScreen.PARTS.NEW_PROFILE:
 
                 // Current name display
-                ui.ctx.fillStyle = '#ccc';
                 ui.ctx.textAlign = 'center';
                 ui.ctx.font = '32px Flipbash';
-                var text = '[' + settings.newProfile + ']';
+                ui.ctx.fillStyle = '#fff';
+                ui.ctx.fillText(settings.onUser ? 'Username' : 'Password', x, y - 125);
+                ui.ctx.font = '24px Flipbash';
+                ui.ctx.fillStyle = '#ccc';
+                var text = '[' + (settings.onUser ? settings.user : new Array(1 + settings.pass.length).join('*')) + ']';
                 ui.ctx.fillText(text, x, y - 75);
 
                 // Draw the letter grid
                 var perRow = 5;
                 var interval = 230 / 5;
                 var rows = Math.ceil((4 + ALPHABET.length) / perRow);
-                ui.ctx.font = '24px Flipbash';
                 for (j = 0; j < ALPHABET.length; j++) {
                     var row = Math.floor(j / perRow);
                     var column = j % perRow;
@@ -274,6 +259,7 @@ JoinScreen.prototype.draw = function() {
                 ui.ctx.fillText('Done', x + 115 - interval, y + 30 * (rows - 1));
 
                 // Errors
+                ui.ctx.font = '18px Flipbash';
                 ui.ctx.fillStyle = 'red';
                 ui.ctx.fillText(settings.error, x, y + 30 * (rows + 1));
 
@@ -305,30 +291,65 @@ JoinScreen.prototype.draw = function() {
 
                 // Choosing a letter/finishing
                 if (input.button(SELECT_1) == 1 || input.button(SELECT_2) == 1) {
-                    if (settings.frame < ALPHABET.length && settings.newProfile.length < 6) {
-                        settings.newProfile += ALPHABET[settings.frame];
-                    }
-                    else if (settings.frame == ALPHABET.length && settings.newProfile.length > 0) {
-                        settings.newProfile = settings.newProfile.substring(0, settings.newProfile.length - 1);
-                    }
-                    else if (settings.frame > ALPHABET.length) {
-                        if (settings.newProfile.length === 0) {
-                            settings.error = 'Invalid Name';
+                    
+                    // Adding a letter
+                    if (settings.frame < ALPHABET.length) {
+                        if (settings.onUser && settings.user.length < 10) {
+                            settings.user += ALPHABET[settings.frame];
                         }
-                        else if (PROFILE_DATA[settings.newProfile]) {
-                            settings.error = 'Name in use';
+                        else if (!settings.onUser && settings.pass.length < 10) {
+                            settings.pass += ALPHABET[settings.frame];
                         }
-                        else {
-                            settings.part += 0.5;
-                            settings.profile = settings.newProfile;
-                            PROFILE_DATA[settings.newProfile] = {};
+                    }
+                    
+                    // Backspace
+                    else if (settings.frame == ALPHABET.length) {
+                        if (settings.onUser && settings.user.length > 0) {
+                            settings.user = settings.user.substring(0, settings.user.length - 1);
+                        }
+                        else if (!settings.onUser && settings.pass.length > 0) {
+                            settings.pass = settings.pass.substring(0, settings.pass.length - 1);
+                        }
+                    }
+                    
+                    // Cannot be an empty username
+                    else if (settings.user.length === 0) {
+                        settings.error = 'Invalid Username';
+                    }
+                    
+                    // Cannot be an empty password
+                    else if (settings.pass.length === 0 && !settings.onUser) {
+                        settings.error = 'Invalid Password';
+                    }
+
+                    // Complete the input
+                    else {
+                        
+                        // Move to the password
+                        if (settings.onUser) {
+                            settings.onUser = false;
+                            settings.frame = 0;
+                        }
+                        
+                        // Query the server with the input
+                        else if (this.authID == -1) {
+                            this.authID = i;
+                            if (settings.profile === 0) {
+                                connection.login(settings.user, settings.pass, handleLoginResponse);
+                            }
+                            else {
+                                connection.signup(settings.user, settings.pass, handleLoginResponse);
+                            }
                         }
                     }
                 }
 
                 // Returning to profile select
                 if (input.button(CANCEL_1) == 1 || input.button(CANCEL_2)) {
-                    settings.part -= 0.5;
+                    if (settings.onUser) {
+                        settings.part -= 0.5;
+                    }
+                    else settings.onUser = true;
                 }
 
                 break;
@@ -379,3 +400,19 @@ JoinScreen.prototype.draw = function() {
         gameScreen = new RoomScreen(false);
     }
 };
+
+function handleLoginResponse(result) {
+    var settings = gameScreen.settings[gameScreen.authID];
+    gameScreen.authID = -1;
+    if (result.success) {
+        settings.name = settings.user;
+        settings.part += 0.5;
+    }
+    else {
+        settings.error = result.error;
+        settings.frame = 0;
+        settings.onUser = true;
+        settings.user = '';
+        settings.pass = '';
+    }
+}
