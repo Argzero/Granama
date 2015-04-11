@@ -2,9 +2,9 @@ var connection = new Connection();
 var io = io || undefined;
 
 /**
- * Reprsents the socket.io connection to the server. Use
- * connect() to set up the connection before trying to 
- * send/receive messages.
+ * Reprsents the socket.io connection to the server.
+ * Use the "connection" object to access the methods
+ * of this as it is set up on load.
  *
  * @constructor
  */
@@ -18,6 +18,8 @@ function Connection() {
     this.room = undefined;
     this.isHost = true;
     this.timeOffset = 0;
+    
+    this.connect();
 }
 
 /**

@@ -55,8 +55,7 @@ function RoomScreen() {
                 gameScreen = new TitleScreen();
             })
         );
-        
-    connection.connect();
+    
     connection.fetchRooms();
 }
 
