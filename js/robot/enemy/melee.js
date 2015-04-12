@@ -69,7 +69,7 @@ function LightMelee(x, y) {
 extend('HeavyMelee', 'Melee');
 function HeavyMelee(x, y) {
     this.super(
-        /* sprite name */ 'enemyLightMelee',
+        /* sprite name */ 'enemyHeavyMelee',
         /* x position  */ x,
         /* y position  */ y,
         /* enemy type  */ Robot.MOB,
