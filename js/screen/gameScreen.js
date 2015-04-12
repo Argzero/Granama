@@ -27,6 +27,7 @@ function GameScreen() {
     this.maxEnemies = 30 * (0.85 + 0.15 * players.length);
     this.isPlaying = true;
     this.julian = false;
+    this.cursor = false;
     
     // Set the game dimensions
     GAME_WIDTH = 3000;
@@ -56,6 +57,13 @@ function GameScreen() {
     this.robots = players.slice(0);
     
     this.shuffleBosses();
+    
+    // Check to see if any player is using the cursor as part of their input
+    for (var i = 0; i < players.length; i++) {
+        if (players[i].input instanceof KeyboardInput) {
+            this.cursor = true;
+        }
+    }
 }
 
 /**
@@ -242,7 +250,10 @@ GameScreen.prototype.draw = function() {
         ui.drawUpgradeUI();
     }
     
-    ui.drawCursor();
+    // Draw the cursor if applicable
+    if (this.cursor) {
+        ui.drawCursor();
+    }
 };
 
 /**
