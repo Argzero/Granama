@@ -544,4 +544,36 @@ io.on('connection', function(socket) {
         console.log('Action: Upgrade Selection');
         socket.broadcast.to(socket.room).emit('upgradeSelection', data);
     });
+	
+	/**
+     * Relays bullet info back to players. The data should include the values:
+     *
+	 *	weapon = weapon the bullet came from
+	 *
+     *  sprite = the name of the sprite of the projectile
+	 *	pos = the position of the projectile
+	 *	vel = the velocity of the projectile
+	 *	size = the size of the projectile
+	 *	dmg = how much damage the projectile will do to a target
+	 *	id = the id of the bullet
+	 *	pierce = does the bullet pierce?
+	 *  spread = spread of the bullets
+	 *	range = the max distance the bullet will travel
+	 *	temps = what templates the projectile follows
+	 * 	buffs = any buffs the projectile has
+	 * 	update = update method for the projectile
+	 *	collide = check method for the projectile
+	 *	hit = method for the projectile when it hits a target
+	 *	expire = method for what the bullet does when it expires
+	 *	block = method for what happens to a projectile when it is blocked
+	 * 	group = what group the projectile is in
+	 *	shooter = the id of who shot the projectile
+     *  time = when the change took place
+     *
+     * @param {Object} data - the data for the projectile
+     */ 
+    socket.on('fireProjectile', function(data) {
+        console.log('Action: Projectile Fired!');
+        socket.broadcast.to(socket.room).emit('fireProjectile', data);
+    });
 });

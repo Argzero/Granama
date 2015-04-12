@@ -102,7 +102,7 @@ var weapon = {
             data.sprite || 'bullet',
             pos.x, pos.y,
             data.shooter || source, source,
-            data.speed || weapon.DEFAULT_SPEED,
+            data.speed || data.vel.normalize() || weapon.DEFAULT_SPEED,
             weapon.getAngle(data),
             data.damage,
             data.distance || (data.range * 1.5),
@@ -121,11 +121,11 @@ var weapon = {
         }
         
         // Copy over event handlers
-        projectile.onUpdate = data.onUpdate;
-        projectile.onCollideCheck = data.onCollideCheck;
-        projectile.onHit = data.onHit;
-        projectile.onBlocked = data.onBlocked;
-        projectile.onExpire = data.onExpire;
+	projectile.onUpdate = projEvents[data.onUpdate];
+        projectile.onCollideCheck = projEvents[data.onCollideCheck];
+        projectile.onHit = projEvents[data.onHit];
+        projectile.onBlocked = projEvents[data.onBlocked];
+        projectile.onExpire = projEvents[data.onExpire];
         
         // Apply template calls
         if (data.templates) {
@@ -243,7 +243,9 @@ var weapon = {
     
         // Must meet the conditions
         if (weapon.checkTime(data, this.isInRange(data.range))) {
-            weapon.fireBullet(this, data);
+            //weapon.fireBullet(this, data);
+			var bullet = new Bullet(data.sprite, data.dx, data.dy, data.shooter, this, data.speed, data.angle, data.damage, range, pierce, target);
+			Connection.fireProjectile(bullet, this);
         }
     },
 
@@ -361,7 +363,9 @@ var weapon = {
                     return;
                 }
                 for (var i = 0; i < (data.bullets || 1); i++) {
-                    weapon.fireBullet(this, data);
+                    //weapon.fireBullet(this, data);
+					var bullet = new Bullet(data.sprite, data.dx, data.dy, data.shooter, this, data.speed, data.angle, data.damage, range, pierce, target);
+					Connection.fireProjectile(bullet, this);
                 }
                 data.intervalTimer = data.interval - 1;
 

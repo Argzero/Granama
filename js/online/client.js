@@ -54,6 +54,7 @@ Connection.prototype.connect = function() {
     this.socket.on('updateSelection', this.onUpdateSelection.bind(this));
     this.socket.on('upgrade', this.onUpgrade.bind(this));
     this.socket.on('upgradeSelection', this.onUpgradeSelection.bind(this));
+	this.socket.on('fireProjectile', this.onFireProjectile.bind(this));
     
     this.socket.emit('getTime', { localTime: performance.now() });
     
@@ -427,6 +428,37 @@ Connection.prototype.upgradeSelection = function(player, id, ready) {
         player: player,
         id: id,
         ready: ready,
+        time: this.getServerTime()
+    });
+};
+
+/**
+ * Sends bullet data to the server
+ *
+ * @param {projectile} proj - the projectile to be sent over
+ */
+Connection.prototype.fireProjectile = function(proj, weapon) {
+    if (!this.connected || !this.inRoom) return;
+    this.socket.emit('fireProjectile', {
+		weapon: weapon,
+        sprite: proj.spriteName,
+		pos: proj.position,
+		vel: proj.vel,
+		size: proj.size,
+		dmg: proj.damage,
+		id: proj.id,
+		pierce: proj.pierce,
+		spread: proj.spread,
+		range: proj.range,
+		templates: proj.templates,
+		buffs: proj.buffs.name,
+		update: proj.onUpdate.name,
+		collide: proj.onCollideCheck.name,
+		hit: proj.onHit.name,
+		expire: proj.onExpire.name,
+		block: proj.block.name,
+		group: proj.group,
+		shooter: proj.shooter,
         time: this.getServerTime()
     });
 };
@@ -917,4 +949,38 @@ Connection.prototype.onUpgradeSelection = function(data) {
     ui.ready[data.player] = data.ready;
     ui.hovered[data.player] = data.id;
     if (data.ready) ui.checkAllReady();
+};
+
+/**
+ * Receives bullet data, then makes it. The data
+ * should include the values:
+ *
+ *	weapon = weapon that the bullet is coming from
+ *
+ *  sprite = the name of the sprite of the projectile
+ *	pos = the position of the projectile
+ *	vel = the velocity of the projectile
+ *	size = the size of the projectile
+ *	dmg = how much damage the projectile will do to a target
+ *	id = the id of the bullet
+ *	pierce = does the bullet pierce?
+ *	range = the max distance the bullet will travel
+ *	temps = what templates the projectile follows
+ * 	buffs = any buffs the projectile has
+ * 	update = update method for the projectile
+ *	collide = check method for the projectile
+ *	hit = method for the projectile when it hits a target
+ *	expire = method for what the bullet does when it expires
+ *	block = method for what happens to a projectile when it is blocked
+ * 	group = what group the projectile is in
+ *	shooter = the id of who shot the projectile
+ *  time = when the change took place
+ *
+ * @param {Object} data - the projectile data
+ */
+Connection.prototype.onFireProjectile = function(data) {
+	var result = new Vector(data.pos.x, data.pos.y);
+	data.pos = result;
+	
+    data.weapon.fireBullet(data.shooter, data);	
 };
