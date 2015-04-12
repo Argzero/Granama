@@ -220,3 +220,12 @@ ScorpionBoss.prototype.onPreDraw = function() {
         this.clawRotCount--;
     }
 };
+
+/**
+ * Release a grabbed player when the scorpion dies underground
+ */
+Brute.prototype.onDeath = function() {
+    if (this.grabbed) {
+        this.grabbed.hidden = false;
+    }
+};
