@@ -30,6 +30,7 @@ function GameScreen() {
     this.julian = false;
     this.eUpdateInterval = 60;
     this.eUpdateTimer = this.eUpdateInterval;
+    this.cursor = false;
     
     // Set the game dimensions
     GAME_WIDTH = 3000;
@@ -60,6 +61,13 @@ function GameScreen() {
     this.robots = players.slice(0);
     
     this.shuffleBosses();
+    
+    // Check to see if any player is using the cursor as part of their input
+    for (var i = 0; i < players.length; i++) {
+        if (players[i].input instanceof KeyboardInput) {
+            this.cursor = true;
+        }
+    }
 }
 
 /**
@@ -194,6 +202,13 @@ GameScreen.prototype.update = function() {
 };
 
 /**
+ * Pauses the game when the game loses focus
+ */
+GameScreen.prototype.onBlur = function() {
+    this.pause(players[0]);
+};
+
+/**
  * Pauses the game for the given player
  *
  * @param {Player} player to pause the game for
@@ -297,7 +312,10 @@ GameScreen.prototype.draw = function() {
         ui.drawUpgradeUI();
     }
     
-    ui.drawCursor();
+    // Draw the cursor if applicable
+    if (this.cursor) {
+        ui.drawCursor();
+    }
 };
 
 /**
