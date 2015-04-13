@@ -7,6 +7,8 @@ var controls = {
     GAMEPADS_SUPPORTED: navigator.getGamepads !== undefined,
 
     KEY_UNUSED   : -1,
+    
+    ignoreNext: false,
 
     // Letter keys
     KEY_A: 65, KEY_B: 66, KEY_C: 67, KEY_D: 68, KEY_E: 69,
@@ -393,6 +395,10 @@ window.addEventListener('mouseout', function(event) {
 
 // Key down event
 window.addEventListener('keydown', function(event) {
+    if (controls.ignoreNext) {
+        controls.ignoreNext = false;
+        return;
+    }
     controls.keysDown[event.keyCode] = true;
 });
 

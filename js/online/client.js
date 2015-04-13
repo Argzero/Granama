@@ -45,6 +45,7 @@ Connection.prototype.connect = function() {
     this.socket.on('joinRoom', this.onJoinRoom.bind(this));
     this.socket.on('kick', this.onKick.bind(this));
     this.socket.on('knockback', this.onKnockback.bind(this));
+    this.socket.on('message', this.onMessage.bind(this));
     this.socket.on('removePlayer', this.onRemovePlayer.bind(this));
     this.socket.on('setPaused', this.onSetPaused.bind(this));
     this.socket.on('spawn', this.onSpawn.bind(this));
@@ -286,6 +287,17 @@ Connection.prototype.login = function(username, password, callback) {
 };
 
 /**
+ * Sends a chat message over the server.
+ *
+ * @param {string} message - the message to send
+ */
+Connection.prototype.message = function(message) {
+    if (!this.connected || !this.inRoom) return;
+    
+    this.socket.emit('message', { user: players[this.gameIndex].settings.profile, message: message });
+};
+
+/**
  * Attempts to sign the user up with a new account, responding to the 
  * callback with the result. If another login attempt is already being
  * processed or there is no connection, this will do nothing instead.
@@ -331,6 +343,7 @@ Connection.prototype.quitGame = function(reason) {
     this.inRoom = false;
     players = players.slice(this.gameIndex, this.gameIndex + this.localPlayers);
     gameScreen = new RoomScreen();
+    document.getElementById('chat').style.display = 'none';
 };
 
 /**
@@ -667,6 +680,10 @@ Connection.prototype.onJoinRoom = function(data) {
     }
     appendPlayers(5);
     gameScreen = new LobbyScreen();
+    
+    var chat = document.getElementById('chat');
+    if (chat.style.width != '0px') chat.style.display = 'block';
+    chatText.innerHTML = 'Joined the room "' + data.room + '"';
 };
 
 /**
@@ -699,6 +716,20 @@ Connection.prototype.onKnockback = function(data) {
     if (r) {
         r.knockback(new Vector(data.knockback.x, data.knockback.y));
     }
+};
+
+/**
+ * Handles receiving a message from the server and applying it.
+ * The data should include the values:
+ *
+ *   user = the user sending the message
+ *   message = the contents of the message
+ *
+ * @param {Object} data - the data for the message
+ */
+Connection.prototype.onMessage = function(data) {
+    chatText.innerHTML += '<br/><span class="user">' + data.user + '</span>: ' + data.message;
+    chatText.scrollTop = chatText.scrollHeight;
 };
 
 /**
@@ -808,6 +839,7 @@ Connection.prototype.onStartGame = function(data) {
     }
     
     gameScreen = new GameScreen(false);
+    document.getElementById('chat').style.display = 'none';
 };
 
 /**

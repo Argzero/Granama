@@ -335,6 +335,20 @@ io.on('connection', function(socket) {
     });
     
     /**
+     * Relays chat messages to all clients. The data should
+     * contain the values:
+     *
+     *   user = the user who sent the message
+     *   message = the message that was sent
+     *
+     * @param {Object} data - the message data
+     */
+    socket.on('message', function(data) {
+        console.log('Action: message');
+        io.sockets.in(socket.room).emit('message', data);
+    });
+    
+    /**
      * Removes a client from a room. The data should include
      * these values:
      *

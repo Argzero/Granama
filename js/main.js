@@ -119,12 +119,27 @@ var DELTA_TIME;
 var camera;
 var gameScreen;
 var constants = false;
+var chatInput;
+var chatText;
 onLoaderDone = function() {
     if (!constants) {
         depend('data/constants');
         constants = true;
         return;
     }
+    
+    chatText = document.getElementById('text');
+    chatInput = document.getElementById('input');
+    chatInput.onkeydown = function(e) {
+        controls.ignoreNext = true;
+        if (e.keyCode != 13) return;
+        if (chatInput.value !== '') {
+            var hi = -1;
+            chatInput.value = chatInput.value.replace(/>/g, '&gt;').replace(/</g, '&lt;');
+            connection.message(chatInput.value);
+        }
+        chatInput.value = '';
+    };
 
     camera = new Camera('granama');
     
@@ -218,6 +233,15 @@ function resizeCanvas() {
     if (gameScreen && gameScreen.draw) {
         gameScreen.draw();
     }
+    
+    var scaleY = Math.min((WINDOW_HEIGHT - 20) / players.length - 20, 175);
+    var w = ui.canvas.width - scaleY * 3.75 - WINDOW_HEIGHT * 2 / 3 - 40;
+    if (w < 100) w = 0;
+    
+    var chat = document.getElementById('chat');
+    chat.style.width = w + 'px';
+    if (w == 0) chat.style.display = 'none';
+    else if (gameRoom instanceof LobbyScreen) chat.style.display = 'block';
 }
 
 // Dear god why
