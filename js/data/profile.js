@@ -4,7 +4,7 @@ var PROFILE_DATA_KEY = 'profiles';
 // The serializable object representation of profile data
 var PROFILE_DATA = {};
 
-depend('data/io', function() { PROFILE_DATA = storage.getObject(PROFILE_DATA_KEY) || {}; });
+//depend('data/io', function() { PROFILE_DATA = storage.getObject(PROFILE_DATA_KEY) || {}; });
 
 // Available stats
 var STAT = {

@@ -391,6 +391,16 @@ Connection.prototype.spawn = function(construct, pos, id, bossSpawn, extra) {
 };
 
 /**
+ * Submits profile stats to the server to store in the database
+ *
+ * @param {Profile} profile - the profile data to submit
+ */
+Connection.prototype.submitStats(profile) {
+    if (!this.connected) return;
+    this.socket.emit('stats', profile);
+};
+
+/**
  * Sends out the update for non-player robots
  *
  * @param {Object} data - the robot data

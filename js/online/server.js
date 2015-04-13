@@ -543,6 +543,22 @@ io.on('connection', function(socket) {
     });
     
     /**
+     * Handles adding a game's stats to the database. The data
+     * should contain the values:
+     *
+     *   name = the name of the player
+     *   data = the statistics for the completed game
+     *
+     * @param {Object} the stats from the finished game
+     */
+    socket.on('stats', function(data) {
+        console.log('Action: Stats');
+        
+        mergeProfile(data.name, data.data);
+        //mergeProfile('TOTAL_PLAYER_STATS', data.data);
+    });
+    
+    /**
      * Relays a player update to the other clients within a room.
      * The data should contain these values:
      * 
@@ -617,6 +633,87 @@ io.on('connection', function(socket) {
         socket.broadcast.to(socket.room).emit('upgradeSelection', data);
     });
 });
+
+// ------------------------ Profile Function ------------------------------- //
+
+/**
+ * Merges profile data into the given account name
+ *
+ * @param {string} name    - name of the account to merge into
+ * @param {Object} profile - profile data to merge into the account
+ */
+function mergeProfile(name, profile) {
+    dbModel.findByUsername(name, function(err, doc) {
+        if(err) {
+            console.log('Server error while getting profile data');
+            return;
+        }
+        
+        if(!doc) {
+            console.log('Invalid profile found when submitting stats');
+            return;
+        }
+        
+        var entry = JSON.parse(doc.profile);
+        var summed = [ 'kills', 'deaths', 'rescues', 'dealt', 'taken', 'absorbed', 'exp', 'light', 'heavy', 'miniboss', 'boss', 'dragon', 'hydra', 'games' ];
+        var best = [ 'mKills', 'mDeaths', 'mRescues', 'mDealt', 'mTaken', 'mAbsorbed', 'score', 'level' ];
+        
+        // Merge profile stats between the individual game
+        // and any previously existing stats
+        var keys = Object.keys(profile);
+        var robot, key;
+        for (var i = 0; i < keys.length; i++) {
+            robot = undefined;
+            temp = profile;
+            key = keys[i];
+            if (summed.indexOf(key) >= 0) {
+                entry[key] = entry[key] ? entry[key] + profile[key] : profile[key];
+            }
+            else if (best.indexOf(key) >= 0) {
+                entry[key] = entry[key] ? Math.max(entry[key], profile[key]) : profile[key];
+            }
+            else if (key == 'last') {
+                if (entry[key]) {
+                    entry[key].push(profile[key][0]);
+                }
+                else entry[key] = profile[key];
+            }
+            
+            // Merge robot-specific stats
+            else {
+                var subKeys = Object.keys(profile[key]);
+                var subProfile = profile[key];
+                var subEntry = entry[key];
+                for (var j = 0; j < subKeys.length; i++) {
+                    var subKey = subKeys[j];
+                    if (summed.indexOf(subKey) >= 0) {
+                        subEntry[key] = subEntry[key] ? subEntry[key] + subProfile[key] : subProfile[key];
+                    }
+                    else if (best.indexOf(subKey) >= 0) {
+                        subEntry[key] = subEntry[key] ? Math.max(subEntry[key], subProfile[key]) : subProfile[key];
+                    }
+                    else if (subKey == 'last') {
+                        if (subEntry[key]) {
+                            subEntry[key].push(subProfile[key][0]);
+                        }
+                        else subEntry[key] = subProfile[key];
+                    }
+                }
+            }
+        }
+        
+        // Update the document in the database
+        doc.data = JSON.serialize(entry);
+        doc.save(function(err) {
+            if (err) {
+                console.log('Failed to update profile data');
+            }
+            else {
+                console.log('Profile data has been updated');
+            }
+        });
+    });
+}
 
 // ------------------------- Database setup -------------------------------- //
 

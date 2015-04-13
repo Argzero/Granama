@@ -49,7 +49,6 @@ function Player(name, x, y, type, health, speed, healthScale, damageScale, shiel
     this.rescue        = 1;
     this.deaths        = 0;
     this.rescues       = 0;
-    this.enemiesKilled = 0;
     this.damageAlpha   = 0;
     this.levelFrame    = -1;
     this.lastHelath    = 0;
@@ -303,7 +302,7 @@ Player.prototype.giveKill = function(victim) {
  * Submits the profile stats for the player
  */
 Player.prototype.submitStats = function() {
-    if (this.submitted) return false;
+    if (this.submitted || (this.input instanceof NetworkInput)) return false;
     this.submitted = true;
     
     this.profile.addStat(this.name, STAT.TOTAL_KILLS, this.kills);
@@ -331,4 +330,6 @@ Player.prototype.submitStats = function() {
     this.profile.setBest(this.name, STAT.HIGHEST_LEVEL, this.level);
     
     this.profile.addList(this.name, STAT.LAST_10, 10, gameScreen.score);
+    
+    connection.submitStats(this.profile);
 };
