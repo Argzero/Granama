@@ -154,6 +154,13 @@ GameScreen.prototype.update = function() {
 };
 
 /**
+ * Pauses the game when the game loses focus
+ */
+GameScreen.prototype.onBlur = function() {
+    this.pause(players[0]);
+};
+
+/**
  * Pauses the game for the given player
  *
  * @param {Player} player to pause the game for
