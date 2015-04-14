@@ -202,7 +202,7 @@ ScorpionBoss.prototype.onPreDraw = function() {
     
     // Update the tail
     this.tail.update();
-    this.dir = this.rotation.clone().rotate(0, 1)
+    this.dir = this.rotation.clone().rotate(0, 1);
     this.shoulders.update();
     camera.ctx.translate(-this.pos.x, -this.pos.y);
     this.shoulders.draw(camera);
@@ -218,5 +218,14 @@ ScorpionBoss.prototype.onPreDraw = function() {
         this.leftClaw.rotation.rotate(COS_1, -SIN_1);
         this.rightClaw.rotation.rotate(COS_1, SIN_1);
         this.clawRotCount--;
+    }
+};
+
+/**
+ * Release a grabbed player when the scorpion dies underground
+ */
+Brute.prototype.onDeath = function() {
+    if (this.grabbed) {
+        this.grabbed.hidden = false;
     }
 };

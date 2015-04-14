@@ -1,6 +1,9 @@
 // Dependencies
 var http = require('http');
 var fs = require('fs');
+var mongoose = require('mongoose');
+var crypto = require('crypto');
+
 var owner = false;
 
 // name, room, socket, selection
@@ -265,6 +268,38 @@ io.on('connection', function(socket) {
     });
     
     /**
+     * Handles when a game ends, removing clients from the room.
+     * The data should include the values:
+     *
+     *   time = the time the game ended
+     *
+     * @param {Object} data - the data containig when the game ended
+     */
+    socket.on('gameOver', function(data) {
+        console.log('Action: Game Over');
+        socket.broadcast.to(socket.room).emit('gameOver', data);
+        
+        // Clear the server data for the room
+        room = socket.room;
+        delete roomList[room];
+        socket.leave(room);
+        
+        // Clear the other clients from the room
+        var clientIds = io.sockets.adapter.rooms[room];
+        if (clientIds) {
+            var keys = Object.keys(clientIds);
+            for (var i = 0; i < keys.length; i++) {
+                var clientSocket = io.sockets.adapter.nsp.connected[keys[i]];
+                clientSocket.leave(room);
+                delete clientSocket.room;
+            }
+        }
+        
+        // Clear the host's socket data
+        delete socket.room;
+    });
+    
+    /**
      * Handles time sync requests. The data should contain these
      * values:
      * 
@@ -316,9 +351,33 @@ io.on('connection', function(socket) {
      */
     socket.on('login', function(data) {
         
-        // TODO do login validation
+        console.log('Action: login');
         
-        socket.emit('general', { success: true, error: '' });
+        dbModel.authenticate(data.username, data.password, function(err, account) {
+            if (err) {
+                socket.emit('general', { success: false, error: 'Login Unavailable' });
+            }
+            else if (!account) {
+                socket.emit('general', { success: false, error: 'Bad Credentials' });
+            }
+            else {
+                socket.emit('general', { success: true });
+            }
+        });
+    });
+    
+    /**
+     * Relays chat messages to all clients. The data should
+     * contain the values:
+     *
+     *   user = the user who sent the message
+     *   message = the message that was sent
+     *
+     * @param {Object} data - the message data
+     */
+    socket.on('message', function(data) {
+        console.log('Action: message');
+        io.sockets.in(socket.room).emit('message', data);
     });
     
     /**
@@ -454,6 +513,51 @@ io.on('connection', function(socket) {
     });
     
     /**
+     * Handles sign-up attempts from the client. The data should
+     * include these values:
+     *
+     *   username = the client's requested username
+     *   password = the client's requested password
+     *
+     * @param {Object} data - the login credentials provided by the client
+     */
+    socket.on('signup', function(data) {
+        
+        console.log('Action: signup');
+        
+        dbModel.findByUsername(data.username, function(err, account) {
+            if (err) {
+                console.log('Error while looking for username');
+                socket.emit('general', { success: false, error: 'The login service is not available' });
+            }
+            else if (account) {
+                console.log('Username taken');
+                socket.emit('general', { success: false, error: 'Username taken' });
+            }
+            else {
+                dbModel.generateHash(data.password, function(salt, hash) {
+                    var credentials = {
+                        username: data.username,
+                        salt: salt,
+                        password: hash
+                    };
+                    
+                    var newAccount = new dbModel(credentials);
+                    newAccount.save(function (err) {
+                        if (err) {
+                            console.log(err);
+                            socket.emit('general', { success: false, error: 'Login Unavailable' });
+                        }
+                        else {
+                            socket.emit('general', { success: true });
+                        }
+                    });
+                });
+            }
+        });
+    });
+    
+    /**
      * Relays messages to spawn an enemy. The data should
      * contain these values:
      *
@@ -468,6 +572,22 @@ io.on('connection', function(socket) {
     socket.on('spawn', function(data) {
         console.log('Action: Spawn');
         socket.broadcast.to(socket.room).emit('spawn', data);
+    });
+    
+    /**
+     * Handles adding a game's stats to the database. The data
+     * should contain the values:
+     *
+     *   name = the name of the player
+     *   data = the statistics for the completed game
+     *
+     * @param {Object} the stats from the finished game
+     */
+    socket.on('stats', function(data) {
+        console.log('Action: Stats [' + data.name + ']');
+        
+        mergeProfile(data.name, data.data);
+        mergeProfile('TOTAL_STATS', data.data);
     });
     
     /**
@@ -576,4 +696,207 @@ io.on('connection', function(socket) {
         console.log('Action: Projectile Fired!');
         socket.broadcast.to(socket.room).emit('fireProjectile', data);
     });
+});
+
+// ------------------------ Profile Function ------------------------------- //
+
+/**
+ * Merges profile data into the given account name
+ *
+ * @param {string} name    - name of the account to merge into
+ * @param {Object} profile - profile data to merge into the account
+ */
+function mergeProfile(name, profile) {
+    dbModel.findByUsername(name, function(err, doc) {
+        if(err) {
+            console.log('Server error while getting profile data');
+            return;
+        }
+        
+        if(!doc) {
+            console.log('Invalid profile found when submitting stats');
+            return;
+        }
+        
+        var entry = JSON.parse(doc.profile);
+        var summed = [ 'kills', 'deaths', 'rescues', 'dealt', 'taken', 'absorbed', 'exp', 'light', 'heavy', 'miniboss', 'boss', 'dragon', 'hydra', 'games' ];
+        var best = [ 'mKills', 'mDeaths', 'mRescues', 'mDealt', 'mTaken', 'mAbsorbed', 'score', 'level' ];
+        
+        // Merge profile stats between the individual game
+        // and any previously existing stats
+        var keys = Object.keys(profile);
+        var robot, key;
+        for (var i = 0; i < keys.length; i++) {
+            robot = undefined;
+            temp = profile;
+            key = keys[i];
+            if (summed.indexOf(key) >= 0) {
+                entry[key] = entry[key] ? entry[key] + profile[key] : profile[key];
+            }
+            else if (best.indexOf(key) >= 0) {
+                entry[key] = entry[key] ? Math.max(entry[key], profile[key]) : profile[key];
+            }
+            else if (key == 'last') {
+                if (entry[key]) {
+                    entry[key].push(profile[key][0]);
+                }
+                else entry[key] = profile[key];
+            }
+            
+            // Merge robot-specific stats
+            else {
+                var subProfile = profile[key];
+                var subKeys = Object.keys(subProfile);
+                var subEntry = entry[key] || {};
+                for (var j = 0; j < subKeys.length; j++) {
+                    var subKey = subKeys[j];
+                    if (summed.indexOf(subKey) >= 0) {
+                        subEntry[key] = subEntry[key] ? subEntry[key] + subProfile[key] : subProfile[key];
+                    }
+                    else if (best.indexOf(subKey) >= 0) {
+                        subEntry[key] = subEntry[key] ? Math.max(subEntry[key], subProfile[key]) : subProfile[key];
+                    }
+                    else if (subKey == 'last') {
+                        if (subEntry[key]) {
+                            subEntry[key].push(subProfile[key][0]);
+                        }
+                        else subEntry[key] = subProfile[key];
+                    }
+                }
+            }
+        }
+        
+        // Update the document in the database
+        doc.data = JSON.stringify(entry);
+        doc.save(function(err) {
+            if (err) {
+                console.log('Failed to update profile data');
+            }
+            else {
+                console.log('Profile data has been updated');
+            }
+        });
+    });
+}
+
+// ------------------------- Database setup -------------------------------- //
+
+var iterations = 10000;
+var saltLength = 64;
+var keyLength = 64;
+
+var dbURL = process.env.MONGOLAB_URI || "mongodb://localhost/Granama";
+
+var db = mongoose.connect(dbURL, function(err) {
+    if (err) {
+        console.log("Could not connect to database");
+        throw err;
+    }
+});
+
+var schema = new mongoose.Schema({
+    username: {
+        type: String,
+        required: true,
+        trim: true,
+        unique: true,
+        match: /^[A-Za-z0-9_\-\.]{1,16}$/
+    },
+    
+    salt: {
+        type: Buffer,
+        required: true
+    },
+    
+    password: {
+        type: String,
+        required: true
+    },
+    
+    profile: {
+        type: String,
+        required: true,
+        default: '{}'
+    },
+    
+    createDate: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+schema.methods.toAPI = function() {
+    return {
+        username: this.username,
+        profile: JSON.parse(this.profile)
+    };
+};
+
+schema.methods.validatePassword = function(password, callback) {
+	var pass = this.password;
+	
+	crypto.pbkdf2(password, this.salt, iterations, keyLength, function(err, hash) {
+		if(hash.toString('hex') !== pass) {
+			return callback(false);
+		}
+		return callback(true);
+	});
+};
+
+schema.statics.findByUsername = function(name, callback) {
+
+    var search = {
+        username: name
+    };
+
+    return dbModel.findOne(search, callback);
+};
+
+schema.statics.generateHash = function(password, callback) {
+	var salt = crypto.randomBytes(saltLength);
+	
+	crypto.pbkdf2(password, salt, iterations, keyLength, function(err, hash){
+		return callback(salt, hash.toString('hex'));
+	});
+};
+
+schema.statics.authenticate = function(username, password, callback) {
+	return dbModel.findByUsername(username, function(err, doc) {
+
+		if(err)
+		{
+			return callback(err);
+		}
+
+        if(!doc) {
+            return callback();
+        }
+
+        doc.validatePassword(password, function(result) {
+            if(result === true) {
+                return callback(null, doc);
+            }
+            
+            return callback();
+        });
+        
+	});
+};
+
+dbModel = mongoose.model('Granama', schema);
+
+// Initialize default "accounts"
+dbModel.findByUsername('GUEST', function(err, doc) {
+    console.log('GUEST ' + (err ? 'Failed' + err + ')' : (doc ? 'Found' : 'Needed')));
+    if (!err && !doc) {
+        var newAccount = new dbModel({ username: 'GUEST', salt: new Buffer(1), password: 'nopass' });
+        newAccount.save(function (err) { console.log('default: ' + (err ? 'Failed' + err + ')' : 'Success')); });
+    }
+});
+dbModel.findByUsername('TOTAL_STATS', function(err, doc) {
+    console.log('TOTAL_STATS ' + (err ? 'Failed(' + err + ')' : (doc ? 'Found' : 'Needed')));
+    if (!err && !doc) {
+        var newAccount = new dbModel({ username: 'TOTAL_STATS', salt: new Buffer(1), password: 'nopass' });
+        newAccount.save(function (err) { console.log('default: ' + (err ? 'Failed' + err + ')' : 'Success')); });
+    }
 });

@@ -125,7 +125,7 @@ onLoaderDone = function() {
         constants = true;
         return;
     }
-
+    
     camera = new Camera('granama');
     
     TILE = new Sprite('tile', 0, 0);
@@ -157,6 +157,13 @@ onLoaderDone = function() {
     // Cancel the context menu
     camera.canvas.oncontextmenu = function(e) {
         return false;
+    };
+    
+    // Handle when the canvas loses focus
+    window.onblur = function(e) {
+        if (gameScreen.onBlur) {
+            gameScreen.onBlur();
+        }
     };
 
     window.onresize = resizeCanvas;

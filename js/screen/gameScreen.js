@@ -30,6 +30,7 @@ function GameScreen() {
     this.julian = false;
     this.eUpdateInterval = 60;
     this.eUpdateTimer = this.eUpdateInterval;
+    this.cursor = false;
     
     // Set the game dimensions
     GAME_WIDTH = 3000;
@@ -60,6 +61,13 @@ function GameScreen() {
     this.robots = players.slice(0);
     
     this.shuffleBosses();
+    
+    // Check to see if any player is using the cursor as part of their input
+    for (var i = 0; i < players.length; i++) {
+        if (players[i].input instanceof KeyboardInput) {
+            this.cursor = true;
+        }
+    }
 }
 
 /**
@@ -151,6 +159,16 @@ GameScreen.prototype.update = function() {
         }
     }
     
+    // End the game
+    if (this.gameOver) {
+        this.gameOver--;
+        if (this.gameOver <= 0) {
+            gameScreen = new EndScreen();
+            connection.inRoom = false;
+            return;
+        }
+    }
+    
     // Host actions post-update
     if (connection.isHost) {
         
@@ -178,19 +196,21 @@ GameScreen.prototype.update = function() {
         }
         if (!this.gameOver) {
             this.gameOver = 300;
+            connection.gameOver();
     
             for (i = 0; i < players.length; i++) {
                 var p = players[i];
                 p.submitStats();
             }
         }
-        else {
-            this.gameOver--;
-            if (this.gameOver <= 0) {
-                gameScreen = new EndScreen();
-            }
-        }
     }
+};
+
+/**
+ * Pauses the game when the game loses focus
+ */
+GameScreen.prototype.onBlur = function() {
+    this.pause(players[0]);
 };
 
 /**
@@ -297,7 +317,10 @@ GameScreen.prototype.draw = function() {
         ui.drawUpgradeUI();
     }
     
-    ui.drawCursor();
+    // Draw the cursor if applicable
+    if (this.cursor) {
+        ui.drawCursor();
+    }
 };
 
 /**

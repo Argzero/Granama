@@ -49,7 +49,6 @@ function Player(name, x, y, type, health, speed, healthScale, damageScale, shiel
     this.rescue        = 1;
     this.deaths        = 0;
     this.rescues       = 0;
-    this.enemiesKilled = 0;
     this.damageAlpha   = 0;
     this.levelFrame    = -1;
     this.lastHelath    = 0;
@@ -303,32 +302,35 @@ Player.prototype.giveKill = function(victim) {
  * Submits the profile stats for the player
  */
 Player.prototype.submitStats = function() {
-    if (this.submitted) return false;
+    if (this.submitted || (this.input instanceof NetworkInput)) return false;
     this.submitted = true;
     
-    this.profile.addStat(this.name, STAT.TOTAL_KILLS, this.kills);
-    this.profile.addStat(this.name, STAT.TOTAL_DEATHS, this.deaths);
-    this.profile.addStat(this.name, STAT.TOTAL_RESCUES, this.rescues);
-    this.profile.addStat(this.name, STAT.TOTAL_DEALT, this.damageDealt);
-    this.profile.addStat(this.name, STAT.TOTAL_TAKEN, this.damageTaken);
-    this.profile.addStat(this.name, STAT.TOTAL_ABSORBED, this.damageAbsorbed);
-    this.profile.addStat(this.name, STAT.TOTAL_EXP, this.totalExp);
-    this.profile.addStat(this.name, STAT.LIGHT, this.killTypes[Robot.LIGHT_ENEMY]);
-    this.profile.addStat(this.name, STAT.HEAVY, this.killTypes[Robot.HEAVY_ENEMY]);
-    this.profile.addStat(this.name, STAT.MINIBOSS, this.killTypes[Robot.MINIBOSS_ENEMY]);
-    this.profile.addStat(this.name, STAT.BOSS, this.killTypes[Robot.BOSS_ENEMY]);
-    this.profile.addStat(this.name, STAT.DRAGON, this.killTypes[Robot.DRAGON_ENEMY]);
-    this.profile.addStat(this.name, STAT.HYDRA, this.killTypes[Robot.HYDRA_ENEMY]);
-    this.profile.addStat(this.name, STAT.GAMES, 1);
+    var profile = new Profile(this.profile);
+    profile.addStat(this.name, STAT.TOTAL_KILLS, this.kills);
+    profile.addStat(this.name, STAT.TOTAL_DEATHS, this.deaths);
+    profile.addStat(this.name, STAT.TOTAL_RESCUES, this.rescues);
+    profile.addStat(this.name, STAT.TOTAL_DEALT, this.damageDealt);
+    profile.addStat(this.name, STAT.TOTAL_TAKEN, this.damageTaken);
+    profile.addStat(this.name, STAT.TOTAL_ABSORBED, this.damageAbsorbed);
+    profile.addStat(this.name, STAT.TOTAL_EXP, this.totalExp);
+    profile.addStat(this.name, STAT.LIGHT, this.killTypes[Robot.LIGHT_ENEMY]);
+    profile.addStat(this.name, STAT.HEAVY, this.killTypes[Robot.HEAVY_ENEMY]);
+    profile.addStat(this.name, STAT.MINIBOSS, this.killTypes[Robot.MINIBOSS_ENEMY]);
+    profile.addStat(this.name, STAT.BOSS, this.killTypes[Robot.BOSS_ENEMY]);
+    profile.addStat(this.name, STAT.DRAGON, this.killTypes[Robot.DRAGON_ENEMY]);
+    profile.addStat(this.name, STAT.HYDRA, this.killTypes[Robot.HYDRA_ENEMY]);
+    profile.addStat(this.name, STAT.GAMES, 1);
     
-    this.profile.setBest(this.name, STAT.MOST_KILLS, this.kills);
-    this.profile.setBest(this.name, STAT.MOST_DEATHS, this.deaths);
-    this.profile.setBest(this.name, STAT.MOST_RESCUES, this.rescues);
-    this.profile.setBest(this.name, STAT.MOST_DEALT, this.damageDealt);
-    this.profile.setBest(this.name, STAT.MOST_TAKEN, this.damageTaken);
-    this.profile.setBest(this.name, STAT.MOST_ABSORBED, this.damageAbsorbed);
-    this.profile.setBest(this.name, STAT.BEST_SCORE, gameScreen.score);
-    this.profile.setBest(this.name, STAT.HIGHEST_LEVEL, this.level);
+    profile.setBest(this.name, STAT.MOST_KILLS, this.kills);
+    profile.setBest(this.name, STAT.MOST_DEATHS, this.deaths);
+    profile.setBest(this.name, STAT.MOST_RESCUES, this.rescues);
+    profile.setBest(this.name, STAT.MOST_DEALT, this.damageDealt);
+    profile.setBest(this.name, STAT.MOST_TAKEN, this.damageTaken);
+    profile.setBest(this.name, STAT.MOST_ABSORBED, this.damageAbsorbed);
+    profile.setBest(this.name, STAT.BEST_SCORE, gameScreen.score);
+    profile.setBest(this.name, STAT.HIGHEST_LEVEL, this.level);
     
-    this.profile.addList(this.name, STAT.LAST_10, 10, gameScreen.score);
+    profile.addList(this.name, STAT.LAST_10, 10, gameScreen.score);
+    
+    connection.submitStats(profile);
 };
