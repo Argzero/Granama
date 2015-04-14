@@ -73,7 +73,7 @@ EndScreen.prototype.draw = function() {
         ui.ctx.fillText(player.damageDealt.toFixed(0), x - 105, y - 70);
         ui.ctx.fillText(player.damageTaken.toFixed(0), x - 105, y + 5);
         ui.ctx.fillText(player.damageAbsorbed.toFixed(0), x - 105, y + 80);
-        ui.ctx.fillText(player.enemiesKilled, x - 105, y + 155);
+        ui.ctx.fillText(player.kills, x - 105, y + 155);
         ui.ctx.fillText(player.deaths, x - 105, y + 230);
         
         // Returning to the title screen

@@ -23,9 +23,11 @@ function LobbyScreen() {
 
     this.frame = 0;
     this.open = [];
+    this.boxes = [];
 
     // Initialize player settings
     for (i = 0; i < players.length; i++) {
+        this.boxes.push(new UIBox(false, 0, 0, 0, 0));
         if (!players[i].settings) {
             players[i].settings = new PlayerSettings(i);
         }
@@ -100,44 +102,52 @@ LobbyScreen.prototype.draw = function() {
     ui.ctx.setTransform(1, 0, 0, 1, 0, 0);
     ui.drawBackground();
     
+    var x = ui.canvas.width / 2;
+    var y = ui.canvas.height / 2;
+    
     var cx = controls.mouse.x - ui.canvas.offsetLeft;
     var cy = controls.mouse.y - ui.canvas.offsetTop;
 
-    ui.ctx.font = "70px Flipbash";
-
-    // Draw the title box
-    var x = ui.canvas.width / 2;
-    var y = ui.canvas.height / 2;
-    ui.ctx.fillStyle = "#484848";
-    ui.ctx.fillRect(x - 395, y - 300, 790, 110);
-    ui.ctx.fillStyle = "#000000";
-    ui.ctx.fillRect(x - 385, y - 290, 770, 90);
-
-    // Draw the title
-    ui.ctx.fillStyle = "#FFFFFF";
-    ui.ctx.textAlign = 'center';
-    ui.ctx.textBaseline = 'top';
-    ui.ctx.fillText("Choose A Robot", x, y - 300);
-
-    var baseX = x - (players.length - 1) * 135;
-    var i, j, k, dx, preview, robot, input;
+    var scaleY = Math.min((WINDOW_HEIGHT - 20) / players.length - 20, 175);
+    var baseY = y - (players.length - 1) * (scaleY + 20) / 2;
+    var fontScale = scaleY / 175;
+    var i, j, k, dx, xs, ys, s, preview, robot, input;
     for (i = 0; i < players.length; i++) {
         
         // Re-initialize settings if lost for some reason (players leaving)
         if (!players[i].settings) {
             players[i].settings = new PlayerSettings(i);
         }
-
-        x = baseX + 270 * i;
+        
         var settings = players[i].settings;
         robot = PLAYER_DATA[settings.robot];
 
+        x = scaleY * 2;
+        y = baseY + (scaleY + 20) * i;
+        this.boxes[i].minWidth = scaleY * 3;
+        this.boxes[i].maxWidth = scaleY * 3.25;
+        this.boxes[i].height = scaleY;
+        this.boxes[i].x = scaleY / 2;
+        this.boxes[i].y = y - scaleY / 2;
+        this.boxes[i].active = settings.part == LobbyScreen.PARTS.READY;
+        if (this.boxes[i].width < this.boxes[i].minWidth) {
+            this.boxes[i].width = this.boxes[i].minWidth;
+        }
+        else if (this.boxes[i].width > this.boxes[i].maxWidth) {
+            this.boxes[i].width = this.boxes[i].maxWidth;
+        }
+        
         // Draw the boxes for the options
+        this.boxes[i].draw();
         ui.ctx.fillStyle = '#484848';
-        ui.ctx.fillRect(x - 125, y - 170, 250, 500);
-        ui.ctx.fillStyle = settings.part == LobbyScreen.PARTS.READY ? '#333' : '#000';
-        ui.ctx.fillRect(x - 115, y - 160, 230, 480);
-
+        ui.ctx.beginPath();
+        ui.ctx.arc(scaleY / 2, y, scaleY / 2, 0, Math.PI * 2);
+        ui.ctx.fill();
+        ui.ctx.fillStyle = '#000';
+        ui.ctx.beginPath();
+        ui.ctx.arc(scaleY / 2, y, scaleY / 2 - 8, 0, Math.PI * 2);
+        ui.ctx.fill();
+        
         // Input
         input = undefined;
         if (players[i].input) {
@@ -163,10 +173,10 @@ LobbyScreen.prototype.draw = function() {
 
                 // Prompt to connect a controller
                 ui.ctx.fillStyle = 'white';
-                ui.ctx.font = '24px Flipbash';
+                ui.ctx.font = (fontScale * 24).toFixed(0) + 'px Flipbash';
                 ui.ctx.textAlign = 'center';
-                ui.ctx.fillText('Awaiting', x, y);
-                ui.ctx.fillText('Players...', x, y + 30);
+                ui.ctx.fillText('Awaiting', x, y - 10 * fontScale);
+                ui.ctx.fillText('Players...', x, y + 20 * fontScale);
 
                 break;
 
@@ -175,11 +185,9 @@ LobbyScreen.prototype.draw = function() {
 
                 // Profile name
                 ui.ctx.fillStyle = 'white';
-                ui.ctx.font = '32px Flipbash';
+                ui.ctx.font = (fontScale * 32).toFixed(0) + 'px Flipbash';
                 ui.ctx.textAlign = 'center';
-                ui.ctx.fillText(settings.profile, x, y - 160);
-
-                ui.ctx.globalAlpha = 0.5;
+                ui.ctx.fillText(settings.profile, x, y - 50 * fontScale);
 
                 // Next/previous options
                 var next = settings.robot, prev = settings.robot;
@@ -192,46 +200,44 @@ LobbyScreen.prototype.draw = function() {
                 }
                 while (!this.isOpen(prev));
 
-                // Previous image
-                preview = images.get(PLAYER_DATA[prev].preview);
-                var scale = 75 / preview.height;
-                ui.ctx.drawImage(preview, preview.width / 2, 0, preview.width / 2, preview.height, x - 115, y + 20, preview.width * scale / 2, 75);
-
-                // Next image
-                preview = images.get(PLAYER_DATA[next].preview);
-                scale = 50 / preview.height;
-                ui.ctx.drawImage(preview, 0, 0, preview.width / 2, preview.height, x + 115 - preview.width * scale / 2, y + 20, preview.width * scale / 2, 75);
-
-                ui.ctx.globalAlpha = 1;
-
                 // Preview image
                 preview = images.get(robot.preview);
-                ui.ctx.drawImage(preview, x - preview.width / 2 + 10, y - preview.height / 2);
+                xs = (scaleY - 16) / preview.width;
+                ys = (scaleY - 16) / preview.height;
+                s = Math.min(xs, ys);
+                ui.ctx.drawImage(preview, scaleY / 2 - s * preview.width / 2, y - s * preview.height / 2, preview.width * s, preview.height * s);
 
                 // Name
-                ui.ctx.font = '32px Flipbash';
+                ui.ctx.font = (fontScale * 32).toFixed(0) + 'px Flipbash';
                 ui.ctx.fillStyle = robot.color;
                 ui.ctx.textBaseline = 'top';
-                ui.ctx.fillText(robot.name, x, y + 80);
+                ui.ctx.fillText(robot.name, x, y - fontScale * 50);
 
                 // Weapon titles
-                ui.ctx.font = '24px Flipbash';
+                ui.ctx.font = (fontScale * 24).toFixed(0) + 'px Flipbash';
                 ui.ctx.fillStyle = 'white';
                 ui.ctx.textAlign = 'left';
-                ui.ctx.fillText('Primary', x - 100, y + 180);
-                ui.ctx.fillText('Secondary', x - 100, y + 250);
-                ui.ctx.fillRect(x - 100, y + 212, 105, 2);
-                ui.ctx.fillRect(x - 100, y + 282, 150, 2);
-
-                // Weapon names
-                ui.ctx.font = '18px Flipbash';
-                ui.ctx.fillText(robot.weapons[0], x - 100, y + 215);
-                ui.ctx.fillText(robot.weapons[1], x - 100, y + 285);
+                ui.ctx.fillText('Primary: ' + robot.weapons[0], scaleY + 10, y);
+                ui.ctx.fillText('Secondary: ' + robot.weapons[1], scaleY + 10, y + fontScale * 40);
 
                 // Indicator
                 dx = Math.cos(this.frame * Math.PI / 15);
-                ui.ctx.drawImage(images.get('uiArrowLeft'), x - 130 - 5 * dx, y - 10);
-                ui.ctx.drawImage(images.get('uiArrowRight'), x + 79 + 5 * dx, y - 10);
+                var w = images.get('uiArrowLeft').width;
+                var h = images.get('uiArrowLeft').height;
+                ui.ctx.drawImage(
+                    images.get('uiArrowLeft'), 
+                    x - 115 * fontScale - 5 * dx - fontScale * w / 2, 
+                    y - 40 * fontScale, 
+                    w * fontScale, 
+                    h * fontScale
+                );
+                ui.ctx.drawImage(
+                    images.get('uiArrowRight'), 
+                    x + 115 * fontScale + 5 * dx - fontScale * w / 2, 
+                    y - 40 * fontScale, 
+                    w * fontScale, 
+                    h * fontScale
+                );
                 
                 // No input available for networked players
                 if (!input) break;
@@ -279,41 +285,42 @@ LobbyScreen.prototype.draw = function() {
             // Player is selecting an ability
             case LobbyScreen.PARTS.ABILITY:
 
-                // Profile name
+                 // Profile name
                 ui.ctx.fillStyle = 'white';
-                ui.ctx.font = '32px Flipbash';
-                ui.ctx.fillText(settings.profile, x, y - 160);
+                ui.ctx.font = (fontScale * 32).toFixed(0) + 'px Flipbash';
+                ui.ctx.textAlign = 'center';
+                ui.ctx.fillText(settings.profile, x, y - 50 * fontScale);
 
                 // Preview image
                 preview = images.get(robot.preview);
-                ui.ctx.drawImage(preview, x - preview.width / 2 + 10, y - preview.height / 2);
+                xs = (scaleY - 16) / preview.width;
+                ys = (scaleY - 16) / preview.height;
+                s = Math.min(xs, ys);
+                ui.ctx.drawImage(preview, scaleY / 2 - s * preview.width / 2, y - s * preview.height / 2, preview.width * s, preview.height * s);
 
-                // Name
-                ui.ctx.font = '32px Flipbash';
-                ui.ctx.fillStyle = robot.color;
-                ui.ctx.textAlign = 'center';
                 ui.ctx.textBaseline = 'top';
-                ui.ctx.fillText(robot.name, x, y + 80);
 
                 // Hovered ability
-                ui.ctx.drawImage(images.get('ability' + robot.skills[settings.ability].name), x - 45, y + 160, 90, 90);
+                ui.ctx.drawImage(images.get('ability' + robot.skills[settings.ability].name), x - 45 * fontScale, y - 45 * fontScale, 90 * fontScale, 90 * fontScale);
 
                 // Other abilities
                 ui.ctx.globalAlpha = 0.5;
-                ui.ctx.drawImage(images.get('ability' + robot.skills[(settings.ability + 2) % 3].name), x - 105, y + 205, 45, 45);
-                ui.ctx.drawImage(images.get('ability' + robot.skills[(settings.ability + 1) % 3].name), x + 60, y + 205, 45, 45);
+                ui.ctx.drawImage(images.get('ability' + robot.skills[(settings.ability + 2) % 3].name), x - 105 * fontScale, y, 45 * fontScale, 45 * fontScale);
+                ui.ctx.drawImage(images.get('ability' + robot.skills[(settings.ability + 1) % 3].name), x + 60 * fontScale, y, 45 * fontScale, 45 * fontScale);
                 ui.ctx.globalAlpha = 1;
 
                 // Skill name
                 ui.ctx.textAlign = 'center';
                 ui.ctx.fillStyle = 'white';
-                ui.ctx.font = '24px Flipbash';
-                ui.ctx.fillText(robot.skills[settings.ability].name, x, y + 250);
-
+                ui.ctx.font = (24 * fontScale).toFixed(0) + 'px Flipbash';
+                ui.ctx.fillText(robot.skills[settings.ability].name, x, y + 40 * fontScale);
+                
                 // Indicator
                 dx = Math.cos(this.frame * Math.PI / 15);
-                ui.ctx.drawImage(images.get('uiArrowLeft'), x - 130 - 5 * dx, y + 170);
-                ui.ctx.drawImage(images.get('uiArrowRight'), x + 79 + 5 * dx, y + 170);
+                var aw = images.get('uiArrowLeft').width;
+                var ah = images.get('uiArrowLeft').height;
+                ui.ctx.drawImage(images.get('uiArrowLeft'), x - 145 * fontScale - 5 * dx - aw * fontScale / 2, y, aw * fontScale, ah * fontScale);
+                ui.ctx.drawImage(images.get('uiArrowRight'), x + 145 * fontScale + 5 * dx - aw * fontScale / 2, y, aw * fontScale, ah * fontScale);
 
                 // No input available for networked players
                 if (!input) break;
@@ -350,18 +357,26 @@ LobbyScreen.prototype.draw = function() {
             // Player is ready to play
             case LobbyScreen.PARTS.READY:
 
+                // Profile name
+                ui.ctx.fillStyle = 'white';
+                ui.ctx.font = (fontScale * 32).toFixed(0) + 'px Flipbash';
+                ui.ctx.textAlign = 'center';
+                ui.ctx.fillText(settings.profile, x, y - 50 * fontScale);
+
                 // Preview image
                 preview = images.get(robot.preview);
-                ui.ctx.drawImage(preview, x - preview.width / 2, y - 40 - preview.height / 2);
+                xs = (scaleY - 16) / preview.width;
+                ys = (scaleY - 16) / preview.height;
+                s = Math.min(xs, ys);
+                ui.ctx.drawImage(preview, scaleY / 2 - s * preview.width / 2, y - s * preview.height / 2, preview.width * s, preview.height * s);
 
                 // Name
-                ui.ctx.font = '32px Flipbash';
+                ui.ctx.font = (fontScale * 32).toFixed(0) + 'px Flipbash';
                 ui.ctx.fillStyle = robot.color;
-                ui.ctx.textAlign = 'center';
                 ui.ctx.textBaseline = 'top';
-                ui.ctx.fillText(robot.name, x, y + 40);
+                ui.ctx.fillText(robot.name, x, y - fontScale * 50);
 
-                ui.ctx.fillText('Ready', x, y + 150);
+                ui.ctx.fillText('Ready', x, y + 30 * fontScale);
                 
                 // No input available for networked players
                 if (!input) break;
@@ -374,6 +389,7 @@ LobbyScreen.prototype.draw = function() {
 
                 break;
         }
+        ui.ctx.textBaseline = 'alphabetic';
     }
 
     this.frame = (this.frame + 1) % 60;

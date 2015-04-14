@@ -172,7 +172,7 @@ var movement = {
         // Pop out of the ground after a delay
         else if (this.unburrowing) {
             this.unburrowing--;
-            if (this.unburrowing == 0) {
+            if (this.unburrowing === 0) {
                 this.unburrowing = false;
                 this.burrowing = false;
                 this.hidden = false;

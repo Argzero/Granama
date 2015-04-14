@@ -1,10 +1,9 @@
-var connection = new Connection();
 var io = io || undefined;
 
 /**
- * Reprsents the socket.io connection to the server. Use
- * connect() to set up the connection before trying to 
- * send/receive messages.
+ * Reprsents the socket.io connection to the server.
+ * Use the "connection" object to access the methods
+ * of this as it is set up on load.
  *
  * @constructor
  */
@@ -18,6 +17,8 @@ function Connection() {
     this.room = undefined;
     this.isHost = true;
     this.timeOffset = 0;
+    
+    this.connect();
 }
 
 /**
@@ -44,6 +45,7 @@ Connection.prototype.connect = function() {
     this.socket.on('joinRoom', this.onJoinRoom.bind(this));
     this.socket.on('kick', this.onKick.bind(this));
     this.socket.on('knockback', this.onKnockback.bind(this));
+    this.socket.on('message', this.onMessage.bind(this));
     this.socket.on('removePlayer', this.onRemovePlayer.bind(this));
     this.socket.on('setPaused', this.onSetPaused.bind(this));
     this.socket.on('spawn', this.onSpawn.bind(this));
@@ -225,6 +227,14 @@ Connection.prototype.fetchRooms = function() {
 };
 
 /**
+ * Tells other players about the end of the game
+ */
+Connection.prototype.gameOver = function() {
+    if (!this.connected || !this.inRoom) return;
+    this.socket.emit('gameOver', { time: this.getServerTime() });
+};
+
+/**
  * Tells other clients of the experience acquired by a player.
  * 
  * @param {number} index  - the index of the player receiving the exp
@@ -278,10 +288,21 @@ Connection.prototype.knockback = function(robot, knockback) {
  * @param {function} callback - the method to use when a response is received
  */ 
 Connection.prototype.login = function(username, password, callback) {
-    if (!connected || this.callback) return;
+    if (!this.connected || this.callback) return;
     
     this.callback = callback;
     this.socket.emit('login', { username: username, password: password });
+};
+
+/**
+ * Sends a chat message over the server.
+ *
+ * @param {string} message - the message to send
+ */
+Connection.prototype.message = function(message) {
+    if (!this.connected || !this.inRoom) return;
+    
+    this.socket.emit('message', { user: players[this.gameIndex].settings.profile, message: message });
 };
 
 /**
@@ -314,6 +335,7 @@ Connection.prototype.quitGame = function(reason) {
     this.inRoom = false;
     players = players.slice(this.gameIndex, this.gameIndex + this.localPlayers);
     gameScreen = new RoomScreen();
+    document.getElementById('chat').style.display = 'none';
 };
 
 /**
@@ -340,6 +362,22 @@ Connection.prototype.setPaused = function(id) {
 };
 
 /**
+ * Attempts to sign the user up with a new account, responding to the 
+ * callback with the result. If another login attempt is already being
+ * processed or there is no connection, this will do nothing instead.
+ *
+ * @param {string}   username - the player's username
+ * @param {string}   password - the player's password
+ * @param {function} callback - the method to use when a response is received
+ */ 
+Connection.prototype.signup = function(username, password, callback) {
+    if (!this.connected || this.callback) return;
+    
+    this.callback = callback;
+    this.socket.emit('signup', { username: username, password: password });
+};
+
+/**
  * Tells other players in the game to spawn an enemy at the given coordinates
  * 
  * @param {number}  construct - the name of the constructor function
@@ -358,6 +396,16 @@ Connection.prototype.spawn = function(construct, pos, id, bossSpawn, extra) {
         extra: extra,
         time: this.getServerTime()
     });
+};
+
+/**
+ * Submits profile stats to the server to store in the database
+ *
+ * @param {Profile} profile - the profile data to submit
+ */
+Connection.prototype.submitStats = function(profile) {
+    if (!this.connected) return;
+    this.socket.emit('stats', profile);
 };
 
 /**
@@ -574,6 +622,19 @@ Connection.prototype.onDowngrade = function(data) {
 };
 
 /**
+ * Handles starting the game over timer when all players are dead.
+ * The data should contain the values:
+ *
+ *   time = the time when the game ended
+ *
+ * @param {Object} data - the data from the server
+ */
+Connection.prototype.onGameOver = function(data) {
+    gameScreen.gameOver = 300 - (performance.now - this.fromServerTime(data.time)) * 0.06;  
+    this.inRoom = false;
+};
+
+/**
  * Receives a general response from the server containing whether
  * or not an action worked or not. If a callback was provided, this
  * will pass the result on to the callback. The data should include
@@ -650,6 +711,10 @@ Connection.prototype.onJoinRoom = function(data) {
     }
     appendPlayers(5);
     gameScreen = new LobbyScreen();
+    
+    var chat = document.getElementById('chat');
+    if (chat.style.width != '0px') chat.style.display = 'block';
+    chatText.innerHTML = 'Joined the room "' + data.room + '"';
 };
 
 /**
@@ -682,6 +747,20 @@ Connection.prototype.onKnockback = function(data) {
     if (r) {
         r.knockback(new Vector(data.knockback.x, data.knockback.y));
     }
+};
+
+/**
+ * Handles receiving a message from the server and applying it.
+ * The data should include the values:
+ *
+ *   user = the user sending the message
+ *   message = the contents of the message
+ *
+ * @param {Object} data - the data for the message
+ */
+Connection.prototype.onMessage = function(data) {
+    chatText.innerHTML += '<br/><span class="user">' + data.user + '</span>: ' + data.message;
+    chatText.scrollTop = chatText.scrollHeight;
 };
 
 /**
@@ -779,6 +858,7 @@ Connection.prototype.onStartGame = function(data) {
         var player = new robot.player();
         player.color = robot.color;
         player.name = robot.name;
+        player.profile = selection.profile;
         var skill = robot.skills[selection.ability];
         player.ability = skill.name;
         player.input = players[i].input || new NetworkInput();
@@ -791,6 +871,7 @@ Connection.prototype.onStartGame = function(data) {
     }
     
     gameScreen = new GameScreen(false);
+    document.getElementById('chat').style.display = 'none';
 };
 
 /**
@@ -918,3 +999,5 @@ Connection.prototype.onUpgradeSelection = function(data) {
     ui.hovered[data.player] = data.id;
     if (data.ready) ui.checkAllReady();
 };
+
+var connection = new Connection();
