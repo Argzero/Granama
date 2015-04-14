@@ -151,6 +151,16 @@ GameScreen.prototype.update = function() {
         }
     }
     
+    // End the game
+    if (this.gameOver) {
+        this.gameOver--;
+        if (this.gameOver <= 0) {
+            gameScreen = new EndScreen();
+            connection.inRoom = false;
+            return;
+        }
+    }
+    
     // Host actions post-update
     if (connection.isHost) {
         
@@ -178,16 +188,11 @@ GameScreen.prototype.update = function() {
         }
         if (!this.gameOver) {
             this.gameOver = 300;
+            connection.gameOver();
     
             for (i = 0; i < players.length; i++) {
                 var p = players[i];
                 p.submitStats();
-            }
-        }
-        else {
-            this.gameOver--;
-            if (this.gameOver <= 0) {
-                gameScreen = new EndScreen();
             }
         }
     }

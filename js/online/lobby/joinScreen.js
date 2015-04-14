@@ -62,19 +62,7 @@ JoinScreen.prototype.prevPart = function(settings) {
 
         // Make a profile available again when a player no longer selects it
         case JoinScreen.PARTS.PROFILE:
-
-            if (settings.profile != 'Guest') {
-                this.profilesArray.push(settings.profile);
-                this.profilesArray.sort(function(a, b) {
-                    if (a == 'New Profile') return 1;
-                    if (b == 'New Profile') return -1;
-                    if (a == 'Guest') return 1;
-                    if (b == 'Guest') return -1;
-                    return a.localeCompare(b);
-                });
-            }
             settings.profile = 0;
-
             break;
     }
 };
@@ -208,7 +196,7 @@ JoinScreen.prototype.draw = function() {
 
                     if (settings.profile == 2) {
                         settings.part++;
-                        settings.profile = 'Guest';
+                        settings.profile = 'GUEST';
                     }
 
                     else {

@@ -268,6 +268,38 @@ io.on('connection', function(socket) {
     });
     
     /**
+     * Handles when a game ends, removing clients from the room.
+     * The data should include the values:
+     *
+     *   time = the time the game ended
+     *
+     * @param {Object} data - the data containig when the game ended
+     */
+    socket.on('gameOver', function(data) {
+        console.log('Action: Game Over');
+        socket.broadcast.to(socket.room).emit('gameOver', data);
+        
+        // Clear the server data for the room
+        room = socket.room;
+        delete roomList[room];
+        socket.leave(room);
+        
+        // Clear the other clients from the room
+        var clientIds = io.sockets.adapter.rooms[room];
+        if (clientIds) {
+            var keys = Object.keys(clientIds);
+            for (var i = 0; i < keys.length; i++) {
+                var clientSocket = io.sockets.adapter.nsp.connected[keys[i]];
+                clientSocket.leave(room);
+                delete clientSocket.room;
+            }
+        }
+        
+        // Clear the host's socket data
+        delete socket.room;
+    });
+    
+    /**
      * Handles time sync requests. The data should contain these
      * values:
      * 
@@ -552,10 +584,10 @@ io.on('connection', function(socket) {
      * @param {Object} the stats from the finished game
      */
     socket.on('stats', function(data) {
-        console.log('Action: Stats');
+        console.log('Action: Stats [' + data.name + ']');
         
         mergeProfile(data.name, data.data);
-        //mergeProfile('TOTAL_PLAYER_STATS', data.data);
+        mergeProfile('TOTAL_STATS', data.data);
     });
     
     /**
@@ -681,10 +713,10 @@ function mergeProfile(name, profile) {
             
             // Merge robot-specific stats
             else {
-                var subKeys = Object.keys(profile[key]);
                 var subProfile = profile[key];
-                var subEntry = entry[key];
-                for (var j = 0; j < subKeys.length; i++) {
+                var subKeys = Object.keys(subProfile);
+                var subEntry = entry[key] || {};
+                for (var j = 0; j < subKeys.length; j++) {
                     var subKey = subKeys[j];
                     if (summed.indexOf(subKey) >= 0) {
                         subEntry[key] = subEntry[key] ? subEntry[key] + subProfile[key] : subProfile[key];
@@ -703,7 +735,7 @@ function mergeProfile(name, profile) {
         }
         
         // Update the document in the database
-        doc.data = JSON.serialize(entry);
+        doc.data = JSON.stringify(entry);
         doc.save(function(err) {
             if (err) {
                 console.log('Failed to update profile data');
@@ -820,3 +852,19 @@ schema.statics.authenticate = function(username, password, callback) {
 };
 
 dbModel = mongoose.model('Granama', schema);
+
+// Initialize default "accounts"
+dbModel.findByUsername('GUEST', function(err, doc) {
+    console.log('GUEST ' + (err ? 'Failed' + err + ')' : (doc ? 'Found' : 'Needed')));
+    if (!err && !doc) {
+        var newAccount = new dbModel({ username: 'GUEST', salt: new Buffer(1), password: 'nopass' });
+        newAccount.save(function (err) { console.log('default: ' + (err ? 'Failed' + err + ')' : 'Success')); });
+    }
+});
+dbModel.findByUsername('TOTAL_STATS', function(err, doc) {
+    console.log('TOTAL_STATS ' + (err ? 'Failed(' + err + ')' : (doc ? 'Found' : 'Needed')));
+    if (!err && !doc) {
+        var newAccount = new dbModel({ username: 'TOTAL_STATS', salt: new Buffer(1), password: 'nopass' });
+        newAccount.save(function (err) { console.log('default: ' + (err ? 'Failed' + err + ')' : 'Success')); });
+    }
+});
