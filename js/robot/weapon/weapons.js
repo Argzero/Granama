@@ -102,7 +102,7 @@ var weapon = {
             data.sprite || 'bullet',
             pos.x, pos.y,
             data.shooter || source, source,
-            data.speed || data.vel.normalize() || weapon.DEFAULT_SPEED,
+            data.speed || weapon.DEFAULT_SPEED,
             weapon.getAngle(data),
             data.damage,
             data.distance || (data.range * 1.5),
@@ -148,6 +148,8 @@ var weapon = {
         if (data.spread) {
             projectile.spread(data.spread);
         }
+		
+		connection.fireProjectile(projectile);
     },
 
 	/**
@@ -243,9 +245,7 @@ var weapon = {
     
         // Must meet the conditions
         if (weapon.checkTime(data, this.isInRange(data.range))) {
-            //weapon.fireBullet(this, data);
-			var bullet = new Bullet(data.sprite, data.dx, data.dy, data.shooter, this, data.speed, data.angle, data.damage, range, pierce, target);
-			Connection.fireProjectile(bullet, this);
+			weapon.fireBullet(this, data);
         }
     },
 
@@ -363,9 +363,7 @@ var weapon = {
                     return;
                 }
                 for (var i = 0; i < (data.bullets || 1); i++) {
-                    //weapon.fireBullet(this, data);
-					var bullet = new Bullet(data.sprite, data.dx, data.dy, data.shooter, this, data.speed, data.angle, data.damage, range, pierce, target);
-					Connection.fireProjectile(bullet, this);
+                    weapon.fireBullet(this, data);
                 }
                 data.intervalTimer = data.interval - 1;
 

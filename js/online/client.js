@@ -485,28 +485,26 @@ Connection.prototype.upgradeSelection = function(player, id, ready) {
  *
  * @param {projectile} proj - the projectile to be sent over
  */
-Connection.prototype.fireProjectile = function(proj, weapon) {
+Connection.prototype.fireProjectile = function(proj) {
     if (!this.connected || !this.inRoom) return;
     this.socket.emit('fireProjectile', {
-		weapon: weapon,
         sprite: proj.spriteName,
 		pos: proj.position,
 		vel: proj.vel,
-		size: proj.size,
+		size: proj.size.x,
 		dmg: proj.damage,
 		id: proj.id,
 		pierce: proj.pierce,
 		spread: proj.spread,
 		range: proj.range,
-		templates: proj.templates,
-		buffs: proj.buffs.name,
-		update: proj.onUpdate.name,
-		collide: proj.onCollideCheck.name,
-		hit: proj.onHit.name,
-		expire: proj.onExpire.name,
-		block: proj.block.name,
+		buffs: proj.buffs,
+		update: proj.onUpdate ? proj.onUpdate.name : undefined,
+		collide: proj.onCollideCheck ? proj.onCollideCheck.name : undefined,
+		hit: proj.onHit ? proj.onHit.name : undefined,
+		expire: proj.onExpire ? proj.onExpire.name : undefined,
+		block: proj.onBlocked ? proj.onBlocked.name : undefined,
 		group: proj.group,
-		shooter: proj.shooter,
+		shooter: proj.shooter.id,
         time: this.getServerTime()
     });
 };
@@ -1063,6 +1061,65 @@ Connection.prototype.onFireProjectile = function(data) {
 	var result = new Vector(data.pos.x, data.pos.y);
 	data.pos = result;
 	
-    data.weapon.fireBullet(data.shooter, data);	
+	var resultVel = new Vector(data.vel.x, data.vel.y);
+	data.vel = resultVel;
+	
+    // Create the projectile
+	var shooter = gameScreen.getRobotById(data.shooter);
+        var projectile = new Projectile(
+            data.sprite || 'bullet',
+            0, 0,
+            shooter, shooter,
+            data.vel.length(),
+            0,
+            data.dmg,
+            data.distance || (data.range),
+            data.pierce,
+            data.group
+        );
+		
+		projectile.origin = data.pos.clone();
+		
+		projectile.pos = data.pos;
+		
+		projectile.rotation = data.vel.normalize().rotate(0,-1);
+		
+		projectile.angle = projectile.getAngle();
+        
+        // Size scaling
+        if (data.size) {
+            projectile.scale(data.size, data.size);
+        }
+        
+        // Copy over provided buffs
+        if (data.buffs) {
+            projectile.buffs = data.buffs;
+        }
+        
+        // Copy over event handlers
+		projectile.onUpdate = projEvents[data.onUpdate];
+        projectile.onCollideCheck = projEvents[data.onCollideCheck];
+        projectile.onHit = projEvents[data.onHit];
+        projectile.onBlocked = projEvents[data.onBlocked];
+        projectile.onExpire = projEvents[data.onExpire];
+        
+        // Apply template calls
+		/*
+        if (data.templates) {
+            for (var i = 0; i < data.templates.length; i++) {
+                var temp = data.templates[i];
+                projectile[temp.name].apply(projectile, temp.args);
+            }
+        }*/
+        
+        // Apply extra data
+		/*
+        if (data.extra) {
+            var x;
+            for (x in data.extra) {
+                projectile[x] = data.extra[x];
+            }
+        }*/
+		gameScreen.bullets.push(projectile);
 };
 var connection = new Connection();

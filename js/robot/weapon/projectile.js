@@ -201,6 +201,7 @@ Projectile.prototype.spread = function(amount) {
                 proj.rotate(cos, j * sin);
             }
             gameScreen.bullets.push(proj);
+			connection.fireProjectile(proj);
         }
     }
 };
