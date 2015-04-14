@@ -240,7 +240,7 @@ function resizeCanvas() {
     
     var chat = document.getElementById('chat');
     chat.style.width = w + 'px';
-    if (w == 0) chat.style.display = 'none';
+    if (w === 0) chat.style.display = 'none';
     else if (gameRoom instanceof LobbyScreen) chat.style.display = 'block';
 }
 

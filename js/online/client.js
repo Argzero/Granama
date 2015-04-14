@@ -227,6 +227,14 @@ Connection.prototype.fetchRooms = function() {
 };
 
 /**
+ * Tells other players about the end of the game
+ */
+Connection.prototype.gameOver = function() {
+    if (!this.connected || !this.inRoom) return;
+    this.socket.emit('gameOver', { time: this.getServerTime() });
+};
+
+/**
  * Tells other clients of the experience acquired by a player.
  * 
  * @param {number} index  - the index of the player receiving the exp
@@ -298,22 +306,6 @@ Connection.prototype.message = function(message) {
 };
 
 /**
- * Attempts to sign the user up with a new account, responding to the 
- * callback with the result. If another login attempt is already being
- * processed or there is no connection, this will do nothing instead.
- *
- * @param {string}   username - the player's username
- * @param {string}   password - the player's password
- * @param {function} callback - the method to use when a response is received
- */ 
-Connection.prototype.signup = function(username, password, callback) {
-    if (!this.connected || this.callback) return;
-    
-    this.callback = callback;
-    this.socket.emit('signup', { username: username, password: password });
-};
-
-/**
  * Removes all local players from the current game for some
  * reason, whether it's quitting from the lobby, closing the
  * window, or losing connection.
@@ -370,6 +362,22 @@ Connection.prototype.setPaused = function(id) {
 };
 
 /**
+ * Attempts to sign the user up with a new account, responding to the 
+ * callback with the result. If another login attempt is already being
+ * processed or there is no connection, this will do nothing instead.
+ *
+ * @param {string}   username - the player's username
+ * @param {string}   password - the player's password
+ * @param {function} callback - the method to use when a response is received
+ */ 
+Connection.prototype.signup = function(username, password, callback) {
+    if (!this.connected || this.callback) return;
+    
+    this.callback = callback;
+    this.socket.emit('signup', { username: username, password: password });
+};
+
+/**
  * Tells other players in the game to spawn an enemy at the given coordinates
  * 
  * @param {number}  construct - the name of the constructor function
@@ -395,7 +403,7 @@ Connection.prototype.spawn = function(construct, pos, id, bossSpawn, extra) {
  *
  * @param {Profile} profile - the profile data to submit
  */
-Connection.prototype.submitStats(profile) {
+Connection.prototype.submitStats = function(profile) {
     if (!this.connected) return;
     this.socket.emit('stats', profile);
 };
@@ -611,6 +619,19 @@ Connection.prototype.onDowngrade = function(data) {
     ui.hovered[data.player] = data.upgrade;
     players[data.player].upgrades[data.upgrade]--;
     players[data.player].points++;
+};
+
+/**
+ * Handles starting the game over timer when all players are dead.
+ * The data should contain the values:
+ *
+ *   time = the time when the game ended
+ *
+ * @param {Object} data - the data from the server
+ */
+Connection.prototype.onGameOver = function(data) {
+    gameScreen.gameOver = 300 - (performance.now - this.fromServerTime(data.time)) * 0.06;  
+    this.inRoom = false;
 };
 
 /**
@@ -837,6 +858,7 @@ Connection.prototype.onStartGame = function(data) {
         var player = new robot.player();
         player.color = robot.color;
         player.name = robot.name;
+        player.profile = selection.profile;
         var skill = robot.skills[selection.ability];
         player.ability = skill.name;
         player.input = players[i].input || new NetworkInput();
