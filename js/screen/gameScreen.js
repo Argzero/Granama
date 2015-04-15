@@ -501,6 +501,7 @@ GameScreen.prototype.spawnEnemy = function(data, x, y) {
         }
         if (total > r) {
             enemy = new data[i + 2](x, y);
+            enemy.construct = data[i + 2].name;
             break;
         }
     }
@@ -546,6 +547,7 @@ GameScreen.prototype.spawnBoss = function() {
 	if (this.bossId < 5) {
 		construct = BOSS_SPAWNS[this.bossId % BOSS_SPAWNS.length];
         this.boss = new construct(x, y);
+        this.boss.construct = construct.name;
         
 		this.bossId++;
 	}
@@ -553,10 +555,12 @@ GameScreen.prototype.spawnBoss = function() {
 		if (this.superBossId === 0) {
             construct = DragonBoss;
 			this.boss = new DragonBoss(x, y);
+            this.boss.construct = DragonBoss.name;
 		}
 		else {
             construct = HydraBoss;
 			this.boss = new HydraBoss(x, y);
+            this.boss.construct = HydraBoss.name;
 		}
 		this.superBossId++;
 		this.shuffleBosses();

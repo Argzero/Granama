@@ -693,16 +693,23 @@ function mergeProfile(name, profile) {
         // Merge profile stats between the individual game
         // and any previously existing stats
         var keys = Object.keys(profile);
-        var robot, key;
+        var robot, key, j, kills;
         for (var i = 0; i < keys.length; i++) {
             robot = undefined;
             temp = profile;
             key = keys[i];
             if (summed.indexOf(key) >= 0) {
-                entry[key] = entry[key] ? entry[key] + profile[key] : profile[key];
+                entry[key] = (entry[key] ? entry[key] : 0) + profile[key];
             }
             else if (best.indexOf(key) >= 0) {
-                entry[key] = entry[key] ? Math.max(entry[key], profile[key]) : profile[key];
+                entry[key] = Math.max(entry[key] ? entry[key] : 0, profile[key]);
+            }
+            else if (key == 'killTypes' || key == 'deathTypes') {
+                kills = Object.keys(profile[key]);
+                if (!entry[key]) entry[key] = {};
+                for (j = 0; j < kills.length; j++) {
+                    entry[key][kills[j]] = (entry[key][kills[j]] ? entry[key][kills[j]] : 0) + profile[key][kills[j]];
+                }
             }
             else if (key == 'last') {
                 if (entry[key]) {
@@ -716,13 +723,20 @@ function mergeProfile(name, profile) {
                 var subProfile = profile[key];
                 var subKeys = Object.keys(subProfile);
                 var subEntry = entry[key] || {};
-                for (var j = 0; j < subKeys.length; j++) {
+                for (j = 0; j < subKeys.length; j++) {
                     var subKey = subKeys[j];
                     if (summed.indexOf(subKey) >= 0) {
                         subEntry[key] = subEntry[key] ? subEntry[key] + subProfile[key] : subProfile[key];
                     }
                     else if (best.indexOf(subKey) >= 0) {
                         subEntry[key] = subEntry[key] ? Math.max(subEntry[key], subProfile[key]) : subProfile[key];
+                    }
+                    else if (key == 'killTypes' || key == 'deathTypes') {
+                        kills = Object.keys(subProfile[key]);
+                        if (!subEntry[key]) subEntry[key] = {};
+                        for (j = 0; j < kills.length; j++) {
+                            subEntry[key][kills[j]] = (subEntry[key][kills[j]] ? subEntry[key][kills[j]] : 0) + subProfile[key][kills[j]];
+                        }
                     }
                     else if (subKey == 'last') {
                         if (subEntry[key]) {

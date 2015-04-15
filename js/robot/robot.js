@@ -132,7 +132,7 @@ Robot.prototype.damage = function(amount, source) {
         this.dead = this.health <= 0;
         if (this.dead) {
             source.giveKill(this);
-            this.deaths++;
+            this.giveDeath(source);
             this.health = 0;
             if (this.onDeath) {
                 this.onDeath();
@@ -154,6 +154,15 @@ Robot.prototype.damage = function(amount, source) {
  */
 Robot.prototype.giveKill = function(victim) {
     this.kills++;
+};
+
+/**
+ * Records a death by the cause of the given killer
+ *
+ * @param {Robot} killer - the robot that killed this robot
+ */
+Robot.prototype.giveDeath = function(killer) {
+    this.deaths++;
 };
 
 /**

@@ -53,6 +53,7 @@ function Player(name, x, y, type, health, speed, healthScale, damageScale, shiel
     this.levelFrame    = -1;
     this.lastHelath    = 0;
     this.killTypes     = {};
+    this.deathTypes    = {};
     this.input         = undefined;
     var submitted      = false;
 }
@@ -293,9 +294,24 @@ Player.prototype.isInRange = function() {
  * @param {Robot} victim - the killed robot
  */
 Player.prototype.giveKill = function(victim) {
-    this.kills++;
-    if (!this.killTypes[victim.type]) this.killTypes[victim.type] = 0;
-    this.killTypes[victim.type]++;
+    if (victim.construct) {
+        this.kills++;
+        if (!this.killTypes[victim.construct]) this.killTypes[victim.construct] = 0;
+        this.killTypes[victim.construct]++;
+    }
+};
+
+/**
+ * Records a death by the cause of the given killer
+ *
+ * @param {Robot} killer - the robot that killed this robot
+ */
+Player.prototype.giveDeath = function(killer) {
+    this.deaths++;
+    if (killer.construct) {
+        if (!this.deathTypes[killer.construct]) this.deathTypes[killer.construct] = 0;
+        this.deathTypes[killer.construct]++;
+    }
 };
 
 /**
@@ -313,12 +329,6 @@ Player.prototype.submitStats = function() {
     profile.addStat(this.name, STAT.TOTAL_TAKEN, this.damageTaken);
     profile.addStat(this.name, STAT.TOTAL_ABSORBED, this.damageAbsorbed);
     profile.addStat(this.name, STAT.TOTAL_EXP, this.totalExp);
-    profile.addStat(this.name, STAT.LIGHT, this.killTypes[Robot.LIGHT_ENEMY]);
-    profile.addStat(this.name, STAT.HEAVY, this.killTypes[Robot.HEAVY_ENEMY]);
-    profile.addStat(this.name, STAT.MINIBOSS, this.killTypes[Robot.MINIBOSS_ENEMY]);
-    profile.addStat(this.name, STAT.BOSS, this.killTypes[Robot.BOSS_ENEMY]);
-    profile.addStat(this.name, STAT.DRAGON, this.killTypes[Robot.DRAGON_ENEMY]);
-    profile.addStat(this.name, STAT.HYDRA, this.killTypes[Robot.HYDRA_ENEMY]);
     profile.addStat(this.name, STAT.GAMES, 1);
     
     profile.setBest(this.name, STAT.MOST_KILLS, this.kills);
@@ -329,6 +339,9 @@ Player.prototype.submitStats = function() {
     profile.setBest(this.name, STAT.MOST_ABSORBED, this.damageAbsorbed);
     profile.setBest(this.name, STAT.BEST_SCORE, gameScreen.score);
     profile.setBest(this.name, STAT.HIGHEST_LEVEL, this.level);
+    
+    profile.data.killTypes = this.killTypes;
+    profile.data.deathTypes = this.deathTypes;
     
     profile.addList(this.name, STAT.LAST_10, 10, gameScreen.score);
     
