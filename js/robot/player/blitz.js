@@ -12,7 +12,7 @@ depend('robot/skill/overdrive');
 extend('PlayerBlitz', 'Player');
 function PlayerBlitz() {
     //         Sprite Name   X  Y  Type          HP   Speed  HP+  Damage+  Shield+  Speed+
-    this.super('pSpeedBody', 0, 0, Robot.PLAYER, 100, 3,     10,  1,       1,       1.5);
+    this.super('pSpeedBody', 0, 0, Robot.PLAYER, 100, 3,     10,  1,       1,       2);
 
     // Sprites drawn on top of the robot's body
     this.postChildren.push(

@@ -75,7 +75,7 @@ PlayerValkyrie.prototype.applyUpdate = function() {
 
     // Double shot
     if (this.speed == this.baseSpeed) {
-        this.gunData1.damage = this.gunData2.damage = m;
+        this.gunData1.damage = this.gunData2.damage = 2 * m;
         this.gunData1.rate = this.gunData2.rate = 120 / (5 + this.upgrades[DUAL_ID] * 2.5);
         this.gun(this.gunData1);
         this.gun(this.gunData2);

@@ -36,7 +36,7 @@ function skillLaserBomb(player) {
                 /* Source */ this, this,
                 /* Speed  */ 15,
                 /* Angle  */ 0,
-                /* Damage */ this.get('power') * (30 + this.drones.length * 5),
+                /* Damage */ this.get('power') * (40 + this.drones.length * 8),
                 /* Range  */ 499, 
                 /* Pierce */ false,
                 /* Target */ Robot.ENEMY
