@@ -1,0 +1,23 @@
+extends ./base.jade
+block body
+  nav
+    h1
+      a(href='/game') Granama
+    input#user(type='text', placeholder='Search')
+    button#logout Log Out
+  section#tools
+  section#stats
+    section#statView
+      h6#title User
+      h6
+        span#robot Robot
+      h3#usageTitle Usage
+      canvas#usage
+      h3 Totals
+      section#totals
+      h3 Records
+      section#records
+  footer Created by Steven Sucy
+block scripts
+  script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
+  script(src='/assets/statScript.js')
