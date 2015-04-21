@@ -84,7 +84,7 @@ PlayerBeta.prototype.applyUpdate = function() {
     // Sword - only swing when close to enemies
     var closest = gameScreen.getClosest(this.pos, Robot.ENEMY);
     if (closest && closest.pos.distanceSq(this.pos) < 90000) {
-        this.swordData.damage = 4 * m * this.charge;
+        this.swordData.damage = 6 * m * this.charge;
         this.gun(this.swordData);
         
         // Make the charge follow the sword

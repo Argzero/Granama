@@ -19,7 +19,7 @@ function skillStasis(player) {
 
         // Active skill effects
         if (this.skillDuration > 0) {
-            this.health += this.maxHealth * 0.5 / 180;
+            this.health += this.maxHealth / 180;
             if (this.health >= this.maxHealth) {
                 this.health = this.maxHealth;
                 this.skillDuration = 0;
@@ -30,9 +30,9 @@ function skillStasis(player) {
                 var s = Math.sin(angle);
                 gameScreen.particles.push(new Plus(this.pos.x, this.pos.y, 2 * c, 2 * s, 75));
             }
-
-            return 0;
+			this.speed = 0;
         }
+		else this.speed = this.baseSpeed;
     };
 
     /**

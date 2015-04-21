@@ -55,13 +55,13 @@ PlayerGuardian.prototype.applyUpdate = function() {
     var m = this.get('power');
 
     // Minigun
-    this.minigunData.damage = 3 * m;
+    this.minigunData.damage = 6 * m;
     this.minigunData.rate = 6 - this.upgrades[MINIGUN_ID] / 2;
     this.gun(this.minigunData);
 
     // Rockets
     this.rocketData.type = this.name;
-    this.rocketData.damage = 12 * m;
+	this.rocketData.damage = 12 * m * (1 + this.upgrades[KNOCKBACK_ID] * 0.1);
     this.rocketData.templates[0].args[1] = 100 + 25 * this.upgrades[EXPLOSION_ID];
     this.rocketData.templates[0].args[2] = 30 + 25 * this.upgrades[KNOCKBACK_ID];
     this.gun(this.rocketData);

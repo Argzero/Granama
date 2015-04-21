@@ -16,7 +16,7 @@ function skillMissileBarrage(player) {
             this.skillCd = 480;
 
             // Fire rockets from each drone
-            var damage = this.get('power') * 20;
+            var damage = this.get('power') * 30;
             for (var i = 0; i < this.drones.length; i++) {
                 var rocket = new Projectile(
                     /* Sprite */ 'abilityMissile',
