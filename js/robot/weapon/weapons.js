@@ -121,11 +121,11 @@ var weapon = {
         }
         
         // Copy over event handlers
-        projectile.onUpdate = data.onUpdate;
-        projectile.onCollideCheck = data.onCollideCheck;
-        projectile.onHit = data.onHit;
-        projectile.onBlocked = data.onBlocked;
-        projectile.onExpire = data.onExpire;
+	projectile.onUpdate = projEvents[data.onUpdate];
+        projectile.onCollideCheck = projEvents[data.onCollideCheck];
+        projectile.onHit = projEvents[data.onHit];
+        projectile.onBlocked = projEvents[data.onBlocked];
+        projectile.onExpire = projEvents[data.onExpire];
         
         // Apply template calls
         if (data.templates) {
@@ -148,6 +148,8 @@ var weapon = {
         if (data.spread) {
             projectile.spread(data.spread);
         }
+		
+		connection.fireProjectile(projectile);
     },
 
 	/**
@@ -243,7 +245,7 @@ var weapon = {
     
         // Must meet the conditions
         if (weapon.checkTime(data, this.isInRange(data.range))) {
-            weapon.fireBullet(this, data);
+			weapon.fireBullet(this, data);
         }
     },
 

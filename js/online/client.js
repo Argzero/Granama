@@ -60,6 +60,7 @@ Connection.prototype.connect = function() {
     this.socket.on('updateSelection', this.onUpdateSelection.bind(this));
     this.socket.on('upgrade', this.onUpgrade.bind(this));
     this.socket.on('upgradeSelection', this.onUpgradeSelection.bind(this));
+	this.socket.on('fireProjectile', this.onFireProjectile.bind(this));
     
     this.socket.emit('getTime', { localTime: performance.now() });
     
@@ -228,6 +229,35 @@ Connection.prototype.downgrade = function(player, upgrade) {
 Connection.prototype.fetchRooms = function() {
     if (!this.connected || this.inRoom) return;
     this.socket.emit('fetchRooms', { players: players.length });
+};
+
+/**
+ * Sends bullet data to the server
+ *
+ * @param {projectile} proj - the projectile to be sent over
+ */
+Connection.prototype.fireProjectile = function(proj) {
+    if (!this.connected || !this.inRoom) return;
+    this.socket.emit('fireProjectile', {
+        sprite: proj.spriteName,
+		pos: proj.position,
+		vel: proj.vel,
+		size: proj.size.x,
+		dmg: proj.damage,
+		id: proj.id,
+		pierce: proj.pierce,
+		spread: proj.spread,
+		range: proj.range,
+		buffs: proj.buffs,
+		update: proj.onUpdate ? proj.onUpdate.name : undefined,
+		collide: proj.onCollideCheck ? proj.onCollideCheck.name : undefined,
+		hit: proj.onHit ? proj.onHit.name : undefined,
+		expire: proj.onExpire ? proj.onExpire.name : undefined,
+		block: proj.onBlocked ? proj.onBlocked.name : undefined,
+		group: proj.group,
+		shooter: proj.shooter.id,
+        time: this.getServerTime()
+    });
 };
 
 /**
@@ -623,6 +653,100 @@ Connection.prototype.onDowngrade = function(data) {
     ui.hovered[data.player] = data.upgrade;
     players[data.player].upgrades[data.upgrade]--;
     players[data.player].points++;
+};
+
+/**
+ * Receives bullet data, then makes it. The data
+ * should include the values:
+ *
+ *	weapon = weapon that the bullet is coming from
+ *
+ *  sprite = the name of the sprite of the projectile
+ *	pos = the position of the projectile
+ *	vel = the velocity of the projectile
+ *	size = the size of the projectile
+ *	dmg = how much damage the projectile will do to a target
+ *	id = the id of the bullet
+ *	pierce = does the bullet pierce?
+ *	range = the max distance the bullet will travel
+ *	temps = what templates the projectile follows
+ * 	buffs = any buffs the projectile has
+ * 	update = update method for the projectile
+ *	collide = check method for the projectile
+ *	hit = method for the projectile when it hits a target
+ *	expire = method for what the bullet does when it expires
+ *	block = method for what happens to a projectile when it is blocked
+ * 	group = what group the projectile is in
+ *	shooter = the id of who shot the projectile
+ *  time = when the change took place
+ *
+ * @param {Object} data - the projectile data
+ */
+Connection.prototype.onFireProjectile = function(data) {
+	var result = new Vector(data.pos.x, data.pos.y);
+	data.pos = result;
+	
+	var resultVel = new Vector(data.vel.x, data.vel.y);
+	data.vel = resultVel;
+	
+    // Create the projectile
+	var shooter = gameScreen.getRobotById(data.shooter);
+    var projectile = new Projectile(
+        data.sprite || 'bullet',
+        0, 0,
+        shooter, shooter,
+        data.vel.length(),
+        0,
+        data.dmg,
+        data.distance || (data.range),
+        data.pierce,
+        data.group
+    );
+    
+    projectile.origin = data.pos.clone();
+    
+    projectile.pos = data.pos;
+    
+    projectile.rotation = data.vel.normalize().rotate(0,-1);
+    
+    projectile.angle = projectile.getAngle();
+    
+    // Size scaling
+    if (data.size) {
+        projectile.scale(data.size, data.size);
+    }
+    
+    // Copy over provided buffs
+    if (data.buffs) {
+        projectile.buffs = data.buffs;
+    }
+    
+    // Copy over event handlers
+    projectile.onUpdate = projEvents[data.onUpdate];
+    projectile.onCollideCheck = projEvents[data.onCollideCheck];
+    projectile.onHit = projEvents[data.onHit];
+    projectile.onBlocked = projEvents[data.onBlocked];
+    projectile.onExpire = projEvents[data.onExpire];
+    
+    // Apply template calls
+    /*
+    if (data.templates) {
+        for (var i = 0; i < data.templates.length; i++) {
+            var temp = data.templates[i];
+            projectile[temp.name].apply(projectile, temp.args);
+        }
+    }*/
+    
+    // Apply extra data
+    /*
+    if (data.extra) {
+        var x;
+        for (x in data.extra) {
+            projectile[x] = data.extra[x];
+        }
+    }*/
+    
+    gameScreen.bullets.push(projectile);
 };
 
 /**
