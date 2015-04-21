@@ -293,7 +293,7 @@ function drawGraph(data) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Get the dimensions
-    var r = Math.min(150, canvas.width / 4);
+    var r = Math.min(130, canvas.width / 4);
     var x = r;
     var y = r;
     
@@ -331,7 +331,9 @@ function drawGraph(data) {
         ctx.lineTo(x, y);
         ctx.closePath();
         ctx.fill();
-        ctx.stroke();
+        if (data.length > 1) {
+            ctx.stroke();
+        }
 
         // Draw the legend to the side
         var keyY = y - r + i * spacing + spacing / 2 + 5;
