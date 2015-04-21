@@ -28,7 +28,9 @@ function SelectScreen() {
     this.settings = [];
     this.open = [];
     this.authID = -1;
-
+    
+    connection.inRoom = false;
+    
     // Initialize player settings
     for (i = 0; i < players.length; i++) {
         this.settings.push(new PlayerSettings(i));
@@ -502,7 +504,7 @@ SelectScreen.prototype.draw = function() {
                     // Apply the options to get ready for playing
                     //robot = PLAYER_DATA[settings.robot];
                     var player = new robot.player();
-                    player.profile = new Profile(settings.profile);
+                    player.profile = settings.profile;
                     player.color = robot.color;
                     player.name = robot.name;
                     var skill = robot.skills[settings.ability];
