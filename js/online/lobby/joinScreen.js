@@ -394,6 +394,7 @@ function handleLoginResponse(result) {
     gameScreen.authID = -1;
     if (result.success) {
         settings.name = settings.user;
+        settings.profile = settings.user;
         settings.part += 0.5;
     }
     else {

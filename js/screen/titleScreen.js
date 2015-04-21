@@ -15,7 +15,7 @@ function TitleScreen() {
             gameScreen = new JoinScreen();
         })
         .addButton('Stats', 80, function() {
-            gameScreen = new StatScreen();
+			window.location.href = '/stats';
         })
         .addButton('Controls', 190, function() {
             gameScreen = new ControlsScreen();

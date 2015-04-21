@@ -58,7 +58,7 @@ TURRET_RANGE = 500,
 PLAYER_DATA = [
     {
         player : PlayerGuardian,
-        preview: 'pDefense',
+        preview: 'pGuardian',
         name   : 'Guardian',
         ups    : ['MinigunAttackSpeed', 'BlastRadius', 'Knockback', 'ShieldRecharge', 'MovementSpeed'],
         icons  : ['Minigun', 'Explosion', 'Knockback', 'Shield', 'Speed'],
@@ -72,7 +72,7 @@ PLAYER_DATA = [
     },
     {
         player : PlayerBlitz,
-        preview: 'pSpeed',
+        preview: 'pBlitz',
         name   : 'Blitz',
         ups    : ['CooldownReduction', 'ShotgunProjectiles', 'SlowingDuration', 'ShieldRecharge', 'MovementSpeed'],
         icons  : ['Cooldown', 'Shotgun', 'Slow', 'Shield', 'Speed'],
@@ -86,7 +86,7 @@ PLAYER_DATA = [
     },
     {
         player : PlayerSlayer,
-        preview: 'pPower',
+        preview: 'pSlayer',
         name   : 'Slayer',
         ups    : ['AttackSpeed', 'LaserSpread', 'FlamethrowerRange', 'ShieldRecharge', 'MovementSpeed'],
         icons  : ['Laser', 'Spread', 'Flamethrower', 'Shield', 'Speed'],

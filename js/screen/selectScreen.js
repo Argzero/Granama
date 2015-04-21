@@ -27,6 +27,7 @@ function SelectScreen() {
     this.frame = 0;
     this.settings = [];
     this.open = [];
+    this.authID = -1;
 
     // Initialize player settings
     for (i = 0; i < players.length; i++) {

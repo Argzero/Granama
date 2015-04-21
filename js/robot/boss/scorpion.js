@@ -224,7 +224,7 @@ ScorpionBoss.prototype.onPreDraw = function() {
 /**
  * Release a grabbed player when the scorpion dies underground
  */
-Brute.prototype.onDeath = function() {
+ScorpionBoss.prototype.onDeath = function() {
     if (this.grabbed) {
         this.grabbed.hidden = false;
     }

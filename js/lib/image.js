@@ -33,7 +33,7 @@ var images = {
                 img.onload = callback;
             }
 
-            img.src = "images/" + name + ".png";
+            img.src = "/assets/images/" + name + ".png";
             this.loaded[name] = img;
             return img;
         }

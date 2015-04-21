@@ -342,6 +342,10 @@ Player.prototype.submitStats = function() {
     
     profile.data.killTypes = this.killTypes;
     profile.data.deathTypes = this.deathTypes;
+    profile.data[this.name].killTypes = this.killTypes;
+    profile.data[this.name].deathTypes = this.deathTypes;
+    profile.data[this.name].skills = {};
+    profile.data[this.name].skills[this.ability] = 1;
     
     profile.addList(this.name, STAT.LAST_10, 10, gameScreen.score);
     

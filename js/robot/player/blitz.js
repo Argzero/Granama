@@ -12,13 +12,13 @@ depend('robot/skill/overdrive');
 extend('PlayerBlitz', 'Player');
 function PlayerBlitz() {
     //         Sprite Name   X  Y  Type          HP   Speed  HP+  Damage+  Shield+  Speed+
-    this.super('pSpeedBody', 0, 0, Robot.PLAYER, 100, 3,     10,  1,       1,       1.5);
+    this.super('pBlitzBody', 0, 0, Robot.PLAYER, 100, 3,     10,  1,       1,       1.5);
 
     // Sprites drawn on top of the robot's body
     this.postChildren.push(
-        new Sprite('pSpeedGun', 0, 5).child(this, true),
-        new Sprite('pSpeedShield', 25, 15).child(this, true),
-        new Sprite('pSpeedShotgun', -25, 12).child(this, true)
+        new Sprite('pBlitzGun', 0, 5).child(this, true),
+        new Sprite('pBlitzShield', 25, 15).child(this, true),
+        new Sprite('pBlitzShotgun', -25, 12).child(this, true)
     );
 
     // Weapon data
