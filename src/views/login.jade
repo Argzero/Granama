@@ -1,0 +1,16 @@
+extends ./base.jade
+block body
+    section#bgArea
+        p Granama
+        section#loginBox
+            form#loginForm.mainForm(name='loginForm', action='/login', method='POST')
+                h1#title Login
+                input#user(type='text', name='username', placeholder='username')
+                input#pass(type='password', name='pass', placeholder='password')
+                input#pass2(type='password', name='pass2', placeholder='confirm password', style='display:none;')
+                input#signup(type="checkbox", name="signup")
+                label(for="signup") Sign Up?
+                a#formSubmit(href="#") Submit
+    footer
+block scripts
+    script(src='assets/client.js')
