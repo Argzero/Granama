@@ -119,12 +119,25 @@ var DELTA_TIME;
 var camera;
 var gameScreen;
 var constants = false;
+var chatText;
+var chatBox;
 onLoaderDone = function() {
     if (!constants) {
         depend('data/constants');
         constants = true;
         return;
     }
+    
+    // Set up chat functions
+    chatText = document.getElementById('text');
+    chatBox = document.getElementById('chat');
+    chatBox.style.display = 'none';
+    document.getElementById('input').onkeydown = function(e) {
+        if (e.keyCode != 13 || this.value === '') return;
+        controls.ignoreNext = true;
+        connection.message(this.value.replace('<', '&lt;').replace('>', '&gt;'));
+        this.value = '';
+    };
     
     camera = new Camera('granama');
     

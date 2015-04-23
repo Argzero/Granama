@@ -111,6 +111,14 @@ LobbyScreen.prototype.draw = function() {
     var scaleY = Math.min((WINDOW_HEIGHT - 20) / players.length - 20, 175);
     var baseY = y - (players.length - 1) * (scaleY + 20) / 2;
     var fontScale = scaleY / 175;
+    
+    var rw = camera.canvas.width - 4.25 * scaleY - fontScale * 500 - 60;
+    if (rw > 100) {
+        chatBox.style.display = 'block';
+        chatBox.style.width = rw + 'px';
+    }
+    else chatBox.style.display = 'none';
+    
     var i, j, k, dx, xs, ys, s, preview, robot, input;
     for (i = 0; i < players.length; i++) {
         

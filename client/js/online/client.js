@@ -1,7 +1,5 @@
 var io = io || undefined;
 
-var chatText;
-
 /**
  * Reprsents the socket.io connection to the server.
  * Use the "connection" object to access the methods
@@ -19,8 +17,6 @@ function Connection() {
     this.room = undefined;
     this.isHost = true;
     this.timeOffset = 0;
-    
-    chatText = document.getElementById('chat');
     
     this.connect();
 }
@@ -842,7 +838,7 @@ Connection.prototype.onJoinRoom = function(data) {
     
     var chat = document.getElementById('chat');
     if (chat.style.width != '0px') chat.style.display = 'block';
-    chatText.innerHTML = 'Joined the room "' + data.room + '"';
+    chatText.innerHTML = 'Joined the room "' + data.room.name + '"';
 };
 
 /**

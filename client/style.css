@@ -182,6 +182,10 @@ input:focus, button:focus {
     background-repeat: no-repeat;
 }
 
+.user {
+    color: #0ff;
+}
+
 #tools {
     clear: both;
 	float: left;
@@ -211,10 +215,44 @@ input:focus, button:focus {
     height: 100%;
 }
 
+#chat {
+    padding: 10px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    height: calc(100% - 60px);
+    background-color: black;
+    color: white;
+    font: bold 14px Tahoma;
+    border: 3px solid #666;
+}
+
+#chat h1 {
+    text-align: center;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    display: block;
+}
+
 #form {
     width: 100%;
     height: calc(100% - 86px);
     background-color: #222;
+}
+
+#chat input {
+    width: 100%;
+}
+
+#text {
+    height: calc(100% - 110px);
+    overflow: auto;
+    border-radius: 10px;
+	border: 0;
+	border-bottom: 2px solid #666;
+	border-left: 2px solid #666;
+    padding: 10px;
 }
 
 #loginForm {
