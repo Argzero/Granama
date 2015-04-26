@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+
+    <meta charset="UTF-8"/>
+    <title>Granama</title>
+    <link rel="shortcut icon" href="favicon.ico">
+
+	<script src="./socket.io/socket.io.js"></script>
+    <script src="js/lib/loader.js"></script>
+    <script src="js/main.js"></script>
+
+    <style>
+
+        @font-face { 
+            font-family: Flipbash;
+            src: url('fonts/Flipbash.ttf');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #granama, #ui {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+		}
+        
+        #chat {
+            position: absolute;
+            width: 700px;
+            height: calc(100% - 60px);
+            top: 20px;
+            right: 20px;
+            border: 10px solid #484848;
+            background-color: #000;
+            font: bold 18px Tahoma;
+            color: white;
+            
+            display: none;
+        }
+        
+        #text {
+            padding: 5px;
+            margin: 10px;
+            width: calc(100% - 35px);
+            height: calc(100% - 140px);
+            border: none;
+            border-radius: 10px;
+            border-bottom: 3px solid #555;
+            border-right: 3px solid #555;
+        }
+        
+        #input {
+            padding: 5px;
+            margin: 10px;
+            border: none;
+            border-radius: 10px;
+            border-bottom: 3px solid #555;
+            border-right: 3px solid #555;
+            width: calc(100% - 35px);
+            color: #fff;
+            font: bold 18px Tahoma;
+            
+            background-color: #000;
+            transition: background-color 600ms, color 600ms;
+        }
+        
+        #input:hover {
+            background-color: #eee;
+            color: #000;
+        }
+
+        #input:focus, select:focus {
+            outline: none;
+        }
+        
+        h1 {
+            font: 32px Flipbash;
+            color: white;
+            width: 100%;
+            text-align: center;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+         
+        ::-webkit-scrollbar-track {
+            border-radius: 10px;
+            border: 2px solid #aaa;
+        }
+         
+        ::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            background-color: #aaa;
+        }
+
+    </style>
+
+    <!--
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-55843957-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+    -->
+
+</head>
+<body>
+<div id="game">
+    <canvas id="granama" style="cursor: none"></canvas>
+    <div id="chat">
+        <h1>Chat</h1>
+        <hr/>
+        <div id="text"></div>
+        <input type="text" id="input">
+    </div>
+</div>
+</body>
+</html>
