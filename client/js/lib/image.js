@@ -27,6 +27,7 @@ var images = {
         // Load a new image
         else {
             var img = new Image();
+            img.name = name;
 
             // Apply the handler
             if (callback) {

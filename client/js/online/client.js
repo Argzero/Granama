@@ -33,12 +33,15 @@ Connection.prototype.connect = function() {
     
     // Set up message handlers
     this.socket.on('addPlayers', this.onAddPlayers.bind(this));
+    this.socket.on('blockProjectile', this.onBlockProjectile.bind(this));
     this.socket.on('buff', this.onBuff.bind(this));
     this.socket.on('changePattern', this.onChangePattern.bind(this));
     this.socket.on('damage', this.onDamage.bind(this));
     this.socket.on('destroy', this.onDestroy.bind(this));
+    this.socket.on('destroyProjectile', this.onDestroyProjectile.bind(this));
     this.socket.on('doneUpgrades', this.onDoneUpgrades.bind(this));
     this.socket.on('downgrade', this.onDowngrade.bind(this));
+    this.socket.on('fireProjectile', this.onFireProjectile.bind(this));
     this.socket.on('general', this.onGeneral.bind(this));
     this.socket.on('getTime', this.onGetTime.bind(this));
     this.socket.on('giveExp', this.onGiveExp.bind(this));
@@ -56,7 +59,6 @@ Connection.prototype.connect = function() {
     this.socket.on('updateSelection', this.onUpdateSelection.bind(this));
     this.socket.on('upgrade', this.onUpgrade.bind(this));
     this.socket.on('upgradeSelection', this.onUpgradeSelection.bind(this));
-	this.socket.on('fireProjectile', this.onFireProjectile.bind(this));
     
     this.socket.emit('getTime', { localTime: performance.now() });
     
@@ -96,6 +98,20 @@ Connection.prototype.fromServerTime = function(time) {
 // ------------------------------------------------------------------------------ //
 //                                  Client -> Server                              //
 // ------------------------------------------------------------------------------ //
+
+/**
+ * Sends bullet data to the server
+ *
+ * @param {projectile} proj - the projectile to be sent over
+ */
+Connection.prototype.blockProjectile = function(proj) {
+	if (!this.connected || !this.inRoom) return;
+	this.socket.emit('blockProjectile', {
+		id: proj.id,
+        pos: proj.pos,
+		time: this.getServerTime()
+	});
+};
 
 /**
  * Buffs a robot
@@ -193,6 +209,20 @@ Connection.prototype.destroy = function(id, exp) {
 };
 
 /**
+ * Sends bullet data to the server
+ *
+ * @param {projectile} proj - the projectile to be sent over
+ */
+Connection.prototype.destroyProjectile = function(proj) {
+	if (!this.connected || !this.inRoom) return;
+	this.socket.emit('destroyProjectile', {
+		id: proj.id,
+        pos: proj.pos,
+		time: this.getServerTime()
+	});
+};
+
+/**
  * Tells other players that all players are ready to start the next round
  */
 Connection.prototype.doneUpgrades = function() {
@@ -235,8 +265,8 @@ Connection.prototype.fetchRooms = function() {
 Connection.prototype.fireProjectile = function(proj) {
     if (!this.connected || !this.inRoom) return;
     this.socket.emit('fireProjectile', {
-        sprite: proj.spriteName,
-		pos: proj.position,
+        sprite: proj.sprite.name,
+		pos: proj.pos,
 		vel: proj.vel,
 		size: proj.size.x,
 		dmg: proj.damage,
@@ -252,6 +282,7 @@ Connection.prototype.fireProjectile = function(proj) {
 		block: proj.onBlocked ? proj.onBlocked.name : undefined,
 		group: proj.group,
 		shooter: proj.shooter.id,
+        extra: proj.extra,
         time: this.getServerTime()
     });
 };
@@ -530,6 +561,27 @@ Connection.prototype.onAddPlayers = function(data) {
 };
 
 /**
+ * Blocks a projectile in the game if it isn't already.
+ * The data should include the values:
+ *
+ *    id = the ID of the projectile to block
+ *    pos = the position the bullet was blocked at
+ *    time = the time the bullet was blocked
+ *    
+ * @param {Object} data - the data from the server
+ */
+Connection.prototype.onBlockProjectile = function(data) {
+	var id = data.id;
+	
+	var bullet = gameScreen.getBulletById(id);
+	if(bullet)
+	{
+        bullet.pos = new Vector(data.pos.x, data.pos.y);
+        bullet.block();
+	}
+};
+
+/**
  * Buffs a robot. The data should include the values:
  *
  *   robot = the ID of the robot to buff
@@ -625,6 +677,28 @@ Connection.prototype.onDestroy = function(data) {
 };
 
 /**
+ * Removes a projectile from the game if it isn't already.
+ * The data should include the values:
+ *
+ *    id = the ID of the projectile to destroy
+ *    pos = the position the bullet expired
+ *    time = the time the bullet expired
+ *    
+ * @param {Object} data - the data from the server
+ */
+Connection.prototype.onDestroyProjectile = function(data) {
+	var id = data.id;
+	
+	var bullet = gameScreen.getBulletById(id);
+	if(bullet)
+	{
+        bullet.pos = new Vector(data.pos.x, data.pos.y);
+		bullet.expired = true;
+        if (bullet.onExpire) bullet.onExpire();
+	}
+};
+
+/**
  * Starts the next round of the game. The data should
  * include the values:
  *
@@ -688,13 +762,13 @@ Connection.prototype.onFireProjectile = function(data) {
     // Create the projectile
 	var shooter = gameScreen.getRobotById(data.shooter);
     var projectile = new Projectile(
-        data.sprite || 'bullet',
+        data.sprite,
         0, 0,
         shooter, shooter,
         data.vel.length(),
         0,
         data.dmg,
-        data.distance || (data.range),
+        data.range,
         data.pierce,
         data.group
     );
@@ -724,23 +798,16 @@ Connection.prototype.onFireProjectile = function(data) {
     projectile.onBlocked = projEvents[data.onBlocked];
     projectile.onExpire = projEvents[data.onExpire];
     
-    // Apply template calls
-    /*
-    if (data.templates) {
-        for (var i = 0; i < data.templates.length; i++) {
-            var temp = data.templates[i];
-            projectile[temp.name].apply(projectile, temp.args);
-        }
-    }*/
-    
     // Apply extra data
-    /*
     if (data.extra) {
         var x;
         for (x in data.extra) {
-            projectile[x] = data.extra[x];
+            if (data.extra[x].x !== undefined) {
+                projectile.extra[x] = new Vector(data.extra[x].x, data.extra[x].y);
+            }
+            else projectile.extra[x] = data.extra[x];
         }
-    }*/
+    }
     
     gameScreen.bullets.push(projectile);
 };

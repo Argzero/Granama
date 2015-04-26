@@ -30,9 +30,13 @@ function Projectile(name, x, y, shooter, gun, speed, angle, damage, range, pierc
     this.pierce = pierce;
     this.group = target;
     this.expired = false;
+    this.id = Projectile.ID++;
     
     // Array of buffs to apply. Add in the format { name, multiplier, duration }
     this.buffs = [];
+    
+    // Extra values that should be shared over the network
+    this.extra = {};
     
     this.offset = this.pos.clone();
     this.pos.rotatev(gun.getWorldRotation());
@@ -72,6 +76,8 @@ function Projectile(name, x, y, shooter, gun, speed, angle, damage, range, pierc
     this.onExpire = undefined;
 }
 
+Projectile.ID = 1;
+
 /**
  * Basic update functionality for bullets
  */
@@ -109,6 +115,10 @@ Projectile.prototype.applyBuffs = function(target) {
 Projectile.prototype.block = function() {
     this.expired = true;
     if (this.onBlocked) this.onBlocked();
+    if(connection.isHost)
+    {
+        connection.blockProjectile(this);
+    }
 };
 
 /**
@@ -137,6 +147,10 @@ Projectile.prototype.hit = function(target) {
     this.applyBuffs(target);
     this.expired = this.expired || !this.pierce;
     if (this.onHit) this.onHit(target, damage);
+    if(this.expired && connection.isHost)
+	{
+		connection.destroyProjectile(this);
+	}
 };
 
 /**
@@ -219,8 +233,8 @@ Projectile.prototype.setupFist = function(delay, side) {
     this.onBlocked = projEvents.fistBlocked;
     this.onExpire = projEvents.fistExpired;
     
-    this.delay = delay;
-    this.side = side.toLowerCase();
+    this.extra.delay = delay;
+    this.extra.side = side.toLowerCase();
 };
 
 /** 
@@ -237,7 +251,7 @@ Projectile.prototype.setupGrapple = function(stun, self) {
     this.onCollideCheck = projEvents.grappleCollide;
     
     this.stun = stun;
-    this.self = self;
+    this.extra.self = self;
 };
 
 /** 
@@ -254,8 +268,8 @@ Projectile.prototype.setupHoming = function(target, rotSpeed) {
     if (isNaN(target)) this.target = target;
     else this.target = gameScreen.getClosest(this.pos, target);
     
-    this.rotSpeed = rotSpeed;
-    this.lifespan = this.range / this.speed;
+    this.extra.rotSpeed = rotSpeed;
+    this.extra.lifespan = this.range / this.speed;
     this.range = 999999;
     return this;
 };
@@ -272,8 +286,8 @@ Projectile.prototype.setupRocket = function(type, radius, knockback) {
     this.onExpire = projEvents.rocketExpire;
     this.onBlocked = projEvents.rocketBlocked;
     
-    this.type = type;
-    this.radius = radius;
+    this.extra.type = type;
+    this.extra.radius = radius;
     this.knockback = knockback;
     return this;
 };
@@ -298,7 +312,7 @@ Projectile.prototype.setupSlowBonus = function(multiplier) {
 Projectile.prototype.setupSpinning = function(rotSpeed) {
     this.onUpdate = projEvents.spinningUpdate;
     
-    this.rotSpeed = rotSpeed;
+    this.extra.rotSpeed = rotSpeed;
     return this;
 };
 
@@ -315,12 +329,12 @@ Projectile.prototype.setupSword = function(radius, arc, knockback, lifesteal) {
     this.onHit = projEvents.swordHit;
     this.onBlocked = projEvents.swordBlocked;
     
-    this.tempRotation = new Vector(1, 0);
-    this.initial = this.offset.clone();
-    this.start = new Vector(-radius * Math.sin(arc / 2), radius * Math.cos(arc / 2));
+    this.extra.tempRotation = new Vector(1, 0);
+    this.extra.initial = this.offset.clone();
+    this.extra.start = new Vector(-radius * Math.sin(arc / 2), radius * Math.cos(arc / 2));
     this.knockback = knockback;
     this.lifesteal = lifesteal;
-    this.arc = arc;
+    this.extra.arc = arc;
     this.range = 999999;
 };
 
@@ -351,16 +365,16 @@ var projEvents = {
      * returning back after reaching the range and pausing
      */
     fistUpdate: function() {
-        this.expired = this.expired || (this.returning && this.delay <= 0 && this.shooter.dead);
-        this.shooter[this.side + 'Fist'] = this.expired;
+        this.expired = this.expired || (this.returning && this.extra.delay <= 0 && this.shooter.dead);
+        this.shooter[this.extra.side + 'Fist'] = this.expired;
         this.actualDamage = this.actualDamage || this.damage;
         
         // Updates after the fist reached it's range limit
         if (this.returning) {
         
             // Wait before returning
-            if (this.delay > 0) {
-                this.delay--;
+            if (this.extra.delay > 0) {
+                this.extra.delay--;
                 this.vel.x = this.vel.y = 0;
             }
             
@@ -372,7 +386,7 @@ var projEvents = {
                 
                 if (this.pos.distanceSq(this.shooter.pos) < 22500) {
                     this.expired = true;
-                    this.shooter[this.side + 'Fist'] = true;
+                    this.shooter[this.extra.side + 'Fist'] = true;
                 }
             }
         }
@@ -383,7 +397,7 @@ var projEvents = {
      */
     fistBlocked: function() {
         this.onExpire();
-        this.delay = 0;
+        this.extra.delay = 0;
         this.damage = this.actualDamage;
     },
     
@@ -408,7 +422,7 @@ var projEvents = {
             this.vel = returnPoint.clone().subtractv(this.pos).setMagnitude(this.speed);
             if (this.target && this.target.pos.distanceSq(this.shooter.pos) >= 10000) {
                 if (this.target.type != Robot.BOSS) this.target.stun(this.stun || 2);
-                if (this.self || this.target.type == Robot.BOSS) {
+                if (this.extra.self || this.target.type == Robot.BOSS) {
                     this.shooter.move(-this.vel.x, -this.vel.y);
                     this.shooter.stun(2);
                     this.vel.x = 0;
@@ -476,12 +490,12 @@ var projEvents = {
      * Updates homing bullets, turning their velocity towards their target
      */
     homingUpdate: function() {
-        this.lifespan--;
-        this.expired = this.expired || this.target.dead || this.lifespan <= 0;
+        this.extra.lifespan--;
+        this.expired = this.expired || this.target.dead || this.extra.lifespan <= 0;
         
         var cross = this.pos.clone().subtractv(this.target.pos).cross(this.vel);
-        var angle = cross < 0 ? -this.rotSpeed : this.rotSpeed;
-        this.rotSpeed += 0.0001;
+        var angle = cross < 0 ? -this.extra.rotSpeed : this.extra.rotSpeed;
+        this.extra.rotSpeed += 0.0001;
         this.vel.rotateAngle(angle);
         this.rotation.rotateAngle(angle);
     },
@@ -530,20 +544,23 @@ var projEvents = {
      * @param {Robot} [ignore] - robot to ignore if any
      */
     rocketExpire: function(ignore) {
-        for (var i = 0; i < gameScreen.robots.length; i++) {
-            var r = gameScreen.robots[i];
-            if ((r.type & this.group) && this.pos.distanceSq(r.pos) < this.radius * this.radius) {
-                if (r != ignore) {
-                    r.damage(this.damage, this.shooter);
-                    this.applyBuffs(r);
-                }
-                if (this.knockback) {
-                    var dir = r.pos.clone().subtractv(this.pos).setMagnitude(this.knockback);
-                    r.knockback(dir);
+        if (connection.isHost)
+        {
+            for (var i = 0; i < gameScreen.robots.length; i++) {
+                var r = gameScreen.robots[i];
+                if ((r.type & this.group) && this.pos.distanceSq(r.pos) < this.extra.radius * this.extra.radius) {
+                    if (r != ignore) {
+                        r.damage(this.damage, this.shooter);
+                        this.applyBuffs(r);
+                    }
+                    if (this.knockback) {
+                        var dir = r.pos.clone().subtractv(this.pos).setMagnitude(this.knockback);
+                        r.knockback(dir);
+                    }
                 }
             }
         }
-        gameScreen.particles.push(new RocketExplosion(this.type, this.pos, this.radius));
+        gameScreen.particles.push(new RocketExplosion(this.extra.type, this.pos, this.extra.radius));
     },
     
     /**
@@ -579,7 +596,7 @@ var projEvents = {
      * Rotates the projectile each update
      */ 
     spinningUpdate: function() {
-        this.rotateAngle(this.rotSpeed);
+        this.rotateAngle(this.extra.rotSpeed);
     },
     
     /**
@@ -590,14 +607,14 @@ var projEvents = {
         
         // Move out from the robot first
         if (!this.state) {
-            this.tempRotation.rotateAngle(this.arc / 20 + this.angle / 10);
-            this.offset.add((this.start.x - this.initial.x) / 10, (this.start.y - this.initial.y) / 10);
+            this.extra.tempRotation.rotateAngle(this.extra.arc / 20 + this.angle / 10);
+            this.offset.add((this.extra.start.x - this.extra.initial.x) / 10, (this.extra.start.y - this.extra.initial.y) / 10);
             
             if (!this.step) this.step = 0;
             this.step++;
             if (this.step >= 10) {
-                this.step = Math.ceil(this.arc * 36 / Math.PI);
-                var angle = this.arc / this.step;
+                this.step = Math.ceil(this.extra.arc * 36 / Math.PI);
+                var angle = this.extra.arc / this.step;
                 this.rotCos = Math.cos(angle);
                 this.rotSin = -Math.sin(angle);
                 this.state = 1;
@@ -607,20 +624,20 @@ var projEvents = {
         // Swinging
         else if (this.state == 1) {
             this.offset.rotate(this.rotCos, this.rotSin);
-            this.tempRotation.rotate(this.rotCos, this.rotSin);
+            this.extra.tempRotation.rotate(this.rotCos, this.rotSin);
             
             this.step--;
             if (this.step <= 0) {
                 this.step = 10;
                 this.state = 2;
-                this.start = this.offset.clone();
+                this.extra.start = this.offset.clone();
             }
         }
         
         // Returning back to the robot
         else if (this.state == 2) {
-            this.tempRotation.rotateAngle(-this.arc / 20 - this.angle / 10);
-            this.offset.add((this.initial.x - this.start.x) / 10, (this.initial.y - this.start.y) / 10);
+            this.extra.tempRotation.rotateAngle(-this.extra.arc / 20 - this.angle / 10);
+            this.offset.add((this.extra.initial.x - this.extra.start.x) / 10, (this.extra.initial.y - this.extra.start.y) / 10);
             
             this.step--;
             if (this.step <= 0) {
@@ -631,7 +648,7 @@ var projEvents = {
         }
         
         this.moveTo(this.gun.pos.x + this.offset.x, this.gun.pos.y + this.offset.y);
-        this.setRotation(this.tempRotation.x, this.tempRotation.y);
+        this.setRotation(this.extra.tempRotation.x, this.extra.tempRotation.y);
         this.rotateAbout(this.gun.rotation.x, this.gun.rotation.y, this.gun.pos); 
     },
     

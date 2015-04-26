@@ -28,6 +28,20 @@ function setup(server) {
     io.on('connection', function(socket) {
         
         /**
+         * Relays bullet info back to players. The data should include the values:
+         *
+         *    id = the ID of the projectile to destroy
+         *    pos = the position the bullet expired
+         *    time = the time the bullet expired
+         *
+         * @param {Object} data - the data for the projectile
+         */ 
+        socket.on('blockProjectile', function(data) {
+            console.log('Action: Block Projectile');
+            socket.broadcast.to(socket.room).emit('blockProjectile', data);
+        });
+        
+        /**
          * Relays a buff for a robot. The data should include the values:
          *
          *   robot = the ID of the robot to buff
@@ -131,6 +145,20 @@ function setup(server) {
          */
         socket.on('destroy', function(data) {
             socket.broadcast.to(socket.room).emit('destroy', data);
+        });
+        
+        /**
+         * Relays bullet info back to players. The data should include the values:
+         *
+         *   id = the ID of the projectile to destroy
+         *   pos = the position the bullet expired
+         *   time = the time the bullet expired
+         *
+         * @param {Object} data - the data for the projectile
+         */ 
+        socket.on('destroyProjectile', function(data) {
+            console.log('Action: Destroy Projectile');
+            socket.broadcast.to(socket.room).emit('destroyProjectile', data);
         });
         
         /**

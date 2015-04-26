@@ -668,3 +668,20 @@ GameScreen.prototype.getRobotById = function(id) {
         }
     }
 };
+
+/**
+ * Retrieves a bullet by its spawn ID
+ *
+ * @param {number} id - the bullet's spawn ID
+ *
+ * @returns {Robot} the bullet with the given ID or undefined if no bullet has that ID
+ */
+GameScreen.prototype.getBulletById = function(id) {
+    
+    var b = this.bullets;
+    for (var i = 0; i < b.length; i++) {
+        if (b[i].id == id) {
+            return b[i];
+        }
+    }
+};

@@ -139,7 +139,7 @@ var weapon = {
         if (data.extra) {
             var x;
             for (x in data.extra) {
-                projectile[x] = data.extra[x];
+                projectile.extra[x] = data.extra[x];
             }
         }
         
