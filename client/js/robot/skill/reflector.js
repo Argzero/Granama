@@ -35,6 +35,7 @@ function skillReflector(player) {
             );
             reflection.setupHoming(damager, rand(10) / 100 + 0.04);
             gameScreen.bullets.push(reflection);
+            connection.fireProjectile(reflection);
             return 0;
         }
     };

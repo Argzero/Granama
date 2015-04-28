@@ -198,7 +198,7 @@ SpinnerBack.prototype.update = function() {
                     /* Pierce */ true,
                     /* Target */ Robot.PLAYER
                 );
-                fire.onUpdate = projEvents.fireUpdate;
+                fire.onUpdate = 'fireUpdate';
                 gameScreen.bullets.push(fire);
                 offset.rotate(0, 1);
             }

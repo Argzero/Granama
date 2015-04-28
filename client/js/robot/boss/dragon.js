@@ -61,7 +61,7 @@ function DragonBoss(x, y) {
         dx      : 0,
         dy      : 100,
         target  : Robot.PLAYER,
-        onUpdate: projEvents.fireUpdate
+        onUpdate: 'fireUpdate'
     });
 
     // Attack pattern 1 - Spawning minibosses
@@ -86,7 +86,7 @@ function DragonBoss(x, y) {
         dx    : 0,
         dy    : 100,
         target: Robot.PLAYER,
-		onUpdate: projEvents.fireUpdate
+		onUpdate: 'fireUpdate'
     }, 2);
     for (i = 0; i < 2; i++) {
         this.addWeapon(weapon.gun, {

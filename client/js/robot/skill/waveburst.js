@@ -34,6 +34,7 @@ function skillWaveburst(player) {
                     /* Target */ Robot.ENEMY
                 );
                 gameScreen.bullets.push(laser);
+                connection.fireProjectile(laser);
             }
         }
     };

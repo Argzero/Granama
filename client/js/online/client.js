@@ -109,6 +109,7 @@ Connection.prototype.blockProjectile = function(proj) {
 	if (!this.connected || !this.inRoom) return;
 	this.socket.emit('blockProjectile', {
 		id: proj.id,
+        clientID: proj.clientID,
         pos: proj.pos,
 		time: this.getServerTime()
 	});
@@ -220,6 +221,7 @@ Connection.prototype.destroyProjectile = function(proj) {
 	if (!this.connected || !this.inRoom) return;
 	this.socket.emit('destroyProjectile', {
 		id: proj.id,
+        clientID: proj.clientID,
         pos: proj.pos,
 		time: this.getServerTime()
 	});
@@ -274,15 +276,16 @@ Connection.prototype.fireProjectile = function(proj) {
 		size: proj.size.x,
 		dmg: proj.damage,
 		id: proj.id,
+        clientID: proj.clientID,
 		pierce: proj.pierce,
 		spread: proj.spread,
 		range: proj.range,
 		buffs: proj.buffs,
-		update: proj.onUpdate ? proj.onUpdate.name : undefined,
-		collide: proj.onCollideCheck ? proj.onCollideCheck.name : undefined,
-		hit: proj.onHit ? proj.onHit.name : undefined,
-		expire: proj.onExpire ? proj.onExpire.name : undefined,
-		block: proj.onBlocked ? proj.onBlocked.name : undefined,
+		update: proj.updateName,
+		collide: proj.collideName,
+		hit: proj.hitName,
+		expire: proj.expireName,
+		block: proj.blockedName,
 		group: proj.group,
 		shooter: proj.shooter.id,
         extra: proj.extra,
@@ -574,9 +577,7 @@ Connection.prototype.onAddPlayers = function(data) {
  * @param {Object} data - the data from the server
  */
 Connection.prototype.onBlockProjectile = function(data) {
-	var id = data.id;
-	
-	var bullet = gameScreen.getBulletById(id);
+	var bullet = gameScreen.getBulletById(data.id, data.clientID);
 	if(bullet)
 	{
         bullet.pos = new Vector(data.pos.x, data.pos.y);
@@ -637,23 +638,25 @@ Connection.prototype.onDamage = function(data) {
     
     if (!target || !damager) return;
     
+    var wasDead = target.dead;
+    
     // Grab values before applying damage
-    var dead = target.dead;
     var prevHp = target.health;
     var prevSp = target.shield;
     
     // Apply damage to register stats
     target.damage(data.amount, damager);
-    target.dead = dead;
     
     // Update remaining health/shield based on time stamps
     if (target.lastDamage > data.time) {
         target.health = prevHp;
         target.mana = prevSp;
+        target.dead = wasDead;
     }
     else {
         target.health = data.healthLeft;
         target.shield = data.shieldLeft;
+        target.dead = data.healthLeft <= 0;
     }
     
     // Update the time stamp
@@ -690,9 +693,7 @@ Connection.prototype.onDestroy = function(data) {
  * @param {Object} data - the data from the server
  */
 Connection.prototype.onDestroyProjectile = function(data) {
-	var id = data.id;
-	
-	var bullet = gameScreen.getBulletById(id);
+	var bullet = gameScreen.getBulletById(data.id, data.clientID);
 	if(bullet)
 	{
         bullet.pos = new Vector(data.pos.x, data.pos.y);
@@ -731,8 +732,6 @@ Connection.prototype.onDowngrade = function(data) {
 /**
  * Receives bullet data, then makes it. The data
  * should include the values:
- *
- *	weapon = weapon that the bullet is coming from
  *
  *  sprite = the name of the sprite of the projectile
  *	pos = the position of the projectile
@@ -777,12 +776,11 @@ Connection.prototype.onFireProjectile = function(data) {
     );
     
     projectile.origin = data.pos.clone();
-    
     projectile.pos = data.pos;
-    
     projectile.rotation = data.vel.normalize().rotate(0,-1);
-    
     projectile.angle = projectile.getAngle();
+    projectile.id = data.id;
+    projectile.clientID = data.clientID;
     
     // Size scaling
     if (data.size) {
@@ -795,11 +793,11 @@ Connection.prototype.onFireProjectile = function(data) {
     }
     
     // Copy over event handlers
-    projectile.onUpdate = projEvents[data.onUpdate];
-    projectile.onCollideCheck = projEvents[data.onCollideCheck];
-    projectile.onHit = projEvents[data.onHit];
-    projectile.onBlocked = projEvents[data.onBlocked];
-    projectile.onExpire = projEvents[data.onExpire];
+    projectile.onUpdate = projEvents[data.update];
+    projectile.onCollideCheck = projEvents[data.collide];
+    projectile.onHit = projEvents[data.hit];
+    projectile.onBlocked = projEvents[data.blocked];
+    projectile.onExpire = projEvents[data.expire];
     
     // Apply extra data
     if (data.extra) {

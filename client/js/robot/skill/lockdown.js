@@ -50,6 +50,7 @@ function skillLockdown(player) {
                     Robot.ENEMY
                 );
                 gameScreen.bullets.push(laser);
+                connection.fireProjectile(laser);
                 this.charge = -20;
                 this.skillCooldown = Math.round(100 / chargeRate);
             }

@@ -30,6 +30,7 @@ function skillTargeter(player) {
             );
             missile.onHit = targeterProjectileHit;
             gameScreen.bullets.push(missile);
+            connection.fireProjectile(missile);
         }
 
         // Increases drone range while active

@@ -31,6 +31,7 @@ function Projectile(name, x, y, shooter, gun, speed, angle, damage, range, pierc
     this.group = target;
     this.expired = false;
     this.id = Projectile.ID++;
+    this.clientID = connection.gameIndex;
     
     // Array of buffs to apply. Add in the format { name, multiplier, duration }
     this.buffs = [];
@@ -233,6 +234,10 @@ Projectile.prototype.setupFist = function(delay, side) {
     this.onBlocked = projEvents.fistBlocked;
     this.onExpire = projEvents.fistExpired;
     
+    this.updateName = 'fistUpdate';
+    this.blockedName = 'fistBlocked';
+    this.expireName = 'fistExpired';
+    
     this.extra.delay = delay;
     this.extra.side = side.toLowerCase();
 };
@@ -250,6 +255,12 @@ Projectile.prototype.setupGrapple = function(stun, self) {
     this.onExpire = projEvents.grappleExpire;
     this.onCollideCheck = projEvents.grappleCollide;
     
+    this.onUpdateName = 'grappleUpdate';
+    this.onHitName = 'grappleHit';
+    this.onBlockedName = 'grappleExpire';
+    this.onExpireName = 'grappleExpire';
+    this.onCollideName = 'grappleCollide';
+    
     this.stun = stun;
     this.extra.self = self;
 };
@@ -263,6 +274,9 @@ Projectile.prototype.setupGrapple = function(stun, self) {
 Projectile.prototype.setupHoming = function(target, rotSpeed) {
     this.onCollideCheck = projEvents.homingCollide;
     this.onUpdate = projEvents.homingUpdate;
+    
+    this.collideName = 'homingCollide';
+    this.updateName = 'homingUpdate';
     
     // Get nearest of the given type if a specific robot is not specified
     if (isNaN(target)) this.target = target;
@@ -286,6 +300,10 @@ Projectile.prototype.setupRocket = function(type, radius, knockback) {
     this.onExpire = projEvents.rocketExpire;
     this.onBlocked = projEvents.rocketBlocked;
     
+    this.hitName = 'rocketHit';
+    this.expireName = 'rocketExpire';
+    this.blockedName = 'rocketBlocked';
+    
     this.extra.type = type;
     this.extra.radius = radius;
     this.knockback = knockback;
@@ -300,6 +318,8 @@ Projectile.prototype.setupRocket = function(type, radius, knockback) {
 Projectile.prototype.setupSlowBonus = function(multiplier) {
     this.onHit = projEvents.slowedBonusHit;
     
+    this.hitName = 'slowedBonusHit';
+    
     this.slowMultiplier = multiplier;
     return this;
 };
@@ -311,6 +331,8 @@ Projectile.prototype.setupSlowBonus = function(multiplier) {
  */
 Projectile.prototype.setupSpinning = function(rotSpeed) {
     this.onUpdate = projEvents.spinningUpdate;
+    
+    this.updateName = 'spinningUpdate';
     
     this.extra.rotSpeed = rotSpeed;
     return this;
@@ -328,6 +350,10 @@ Projectile.prototype.setupSword = function(radius, arc, knockback, lifesteal) {
     this.onUpdate = projEvents.swordUpdate;
     this.onHit = projEvents.swordHit;
     this.onBlocked = projEvents.swordBlocked;
+    
+    this.updateName = 'swordUpdate';
+    this.hitName = 'swordHit';
+    this.blockedName = 'swordBlocked';
     
     this.extra.tempRotation = new Vector(1, 0);
     this.extra.initial = this.offset.clone();

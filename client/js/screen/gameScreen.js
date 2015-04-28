@@ -198,7 +198,7 @@ GameScreen.prototype.update = function() {
             this.gameOver = 300;
             connection.gameOver();
     
-            for (i = 0; i < players.length; i++) {
+            for (i = 0; i < players.length && connection.isHost; i++) {
                 var p = players[i];
                 p.submitStats();
             }
@@ -210,7 +210,7 @@ GameScreen.prototype.update = function() {
  * Pauses the game when the game loses focus
  */
 GameScreen.prototype.onBlur = function() {
-    this.pause(players[0]);
+    if (!this.paused) this.pause(players[0]);
 };
 
 /**
@@ -583,11 +583,11 @@ GameScreen.prototype.spawnBoss = function() {
 GameScreen.prototype.spawnExp = function(robot, exp) {
     for (var i = 0; i < players.length; i++) {
         var player = players[i];
-        var num = exp;
         if (player.dead || (player.input instanceof NetworkInput)) continue;
+        var num = Math.round(exp * Enemy.EXP_M[players.length - 1] / players.length);
         for (var e = 0; e < Enemy.EXP_DATA.length; e++) {
             var data = Enemy.EXP_DATA[e];
-            while (num > 0) {
+            while (num > data.value) {
                 num -= data.value;
                 var orb = new Projectile(
                     data.sprite,
@@ -672,15 +672,17 @@ GameScreen.prototype.getRobotById = function(id) {
 /**
  * Retrieves a bullet by its spawn ID
  *
- * @param {number} id - the bullet's spawn ID
+ * @param {number} id         - the bullet's spawn ID
+ * @param {number} [clientID] - the ID of the client who spawned the bullet 
  *
  * @returns {Robot} the bullet with the given ID or undefined if no bullet has that ID
  */
-GameScreen.prototype.getBulletById = function(id) {
+GameScreen.prototype.getBulletById = function(id, clientID) {
+    if (clientID === undefined) clientID = connection.gameIndex;
     
     var b = this.bullets;
     for (var i = 0; i < b.length; i++) {
-        if (b[i].id == id) {
+        if (b[i].id == id && b[i].clientID == clientID) {
             return b[i];
         }
     }

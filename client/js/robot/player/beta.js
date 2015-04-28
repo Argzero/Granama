@@ -46,8 +46,8 @@ function PlayerBeta() {
         speed         : 10,
         target        : Robot.ENEMY,
         pierce        : true,
-        onCollideCheck: projEvents.uniqueCollide,
-        onHit         : projEvents.knockbackHit,
+        onCollideCheck: 'uniqueCollide',
+        onHit         : 'knockbackHit',
         extra         : {
             knockback : 50,
             pierceNum : 0,

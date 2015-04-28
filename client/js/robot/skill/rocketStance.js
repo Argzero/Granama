@@ -17,9 +17,9 @@ function skillRocketStance(player) {
         dy         : player.leftArm.pos.y + 20,
         angleOffset: 0,
         target     : Robot.ENEMY,
-        onHit      : projEvents.rocketHit,
-        onBlocked  : projEvents.rocketExpire,
-        onExpire   : projEvents.rocketExpire,
+        onHit      : 'rocketHit',
+        onBlocked  : 'rocketExpire',
+        onExpire   : 'rocketExpire',
         extra      : {
             type      : 'Meteor',
             knockback : 25,

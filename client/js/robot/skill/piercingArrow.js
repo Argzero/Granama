@@ -32,6 +32,7 @@ function skillPiercingArrow(player) {
             arrow.n2 = arrow.n3.clone().rotate(COS_60, -SIN_60).multiply(-1, -1);
             arrow.n1 = arrow.n3.clone().rotate(COS_60, SIN_60);
             gameScreen.bullets.push(arrow);
+            connection.fireProjectile(arrow);
         }
     };
 }

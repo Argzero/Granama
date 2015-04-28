@@ -35,6 +35,7 @@ function skillCriticalBlast(player) {
                 );
                 shell.setupSlowBonus(1.5);
                 gameScreen.bullets.push(shell);
+                connection.fireProjectile(shell);
             }
         }
     };

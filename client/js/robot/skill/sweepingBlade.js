@@ -32,6 +32,7 @@ function skillSweepingBlade(player) {
             );
             sword.setupSword(150, Math.PI, 600, this.swordData.templates[0].args[3]);
             gameScreen.bullets.push(sword);
+            connection.fireProjectile(sword);
         }
     };
 }

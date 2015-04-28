@@ -69,6 +69,7 @@ function skillArtillery(player) {
                 rocket.setupRocket('Valkyrie', 150 + used * 10, 1);
                     
                 gameScreen.bullets.push(rocket);
+                connection.fireProjectile(rocket);
                 this.charge -= used;
                 this.bonus += 0.5;
                 this.timer = 1;

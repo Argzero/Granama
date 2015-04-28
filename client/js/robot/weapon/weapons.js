@@ -121,11 +121,18 @@ var weapon = {
         }
         
         // Copy over event handlers
-	projectile.onUpdate = projEvents[data.onUpdate];
-        projectile.onCollideCheck = projEvents[data.onCollideCheck];
-        projectile.onHit = projEvents[data.onHit];
-        projectile.onBlocked = projEvents[data.onBlocked];
-        projectile.onExpire = projEvents[data.onExpire];
+        projectile.onUpdate = projEvents[data.onUpdate] || data.onUpdate;
+        projectile.onCollideCheck = projEvents[data.onCollideCheck] || data.onCollideCheck;
+        projectile.onHit = projEvents[data.onHit] || data.onHit;
+        projectile.onBlocked = projEvents[data.onBlocked] || data.onBlocked;
+        projectile.onExpire = projEvents[data.onExpire] || data.onExpire;
+        
+        // Names for events to use for the network
+        projectile.updateName = data.onUpdate;
+        projectile.collideName = data.onCollideCheck;
+        projectile.hitName = data.onHit;
+        projectile.blockedName = data.onBlocked;
+        projectile.expireName = data.onExpire;
         
         // Apply template calls
         if (data.templates) {
@@ -197,7 +204,7 @@ var weapon = {
 				shooter: data.shooter || this,
 				type: data.type || 'Enemy',
 				buffs: data.buffs || [],
-				explode: projEvents.rocketExpire,
+				explode: 'rocketExpire',
 				applyBuffs: Projectile.prototype.applyBuffs
 			};
 			

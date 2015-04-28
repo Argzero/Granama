@@ -440,7 +440,7 @@ function RoyalHydraSideHead(hydra, rope, damage) {
         speed    : 14,
 		cd       : 0,
 		taret    : Robot.PLAYER,
-		onUpdate : projEvents.fireUpdate
+		onUpdate : 'fireUpdate'
 	};
 }
 

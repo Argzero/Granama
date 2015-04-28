@@ -242,7 +242,7 @@ function Goliath(x, y) {
         dx       : 0,
         dy       : 35,
         pierce   : true,
-        onUpdate : projEvents.fireUpdate,
+        onUpdate : 'fireUpdate',
         target   : Robot.PLAYER
     });
     

@@ -77,7 +77,7 @@ function ScorpionBoss(x, y) {
             dy         : 40,
             target     : Robot.PLAYER,
             pierce     : true,
-            onUpdate   : projEvents.fireUpdate
+            onUpdate   : 'fireUpdate'
         });
     }
     for (i = 0; i < 3; i++) {

@@ -43,7 +43,7 @@ function PlayerAngel() {
         dy            : 60,
         rate          : 2,
         rotSpeed      : 10,
-        onCollideCheck: projEvents.mixedCollide,
+        onCollideCheck: 'mixedCollide',
         //                                        args: [rotSpeed]
         templates     : [{ name: 'setupSpinning', args: [10] }],
         target        : Robot.ENEMY | Robot.PLAYER,

@@ -50,6 +50,7 @@ function skillLaserBomb(player) {
             var size = (LASER_BOMB_SIZE_SCALE * this.drones.length + 40) / bomb.sprite.width;
             bomb.scale(size, size);
             gameScreen.bullets.push(bomb);
+            connection.fireProjectile(bomb);
         }
         
         // Charge ball orientation

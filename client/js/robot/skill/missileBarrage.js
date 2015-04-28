@@ -35,6 +35,7 @@ function skillMissileBarrage(player) {
                     /* Knockback */ 300
                 );
                 gameScreen.bullets.push(rocket);
+                connection.fireProjectile(rocket);
             }
         }
     };

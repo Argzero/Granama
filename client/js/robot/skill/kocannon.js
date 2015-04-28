@@ -33,6 +33,7 @@ function skillKOCannon(player) {
                     /* Target */ Robot.ENEMY
                 );
                 gameScreen.bullets.push(laser);
+                connection.fireProjectile(laser);
             }
         }
     };

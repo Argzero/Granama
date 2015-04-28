@@ -45,6 +45,7 @@ function skillIonicThunder(player) {
             );
             laser.size.x = laser.size.y = 0.01 * elapsed;
             gameScreen.bullets.push(laser);
+            connection.fireProjectile(laser);
 
             // Shockwave
             if (elapsed >= this.nextWave) {
