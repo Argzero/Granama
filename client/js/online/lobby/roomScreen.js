@@ -45,7 +45,8 @@ function RoomScreen() {
             .addButton('Host', 300, function() {
                 
                 // TODO allow player to choose room name
-                connection.createRoom('Room' + rand(1000000));
+                //connection.createRoom('Room' + rand(1000000));
+                gameScreen = new HostScreen();
             })
             .addButton('Refresh', 375, function() {
                 connection.fetchRooms();

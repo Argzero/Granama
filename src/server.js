@@ -107,7 +107,7 @@ function setup(server) {
             else {
                 socket.emit('general', {
                     success: false,
-                    error: 'Name is already taken'
+                    error: 'Name Taken'
                 });
                 
                 console.log('Result: Name taken');

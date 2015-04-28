@@ -11,6 +11,7 @@ function Connection() {
     this.socket = undefined;
     this.connected = false;
     this.callback = undefined;
+    this.errCallback = undefined;
     this.gameIndex = 0;
     this.localPlayers = 0;
     this.inRoom = false;
@@ -150,10 +151,12 @@ Connection.prototype.changePattern = function(robot, pattern) {
 /**
  * Attempts to create a room on the server
  *
- * @param {string} name - name of the room
+ * @param {string}   name     - name of the room
+ * @param {function} callback - callback in case the creation fails
  */
-Connection.prototype.createRoom = function(name) {
+Connection.prototype.createRoom = function(name, callback) {
     if (!this.connected || this.inRoom) return;
+    this.errCallback = callback;
     var users = [];
     for (var i = 0; i < players.length; i++) {
         players[i].settings.part = 1;
@@ -841,6 +844,10 @@ Connection.prototype.onGeneral = function(data) {
         this.callback(data);
         delete this.callback;
     }
+    if (this.errCallback) {
+        this.errCallback(data);
+        delete this.errCallback;
+    }
 };
 
 /**
@@ -887,6 +894,7 @@ Connection.prototype.onGiveExp = function(data) {
 Connection.prototype.onJoinRoom = function(data) {
     if (this.inRoom) return;
     
+    delete this.errCallback;
     this.inRoom = true;
     this.localPlayers = players.length;
     this.gameIndex = data.index;
