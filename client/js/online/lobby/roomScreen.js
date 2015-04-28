@@ -8,44 +8,43 @@ function RoomScreen() {
     
     // Setup UI
     this.ui = new UIGrid(1000, 75)//text, yOffset, maxWidth, height, callback
-        .addTitle('Multiplayer Games', -300, 100)
-        .add(new UIRow(-160, 1000, 50)
-            .add(new RoomButton('', -160, 500, 75, function() {
+        .addTitle('Multiplayer Games', -350, 100)
+        .add(new UIRow(-185, 1000, 50)
+            .add(new RoomButton('', -185, 500, 100, function() {
                 gameScreen.applyClick(this.text);
             }))
-            .add(new RoomButton('', -160, 500, 75, function() {
+            .add(new RoomButton('', -185, 500, 100, function() {
                 gameScreen.applyClick(this.text);
             }))
         )
         .add(new UIRow(-50, 1000, 50)
-            .add(new RoomButton('', -50, 500, 75, function() {
+            .add(new RoomButton('', -50, 500, 100, function() {
                 gameScreen.applyClick(this.text);
             }))
-            .add(new RoomButton('', -50, 500, 75, function() {
-                gameScreen.applyClick(this.text);
-            }))
-        )
-        .add(new UIRow(60, 1000, 50)
-            .add(new RoomButton('', 60, 500, 75, function() {
-                gameScreen.applyClick(this.text);
-            }))
-            .add(new RoomButton('', 60, 500, 75, function() {
+            .add(new RoomButton('', -50, 500, 100, function() {
                 gameScreen.applyClick(this.text);
             }))
         )
-        .add(new UIRow(170, 1000, 50)
-            .add(new RoomButton('', 170, 500, 75, function() {
+        .add(new UIRow(85, 1000, 50)
+            .add(new RoomButton('', 85, 500, 100, function() {
                 gameScreen.applyClick(this.text);
             }))
-            .add(new RoomButton('', 170, 500, 75, function() {
+            .add(new RoomButton('', 85, 500, 100, function() {
                 gameScreen.applyClick(this.text);
             }))
         )
-        .add(new UIRow(280, 1000, 50)  
+        .add(new UIRow(220, 1000, 50)
+            .add(new RoomButton('', 220, 500, 100, function() {
+                gameScreen.applyClick(this.text);
+            }))
+            .add(new RoomButton('', 220, 500, 100, function() {
+                gameScreen.applyClick(this.text);
+            }))
+        )
+        .add(new UIRow(330, 1000, 50)  
             .addButton('Host', 300, function() {
                 
                 // TODO allow player to choose room name
-                //connection.createRoom('Room' + rand(1000000));
                 gameScreen = new HostScreen();
             })
             .addButton('Refresh', 375, function() {
@@ -180,7 +179,24 @@ RoomButton.prototype.draw = function() {
         ui.ctx.fillStyle = 'white';
         ui.ctx.textAlign = 'left';
         ui.ctx.textBaseline = 'top';
-        ui.ctx.fillText(this.text, x + 80, y + h * 0.05);
+        ui.ctx.fillText(this.text, x + 10, y - 10);
+        ui.ctx.fillStyle = '#bbb';
+        ui.ctx.font = (h / 3) + 'px Flipbash';
+        ui.ctx.fillText(this.gameType, x + 10, y + 45);
+        
+        // Player icons
+        var on = images.get('roomOn');
+        var off = images.get('roomOff');
+        var ix = x + w - (on.width + 5) * (this.on + this.off);
+        var iy = y + h - (on.height + 5);
+        for (var i = 0; i < this.on; i++) {
+            ui.ctx.drawImage(on, ix, iy);
+            ix += on.width + 5;
+        }
+        for (var j = 0; j < this.off; j++) {
+            ui.ctx.drawImage(off, ix, iy);
+            ix += on.width + 5;
+        }
 
         // Callback function
         if (this.clicking && !controls.mouse.left) {
