@@ -16,6 +16,7 @@ function skillLockdown(player) {
 
         // Activating the ability
         if (this.isSkillCast()) {
+            connection.ability(this);
             this.skillCooldown = Math.round(100 / chargeRate);
             this.locked = !this.locked;
             this.speed = 0.00001;
@@ -30,14 +31,14 @@ function skillLockdown(player) {
 
         // Active skill effects
         if (this.locked) {
-
+        
             // Charging
             if (this.charge < 100) {
                 this.charge += chargeRate;
             }
 
             // Laser firing
-            if ((this.charge > 0 && this.input.button(SHOOT) == 1) || (this.isInRange() && this.charge >= 100)) {
+            if ((this.charge > 0 && this.input.button(SHOOT) == 1) || (this.isInRange() && this.charge >= 100) && !this.isRemote()) {
                 var laser = new Projectile(
                     'abilityLaser',
                     0, 0,

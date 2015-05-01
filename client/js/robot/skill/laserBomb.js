@@ -24,12 +24,13 @@ function skillLaserBomb(player) {
 
         // Activating the ability
         if (this.isSkillCast()) {
+            connection.ability(this);
             this.skillCd = 600;
             this.skillDuration = 120;
         }
 
         // Fire projectile at end of charging
-        if (this.skillDuration == 1) {
+        if (this.skillDuration == 1 && !this.isRemote()) {
             var bomb = new Projectile(
                 /* Sprite */ 'pCommandoChargeBall',
                 /* Offset */ 0, LASER_BOMB_OFFSET,

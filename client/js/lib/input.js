@@ -318,6 +318,10 @@ GamepadInput.prototype.update = function() {
         }
         else this.data[x] = 0;
     }
+    
+    if (this.button(SKILL) == 1) {
+        connection.ability(this.player);
+    }
 };
 
 /**

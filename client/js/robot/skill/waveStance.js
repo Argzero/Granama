@@ -18,6 +18,7 @@ function skillWaveStance(player) {
     
         // Cast the skill
         if (this.isSkillCast()) {
+            connection.ability(this);
             this.skillDuration = 360;
             this.skillCd = 480;
         }
@@ -28,6 +29,8 @@ function skillWaveStance(player) {
         
         // Punch buffs
         if (this.skillDuration > 0) {
+            
+            if (this.isRemote()) return;
             
             // Shockwaves
             if (this.punchData.cd > this.prevPunchCd) {

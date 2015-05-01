@@ -26,6 +26,20 @@ function setup(server) {
      * @param {Socket} socket - the socket of the connecting client
      */ 
     io.on('connection', function(socket) {
+    
+        /**
+         * Relays an ability activation to other players. The
+         * data should inclue the values:
+         *
+         *   player = the ID of the player activating the ability
+         *   time = the time the ability was activated
+         *
+         * @param {Object} data - the data to relay
+         */
+        socket.on('ability', function(data) {
+            console.log('Action: Ability');
+            socket.broadcast.to(socket.room).emit('ability', data);
+        });
         
         /**
          * Relays bullet info back to players. The data should include the values:

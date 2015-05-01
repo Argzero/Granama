@@ -13,13 +13,14 @@ function skillWaveburst(player) {
 
         // Activating the ability
         if (this.isSkillCast()) {
+            connection.ability(this);
             this.skillDuration = 120;
             this.skillCd = 600;
             this.waveAngle = 0;
         }
 
         // Active ability effects
-        if (this.skillDuration > 0) {
+        if (this.skillDuration > 0 && !this.isRemote()) {
             for (var i = 0; i < 5; i++) {
                 this.waveAngle += Math.PI / 60;
                 var laser = new Projectile(

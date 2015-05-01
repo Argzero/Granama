@@ -583,7 +583,7 @@ GameScreen.prototype.spawnBoss = function() {
 GameScreen.prototype.spawnExp = function(robot, exp) {
     for (var i = 0; i < players.length; i++) {
         var player = players[i];
-        if (player.dead || (player.input instanceof NetworkInput)) continue;
+        if (player.dead || player.isRemote()) continue;
         var num = Math.round(exp * Enemy.EXP_M[players.length - 1] / players.length);
         for (var e = 0; e < Enemy.EXP_DATA.length; e++) {
             var data = Enemy.EXP_DATA[e];

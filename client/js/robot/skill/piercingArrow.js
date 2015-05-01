@@ -14,7 +14,11 @@ function skillPiercingArrow(player) {
 
         // Activating the ability
         if (this.isSkillCast()) {
+            connection.ability(this);
             this.skillCd = 360;
+            
+            if (this.isRemote()) return;
+            
             var arrow = new Projectile(
                 'abilityArrow',
                 0, 40,

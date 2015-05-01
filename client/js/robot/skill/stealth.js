@@ -14,6 +14,7 @@ function skillStealth(player) {
         
         // Activating the ability
         if (this.isSkillCast()) {
+            connection.ability(this);
             this.skillDuration = 240 + 30 * this.upgrades[STEALTH_DURATION_ID];
             this.skillCd = 480;
             this.buff('power', 1.5, this.skillDuration);

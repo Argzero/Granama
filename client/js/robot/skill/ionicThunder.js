@@ -15,6 +15,7 @@ function skillIonicThunder(player) {
 
         // Activating the ability
         if (this.isSkillCast() && this.charge > 0 && this.skillDuration <= 0) {
+            connection.ability(this);
             this.skillDuration = this.charge * 2 - 1;
             this.nextWave = 60;
             this.nextWaveIncrement = 50;
@@ -30,8 +31,19 @@ function skillIonicThunder(player) {
         // Active skill effects
         if (this.skillDuration > 0) {
         
-            // Main beam
+            // Done firing
+            if (this.skillDuration <= 1) {
+                this.charge = 0;
+            }
+            if (this.isRemote()) return;
+        
+            // Push back
             var elapsed = this.charge * 2 - this.skillDuration;
+            var push = this.forward().multiply(-elapsed / 50, -elapsed / 50);
+            this.move(push.x, push.y);
+            this.clamp();
+        
+            // Main beam
             var laser = new Projectile(
                 /* Sprite  */ 'abilityCannon',
                 /* Offset  */ 0, 0,
@@ -69,13 +81,6 @@ function skillIonicThunder(player) {
                     );
                     gameScreen.bullets.push(shockwave);
                 }
-            }
-
-            var push = this.forward().multiply(-elapsed / 50, -elapsed / 50);
-            this.move(push.x, push.y);
-            this.clamp();
-            if (this.skillDuration <= 1) {
-                this.charge = 0;
             }
         }
         

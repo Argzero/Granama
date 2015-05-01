@@ -14,10 +14,13 @@ function skillGyroSlash(player) {
 
         // Activating the ability
         if (this.isSkillCast()) {
+            connection.ability(this);
             this.skillDuration = 180;
             this.skillCd = 300;
             this.buff('speed', 2, this.skillDuration);
 
+            if (this.isRemote()) return;
+            
             // Spinning sword
             var sword = new Projectile(
                 'abilitySword',

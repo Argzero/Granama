@@ -38,6 +38,7 @@ function skillRocketStance(player) {
     
         // Cast the skill
         if (this.isSkillCast()) {
+            connection.ability(this);
             this.skillDuration = 360;
             this.skillCd = 480;
         }

@@ -18,6 +18,7 @@ function skillOverdrive(player) {
 
         // Activating the ability
         if (this.isSkillCast()) {
+            connection.ability(this);
             this.skillDuration = 300;
             this.skillCd = 960 * this.cdm;
             this.rm = 0.75;

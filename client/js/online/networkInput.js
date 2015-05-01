@@ -4,6 +4,8 @@
 function NetworkInput() {
     this.data = {};
     this.valid = true;
+    this.ability = false;
+    this.abilityPending = 0;
     
     this.dir = new Vector(0, 0);
     this.look = new Vector(0, 1);
@@ -12,7 +14,12 @@ function NetworkInput() {
 /**
  * Updates the controls data
  */
-NetworkInput.prototype.update = function() { };
+NetworkInput.prototype.update = function() { 
+    this.ability = this.abilityPending > 0;
+    if (this.abilityPending > 0) {
+        this.abilityPending--;    
+    }
+};
 
 /**
  * Checks the state of a mapped button value
@@ -22,7 +29,7 @@ NetworkInput.prototype.update = function() { };
  * @returns {number} number of updates it has been pressed
  */
 NetworkInput.prototype.button = function(key) {
-    return 0;
+    return (key == SKILL && this.ability) ? 1 : 0;
 };
 
 /**
@@ -47,4 +54,11 @@ NetworkInput.prototype.axis = function(key, target) {
  */
 NetworkInput.prototype.direction = function(key, target) {
     return key == MOVE ? this.dir.clone() : this.look.clone().rotate(0, 1);
+};
+
+/**
+ * Waits to apply the player's ability until the next frame
+ */
+NetworkInput.prototype.applyAbility = function() {
+    this.abilityPending++;
 };

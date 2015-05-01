@@ -10,9 +10,12 @@ function skillBlink(player) {
      */
     player.onUpdate = function() {
         if (this.isSkillCast()) {
-            var dir = this.input.direction(MOVE, this);
-            if (dir.lengthSq() === 0) return;
-            this.move(300 * dir.x, 300 * dir.y);
+            connection.ability(this);
+            if (!this.isRemote()) {
+                var dir = this.input.direction(MOVE, this);
+                if (dir.lengthSq() === 0) return;
+                this.move(300 * dir.x, 300 * dir.y);
+            }
             this.skillCd = 360 * this.cdm;
         }
     };

@@ -22,6 +22,7 @@ function skillArtillery(player) {
 
         // Activating the ability
         if (this.isSkillCast() && this.charge > 0 && !this.range) {
+            connection.ability(this);
             this.range = 75;
             this.bonus = 0;
             this.timer = 0;
@@ -54,22 +55,25 @@ function skillArtillery(player) {
             
             // Firing the artillery
             if (this.input.button(SKILL) == 1 || this.timer == 30) {
+                if (this.bonus === 0) connection.ability(this);
                 var used = Math.min(25, this.charge);
-                var rocket = new Projectile(
-                    'missile',
-                    0, this.range,
-                    this, this,
-                    0,
-                    0,
-                    30 * this.get('power') * (used / 25) * (1 + this.bonus),
-                    0,
-                    true,
-                    Robot.ENEMY
-                );
-                rocket.setupRocket('Valkyrie', 150 + used * 10, 1);
-                    
-                gameScreen.bullets.push(rocket);
-                connection.fireProjectile(rocket);
+                if (!this.isRemote()) {
+                    var rocket = new Projectile(
+                        'missile',
+                        0, this.range,
+                        this, this,
+                        0,
+                        0,
+                        30 * this.get('power') * (used / 25) * (1 + this.bonus),
+                        0,
+                        true,
+                        Robot.ENEMY
+                    );
+                    rocket.setupRocket('Valkyrie', 150 + used * 10, 1);
+                    gameScreen.bullets.push(rocket);
+                    connection.fireProjectile(rocket);
+                }
+                
                 this.charge -= used;
                 this.bonus += 0.5;
                 this.timer = 1;

@@ -33,6 +33,7 @@ Connection.prototype.connect = function() {
     this.socket = io.connect();
     
     // Set up message handlers
+    this.socket.on('ability', this.onAbility.bind(this));
     this.socket.on('addPlayers', this.onAddPlayers.bind(this));
     this.socket.on('blockProjectile', this.onBlockProjectile.bind(this));
     this.socket.on('buff', this.onBuff.bind(this));
@@ -99,6 +100,19 @@ Connection.prototype.fromServerTime = function(time) {
 // ------------------------------------------------------------------------------ //
 //                                  Client -> Server                              //
 // ------------------------------------------------------------------------------ //
+
+/**
+ * Tells other players about an activated ability
+ *
+ * @param {Player} player - the player who activated their ability
+ */
+Connection.prototype.ability = function(player) {
+    if (!this.connected || !this.inRoom || player.isRemote()) return;
+    this.socket.emit('ability', {
+        player: player.playerIndex,
+        time: this.getServerTime()
+    });
+};
 
 /**
  * Sends bullet data to the server
@@ -549,6 +563,19 @@ Connection.prototype.upgradeSelection = function(player, id, ready) {
 // ------------------------------------------------------------------------------ //
 //                                  Server -> Client                              //
 // ------------------------------------------------------------------------------ //
+
+/**
+ * Handles applying ability activation for remote players. The
+ * data should include the values:
+ *
+ *   player = the ID of the player who activated their ability
+ *   time = the time the ability was activated
+ *
+ * @param {Object} data - the data from the server
+ */
+Connection.prototype.onAbility = function(data) {
+    players[data.player].input.applyAbility();
+};
 
 /**
  * Message from the server about players joining the game 

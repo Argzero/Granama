@@ -14,9 +14,12 @@ function skillSweepingBlade(player) {
 
         // Activating the ability
         if (this.isSkillCast()) {
+            connection.ability(this);
             this.skillDuration = 36;
             this.skillCd = 300;
             this.buff('speed', 2, 36);
+            
+            if (this.isRemote()) return;
 
             // Spawn the sword projectile
             var sword = new Projectile(

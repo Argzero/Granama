@@ -14,8 +14,11 @@ function skillRepulse(player) {
     
         // Casting the skill
         if (this.isSkillCast()) {
+            connection.ability(this);
             this.skillCd = 480;
             this.staticActive = !this.staticActive;
+            
+            if (this.isRemote()) return;
             
             var color1, color2;
             var thickness;

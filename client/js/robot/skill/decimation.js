@@ -12,6 +12,7 @@ function skillDecimation(player) {
      */
     player.onUpdate = function() {
         if (this.isSkillCast()) {
+            connection.ability(this);
             this.skillDuration = 420;
             this.skillCd = 300;
         }

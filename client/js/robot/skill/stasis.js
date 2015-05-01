@@ -13,6 +13,7 @@ function skillStasis(player) {
 
         // Activating the ability
         if (this.isSkillCast() && this.health < this.maxHealth) {
+            connection.ability(this);
             this.skillDuration = 180;
             this.skillCd = 900;
         }

@@ -11,6 +11,7 @@ function skillReflector(player) {
 	 */
     player.onUpdate = function() {
         if (this.isSkillCast()) {
+            connection.ability(this);
             this.skillDuration = 300;
             this.skillCd = 600;
         }
@@ -21,7 +22,7 @@ function skillReflector(player) {
 	 * while the skill is active
 	 */
     player.onDamaged = function(amount, damager) {
-        if (this.skillDuration > 0) {
+        if (this.skillDuration > 0 && !this.isRemote()) {
             var reflection = new Projectile(
                 "abilityReflect",
                 0, 0,

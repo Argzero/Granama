@@ -14,6 +14,7 @@ function skillAngelicAssault(player) {
     
         // Cast the skill
         if (this.isSkillCast()) {
+            connection.ability(this);
             this.skillDuration = 300;
             this.skillCd = 240;
             this.staticActive = !this.staticActive;

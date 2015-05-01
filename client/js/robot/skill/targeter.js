@@ -14,7 +14,10 @@ function skillTargeter(player) {
 
         // Activating the ability
         if (this.isSkillCast()) {
+            connection.ability(this);
             this.skillCd = 600;
+            
+            if (this.isRemote()) return;
 
             // Fire the missile
             var missile = new Projectile(

@@ -19,6 +19,7 @@ function skillPerfectShield(player) {
 
         // Cast the skill
         if (this.isSkillCast()) {
+            connection.ability(this);
             this.skillDuration = 420;
             this.skillCd = 600;
             this.shieldCos = this.sin;
@@ -33,7 +34,7 @@ function skillPerfectShield(player) {
         this.perfectShield.hidden = this.perfectShield.alpha === 0;
 
         // Stop bullets
-        if (this.perfectShield.alpha > 0.5) {
+        if (this.perfectShield.alpha > 0.5 && connection.isHost) {
             
             // Update the arc
             var angle = this.getAngle() + Math.PI / 4;

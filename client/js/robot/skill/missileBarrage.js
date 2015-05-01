@@ -13,8 +13,11 @@ function skillMissileBarrage(player) {
 
         // Activating the ability
         if (this.isSkillCast()) {
+            connection.ability(this);
             this.skillCd = 480;
 
+            if (this.isRemote()) return;
+            
             // Fire rockets from each drone
             var damage = this.get('power') * 30;
             for (var i = 0; i < this.drones.length; i++) {

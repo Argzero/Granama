@@ -83,7 +83,7 @@ Player.prototype.expProgress = function() {
  */ 
 Player.prototype.giveExp = function(amount) {
 
-    if (!(this.input instanceof NetworkInput)) {
+    if (!this.isRemote()) {
         connection.giveExp(this.playerIndex, amount);
     }
 
@@ -143,7 +143,7 @@ Player.prototype.update = function() {
     this.updateRobot();
     
     // Shield regeneration
-    if (!(this.input instanceof NetworkInput)) {
+    if (!this.isRemote()) {
         this.shieldCd -= this.get('shieldBuff');
         if (this.shieldCd <= 0) {
             this.shieldCd += 60 / (this.shieldScale * (this.upgrades[SHIELD_ID] + 1) * 1 / 10);
@@ -170,7 +170,7 @@ Player.prototype.update = function() {
         if (speed > 0.000001) {
             
             // Move to the target position
-            if (this.input instanceof NetworkInput) {
+            if (!this.isRemote()) {
                 this.pos = this.targetPos;
             }
 
@@ -185,7 +185,7 @@ Player.prototype.update = function() {
             this.move(speed * moveDir.x, speed * moveDir.y);
             
             // Send movement update
-            if (!(this.input instanceof NetworkInput)) {
+            if (!this.isRemote()) {
                 connection.updatePlayer(this.playerIndex);
             }
         }
@@ -275,6 +275,8 @@ Player.prototype.updatePause = function() {
 
 /**
  * Checks the player's input to see if they are using their skill
+ *
+ * @returns {bool} true if activating an ability, false otherwise
  */
 Player.prototype.isSkillCast = function() {
     if (this.skillCd > 0 || this.skillDuration > 0) return false;
@@ -283,6 +285,8 @@ Player.prototype.isSkillCast = function() {
 
 /**
  * Checks the player's input to see if they are shooting their main weapons
+ *
+ * @returns {bool} true if shooting, false otherwise
  */
 Player.prototype.isInRange = function() {
     return this.input.button(SHOOT);
@@ -318,7 +322,7 @@ Player.prototype.giveDeath = function(killer) {
  * Submits the profile stats for the player
  */
 Player.prototype.submitStats = function() {
-    if (this.submitted || (this.input instanceof NetworkInput)) return false;
+    if (this.submitted) return;
     this.submitted = true;
     
     var profile = new Profile(this.profile);
@@ -350,4 +354,14 @@ Player.prototype.submitStats = function() {
     profile.addList(this.name, STAT.LAST_10, 10, gameScreen.score);
     
     connection.submitStats(profile);
+};
+
+/**
+ * Checks whether or not the player is a remote player.
+ * Remote players are ones playing on a different machine.
+ *
+ * @returns {bool} true if remote, false otherwise
+ */
+Player.prototype.isRemote = function() {
+    return this.input instanceof NetworkInput;
 };
