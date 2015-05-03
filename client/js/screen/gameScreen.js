@@ -148,8 +148,8 @@ GameScreen.prototype.update = function() {
         this.applyScrolling();
         
         // Spawn enemies when not paused
-        this.checkUpgradeTransition();
         if (connection.isHost) this.checkSpawns();
+        this.checkUpgradeTransition();
     }
     
     // Update paused players
@@ -210,7 +210,7 @@ GameScreen.prototype.update = function() {
  * Pauses the game when the game loses focus
  */
 GameScreen.prototype.onBlur = function() {
-    if (!this.paused) this.pause(players[0]);
+    if (!this.paused) this.pause(players[connection.gameIndex]);
 };
 
 /**
@@ -514,11 +514,15 @@ GameScreen.prototype.spawnEnemy = function(data, x, y) {
 
     // Spawn the enemy
     enemy.id = this.spawnId;
+    if (this.bossStatus == ACTIVE_BOSS) {
+        enemy.points = 0;
+        enemy.exp = 0;
+    }
     this.robots.unshift(enemy);
     this.enemyCount++;
     
     // Tell others to spawn the enemy
-    connection.spawn(data[i + 2].name, enemy.pos, this.spawnId++, false, enemy.extra);
+    connection.spawn(data[i + 2].name, enemy.pos, this.spawnId++, this.bossStatus == ACTIVE_BOSS, enemy.extra);
     
     return enemy;
 };
@@ -600,6 +604,7 @@ GameScreen.prototype.spawnExp = function(robot, exp) {
                     false,
                     Robot.PLAYER
                 );
+                Projectile.ID--;
                 orb.setupHoming(player, rand(10) / 100 + 0.04);
                 orb.onHit = projEvents.expHit;
                 orb.exp = data.value;

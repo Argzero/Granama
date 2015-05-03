@@ -182,20 +182,22 @@ Enemy.prototype.update = function() {
     if (!this.isStunned()) {
 
         // Pattern switching
-        if (this.patterns.length > 1) {
-            this.patternTimer--;
-            if (this.patternTimer <= 0) {
-                this.switchPattern();
+        if (connection.isHost) {
+            if (this.patterns.length > 1) {
+                this.patternTimer--;
+                if (this.patternTimer <= 0) {
+                    this.switchPattern();
+                }
+            }
+
+            // Apply weapons
+            if (!this.hidden) {
+                var i;
+                for (i = 0; i < this.patterns[this.pattern].length; i++) {
+                    this.patterns[this.pattern][i].method(this.patterns[this.pattern][i]);
+                }
             }
         }
-
-        // Apply weapons
-		if (!this.hidden) {
-			var i;
-			for (i = 0; i < this.patterns[this.pattern].length; i++) {
-				this.patterns[this.pattern][i].method(this.patterns[this.pattern][i]);
-			}
-		}
 
         // Apply movement
         if (this.movement) {

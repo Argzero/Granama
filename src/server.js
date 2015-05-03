@@ -277,7 +277,7 @@ function setup(server) {
             // Non-spectator games - need to have room for the players
             else {
                 for (x in roomList) {
-                    if (roomList[x].maxPlayers - roomList[x].numPlayers >= data.players) {
+                    if (!roomList[x].inProgress && roomList[x].maxPlayers - roomList[x].numPlayers >= data.players) {
                         rooms.push(roomList[x]);
                     }
                 }

@@ -170,7 +170,7 @@ Player.prototype.update = function() {
         if (speed > 0.000001) {
             
             // Move to the target position
-            if (!this.isRemote()) {
+            if (this.isRemote()) {
                 this.pos = this.targetPos;
             }
 
@@ -221,23 +221,19 @@ Player.prototype.updateDead = function() {
     var inRange = false;
 
     // See if a player is in range to rescue the player
-    if (connection.isHost) {
-        for (i = 0; i < players.length; i++) {
-            p = players[i];
-            if (p.dead) continue;
-            if (this.pos.distanceSq(p.pos) < 10000) {
-                inRange = true;
-            }
+    for (i = 0; i < players.length; i++) {
+        p = players[i];
+        if (p.dead) continue;
+        if (this.pos.distanceSq(p.pos) < 10000) {
+            inRange = true;
         }
     }
 
     // Apply rescue effects
     if (inRange) {
         this.rescue -= this.revSpeed;
-        if (this.rescue <= 0) {
-            this.health = this.maxHealth * 0.5;
-            this.dead = false;
-            this.rescue = 1;
+        if (connection.isHost && this.rescue <= 0) {
+            this.revive();
    
             for (i = 0; i < players.length; i++) {
                 p = players[i];
@@ -253,6 +249,17 @@ Player.prototype.updateDead = function() {
     }
 
     this.updatePause();
+};
+
+/**
+ * Revives the player
+ */
+Player.prototype.revive = function() {
+    if (this.dead) {
+        this.dead = false;
+        this.health = this.maxHealth * 0.5;
+        this.rescue = 1;
+    }
 };
 
 /**

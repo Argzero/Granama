@@ -52,6 +52,7 @@ Connection.prototype.connect = function() {
     this.socket.on('knockback', this.onKnockback.bind(this));
     this.socket.on('message', this.onMessage.bind(this));
     this.socket.on('removePlayer', this.onRemovePlayer.bind(this));
+    this.socket.on('revive', this.onRevive.bind(this));
     this.socket.on('setPaused', this.onSetPaused.bind(this));
     this.socket.on('spawn', this.onSpawn.bind(this));
     this.socket.on('startGame', this.onStartGame.bind(this));
@@ -422,10 +423,24 @@ Connection.prototype.quitGame = function(reason) {
 /**
  * Sends a request to tart the game
  */
-Connection.prototype.requestStart = function(playerIndex) {
+Connection.prototype.requestStart = function() {
     if (!this.connected || !this.inRoom) return;
     this.socket.emit('requestStart', { 
         room: this.room
+    });
+};
+
+/**
+ * Marks a player as revived
+ *
+ * @param {Player} player - the player that was revived
+ */
+Connection.prototype.revive = function(player) {
+    if (!this.connected || !this.inRoom) return;
+    this.socket.emit('revive', {
+        player: player.playerIndex,
+        position: player.pos,
+        time: this.getServerTime()
     });
 };
 
@@ -786,7 +801,6 @@ Connection.prototype.onFireProjectile = function(data) {
 	data.pos = result;
 	
 	var resultVel = new Vector(data.vel.x, data.vel.y);
-	data.vel = resultVel;
 	
     // Create the projectile
 	var shooter = gameScreen.getRobotById(data.shooter);
@@ -794,17 +808,19 @@ Connection.prototype.onFireProjectile = function(data) {
         data.sprite,
         0, 0,
         shooter, shooter,
-        data.vel.length(),
+        resultVel.length(),
         0,
         data.dmg,
         data.range,
         data.pierce,
         data.group
     );
+    Projectile.ID--;
     
-    projectile.origin = data.pos.clone();
-    projectile.pos = data.pos;
-    projectile.rotation = data.vel.normalize().rotate(0,-1);
+    projectile.origin = result.clone();
+    projectile.pos = result;
+    projectile.vel = resultVel.clone();
+    projectile.rotation = resultVel.normalize().rotate(0,-1);
     projectile.angle = projectile.getAngle();
     projectile.id = data.id;
     projectile.clientID = data.clientID;
@@ -1000,6 +1016,20 @@ Connection.prototype.onMessage = function(data) {
 Connection.prototype.onRemovePlayer = function(data) {
     players.splice(data.index, data.amount);
     appendPlayers(5);
+};
+
+/**
+ * Handles reviving a player. The data should
+ * include the values:
+ *
+ *   player = the index of the player who was revived
+ *   position = the position they were at while revived
+ *   time = the time the player was revived
+ *
+ * @param {Object} data - the data from the server
+ */
+Connection.prototype.onRevive = function(data) {
+    players[data.player].revive();
 };
 
 /**
