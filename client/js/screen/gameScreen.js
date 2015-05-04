@@ -442,8 +442,8 @@ GameScreen.prototype.checkSpawns = function() {
 
     // Boss spawning
     if (this.bossStatus == ACTIVE_NONE && this.score == this.bossScore) {
-        this.bossStatus = ACTIVE_BOSS;
         this.spawnBoss();
+        this.bossStatus = ACTIVE_BOSS;
         this.bossCount++;
     }
 

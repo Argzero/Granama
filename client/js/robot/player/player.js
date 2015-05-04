@@ -234,6 +234,7 @@ Player.prototype.updateDead = function() {
         this.rescue -= this.revSpeed;
         if (connection.isHost && this.rescue <= 0) {
             this.revive();
+            connection.revive(this.playerIndex);
    
             for (i = 0; i < players.length; i++) {
                 p = players[i];
