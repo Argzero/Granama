@@ -130,11 +130,8 @@ GameScreen.prototype.update = function() {
         }
     
         // Update healing pads
-        if (connection.isHost)
-        {
-            for (i = 0; i < this.pads.length; i++) {
-                this.pads[i].update();
-            }
+        for (i = 0; i < this.pads.length; i++) {
+            this.pads[i].update();
         }
         
         // Particles

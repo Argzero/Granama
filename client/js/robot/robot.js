@@ -200,13 +200,14 @@ Robot.prototype.get = function(name) {
 /**
  * Applies a buff to the robot, modifying a stat
  *
- * @param {string} name       - the name of the stat
- * @param {number} multiplier - the multiplier for the stat
- * @param {number} duration   - the duration of the buff in frames
+ * @param {string} name        - the name of the stat
+ * @param {number} multiplier  - the multiplier for the stat
+ * @param {number} duration    - the duration of the buff in frames
+ * @param {bool}   [localOnly] - whether or not it is a local buff
  */
-Robot.prototype.buff = function(name, multiplier, duration) {
+Robot.prototype.buff = function(name, multiplier, duration, localOnly) {
     this.buffs[name] = {multiplier: multiplier, duration: duration};
-    if (connection.isHost) connection.buff(this.id, name, multiplier, duration);
+    if (connection.isHost && !localOnly) connection.buff(this.id, name, multiplier, duration);
 };
 
 /**

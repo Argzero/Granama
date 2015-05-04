@@ -225,6 +225,7 @@ input:focus, button:focus {
     color: white;
     font: bold 14px Tahoma;
     border: 3px solid #666;
+    display: none;
 }
 
 #chat h1 {

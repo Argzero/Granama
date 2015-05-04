@@ -261,7 +261,7 @@ Projectile.prototype.setupGrapple = function(stun, self) {
     this.onExpireName = 'grappleExpire';
     this.onCollideName = 'grappleCollide';
     
-    this.stun = stun;
+    this.extra.stun = stun;
     this.extra.self = self;
 };
 
@@ -281,6 +281,7 @@ Projectile.prototype.setupHoming = function(target, rotSpeed) {
     // Get nearest of the given type if a specific robot is not specified
     if (isNaN(target)) this.target = target;
     else this.target = gameScreen.getClosest(this.pos, target);
+    this.extra.targetID = this.target.id;
     
     this.extra.rotSpeed = rotSpeed;
     this.extra.lifespan = this.range / this.speed;
@@ -306,7 +307,7 @@ Projectile.prototype.setupRocket = function(type, radius, knockback) {
     
     this.extra.type = type;
     this.extra.radius = radius;
-    this.knockback = knockback;
+    this.extra.knockback = knockback;
     return this;
 };
 
@@ -320,7 +321,7 @@ Projectile.prototype.setupSlowBonus = function(multiplier) {
     
     this.hitName = 'slowedBonusHit';
     
-    this.slowMultiplier = multiplier;
+    this.extra.slowMultiplier = multiplier;
     return this;
 };
 
@@ -358,8 +359,8 @@ Projectile.prototype.setupSword = function(radius, arc, knockback, lifesteal) {
     this.extra.tempRotation = new Vector(1, 0);
     this.extra.initial = this.offset.clone();
     this.extra.start = new Vector(-radius * Math.sin(arc / 2), radius * Math.cos(arc / 2));
-    this.knockback = knockback;
-    this.lifesteal = lifesteal;
+    this.extra.knockback = knockback;
+    this.extra.lifesteal = lifesteal;
     this.extra.arc = arc;
     this.range = 999999;
 };
@@ -447,7 +448,7 @@ var projEvents = {
             var returnPoint = this.offset.clone().rotate(rot.x, rot.y).addv(this.gun.getWorldPos());
             this.vel = returnPoint.clone().subtractv(this.pos).setMagnitude(this.speed);
             if (this.target && this.target.pos.distanceSq(this.shooter.pos) >= 10000) {
-                if (this.target.type != Robot.BOSS) this.target.stun(this.stun || 2);
+                if (this.target.type != Robot.BOSS) this.target.stun(this.extra.stun || 2);
                 if (this.extra.self || this.target.type == Robot.BOSS) {
                     this.shooter.move(-this.vel.x, -this.vel.y);
                     this.shooter.stun(2);
@@ -532,8 +533,8 @@ var projEvents = {
      * @param {Robot} target - the target to apply knockback to
      */
     knockbackHit: function(target) {
-        if (this.knockback) {
-            target.knockback(this.vel.clone().setMagnitude(this.knockback));
+        if (this.extra.knockback) {
+            target.knockback(this.vel.clone().setMagnitude(this.extra.knockback));
         }
     },
 
@@ -547,7 +548,7 @@ var projEvents = {
     mixedCollide: function(target) {
         if (target.type & this.shooter.type) {
             if (target.health >= target.maxHealth) return false;
-            this.damage = -this.heal;
+            this.damage = -this.extra.heal;
         }
         return true;
     },
@@ -560,8 +561,8 @@ var projEvents = {
      */
     punchHit: function(target, damage) {
         this.expired = false;
-        target.knockback(target.pos.clone().subtractv(this.shooter.pos).setMagnitude(this.knockback));
-        target.stun(this.stun);
+        target.knockback(target.pos.clone().subtractv(this.shooter.pos).setMagnitude(this.extra.knockback));
+        target.stun(this.extra.stun);
     },
     
     /**
@@ -579,8 +580,8 @@ var projEvents = {
                         r.damage(this.damage, this.shooter);
                         this.applyBuffs(r);
                     }
-                    if (this.knockback) {
-                        var dir = r.pos.clone().subtractv(this.pos).setMagnitude(this.knockback);
+                    if (this.extra.knockback) {
+                        var dir = r.pos.clone().subtractv(this.pos).setMagnitude(this.extra.knockback);
                         r.knockback(dir);
                     }
                 }
@@ -614,7 +615,7 @@ var projEvents = {
      */
     slowedBonusHit: function(target, damage) {
         if (target.get('speed') < target.speed) {
-            target.damage(damage * (this.slowMultiplier - 1), this.shooter);
+            target.damage(damage * (this.extra.slowMultiplier - 1), this.shooter);
         }
     },
     
@@ -687,13 +688,13 @@ var projEvents = {
     swordHit: function(target, damage) {
         
         // Lifesteal
-        if (!this.shooter.dead && this.lifesteal) {
-            this.shooter.heal(this.damage * this.lifesteal);
+        if (!this.shooter.dead && this.extra.lifesteal) {
+            this.shooter.heal(this.damage * this.extra.lifesteal);
         }
         
         // Knockback
-        if (this.knockback) {
-            var dir = target.pos.clone().subtractv(this.shooter.pos).setMagnitude(this.knockback);
+        if (this.extra.knockback) {
+            var dir = target.pos.clone().subtractv(this.shooter.pos).setMagnitude(this.extra.knockback);
             target.knockback(dir);
         }
     },

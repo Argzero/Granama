@@ -134,8 +134,8 @@ onLoaderDone = function() {
     chatBox = document.getElementById('chat');
     chatBox.style.display = 'none';
     document.getElementById('input').onkeydown = function(e) {
-        if (e.keyCode != 13 || this.value === '') return;
         controls.ignoreNext = true;
+        if (e.keyCode != 13 || this.value === '') return;
         connection.message(this.value.replace('<', '&lt;').replace('>', '&gt;'));
         this.value = '';
     };
