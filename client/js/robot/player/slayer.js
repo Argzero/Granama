@@ -30,7 +30,7 @@ function PlayerSlayer() {
         rate    : 2,
         pierce  : true,
         target  : Robot.ENEMY,
-        onUpdate: 'fireUpdate'
+        onUpdate: projEvents.fireUpdate
     };
     this.laserData = {
         sprite: 'laser',
