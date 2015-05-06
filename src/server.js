@@ -391,6 +391,20 @@ function setup(server) {
             console.log('Action: Give Exp [' + data.exp + ' to ' + data.player + ']');
             socket.broadcast.to(socket.room).emit('giveExp', data);
         });
+		
+		/**
+		 * Relays healing a robot. The data should include the values:
+		 *
+		 *   robot = the ID of the healed robot
+		 *   health = the new health of the robot
+		 *   time = the time the robot was healed
+		 *
+		 * @param {Object} data - the data from the client
+		 */
+		socket.on('heal', function(data) {
+			console.log('Action: Heal');
+			socket.broadcast.to(socket.room).emit('heal', data);
+		});
         
         /**
          * Relays knockback to a robot. The data should include the values:

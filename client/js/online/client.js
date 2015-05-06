@@ -47,6 +47,7 @@ Connection.prototype.connect = function() {
     this.socket.on('general', this.onGeneral.bind(this));
     this.socket.on('getTime', this.onGetTime.bind(this));
     this.socket.on('giveExp', this.onGiveExp.bind(this));
+	this.socket.on('heal', this.onHeal.bind(this));
     this.socket.on('joinRoom', this.onJoinRoom.bind(this));
     this.socket.on('kick', this.onKick.bind(this));
     this.socket.on('knockback', this.onKnockback.bind(this));
@@ -347,6 +348,20 @@ Connection.prototype.giveExp = function(index, amount) {
         exp: amount,
         time: this.getServerTime()
     });
+};
+
+/**
+ * Sends an update for a robot's health when it is healed.
+ *
+ * @param {Robot} robot - the robot to heal
+ */
+Connection.prototype.heal = function(robot) {
+	if (!this.connected || !this.inRoom) return;
+	this.socket.emit('heal', {
+		robot: robot.id,
+		heal: robot.health,
+		time: this.getServerTime()
+	});
 };
 
 /**
@@ -1000,6 +1015,22 @@ Connection.prototype.onGetTime = function(data) {
 Connection.prototype.onGiveExp = function(data) {
     players[data.player].giveExp(data.exp);
 };
+
+/**
+ * Heals a robot. The data should include the values:
+ *
+ *   robot = the ID of the healed robot
+ *   health = the new health of the robot
+ *   time = the time the robot was healed
+ *
+ * @param {Object} data - the data from the server
+ */
+Connection.prototype.onHeal = function(data) {
+	var robot = gameScreen.getRobotById(data.robot);
+	if (robot) {
+		robot.health = data.health;
+	}
+});
 
 /**
  * Receives a response from the server when the players are able to

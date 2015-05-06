@@ -182,6 +182,7 @@ Robot.prototype.heal = function(amount) {
 
     // Apply healing
     this.health = Math.min(this.health + amount, this.maxHealth);
+	connection.heal(this);
 };
 
 /**
