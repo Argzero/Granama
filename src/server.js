@@ -70,6 +70,22 @@ function setup(server) {
             console.log('Action: Buff');
             socket.broadcast.to(socket.room).emit('buff', data);
         });
+		
+		/**
+		 * Relays a message for an enemy burrowing. The
+		 * data should include the values:
+		 *
+		 *   robot = the ID of the burrowing robot
+		 *   pos = the position the robot burrowed at
+		 *   offset = the offset of the burrow target
+		 *   time = the time the robot burrowed
+		 *
+		 * @param {Object} data - the data from the server
+		 */
+		socket.on('burrow', function(data) {
+			console.log('Action: Burrow');
+			socket.broadcast.to(socket.room).emit('burrow', data);
+		});
         
         /**
          * Relays a pattern change for a robot. The data should
@@ -818,31 +834,7 @@ function mergeProfile(name, profile) {
                 console.log('Profile data has been updated');
             }
         });
-        /*
-        doc.profile = JSON.stringify(entry);
-        AccountModel.update({ username: name }, { $set: { profile: JSON.stringify(entry) }}, {}, function(err, numAffected, rawResponse) {
-            if (err) {
-                console.log('Failed to update profile data');
-            }
-            else {
-                console.log('Profile data has been updated');
-            }
-        });
-        */
     });
-}
-
-function dump(data, indent) {
-    var keys = Object.keys(data);
-    for (var i = 0; i < keys.length; i++) {
-        if (typeof data[keys[i]] === 'object') {
-            console.log(indent + keys[i] + ':');
-            dump(data[keys[i]], indent + '    ');
-        }
-        else {
-            console.log(indent + keys[i] + ': ' + data[keys[i]]);
-        }
-    }
 }
 
 // ------------------------- Database setup -------------------------------- //

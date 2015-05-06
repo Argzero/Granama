@@ -167,6 +167,7 @@ var movement = {
             this.tOffset = new Vector(this.width, 0);
             if (this.burrowOffset) this.tOffset.add(this.burrowOffset, 0);
             this.tOffset.rotateAngle(rand(360) * Math.PI / 180);
+			connection.burrow(this);
         }
         
         // Pop out of the ground after a delay

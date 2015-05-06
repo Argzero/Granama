@@ -150,6 +150,21 @@ Connection.prototype.buff = function(robot, stat, multiplier, duration) {
 };
 
 /**
+ * Shares a burrowing enemy's target offset.
+ * 
+ * @param {Robot} robot - the enemy that burrowed
+ */
+Connection.prototype.burrow = function(robot) {
+	if (!this.connected || !this.inRoom) return;
+	this.socket.emit('burrow', {
+		robot: robot.id,
+		pos: robot.pos,
+		offset: robot.tOffset,
+		time: this.getServerTime()
+	});
+};
+
+/**
  * Sends a pattern change for a robot across the network
  *
  * @param {number} robot   - the ID of the robot changing patterns
@@ -643,6 +658,26 @@ Connection.prototype.onBuff = function(data) {
     if (r) {
         r.buff(data.stat, data.multiplier, data.duration);
     }
+};
+
+/**
+ * Tells a robot to burrow with a specified offset.
+ * The data should include the values:
+ *
+ *   robot = the ID of the burrowing robot
+ *   pos = the position the robot burrowed at
+ *   offset = the offset of the burrow target
+ *   time = the time the robot burrowed
+ *
+ * @param {Object} data - the data from the server
+ */
+Connection.prototype.onBurrow = function(data) {
+	var robot = gameScreen.getRobotById(data.robot);
+	if (robot) {
+		robot.burrowing = true;
+		robot.hidden = true;
+		robot.tOffset = new Vector(data.offset.x, data.offset.y);
+	}
 };
 
 /**
