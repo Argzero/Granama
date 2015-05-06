@@ -65,12 +65,15 @@ Boss.prototype.stun = function(duration) { };
 /**
  * Bosses take reduced buff effects
  *
- * @param {string} name       - the name of the stat
- * @param {number} multiplier - the multiplier for the stat
- * @param {number} duration   - the duration of the buff in frames
+ * @param {string} name        - the name of the stat
+ * @param {number} multiplier  - the multiplier for the stat
+ * @param {number} duration    - the duration of the buff in frames
+ * @param {bool}   [localOnly] - whether or not it is a local buff
  */
-Boss.prototype.buff = function(name, multiplier, duration) {
-    this.buffs[name] = {multiplier: multiplier + (1 - multiplier) * 0.8, duration: duration};
+Boss.prototype.buff = function(name, multiplier, duration, localOnly) {
+    multiplier += (1 - multiplier) * 0.8;
+    this.buffs[name] = {multiplier: multiplier, duration: duration};
+    if (connection.isHost && !localOnly) connection.buff(this.id, name, multiplier, duration);
 };
 
 /**

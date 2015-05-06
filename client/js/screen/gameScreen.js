@@ -416,7 +416,6 @@ GameScreen.prototype.checkUpgradeTransition = function() {
                     var r = this.robots[i];
                     if (r.type && !(r.type & Robot.PLAYER)) {
                         r.dead = true;
-                        r.expired = true;
                     }
                 }
             }
@@ -572,7 +571,7 @@ GameScreen.prototype.spawnBoss = function() {
     this.bossTimer = 300;
     
     // Tell others to spawn the enemy
-    connection.spawn(construct.name, this.boss.pos, this.spawnId++, true, this.boss.extra);
+    connection.spawn(construct.name, this.boss.pos, this.spawnId++, false, this.boss.extra);
 };
 
 /**
