@@ -75,11 +75,11 @@ PlayerAngel.prototype.getAuraRadius = function() {
 PlayerAngel.prototype.applyUpdate = function() {
     
 	// Get the damage multiplier including any damage buffs
-    var m = this.get('power');
+    var m = this.get('power', true);
 
     // Beam
-    this.prismData.damage = m * (1.5 + 0.7 * this.upgrades[PRISM_POWER_ID]);
-    this.prismData.extra.heal = this.maxHealth * (0.003 + 0.001 * this.upgrades[PRISM_POWER_ID]); 
+    this.prismData.damage = this.power * m * (1.5 + 0.7 * this.upgrades[PRISM_POWER_ID]);
+    this.prismData.extra.heal = m * this.maxHealth * (0.003 + 0.001 * this.upgrades[PRISM_POWER_ID]); 
     this.prismData.size = rand(3) / 3 + 1;
     this.gun(this.prismData);
     

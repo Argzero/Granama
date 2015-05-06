@@ -27,6 +27,7 @@ function Turret(shooter, sprite, base, x, y, damage, health) {
         target : Robot.PLAYER
     };
     this.fire = weapon.gun;
+    this.id = gameScreen.spawnId++;
 }
 
 /**

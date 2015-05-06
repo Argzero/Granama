@@ -51,11 +51,13 @@ Connection.prototype.connect = function() {
     this.socket.on('kick', this.onKick.bind(this));
     this.socket.on('knockback', this.onKnockback.bind(this));
     this.socket.on('message', this.onMessage.bind(this));
+    this.socket.on('mine', this.onMine.bind(this));
     this.socket.on('removePlayer', this.onRemovePlayer.bind(this));
     this.socket.on('revive', this.onRevive.bind(this));
     this.socket.on('setPaused', this.onSetPaused.bind(this));
     this.socket.on('spawn', this.onSpawn.bind(this));
     this.socket.on('startGame', this.onStartGame.bind(this));
+    this.socket.on('turret', this.onTurret.bind(this));
     this.socket.on('updatePlayer', this.onUpdatePlayer.bind(this));
     this.socket.on('updateRobots', this.onUpdateRobots.bind(this));
     this.socket.on('updateRooms', this.onUpdateRooms.bind(this));
@@ -63,6 +65,7 @@ Connection.prototype.connect = function() {
     this.socket.on('upgrade', this.onUpgrade.bind(this));
     this.socket.on('upgradeSelection', this.onUpgradeSelection.bind(this));
     
+    // Start synchronizing time with the server
     this.socket.emit('getTime', { localTime: performance.now() });
     
     this.connected = true;
@@ -403,6 +406,26 @@ Connection.prototype.message = function(message) {
 };
 
 /**
+ * Shares a mine placed by an enemy with other clients
+ *
+ * @param {Mine} mine - the mine that was placed
+ */
+Connection.prototype.mine = function(mine) {
+    if (!this.connected || !this.inRoom) return;
+    
+    this.socket.emit('mine', {
+        sprite: mine.sprite.name,
+        pos: mine.pos,
+        dmg: mine.power,
+        id: mine.id,
+        lifespan: mine.lifespan,
+        target: mine.target,
+        shooter: mine.shooter.id,
+        time: this.getServerTime()
+    });
+};
+
+/**
  * Removes all local players from the current game for some
  * reason, whether it's quitting from the lobby, closing the
  * window, or losing connection.
@@ -517,6 +540,26 @@ Connection.prototype.spawn = function(construct, pos, id, bossSpawn, extra) {
 Connection.prototype.submitStats = function(profile) {
     if (!this.connected) return;
     this.socket.emit('stats', profile);
+};
+
+/**
+ * Shares a turret placement with other players
+ *
+ * @param {Turret} turret - the turret that was placed
+ */
+Connection.prototype.turret = function(turret) {
+    if (!this.connected || !this.inRoom) return;
+    
+    this.socket.emit('turret', {
+        sprite: turret.sprite.name,
+        base: turret.preChildren[0].sprite.name,
+        pos: turret.pos,
+        health: turret.health,
+        dmg: turret.gunData.damage,
+        id: turret.id,
+        shooter: turret.gunData.shooter.id,
+        time: this.getServerTime()
+    });
 };
 
 /**
@@ -816,6 +859,7 @@ Connection.prototype.onDowngrade = function(data) {
  *	size = the size of the projectile
  *	dmg = how much damage the projectile will do to a target
  *	id = the id of the bullet
+ *  clientID = the ID of the player that created the bullet
  *	pierce = does the bullet pierce?
  *	range = the max distance the bullet will travel
  *	temps = what templates the projectile follows
@@ -1039,6 +1083,34 @@ Connection.prototype.onMessage = function(data) {
 };
 
 /**
+ * Handles adding mines to the environment via data received from
+ * the server. The data should include the values:
+ *
+ *   sprite = the name of the image used by the mine
+ *   pos = the position of the mine
+ *   dmg = the amount of damage the mine will deal
+ *   id = the ID of the mine
+ *   lifespan = how long the mine will last
+ *   target = the target group of the mine
+ *   shooter = the ID of the robot that placed the mine
+ *   time = the time the mine was placed
+ *
+ * @parm {Object} data - the data received from the server
+ */
+Connection.prototype.onMine = function(data) {
+    var mine = new Mine(this, new Vector(0, 0), 0, 'LightBomber', 0);
+    mine.sprite = images.get(data.sprite);
+    mine.pos.x = data.pos.x;
+    mine.pos.y = data.pos.y;
+    mine.power = data.dmg;
+    mine.id = data.id;
+    mine.lifespan = data.lifespan;
+    mine.target = data.target;
+    mine.shooter = gameScreen.getRobotById(data.shooter);
+    gameScreen.robots.push(mine);
+};
+
+/**
  * Message for when players leave the current game. The
  * data should include the values:
  *
@@ -1162,6 +1234,35 @@ Connection.prototype.onStartGame = function(data) {
     gameScreen = new GameScreen(false);
     document.getElementById('chat').style.display = 'none';
 };
+
+/**
+ * Handles adding turrets to the environment via data received from
+ * the server. The data should include the values:
+ *
+ *   sprite = the name of the image used by the gun of the turret
+ *   base = the name of the image used by the base of the turret
+ *   pos = the position of the mine
+ *   health = the amount of health that the turret has
+ *   dmg = the amount of damage the bullets will deal
+ *   id = the ID of the turret
+ *   shooter = the ID of the robot that placed the turret
+ *   time = the time the turret was placed
+ *
+ * @parm {Object} data - the data received from the server
+ */
+Connection.prototype.onTurret = function(data) {
+    var turret = new Turret(this, 'turretGun', 'turretBase', 0, 0, 0, 1);
+    turret.sprite = images.get(data.sprite);
+    turret.preChildren[0].sprite = images.get(data.base);
+    turret.pos.x = data.pos.x;
+    turret.pos.y = data.pos.y;
+    turret.health = turret.maxHealth = data.health;
+    turret.gunData.damage = data.damage;
+    turret.id = data.id;
+    turret.shooter = gameScreen.getRobotById(data.shooter);
+    gameScreen.robots.push(turret);
+};
+
 
 /**
  * Sends an update for the player's current position

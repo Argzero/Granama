@@ -22,7 +22,7 @@ function skillOverdrive(player) {
             this.skillDuration = 300;
             this.skillCd = 960 * this.cdm;
             this.rm = 0.75;
-            this.buff('speed', 1.5, this.skillDuration);
+            this.buff('speed', 1.5, this.skillDuration, true);
         }
         if (this.skillDuration <= 0) {
             this.rm = 1;

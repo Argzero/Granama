@@ -18,7 +18,7 @@ function skillAngelicAssault(player) {
             this.skillDuration = 300;
             this.skillCd = 240;
             this.staticActive = !this.staticActive;
-            this.buff('power', 2, this.skillDuration);
+            this.buff('power', 2, this.skillDuration, true);
         }
         
         // Base value buffs
