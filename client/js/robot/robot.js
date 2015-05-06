@@ -187,14 +187,16 @@ Robot.prototype.heal = function(amount) {
 /**
  * Gets a stat of the robot while checking for applied buffs
  *
- * @param {string} name - name of the buff
+ * @param {string} name             - name of the buff
+ * @param {bool}   [multiplierOnly] - whether or not to only get the multiplier, not the base stat 
  *
  * @returns {number} the value of the stat
  */
-Robot.prototype.get = function(name) {
+Robot.prototype.get = function(name, multiplierOnly) {
     var m = 1;
     if (this.buffs[name]) m = this.buffs[name].multiplier;
-    return (this[name] || 1) * m;
+    if (multiplierOnly || !this[name]) return m;
+    else return this[name] * m;
 };
 
 /**

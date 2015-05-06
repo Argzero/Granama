@@ -89,7 +89,7 @@ var ui = {
             
             // Count how many buffs are applied
             var count = 0;
-            if (r.baseSpeed != r.speed) r.buff('temp', r.speed / r.baseSpeed, 1);
+            if (r.baseSpeed != r.speed) r.buff('temp', r.speed / r.baseSpeed, 1, true);
             for (x in this.buffs)
             {
                 if (r.buffs[x] !== undefined)

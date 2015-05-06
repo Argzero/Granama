@@ -17,6 +17,7 @@ function Mine(shooter, pos, damage, type, target) {
     this.target = target;
     this.type = Robot.MINE;
     this.target = target || Robot.PLAYER;
+    this.id = gameScreen.spawnId++;
 }
 
 /**

@@ -20,7 +20,7 @@ function skillHurricaneStance(player) {
             
             var ups = this.upgrades[METEOR_ABILITY_ID];
             if (ups) {
-                this.buff('power', 1 + ups * 0.1, this.skillDuration);
+                this.buff('power', 1 + ups * 0.1, this.skillDuration, true);
             }
         }
         

@@ -143,14 +143,12 @@ Player.prototype.update = function() {
     this.updateRobot();
     
     // Shield regeneration
-    if (!this.isRemote()) {
-        this.shieldCd -= this.get('shieldBuff');
-        if (this.shieldCd <= 0) {
-            this.shieldCd += 60 / (this.shieldScale * (this.upgrades[SHIELD_ID] + 1) * 1 / 10);
-            this.shield += this.maxHealth * SHIELD_GAIN;
-            if (this.shield > this.maxHealth * SHIELD_MAX) {
-                this.shield = this.maxHealth * SHIELD_MAX;
-            }
+    this.shieldCd -= this.get('shieldBuff');
+    if (this.shieldCd <= 0) {
+        this.shieldCd += 60 / (this.shieldScale * (this.upgrades[SHIELD_ID] + 1) * 1 / 10);
+        this.shield += this.maxHealth * SHIELD_GAIN;
+        if (this.shield > this.maxHealth * SHIELD_MAX) {
+            this.shield = this.maxHealth * SHIELD_MAX;
         }
     }
     
@@ -221,20 +219,22 @@ Player.prototype.updateDead = function() {
     var inRange = false;
 
     // See if a player is in range to rescue the player
+    var revSpeed = 0;
     for (i = 0; i < players.length; i++) {
         p = players[i];
         if (p.dead) continue;
         if (this.pos.distanceSq(p.pos) < 10000) {
             inRange = true;
+            revSpeed = Math.max(revSpeed, p.revSpeed);
         }
     }
 
     // Apply rescue effects
     if (inRange) {
-        this.rescue -= this.revSpeed;
+        this.rescue -= revSpeed;
         if (connection.isHost && this.rescue <= 0) {
             this.revive();
-            connection.revive(this.playerIndex);
+            connection.revive(this);
    
             for (i = 0; i < players.length; i++) {
                 p = players[i];

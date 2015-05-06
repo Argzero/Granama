@@ -17,7 +17,7 @@ function skillGyroSlash(player) {
             connection.ability(this);
             this.skillDuration = 180;
             this.skillCd = 300;
-            this.buff('speed', 2, this.skillDuration);
+            this.buff('speed', 2, this.skillDuration, true);
 
             if (this.isRemote()) return;
             

@@ -305,6 +305,7 @@ var weapon = {
             if (data.duration) {
                 mine.lifespan = data.duration;
             }
+            connection.mine(mine);
         }
     },
 

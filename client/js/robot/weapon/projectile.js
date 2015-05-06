@@ -519,7 +519,8 @@ var projEvents = {
     homingUpdate: function() {
         this.extra.lifespan--;
 		this.target = this.target || gameScreen.getRobotById(this.extra.targetID);
-        this.expired = this.expired || this.target.dead || this.extra.lifespan <= 0;
+        this.expired = !this.target || this.expired || this.target.dead || this.extra.lifespan <= 0;
+        if (this.expired) return;
         
         var cross = this.pos.clone().subtractv(this.target.pos).cross(this.vel);
         var angle = cross < 0 ? -this.extra.rotSpeed : this.extra.rotSpeed;

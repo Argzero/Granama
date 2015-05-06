@@ -314,7 +314,6 @@ function setup(server) {
          * @param {Object} data - the data for the projectile
          */ 
         socket.on('fireProjectile', function(data) {
-            console.log('Action: Projectile Fired!');
             socket.broadcast.to(socket.room).emit('fireProjectile', data);
         });
         
@@ -432,6 +431,24 @@ function setup(server) {
         });
         
         /**
+         * Relays mines placed in the game
+         *
+         *   sprite = the name of the image used by the mine
+         *   pos = the position of the mine
+         *   dmg = the amount of damage the mine will deal
+         *   id = the ID of the mine
+         *   lifespan = how long the mine will last
+         *   target = the target group of the mine
+         *   shooter = the ID of the robot that placed the mine
+         *   time = the time the mine was placed
+         *
+         * @parm {Object} data - the data received from the hosting player
+         */
+        socket.on('mine', function(data) {
+            socket.broadcast.to(socket.room).emit('mine', data);
+        });
+        
+        /**
          * Removes a client from a room. The data should include
          * these values:
          *
@@ -444,8 +461,13 @@ function setup(server) {
         socket.on('removePlayer', function(data) {
             console.log('Action: remove player');
             socket.broadcast.to(socket.room).emit('removePlayer', data);
-            roomList[socket.room].numPlayers -= data.amount;
-            roomList[socket.room].selections.splice(data.index, data.amount);
+            if (roomList[socket.room]) {
+                roomList[socket.room].numPlayers -= data.amount;
+                roomList[socket.room].selections.splice(data.index, data.amount);
+                if (roomList[socket.room].numPlayers == 0) {
+                    delete roomList[socket.room];
+                }
+            }
             socket.leave(socket.room);
             delete socket.room;
         });
@@ -551,6 +573,20 @@ function setup(server) {
         });
         
         /**
+         * Relays data for a player being revived. The data should include:
+         *
+         *   player = the index of the player who was revived
+         *   position = the position they were at while revived
+         *   time = the time the player was revived
+         *
+         * @param {Object} data - the data from the host player
+         */
+        socket.on('revive', function(data) {
+            console.log('Action: Revive');
+            socket.broadcast.to(socket.room).emit('revive', data);
+        });
+        
+        /**
          * Relays the paused state of the game. The data should include the values:
          *
          *   player = the index of the player who paused the game or -1 if not paused
@@ -641,6 +677,26 @@ function setup(server) {
             
             mergeProfile(data.name, data.data);
             mergeProfile('TOTAL_STATS', data.data);
+        });
+        
+        /**
+         * Relays turrets being placed in the game. The data
+         * should include the values:
+         *
+         *   sprite = the name of the image used by the gun of the turret
+         *   base = the name of the image used by the base of the turret
+         *   pos = the position of the mine
+         *   health = the amount of health that the turret has
+         *   dmg = the amount of damage the bullets will deal
+         *   id = the ID of the turret
+         *   shooter = the ID of the robot that placed the turret
+         *   time = the time the turret was placed
+         *
+         * @parm {Object} data - the data received from the host player
+         */
+        socket.on('turret', function(data) {
+            console.log('Action: Turret');
+            socket.broadcast.to(socket.room).emit('turret', data);
         });
         
         /**
@@ -862,5 +918,7 @@ AccountModel.findByUsername('TOTAL_STATS', function(err, doc) {
         newAccount.save(function (err) { console.log('default: ' + (err ? 'Failed' + err + ')' : 'Success')); });
     }
 });
+
+// --------------------------- NodeJS Exports ---------------------------- //
 
 module.exports = setup;

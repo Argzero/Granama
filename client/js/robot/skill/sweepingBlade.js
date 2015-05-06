@@ -17,7 +17,7 @@ function skillSweepingBlade(player) {
             connection.ability(this);
             this.skillDuration = 36;
             this.skillCd = 300;
-            this.buff('speed', 2, 36);
+            this.buff('speed', 2, 36, true);
             
             if (this.isRemote()) return;
 
