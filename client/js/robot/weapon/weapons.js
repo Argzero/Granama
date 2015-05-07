@@ -204,7 +204,7 @@ var weapon = {
 				shooter: data.shooter || this,
 				type: data.type || 'Enemy',
 				buffs: data.buffs || [],
-				explode: 'rocketExpire',
+				explode: projEvents.rocketExpire,
 				applyBuffs: Projectile.prototype.applyBuffs
 			};
 			

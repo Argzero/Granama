@@ -1228,6 +1228,7 @@ Connection.prototype.onSpawn = function(data) {
         gameScreen.boss = enemy;
         gameScreen.bossStatus = ACTIVE_BOSS;
         gameScreen.bossTimer = 300 - (this.getServerTime() - data.time) * 3 / 50;
+        gameScreen.bossCount++;
     }
 };
 
