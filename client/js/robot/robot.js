@@ -168,9 +168,10 @@ Robot.prototype.giveDeath = function(killer) {
 /**
  * Heals the robot
  *
- * @param {number} amount - the amount to heal the robot by
+ * @param {number} amount  - the amount to heal the robot by
+ * @param {bool}   [local] - whether or not the heal is local only
  */
-Robot.prototype.heal = function(amount) {
+Robot.prototype.heal = function(amount, local) {
 
     // Event for healing
     if (this.onHealed) {
@@ -182,7 +183,7 @@ Robot.prototype.heal = function(amount) {
 
     // Apply healing
     this.health = Math.min(this.health + amount, this.maxHealth);
-	connection.heal(this);
+	if (!local) connection.heal(this);
 };
 
 /**
@@ -251,10 +252,10 @@ Robot.prototype.updateRobot = function() {
 	// Health regeneration
     if (!this.dead) {
         if (this.buffs.healthBuff) {
-            this.heal(this.get('healthBuff') * this.maxHealth);
+            this.heal(this.get('healthBuff') * this.maxHealth, true);
         }
         if (this.buffs.flatHBuff) {
-            this.heal(this.get('flatHBuff'));
+            this.heal(this.get('flatHBuff'), true);
         }
     }
 

@@ -359,7 +359,7 @@ Connection.prototype.heal = function(robot) {
 	if (!this.connected || !this.inRoom) return;
 	this.socket.emit('heal', {
 		robot: robot.id,
-		heal: robot.health,
+		health: robot.health,
 		time: this.getServerTime()
 	});
 };
@@ -1030,7 +1030,7 @@ Connection.prototype.onHeal = function(data) {
 	if (robot) {
 		robot.health = data.health;
 	}
-});
+};
 
 /**
  * Receives a response from the server when the players are able to

@@ -494,7 +494,7 @@ function setup(server) {
             if (roomList[socket.room]) {
                 roomList[socket.room].numPlayers -= data.amount;
                 roomList[socket.room].selections.splice(data.index, data.amount);
-                if (roomList[socket.room].numPlayers == 0) {
+                if (roomList[socket.room].numPlayers === 0) {
                     delete roomList[socket.room];
                 }
             }
