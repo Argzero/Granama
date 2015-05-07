@@ -198,14 +198,16 @@ var weapon = {
 			var artilleryData = {
 				pos: pos,
 				damage: data.damage,
-				radius: data.radius,
-				knockback: data.knockback,
 				group: data.target || Robot.PLAYER,
 				shooter: data.shooter || this,
-				type: data.type || 'Enemy',
 				buffs: data.buffs || [],
 				explode: projEvents.rocketExpire,
-				applyBuffs: Projectile.prototype.applyBuffs
+				applyBuffs: Projectile.prototype.applyBuffs,
+                extra: {
+                    radius: data.radius,
+                    type: data.type || 'Enemy',
+                    knockback: data.knockback
+                }
 			};
 			
 			// Offset the position if applicable
