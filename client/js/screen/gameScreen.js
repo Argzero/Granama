@@ -161,7 +161,6 @@ GameScreen.prototype.update = function() {
         this.gameOver--;
         if (this.gameOver <= 0) {
             gameScreen = new EndScreen();
-            connection.inRoom = false;
             return;
         }
     }

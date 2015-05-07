@@ -37,6 +37,7 @@ Connection.prototype.connect = function() {
     this.socket.on('addPlayers', this.onAddPlayers.bind(this));
     this.socket.on('blockProjectile', this.onBlockProjectile.bind(this));
     this.socket.on('buff', this.onBuff.bind(this));
+    this.socket.on('burrow', this.onBurrow.bind(this));
     this.socket.on('changePattern', this.onChangePattern.bind(this));
     this.socket.on('damage', this.onDamage.bind(this));
     this.socket.on('destroy', this.onDestroy.bind(this));
@@ -44,6 +45,7 @@ Connection.prototype.connect = function() {
     this.socket.on('doneUpgrades', this.onDoneUpgrades.bind(this));
     this.socket.on('downgrade', this.onDowngrade.bind(this));
     this.socket.on('fireProjectile', this.onFireProjectile.bind(this));
+    this.socket.on('gameOver', this.onGameOver.bind(this));
     this.socket.on('general', this.onGeneral.bind(this));
     this.socket.on('getTime', this.onGetTime.bind(this));
     this.socket.on('giveExp', this.onGiveExp.bind(this));
@@ -332,7 +334,22 @@ Connection.prototype.fireProjectile = function(proj) {
  */
 Connection.prototype.gameOver = function() {
     if (!this.connected || !this.inRoom) return;
-    this.socket.emit('gameOver', { time: this.getServerTime() });
+    this.inRoom = false;
+    var stats = new Array(players.length);
+    for (var i = 0; i < players.length; i++) {
+        var player = players[i];
+        stats[i] = {
+            damageDealt: player.damageDealt,
+            damageTaken: player.damageTaken,
+            damageAbsorbed: player.damageAbsorbed,
+            kills: player.skills,
+            deaths: player.deaths
+        }
+    }
+    this.socket.emit('gameOver', { 
+        stats: stats,
+        time: this.getServerTime() 
+    });
 };
 
 /**
