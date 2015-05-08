@@ -189,7 +189,7 @@ ACTIVE_NONE = 0,
 ACTIVE_BOSS = 1,
 
 SPAWN_RATE = 180,
-SPAWN_SCALE = 0.3,
+SPAWN_SCALE = 0.8,
 SPAWN_DATA = [
     //10000000, 0, ScorpionBoss,
     90, 0, LightGunner,

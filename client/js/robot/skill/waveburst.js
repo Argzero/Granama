@@ -20,7 +20,8 @@ function skillWaveburst(player) {
         }
 
         // Active ability effects
-        if (this.skillDuration > 0 && !this.isRemote()) {
+        if (this.skillDuration > 0) {
+            var angle = this.getAngle();
             for (var i = 0; i < 5; i++) {
                 this.waveAngle += Math.PI / 60;
                 var laser = new Projectile(
@@ -28,14 +29,13 @@ function skillWaveburst(player) {
                     /* Offset */ 0, 54 + BULLET_SPEED * i / 5,
                     /* Source */ this, this,
                     /* Speed  */ 10,
-                    /* Angle  */ this.waveAngle,
+                    /* Angle  */ this.waveAngle - angle,
                     /* Damage */ 0.5 * this.get('power'),
                     /* Range  */ 999,
                     /* Pierce */ true,
                     /* Target */ Robot.ENEMY
                 );
                 gameScreen.bullets.push(laser);
-                connection.fireProjectile(laser);
             }
         }
     };

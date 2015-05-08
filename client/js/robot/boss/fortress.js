@@ -27,6 +27,17 @@ function FortressBoss(x, y) {
     this.movement = movement.basic;
     this.turnDivider = 100;
     
+    this.hookPattern = [ 0, 1, 2, 3, 4, 5 ];
+    this.nextHook = 0;
+    var i, arr = [];
+    for (i = 0 ; i < this.hookPattern.length; i++) {
+        var index = rand(6 - i);
+        arr.push(this.hookPattern[index]);
+        this.hookPattern.splice(index, 1);
+    }
+    this.hookPattern = arr;
+    this.extra = { hookPattern: arr };
+    
     // Arms
     this.armLeft = new Sprite('bossTankArmLeft', -120, 70).child(this, true);
     this.armRight = new Sprite('bossTankArmRight', 120, 70).child(this, true);
@@ -49,7 +60,6 @@ function FortressBoss(x, y) {
         new FortressHook(this, new Vector(132, 0), new Vector(1, 0)),
         new FortressHook(this, new Vector(132, 70), new Vector(1, 0))
     ];
-    var i;
     for (i = 0; i < this.hooks.length; i++) {
         this.postChildren.push(this.hooks[i]);
     }
@@ -122,12 +132,8 @@ FortressBoss.prototype.onUpdate = function() {
     // Launch hooks
     if (this.hooksActive < 6 && --this.hookCd <= 0) {
         this.hookCd = 150;
-        var num;
-        var temp = 0;
-        do {
-            num = rand(this.hooks.length);
-        }
-        while (this.hooks[num].active && ++temp < 100);
+        var num = this.hookPattern[this.nextHook];
+        this.nextHook = (this.nextHook + 1) % this.hookPattern.length;
         this.hooks[num].launch();
         this.hooksActive++;
         this.hookCd = this.hookRate;
@@ -222,7 +228,7 @@ FortressCannon.prototype.update = function() {
     var target = this.boss.cannonTarget || movement.getTargetPlayer(this.boss);
     this.lookTowards(target.pos.clone().subtractv(this.boss.pos), FortressCannon.LOOK_ROT);
     
-    this.rail(this.cannonData);
+    if (connection.isHost) this.rail(this.cannonData);
 };
 
 /**
@@ -263,40 +269,41 @@ FortressHook.RESTORE_ROT = new Vector(Math.cos(Math.PI / 60), Math.sin(Math.PI /
  * damage and slows to players running over the chains
  */
 FortressHook.prototype.update = function() {
-    if (!gameScreen.paused && this.active) {
+    if (gameScreen.paused || !this.active) return;
 
-        // Movement outwards
-        if (this.vel.x || this.vel.y) {
-            this.rotation = this.arot.clone();
-            this.pos.addv(this.vel);
-            if (this.pos.distanceSq(this.boss.pos) > 490000) {
-                this.vel.x = 0;
-                this.vel.y = 0;
-            }
+    // Movement outwards
+    if (this.vel.x || this.vel.y) {
+        this.rotation = this.arot.clone();
+        this.pos.addv(this.vel);
+        if (this.pos.distanceSq(this.boss.pos) > 490000) {
+            this.vel.x = 0;
+            this.vel.y = 0;
         }
+    }
 
-        // Lifespan counter
-        else if (this.dur > 0) {
-            this.dur--;
+    // Lifespan counter
+    else if (this.dur > 0) {
+        this.dur--;
+    }
+
+    // Retreating
+    else {
+        this.rotation.rotateTowards(this.rot, FortressHook.RESTORE_ROT);
+        
+        this.rvel.x = this.boss.pos.x - this.pos.x;
+        this.rvel.y = this.boss.pos.y - this.pos.y;
+        this.rvel.setMagnitude(18);
+        this.pos.addv(this.rvel);
+
+        if (this.pos.distanceSq(this.boss.pos) < 2500) {
+            this.active = false;
+            this.rotation = this.rot.clone();
+            this.boss.hooksActive--;
         }
+    }
 
-        // Retreating
-        else {
-            this.rotation.rotateTowards(this.rot, FortressHook.RESTORE_ROT);
-            
-			this.rvel.x = this.boss.pos.x - this.pos.x;
-			this.rvel.y = this.boss.pos.y - this.pos.y;
-            this.rvel.setMagnitude(18);
-            this.pos.addv(this.rvel);
-
-            if (this.pos.distanceSq(this.boss.pos) < 2500) {
-                this.active = false;
-                this.rotation = this.rot.clone();
-                this.boss.hooksActive--;
-            }
-        }
-
-        // Collision
+    // Collision
+    if (connection.isHost) {
         this.boss.cannonTarget = undefined;
         for (var i = 0; i < players.length; i++) {
             var player = players[i];
@@ -313,10 +320,6 @@ FortressHook.prototype.update = function() {
             }
         }
     }
-    if (!this.active) {
-        this.pos = this.root.clone().rotate(this.boss.rotation.x, this.boss.rotation.y).addv(this.boss.pos);
-        this.rotation = this.rot.clone().rotate(this.boss.rotation.x, this.boss.rotation.y);
-    }
 };
 
 /**
@@ -324,6 +327,12 @@ FortressHook.prototype.update = function() {
  * are visible when fired
  */ 
 FortressHook.prototype.draw = function() {
+
+    // Draw the hook in the resting position when not active
+    if (!this.active) {
+        this.pos = this.root.clone().rotate(this.boss.rotation.x, this.boss.rotation.y).addv(this.boss.pos);
+        this.rotation = this.rot.clone().rotate(this.boss.rotation.x, this.boss.rotation.y);
+    }
 
     // Draw the hook
     this.boss.hook.moveTo(this.pos.x - this.boss.pos.x, this.pos.y - this.boss.pos.y);
