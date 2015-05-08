@@ -17,10 +17,11 @@
  * @param {number} range     - the max radius the shockwave can expand out to
  * @param {number} knockback - the amount of knockback to apply with the shockwave
  * @param {number} target    - the robot type ID to allow the shockwave to hit
+ * @param {bool}   [local]   - whether or not the shockwave is only to be applied locally
  *
  * @constructor
  */
-function Shockwave(source, color1, color2, x, y, speed, min, max, radius, thickness, damage, range, knockback, target) {
+function Shockwave(source, color1, color2, x, y, speed, min, max, radius, thickness, damage, range, knockback, target, local) {
     var base = source.getAngle();
     
     this.arc = new Arc(new Vector(x, y), radius, thickness, min + base, max + base);
@@ -33,6 +34,8 @@ function Shockwave(source, color1, color2, x, y, speed, min, max, radius, thickn
     this.knockback = knockback;
     this.expired = false;
     this.target = target;
+    
+    if (!local) connection.shockwave(this);
 }
 
 /**

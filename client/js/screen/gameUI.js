@@ -261,6 +261,7 @@ var ui = {
                             num = num.toFixed(1);
                         }
                         else num = num.toFixed(0);
+                        ui.ctx.textBaseline = 'alphabetic';
                         ui.ctx.fillText(num, player.pos.x - 75 - ui.ctx.measureText(num).width / 2, player.pos.y + 10);
                     }
                 }

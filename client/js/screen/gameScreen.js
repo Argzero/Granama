@@ -317,6 +317,15 @@ GameScreen.prototype.draw = function() {
     if (this.cursor) {
         ui.drawCursor();
     }
+    
+    ui.ctx.fillStyle = 'white';
+    ui.ctx.font = '18px Flipbash';
+    ui.ctx.textBaseline = 'top';
+    ui.ctx.textAlign = 'left';
+    ui.ctx.fillText(connection.pops + " POPS", 210, 10);
+    ui.ctx.fillText(connection.pips + " PIPS", 210, 40);
+    ui.ctx.fillText(connection.maxPops + " Max POPS", 210, 70);
+    ui.ctx.fillText(connection.maxPips + " Max PIPS", 210, 100);
 };
 
 /**

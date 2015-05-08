@@ -198,6 +198,7 @@ onLoaderDone = function() {
         DELTA_TIME = Math.min(dt / interval, 5);
         
         // Update/draw the screen
+        connection.update();
         if (gameScreen && gameScreen.draw) {
             if (gameScreen.update) {
                 gameScreen.update();

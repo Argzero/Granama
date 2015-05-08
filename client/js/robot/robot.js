@@ -238,8 +238,8 @@ Robot.prototype.stun = function(duration) {
  * @param {Vector} knockback - the relative offset to push
  */
 Robot.prototype.knockback = function(knockback) {
-    this.knockbackDir = knockback.multiply(this.knockbackFactor, this.knockbackFactor);
     if (connection.isHost) connection.knockback(this.id, knockback);
+    this.knockbackDir = knockback.multiply(this.knockbackFactor, this.knockbackFactor);
 };
 
 /**

@@ -630,6 +630,31 @@ function setup(server) {
         });
         
         /**
+         * Relays an emitted shockwave to other players. The
+         * data should contain the values:
+         *
+         *   source = the ID of the emitting robot
+         *   color1 = the primary color of the shockwave
+         *   color2 = the secondary color of the shockwave
+         *   pos = the position of the center of the shockwave
+         *   speed = the speed of the shockwave
+         *   min = the min angle of the shockwave
+         *   max = the max angle of the shockwave
+         *   radius = the radius of the shockwave
+         *   thickness = how thick the shockwave is
+         *   damage = the damage dealt by the shockwave
+         *   range = the range of the shockwave
+         *   knockback = the shockwave's knockback
+         *   target = the target robot group
+         *
+         * @param {Object} data - the data from the server
+         */
+        socket.on('shockwave', function(data) {
+            console.log('Action: Shockwave');
+            socket.broadcast.to(socket.room).emit('shockwave', data);
+        });
+        
+        /**
          * Handles sign-up attempts from the client. The data should
          * include these values:
          *

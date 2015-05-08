@@ -19,6 +19,15 @@ function Connection() {
     this.isHost = true;
     this.timeOffset = 0;
     
+    // Debug data
+    this.outCount = 0;
+    this.inCount = 0;
+    this.pops = 0;
+    this.pips = 0;
+    this.maxPops = 0;
+    this.maxPips = 0;
+    this.lastTime = performance.now();
+    
     this.connect();
 }
 
@@ -58,6 +67,7 @@ Connection.prototype.connect = function() {
     this.socket.on('removePlayer', this.onRemovePlayer.bind(this));
     this.socket.on('revive', this.onRevive.bind(this));
     this.socket.on('setPaused', this.onSetPaused.bind(this));
+    this.socket.on('shockwave', this.onShockwave.bind(this));
     this.socket.on('spawn', this.onSpawn.bind(this));
     this.socket.on('startGame', this.onStartGame.bind(this));
     this.socket.on('turret', this.onTurret.bind(this));
@@ -72,6 +82,21 @@ Connection.prototype.connect = function() {
     this.socket.emit('getTime', { localTime: performance.now() });
     
     this.connected = true;
+};
+
+/**
+ * Updates the POPS/PIPS values (packets out/in per second)
+ */
+Connection.prototype.update = function() {
+    if (performance.now() - this.lastTime >= 1000) {
+        this.pops = this.outCount;
+        this.pips = this.inCount;
+        this.maxPops = Math.max(this.pops, this.maxPops);
+        this.maxPips = Math.max(this.pips, this.maxPips);
+        this.outCount = 0;
+        this.inCount = 0;
+        this.lastTime += 1000;
+    }
 };
 
 /**
@@ -115,6 +140,7 @@ Connection.prototype.fromServerTime = function(time) {
  */
 Connection.prototype.ability = function(player) {
     if (!this.connected || !this.inRoom || player.isRemote()) return;
+    this.outCount++;
     this.socket.emit('ability', {
         player: player.playerIndex,
         time: this.getServerTime()
@@ -128,6 +154,7 @@ Connection.prototype.ability = function(player) {
  */
 Connection.prototype.blockProjectile = function(proj) {
 	if (!this.connected || !this.inRoom) return;
+    this.outCount++;
 	this.socket.emit('blockProjectile', {
 		id: proj.id,
         clientID: proj.clientID,
@@ -146,6 +173,7 @@ Connection.prototype.blockProjectile = function(proj) {
  */
 Connection.prototype.buff = function(robot, stat, multiplier, duration) {
     if (!this.connected || !this.inRoom) return;
+    this.outCount++;
     this.socket.emit('buff', {
         robot: robot,
         stat: stat,
@@ -162,6 +190,7 @@ Connection.prototype.buff = function(robot, stat, multiplier, duration) {
  */
 Connection.prototype.burrow = function(robot) {
 	if (!this.connected || !this.inRoom) return;
+    this.outCount++;
 	this.socket.emit('burrow', {
 		robot: robot.id,
 		pos: robot.pos,
@@ -178,6 +207,7 @@ Connection.prototype.burrow = function(robot) {
  */
 Connection.prototype.changePattern = function(robot, pattern) {
     if (!this.connected || !this.inRoom) return;
+    this.outCount++;
     this.socket.emit('changePattern', {
         robot: robot,
         pattern: pattern,
@@ -193,6 +223,7 @@ Connection.prototype.changePattern = function(robot, pattern) {
  */
 Connection.prototype.createRoom = function(name, callback) {
     if (!this.connected || this.inRoom) return;
+    this.outCount++;
     this.errCallback = callback;
     var users = [];
     for (var i = 0; i < players.length; i++) {
@@ -222,6 +253,7 @@ Connection.prototype.createRoom = function(name, callback) {
  */
 Connection.prototype.damage = function(id, damager, amount, healthLeft, shieldLeft) {
     if (!this.connected || !this.inRoom) return;
+    this.outCount++;
     this.socket.emit('damage', {
         robot: id,
         damager: damager,
@@ -240,6 +272,7 @@ Connection.prototype.damage = function(id, damager, amount, healthLeft, shieldLe
  */
 Connection.prototype.destroy = function(id, exp) {
     if (!this.connected || !this.inRoom) return;
+    this.outCount++;
     this.socket.emit('destroy', {
         robot: id,
         exp: exp,
@@ -255,6 +288,7 @@ Connection.prototype.destroy = function(id, exp) {
  */
 Connection.prototype.destroyProjectile = function(proj) {
 	if (!this.connected || !this.inRoom) return;
+    this.outCount++;
 	this.socket.emit('destroyProjectile', {
 		id: proj.id,
         clientID: proj.clientID,
@@ -268,6 +302,7 @@ Connection.prototype.destroyProjectile = function(proj) {
  */
 Connection.prototype.doneUpgrades = function() {
     if (!this.connected || !this.inRoom) return;
+    this.outCount++;
     this.socket.emit('doneUpgrades', {
         time: this.getServerTime()
     });
@@ -281,6 +316,7 @@ Connection.prototype.doneUpgrades = function() {
  */
 Connection.prototype.downgrade = function(player, upgrade) {
     if (!this.connected || !this.inRoom) return;
+    this.outCount++;
     this.socket.emit('downgrade', {
         player: player,
         upgrade: upgrade,
@@ -295,6 +331,7 @@ Connection.prototype.downgrade = function(player, upgrade) {
  */
 Connection.prototype.fetchRooms = function() {
     if (!this.connected || this.inRoom) return;
+    this.outCount++;
     this.socket.emit('fetchRooms', { players: players.length });
 };
 
@@ -305,6 +342,7 @@ Connection.prototype.fetchRooms = function() {
  */
 Connection.prototype.fireProjectile = function(proj) {
     if (!this.connected || !this.inRoom) return;
+    this.outCount++;
     this.socket.emit('fireProjectile', {
         sprite: proj.sprite.name,
 		pos: proj.pos,
@@ -314,7 +352,7 @@ Connection.prototype.fireProjectile = function(proj) {
 		id: proj.id,
         clientID: proj.clientID,
 		pierce: proj.pierce,
-		spread: proj.spread,
+		spread: proj.split,
 		range: proj.range,
 		buffs: proj.buffs,
 		update: proj.updateName,
@@ -334,6 +372,7 @@ Connection.prototype.fireProjectile = function(proj) {
  */
 Connection.prototype.gameOver = function() {
     if (!this.connected || !this.inRoom) return;
+    this.outCount++;
     this.inRoom = false;
     var stats = new Array(players.length);
     for (var i = 0; i < players.length; i++) {
@@ -344,7 +383,7 @@ Connection.prototype.gameOver = function() {
             damageAbsorbed: player.damageAbsorbed,
             kills: player.skills,
             deaths: player.deaths
-        }
+        };
     }
     this.socket.emit('gameOver', { 
         stats: stats,
@@ -360,6 +399,7 @@ Connection.prototype.gameOver = function() {
  */
 Connection.prototype.giveExp = function(index, amount) {
     if (!this.connected || !this.inRoom) return;
+    this.outCount++;
     this.socket.emit('giveExp', {
         player: index,
         exp: amount,
@@ -374,6 +414,7 @@ Connection.prototype.giveExp = function(index, amount) {
  */
 Connection.prototype.heal = function(robot) {
 	if (!this.connected || !this.inRoom) return;
+    this.outCount++;
 	this.socket.emit('heal', {
 		robot: robot.id,
 		health: robot.health,
@@ -387,6 +428,7 @@ Connection.prototype.heal = function(robot) {
  */
 Connection.prototype.joinRoom = function(name) {
     if (!this.connected || this.inRoom) return;
+    this.outCount++;
     var users = [];
     for (var i = 0; i < players.length; i++) {
         players[i].settings.part = 1;
@@ -403,6 +445,7 @@ Connection.prototype.joinRoom = function(name) {
  */
 Connection.prototype.knockback = function(robot, knockback) {
     if (!this.connected || !this.inRoom) return;
+    this.outCount++;
     this.socket.emit('knockback', {
         robot: robot,
         knockback: knockback,
@@ -421,7 +464,7 @@ Connection.prototype.knockback = function(robot, knockback) {
  */ 
 Connection.prototype.login = function(username, password, callback) {
     if (!this.connected || this.callback) return;
-    
+    this.outCount++;
     this.callback = callback;
     this.socket.emit('login', { username: username, password: password });
 };
@@ -433,7 +476,7 @@ Connection.prototype.login = function(username, password, callback) {
  */
 Connection.prototype.message = function(message) {
     if (!this.connected || !this.inRoom) return;
-    
+    this.outCount++;
     this.socket.emit('message', { user: players[this.gameIndex].settings.profile, message: message });
 };
 
@@ -444,7 +487,7 @@ Connection.prototype.message = function(message) {
  */
 Connection.prototype.mine = function(mine) {
     if (!this.connected || !this.inRoom) return;
-    
+    this.outCount++;
     this.socket.emit('mine', {
         sprite: mine.sprite.name,
         pos: mine.pos,
@@ -484,6 +527,7 @@ Connection.prototype.quitGame = function(reason) {
         });
     }
     
+    this.outCount++;
     this.inRoom = false;
     players = players.slice(this.gameIndex, this.gameIndex + this.localPlayers);
     gameScreen = new RoomScreen();
@@ -495,6 +539,7 @@ Connection.prototype.quitGame = function(reason) {
  */
 Connection.prototype.requestStart = function() {
     if (!this.connected || !this.inRoom) return;
+    this.outCount++;
     this.socket.emit('requestStart', { 
         room: this.room
     });
@@ -507,6 +552,7 @@ Connection.prototype.requestStart = function() {
  */
 Connection.prototype.revive = function(player) {
     if (!this.connected || !this.inRoom) return;
+    this.outCount++;
     this.socket.emit('revive', {
         player: player.playerIndex,
         position: player.pos,
@@ -521,9 +567,35 @@ Connection.prototype.revive = function(player) {
  */
 Connection.prototype.setPaused = function(id) {
     if (!this.connected || !this.inRoom) return;
+    this.outCount++;
     this.socket.emit('setPaused', {
         player: id,
         time: this.getServerTime()
+    });
+};
+
+/**
+ * Sends an emitted shockwave over the network.
+ *
+ * @param {Shockwave} shockwave - the shockwave to emit
+ */
+Connection.prototype.shockwave = function(shockwave) {
+    if (!this.connected || !this.inRoom) return;
+    this.outCount++;
+    this.socket.emit('shockwave', {
+        source: shockwave.source.id, 
+        color1: shockwave.color1, 
+        color2: shockwave.color2, 
+        pos: shockwave.arc.pos,
+        speed: shockwave.speed, 
+        min: shockwave.arc.start, 
+        max: shockwave.arc.end, 
+        radius: shockwave.arc.radius, 
+        thickness: shockwave.arc.thickness, 
+        damage: shockwave.damage, 
+        range: shockwave.range, 
+        knockback: shockwave.knockback, 
+        target: shockwave.target
     });
 };
 
@@ -538,7 +610,7 @@ Connection.prototype.setPaused = function(id) {
  */ 
 Connection.prototype.signup = function(username, password, callback) {
     if (!this.connected || this.callback) return;
-    
+    this.outCount++;
     this.callback = callback;
     this.socket.emit('signup', { username: username, password: password });
 };
@@ -554,6 +626,7 @@ Connection.prototype.signup = function(username, password, callback) {
  */
 Connection.prototype.spawn = function(construct, pos, id, bossSpawn, extra) {
     if (!this.connected || !this.inRoom) return;
+    this.outCount++;
     this.socket.emit('spawn', {
         construct: construct,
         pos: pos,
@@ -571,6 +644,7 @@ Connection.prototype.spawn = function(construct, pos, id, bossSpawn, extra) {
  */
 Connection.prototype.submitStats = function(profile) {
     if (!this.connected) return;
+    this.outCount++;
     this.socket.emit('stats', profile);
 };
 
@@ -581,7 +655,7 @@ Connection.prototype.submitStats = function(profile) {
  */
 Connection.prototype.turret = function(turret) {
     if (!this.connected || !this.inRoom) return;
-    
+    this.outCount++;
     this.socket.emit('turret', {
         sprite: turret.sprite.name,
         base: turret.preChildren[0].sprite.name,
@@ -601,6 +675,7 @@ Connection.prototype.turret = function(turret) {
  */
 Connection.prototype.updateRobots = function(data) {
     if (!this.connected || !this.inRoom) return;
+    this.outCount++;
     data.time = this.getServerTime();
     this.socket.emit('updateRobots', data);
 };
@@ -608,9 +683,12 @@ Connection.prototype.updateRobots = function(data) {
 /**
  * Sends an update for the player's current selection in the 
  * lobby screen so other players can see it.
+ *
+ * @param {Number} playerIndex - the index of the player to update
  */
 Connection.prototype.updateSelection = function(playerIndex) {
     if (!this.connected || !this.inRoom) return;
+    this.outCount++;
     this.socket.emit('updateSelection', { 
         selection: players[playerIndex].settings, 
         index: playerIndex, 
@@ -621,9 +699,12 @@ Connection.prototype.updateSelection = function(playerIndex) {
 /**
  * Sends an update for the player's current position
  * as well as orientation
+ *
+ * @param {Number} playerIndex - the index of the player to update
  */
 Connection.prototype.updatePlayer = function(playerIndex) {
     if (!this.connected || !this.inRoom) return;
+    this.outCount++;
     this.socket.emit('updatePlayer', { 
         rot: players[playerIndex].rotation, 
         robot: playerIndex,
@@ -641,6 +722,7 @@ Connection.prototype.updatePlayer = function(playerIndex) {
  */
 Connection.prototype.upgrade = function(player, upgrade) {
     if (!this.connected || !this.inRoom) return;
+    this.outCount++;
     this.socket.emit('upgrade', {
         player: player,
         upgrade: upgrade,
@@ -657,6 +739,7 @@ Connection.prototype.upgrade = function(player, upgrade) {
  */
 Connection.prototype.upgradeSelection = function(player, id, ready) {
     if (!this.connected || !this.inRoom) return;
+    this.outCount++;
     this.socket.emit('upgradeSelection', {
         player: player,
         id: id,
@@ -679,6 +762,7 @@ Connection.prototype.upgradeSelection = function(player, id, ready) {
  * @param {Object} data - the data from the server
  */
 Connection.prototype.onAbility = function(data) {
+    this.inCount++;
     players[data.player].input.applyAbility();
 };
 
@@ -692,6 +776,7 @@ Connection.prototype.onAbility = function(data) {
  * @param {Object} data - the data for the joining players
  */
 Connection.prototype.onAddPlayers = function(data) {
+    this.inCount++;
     if (!this.inRoom) return;
     for (var i = 0; i < data.selections.length; i++) {
         players[i + data.index].settings = data.selections[i]; 
@@ -709,6 +794,7 @@ Connection.prototype.onAddPlayers = function(data) {
  * @param {Object} data - the data from the server
  */
 Connection.prototype.onBlockProjectile = function(data) {
+    this.inCount++;
 	var bullet = gameScreen.getBulletById(data.id, data.clientID);
 	if(bullet)
 	{
@@ -728,7 +814,8 @@ Connection.prototype.onBlockProjectile = function(data) {
  * 
  * @param {Object} object - the server data
  */ 
-Connection.prototype.onBuff = function(data) {  
+Connection.prototype.onBuff = function(data) { 
+    this.inCount++; 
     var r = gameScreen.getRobotById(data.robot);
     if (r) {
         r.buff(data.stat, data.multiplier, data.duration);
@@ -747,6 +834,7 @@ Connection.prototype.onBuff = function(data) {
  * @param {Object} data - the data from the server
  */
 Connection.prototype.onBurrow = function(data) {
+    this.inCount++;
 	var robot = gameScreen.getRobotById(data.robot);
 	if (robot) {
 		robot.burrowing = true;
@@ -765,6 +853,7 @@ Connection.prototype.onBurrow = function(data) {
  * @param {Object} data - the pattern change data
  */
 Connection.prototype.onChangePattern = function(data) {
+    this.inCount++;
     var r = gameScreen.getRobotById(data.robot);
     if (r) {
         r.setPattern(data.pattern);
@@ -785,6 +874,7 @@ Connection.prototype.onChangePattern = function(data) {
  * @param {Object} the data
  */
 Connection.prototype.onDamage = function(data) {
+    this.inCount++;
     var target = gameScreen.getRobotById(data.robot);
     var damager = gameScreen.getRobotById(data.damager);
     
@@ -827,6 +917,7 @@ Connection.prototype.onDamage = function(data) {
  * @param {Object} data - response data from the server
  */
 Connection.prototype.onDestroy = function(data) {
+    this.inCount++;
     var r = gameScreen.getRobotById(data.robot);
     if (r) {
         r.destroy();
@@ -845,6 +936,7 @@ Connection.prototype.onDestroy = function(data) {
  * @param {Object} data - the data from the server
  */
 Connection.prototype.onDestroyProjectile = function(data) {
+    this.inCount++;
 	var bullet = gameScreen.getBulletById(data.id, data.clientID);
 	if(bullet)
 	{
@@ -863,6 +955,7 @@ Connection.prototype.onDestroyProjectile = function(data) {
  * @param {Object} data - the data from the server
  */ 
 Connection.prototype.onDoneUpgrades = function(data) {
+    this.inCount++;
     gameScreen.startNextRound();
 };
 
@@ -876,6 +969,7 @@ Connection.prototype.onDoneUpgrades = function(data) {
  * @param {Object} data - the data for the downgrade
  */ 
 Connection.prototype.onDowngrade = function(data) {
+    this.inCount++;
     ui.hovered[data.player] = data.upgrade;
     players[data.player].upgrades[data.upgrade]--;
     players[data.player].points++;
@@ -908,6 +1002,7 @@ Connection.prototype.onDowngrade = function(data) {
  * @param {Object} data - the projectile data
  */
 Connection.prototype.onFireProjectile = function(data) {
+    this.inCount++;
 	var result = new Vector(data.pos.x, data.pos.y);
 	data.pos = result;
 	
@@ -965,6 +1060,11 @@ Connection.prototype.onFireProjectile = function(data) {
     }
     
     gameScreen.bullets.push(projectile);
+    
+    // Spread the bullet if applicable
+    if (data.spread > 0) {
+        projectile.spread(data.spread);
+    }
 };
 
 /**
@@ -976,6 +1076,7 @@ Connection.prototype.onFireProjectile = function(data) {
  * @param {Object} data - the data from the server
  */
 Connection.prototype.onGameOver = function(data) {
+    this.inCount++;
     gameScreen.gameOver = 300 - (performance.now - this.fromServerTime(data.time)) * 0.06;  
     this.inRoom = false;
 };
@@ -992,6 +1093,7 @@ Connection.prototype.onGameOver = function(data) {
  * @param {Object} data - response data from the server
  */
 Connection.prototype.onGeneral = function(data) {
+    this.inCount++;
     if (this.callback) {
         this.callback(data);
         delete this.callback;
@@ -1011,6 +1113,7 @@ Connection.prototype.onGeneral = function(data) {
  * @param {Object} data - the time data
  */
 Connection.prototype.onGetTime = function(data) {
+    this.inCount++;
     var firstLocalTime = data.localTime;
     var secondLocalTime = performance.now();
     var serverTime = data.serverTime;
@@ -1030,6 +1133,7 @@ Connection.prototype.onGetTime = function(data) {
  * @param {Object} data - the data from the server
  */
 Connection.prototype.onGiveExp = function(data) {
+    this.inCount++;
     players[data.player].giveExp(data.exp);
 };
 
@@ -1043,6 +1147,7 @@ Connection.prototype.onGiveExp = function(data) {
  * @param {Object} data - the data from the server
  */
 Connection.prototype.onHeal = function(data) {
+    this.inCount++;
 	var robot = gameScreen.getRobotById(data.robot);
 	if (robot) {
 		robot.health = data.health;
@@ -1060,6 +1165,7 @@ Connection.prototype.onHeal = function(data) {
  * @param {Object} data - the response from the server
  */
 Connection.prototype.onJoinRoom = function(data) {
+    this.inCount++;
     if (this.inRoom) return;
     
     delete this.errCallback;
@@ -1093,6 +1199,7 @@ Connection.prototype.onJoinRoom = function(data) {
  * @param {Object} data - message from the server
  */
 Connection.prototype.onKick = function(data) {
+    this.inCount++;
     if (!this.inRoom) return;
     
     this.inRoom = false;
@@ -1110,6 +1217,7 @@ Connection.prototype.onKick = function(data) {
  * @param {Object} data - the data received from the server
  */
 Connection.prototype.onKnockback = function(data) {
+    this.inCount++;
     var r = gameScreen.getRobotById(data.robot);
     if (r) {
         r.knockback(new Vector(data.knockback.x, data.knockback.y));
@@ -1126,6 +1234,7 @@ Connection.prototype.onKnockback = function(data) {
  * @param {Object} data - the data for the message
  */
 Connection.prototype.onMessage = function(data) {
+    this.inCount++;
     chatText.innerHTML += '<br/><span class="user">' + data.user + '</span>: ' + data.message;
     chatText.scrollTop = chatText.scrollHeight;
 };
@@ -1146,6 +1255,7 @@ Connection.prototype.onMessage = function(data) {
  * @parm {Object} data - the data received from the server
  */
 Connection.prototype.onMine = function(data) {
+    this.inCount++;
     var mine = new Mine(this, new Vector(0, 0), 0, 'LightBomber', 0);
     mine.sprite = images.get(data.sprite);
     mine.pos.x = data.pos.x;
@@ -1169,6 +1279,7 @@ Connection.prototype.onMine = function(data) {
  * @param {Object} data - information about the players who left
  */
 Connection.prototype.onRemovePlayer = function(data) {
+    this.inCount++;
     players.splice(data.index, data.amount);
     appendPlayers(5);
 };
@@ -1184,6 +1295,7 @@ Connection.prototype.onRemovePlayer = function(data) {
  * @param {Object} data - the data from the server
  */
 Connection.prototype.onRevive = function(data) {
+    this.inCount++;
     players[data.player].revive();
 };
 
@@ -1196,8 +1308,55 @@ Connection.prototype.onRevive = function(data) {
  * @param {Object} data - the pause data
  */
 Connection.prototype.onSetPaused = function(data) {
+    this.inCount++;
     if (data.player == -1) gameScreen.paused = false;
     else gameScreen.paused = players[data.player];
+};
+
+/**
+ * Handles a shockwave received from the server. The
+ * data should contain the values:
+ *
+ *   source = the ID of the emitting robot
+ *   color1 = the primary color of the shockwave
+ *   color2 = the secondary color of the shockwave
+ *   pos = the position of the center of the shockwave
+ *   speed = the speed of the shockwave
+ *   min = the min angle of the shockwave
+ *   max = the max angle of the shockwave
+ *   radius = the radius of the shockwave
+ *   thickness = how thick the shockwave is
+ *   damage = the damage dealt by the shockwave
+ *   range = the range of the shockwave
+ *   knockback = the shockwave's knockback
+ *   target = the target robot group
+ *
+ * @param {Object} data - the data from the server
+ */
+Connection.prototype.onShockwave = function(data) {
+    this.inCount++;
+    var robot = gameScreen.getRobotById(data.source);
+    if (robot) {
+        var angle = robot.getAngle();
+        var shockwave = new Shockwave(
+            robot, 
+            data.color1, 
+            data.color2, 
+            data.pos.x, 
+            data.pos.y, 
+            data.speed, 
+            data.min - angle, 
+            data.max - angle, 
+            data.radius, 
+            data.thickness, 
+            data.damage, 
+            data.range, 
+            data.knockback, 
+            data.target,
+            true
+        );
+        gameScreen.bullets.push(shockwave);
+    }
 };
 
 /**
@@ -1213,6 +1372,7 @@ Connection.prototype.onSetPaused = function(data) {
  * @param {Object} data - the spawn data to relay
  */
 Connection.prototype.onSpawn = function(data) {
+    this.inCount++;
     var enemy = new window[data.construct](0, 0);
     enemy.pos.x = data.pos.x;
     enemy.pos.y = data.pos.y;
@@ -1257,6 +1417,7 @@ Connection.prototype.onSpawn = function(data) {
  * @param {Object} data - selection data that was sent
  */
 Connection.prototype.onStartGame = function(data) {
+    this.inCount++;
     var selections = data.selections;
     
     players = players.slice(0, selections.length);
@@ -1300,6 +1461,7 @@ Connection.prototype.onStartGame = function(data) {
  * @parm {Object} data - the data received from the server
  */
 Connection.prototype.onTurret = function(data) {
+    this.inCount++;
     var turret = new Turret(this, 'turretGun', 'turretBase', 0, 0, 0, 1);
     turret.sprite = images.get(data.sprite);
     turret.preChildren[0].sprite = images.get(data.base);
@@ -1326,6 +1488,7 @@ Connection.prototype.onTurret = function(data) {
  * @param {Object} data - the data that was sent
  */
 Connection.prototype.onUpdatePlayer = function(data) {
+    this.inCount++;
     var robot = data.robot;
     var player = players[robot];
     if(player.lastUpdate < data.time)
@@ -1356,6 +1519,7 @@ Connection.prototype.onUpdatePlayer = function(data) {
  * @param {Object} data - robot data
  */
 Connection.prototype.onUpdateRobots = function(data) {
+    this.inCount++;
     for (var i = 0; i < gameScreen.robots.length; i++) {
         var r = gameScreen.robots[i];
         var d = data[r.id];
@@ -1378,6 +1542,7 @@ Connection.prototype.onUpdateRobots = function(data) {
  * @param {Object} data - the room data retrieved from the server
  */
 Connection.prototype.onUpdateRooms = function(data) {
+    this.inCount++;
     if (gameScreen.updateRooms) {
         gameScreen.updateRooms(data);
     }
@@ -1394,6 +1559,7 @@ Connection.prototype.onUpdateRooms = function(data) {
  * @param {Object} data - the selection update data
  */ 
 Connection.prototype.onUpdateSelection = function(data) {
+    this.inCount++;
     if (!this.inRoom) return;
     
     // Ignore old updates
@@ -1417,6 +1583,7 @@ Connection.prototype.onUpdateSelection = function(data) {
  * @param {Object} data - the data for the upgrade
  */ 
 Connection.prototype.onUpgrade = function(data) {
+    this.inCount++;
     ui.hovered[data.player] = data.upgrade;
     players[data.player].upgrades[data.upgrade]++;
     players[data.player].points--;
@@ -1434,6 +1601,7 @@ Connection.prototype.onUpgrade = function(data) {
  * @param {Object} data - the new selection data
  */
 Connection.prototype.onUpgradeSelection = function(data) {
+    this.inCount++;
     ui.ready[data.player] = data.ready;
     ui.hovered[data.player] = data.id;
     if (data.ready) ui.checkAllReady();

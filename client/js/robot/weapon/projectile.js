@@ -32,6 +32,7 @@ function Projectile(name, x, y, shooter, gun, speed, angle, damage, range, pierc
     this.expired = false;
     this.id = Projectile.ID++;
     this.clientID = connection.gameIndex;
+    this.split = 0;
     
     // Array of buffs to apply. Add in the format { name, multiplier, duration }
     this.buffs = [];
@@ -184,6 +185,8 @@ Projectile.prototype.clone = function() {
  */
 Projectile.prototype.spread = function(amount) {
 
+    this.split = amount;
+
     // Get angle data
     var angle, sin, cos;
     if (amount > 29) {
@@ -216,7 +219,6 @@ Projectile.prototype.spread = function(amount) {
                 proj.rotate(cos, j * sin);
             }
             gameScreen.bullets.push(proj);
-			connection.fireProjectile(proj);
         }
     }
 };
