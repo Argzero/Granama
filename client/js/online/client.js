@@ -58,6 +58,7 @@ Connection.prototype.connect = function() {
     this.socket.on('general', this.onGeneral.bind(this));
     this.socket.on('getTime', this.onGetTime.bind(this));
     this.socket.on('giveExp', this.onGiveExp.bind(this));
+    this.socket.on('grapple', this.onGrapple.bind(this));
 	this.socket.on('heal', this.onHeal.bind(this));
     this.socket.on('joinRoom', this.onJoinRoom.bind(this));
     this.socket.on('kick', this.onKick.bind(this));
@@ -403,6 +404,24 @@ Connection.prototype.giveExp = function(index, amount) {
     this.socket.emit('giveExp', {
         player: index,
         exp: amount,
+        time: this.getServerTime()
+    });
+};
+
+/**
+ * Makrs a grapple as striking the given target
+ *
+ * @param {Projectile} grapple - the grapple hook that connected
+ * @param {Robot}      target  - the robot that was hit by the grapple
+ */
+Connection.prototype.grapple = function(grapple, target) {
+    if (!this.connected || !this.inRoom) return;
+    this.outCount++;
+    this.socket.emit('grapple', {
+        projID: grapple.id,
+        projClientID: grapple.clientID,
+        targetID: target.id,
+        pos: grapple.pos,
         time: this.getServerTime()
     });
 };
@@ -1135,6 +1154,34 @@ Connection.prototype.onGetTime = function(data) {
 Connection.prototype.onGiveExp = function(data) {
     this.inCount++;
     players[data.player].giveExp(data.exp);
+};
+
+/**
+ * Handles applying a grapple hit. The data should contain:
+ *
+ *   projID = the ID of the projectile
+ *   projClientID = the ID of the client who fired the projectile
+ *   targetID = the ID of the hit target
+ *   pos = the position of the grapple on impact
+ *   time = the time the grapple hit
+ *
+ * @param {Object} data - the data to relay
+ */
+Connection.prototype.onGrapple = function(data) {
+    var grapple = gameScreen.getBulletById(data.projID, data.projClientID);
+    var target = gameScreen.getRobotById(data.targetID);
+    if (grapple && target) {
+        grapple.pos.x = data.pos.x;
+        grapple.pos.y = data.pos.y;
+        if (target.attachedGrapple) 
+        {
+            target.attachedGrapple.target = undefined;
+        }
+        target.attachedGrapple = grapple;
+        grapple.returning = true;
+        grapple.target = target;
+        grapple.offset = target.pos.clone().subtractv(grapple.pos);
+    }
 };
 
 /**

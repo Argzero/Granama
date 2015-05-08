@@ -385,11 +385,27 @@ function setup(server) {
          *   exp = the amount of received experience
          *   time = the time stamp for when the experience was received
          *
-         * @param {Object} data - the data from the server
+         * @param {Object} data - the data from the client
          */
         socket.on('giveExp', function(data) {
             console.log('Action: Give Exp [' + data.exp + ' to ' + data.player + ']');
             socket.broadcast.to(socket.room).emit('giveExp', data);
+        });
+        
+        /**
+         * Relays a grapple hitting a target. The data should include:
+         *
+         *   projID = the ID of the projectile
+         *   projClientID = the ID of the client who fired the projectile
+         *   targetID = the ID of the hit target
+         *   pos = the position of the grapple on impact
+         *   time = the time the grapple hit
+         *
+         * @param {Object} data - the data to relay
+         */
+        socket.on('grapple', function(data) {
+            console.log('Action: Grapple');
+            socket.broadcast.to(socket.room).emit('grapple', data);
         });
 		
 		/**
@@ -413,7 +429,7 @@ function setup(server) {
          *   knockback = the knockback to apply
          *   time = the time when the knockback was applied
          *
-         * @param {Object} data - the data received from the server
+         * @param {Object} data - the data received from the client
          */
         socket.on('knockback', function(data) {
             console.log('Action: Knockback');

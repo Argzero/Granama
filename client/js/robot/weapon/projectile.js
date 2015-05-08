@@ -257,11 +257,11 @@ Projectile.prototype.setupGrapple = function(stun, self) {
     this.onExpire = projEvents.grappleExpire;
     this.onCollideCheck = projEvents.grappleCollide;
     
-    this.onUpdateName = 'grappleUpdate';
-    this.onHitName = 'grappleHit';
-    this.onBlockedName = 'grappleExpire';
-    this.onExpireName = 'grappleExpire';
-    this.onCollideName = 'grappleCollide';
+    this.updateName = 'grappleUpdate';
+    this.hitName = 'grappleHit';
+    this.blockedName = 'grappleExpire';
+    this.expireName = 'grappleExpire';
+    this.collideName = 'grappleCollide';
     
     this.extra.stun = stun;
     this.extra.self = self;
@@ -484,6 +484,8 @@ var projEvents = {
         this.returning = true;
         this.target = target;
         this.offset = target.pos.clone().subtractv(this.pos);
+        
+        connection.grapple(this, target);
     },
     
     /**
